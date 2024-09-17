@@ -1,28 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace UDSH.View
 {
-    /// <summary>
-    /// Interaction logic for HeaderUserControl.xaml
-    /// </summary>
     public partial class HeaderUserControl : UserControl
     {
         public HeaderUserControl()
         {
             InitializeComponent();
+        }
+
+        // Buttons to control the window, there's no need to bind and write the code in the ViewModel section.
+        private void MinimizeButton(object sender, RoutedEventArgs e)
+        {
+            Window OwnerWindow = Window.GetWindow(this);
+            OwnerWindow.WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeButton(object sender, RoutedEventArgs e)
+        {
+            Window OwnerWindow = Window.GetWindow(this);
+
+            if (OwnerWindow.WindowState == WindowState.Maximized)
+                OwnerWindow.WindowState = WindowState.Normal;
+            else
+                OwnerWindow.WindowState = WindowState.Maximized;
+        }
+
+        private void CloseButton(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }

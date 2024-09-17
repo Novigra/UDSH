@@ -9,13 +9,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resource\Close.png" />
     <None Remove="Resource\Logo.png" />
+    <None Remove="Resource\Max.png" />
+    <None Remove="Resource\Minimize.png" />
+    <None Remove="Resource\Normal.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resource\Normal.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\Close.png" />
     <Resource Include="Resource\Logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resource\Max.png" />
+    <Resource Include="Resource\Minimize.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MVVM\" />
+    <Folder Include="Model\" />
+    <Folder Include="ViewModel\" />
   </ItemGroup>
 
 </Project>

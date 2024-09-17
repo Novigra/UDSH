@@ -10,7 +10,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="70"/>
             <ColumnDefinition/>
-            <ColumnDefinition Width="210"/>
+            <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
 
         <!-- Logo Placement -->
@@ -50,14 +50,18 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <Rectangle Grid.Column="0" Fill="#CDCDCD" Panel.ZIndex="0"/>
-            <Button Grid.Column="0" Panel.ZIndex="1">
-                <Button.Background>
-                    <ImageBrush/>
-                </Button.Background>
-            </Button>
-            <Button Grid.Column="1"/>
-            <Button Grid.Column="2"/>
+            <Rectangle Grid.Column="0" Panel.ZIndex="0"/>
+            <Button Grid.Column="0" Panel.ZIndex="1" Click="MinimizeButton"/>
+            <Image Grid.Column="0" Panel.ZIndex="2" Source="/Resource/Minimize.png" Margin="16,13,16,13" IsHitTestVisible="False"/>
+
+            <Rectangle Grid.Column="1" Panel.ZIndex="0"/>
+            <Button Grid.Column="1" Panel.ZIndex="1" Click="MaximizeButton"/>
+            <Image Grid.Column="1" Panel.ZIndex="2" Source="/Resource/Normal.png" Margin="15,13,15,13" IsHitTestVisible="False"/>
+
+            <Rectangle Grid.Column="2" Panel.ZIndex="0"/>
+            <Button Grid.Column="2" Panel.ZIndex="1" Style="{StaticResource CloseButton}" Click="CloseButton"/>
+            <Image Grid.Column="2" Panel.ZIndex="2" Source="/Resource/Close.png" Margin="15,13,15,13" IsHitTestVisible="False"/>
+            
         </Grid>
 
     </Grid>
