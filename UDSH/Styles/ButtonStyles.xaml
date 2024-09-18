@@ -2,12 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style TargetType="Button">
-        <Setter Property="BorderBrush" Value="#00707070"/>
+        <Setter Property="Background" Value="#00707070"/>
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border Background="{TemplateBinding BorderBrush}">
+                    <Border Background="{TemplateBinding Background}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
@@ -16,21 +16,21 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" Value="#BFBFBF"/>
+                <Setter Property="Background" Value="#BFBFBF"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="BorderBrush" Value="#828282"/>
+                <Setter Property="Background" Value="#828282"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="Button" x:Key="CloseButton">
-        <Setter Property="BorderBrush" Value="#00707070"/>
+        <Setter Property="Background" Value="#00707070"/>
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border Background="{TemplateBinding BorderBrush}">
+                    <Border Background="{TemplateBinding Background}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
@@ -39,10 +39,10 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" Value="#F83030"/>
+                <Setter Property="Background" Value="#F83030"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="BorderBrush" Value="#828282"/>
+                <Setter Property="Background" Value="#828282"/>
             </Trigger>
         </Style.Triggers>
     </Style>

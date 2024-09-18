@@ -24,3 +24,6 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\ref\UDSH.dll
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\UDSH.sourcelink.json
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\ButtonStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\App.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\FooterUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\FooterUserControl.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\TextBlockStyles.baml

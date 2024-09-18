@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <None Remove="Resource\Close.png" />
+    <None Remove="Resource\Log.png" />
     <None Remove="Resource\Logo.png" />
     <None Remove="Resource\Max.png" />
     <None Remove="Resource\Minimize.png" />
@@ -17,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resource\Log.png" />
     <Resource Include="Resource\Normal.png" />
   </ItemGroup>
 

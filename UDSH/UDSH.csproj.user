@@ -7,6 +7,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\FooterUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\HeaderUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -16,6 +19,12 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\ButtonStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\TextBlockStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\FooterUserControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\HeaderUserControl.xaml">

@@ -25,11 +25,23 @@ namespace UDSH.View
                 OwnerWindow.WindowState = WindowState.Normal;
             else
                 OwnerWindow.WindowState = WindowState.Maximized;
+
+            
         }
 
         private void CloseButton(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            
+        }
+
+        private void Button_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+           
         }
     }
 }
