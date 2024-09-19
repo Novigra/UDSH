@@ -14,11 +14,16 @@
     <None Remove="Resource\Logo.png" />
     <None Remove="Resource\Max.png" />
     <None Remove="Resource\Minimize.png" />
+    <None Remove="Resource\NewFile.png" />
     <None Remove="Resource\Normal.png" />
+    <None Remove="Resource\PenTool.png" />
+    <None Remove="Resource\ProfilePicture.png" />
+    <None Remove="Resource\Settings.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resource\Log.png" />
+    <Resource Include="Resource\NewFile.png" />
     <Resource Include="Resource\Normal.png" />
   </ItemGroup>
 
@@ -29,6 +34,9 @@
     </Resource>
     <Resource Include="Resource\Max.png" />
     <Resource Include="Resource\Minimize.png" />
+    <Resource Include="Resource\PenTool.png" />
+    <Resource Include="Resource\ProfilePicture.png" />
+    <Resource Include="Resource\Settings.png" />
   </ItemGroup>
 
   <ItemGroup>

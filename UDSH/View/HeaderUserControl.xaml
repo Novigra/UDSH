@@ -5,68 +5,134 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UDSH.View"
              mc:Ignorable="d" 
-             d:DesignHeight="40" d:DesignWidth="800">
+             d:DesignHeight="80" d:DesignWidth="1200">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="70"/>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="150"/>
-        </Grid.ColumnDefinitions>
-        
-        <!-- Testing Ground 
-        <TextBlock Grid.Column="1" Text="Number Test" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="450,0,0,0" Panel.ZIndex="5"/>
-        <TextBlock Name="InterpNumber" Grid.Column="1" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="550,0,0,0" Panel.ZIndex="5"/> -->
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
-        <!-- Logo Placement -->
-        <Rectangle Grid.Column="0" Fill="#FFADADAD" Panel.ZIndex="0"/>
-        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/Logo.png" RenderOptions.BitmapScalingMode="HighQuality" Margin="5"/>
-
-        <!-- Titles -->
-        <Rectangle Grid.Column="1" Fill="#CDCDCD"/>
-        <TextBlock Name="ProjectName" Grid.Column="1" Text="Monster" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
-
-
-        <Grid Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="70"/>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <!-- Emoji and flags placeholders -->
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Text="UDSH" VerticalAlignment="Center" Margin="0,0,0,0"/>
-            <TextBlock Grid.Column="1" Text="|" VerticalAlignment="Center" Margin="5,0,5,5" FontWeight="SemiBold"/>
-            <TextBlock Name="UserName" Grid.Column="2" Text="Mohammed Kenawy" VerticalAlignment="Center" Margin="0,0,0,0"/>
+            <!-- Testing Ground 
+<TextBlock Grid.Column="1" Text="Number Test" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="450,0,0,0" Panel.ZIndex="5"/>
+<TextBlock Name="InterpNumber" Grid.Column="1" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="550,0,0,0" Panel.ZIndex="5"/> -->
 
-            <TextBlock Grid.Column="3" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
-            <TextBlock Grid.Column="4" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
-            <TextBlock Grid.Column="5" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
+            <!-- Logo Placement -->
+            <Rectangle Grid.Column="0" Fill="#FFADADAD" Panel.ZIndex="0"/>
+            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/Logo.png" Margin="5"/>
+
+            <!-- Titles -->
+            <Rectangle Grid.Column="1" Fill="#CDCDCD"/>
+            <TextBlock Name="ProjectName" Grid.Column="1" Text="Monster" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+
+
+            <Grid Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <!-- Emoji and flags placeholders -->
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="UDSH" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Grid.Column="1" Text="|" VerticalAlignment="Center" Margin="5,0,5,5" FontWeight="SemiBold"/>
+                <TextBlock Name="UserName" Grid.Column="2" Text="Mohammed Kenawy" VerticalAlignment="Center" Margin="0,0,0,0"/>
+
+                <TextBlock Grid.Column="3" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Grid.Column="4" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Grid.Column="5" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
+            </Grid>
+
+            <!-- Page Controls -->
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Rectangle Grid.Column="0" Panel.ZIndex="0"/>
+                <Button Grid.Column="0" Panel.ZIndex="1" Click="MinimizeButton" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave"/>
+                <Image Grid.Column="0" Panel.ZIndex="2" Source="/Resource/Minimize.png" Margin="16,13,16,13"/>
+
+                <Rectangle Grid.Column="1" Panel.ZIndex="0"/>
+                <Button Grid.Column="1" Panel.ZIndex="1" Click="MaximizeButton"/>
+                <Image Grid.Column="1" Panel.ZIndex="2" Source="/Resource/Normal.png" Margin="15,13,15,13"/>
+
+                <Rectangle Grid.Column="2" Panel.ZIndex="0"/>
+                <Button Grid.Column="2" Panel.ZIndex="1" Style="{StaticResource CloseButton}" Click="CloseButton"/>
+                <Image Grid.Column="2" Panel.ZIndex="2" Source="/Resource/Close.png" Margin="15,13,15,13"/>
+
+            </Grid>
         </Grid>
 
-        <!-- Page Controls -->
-        <Grid Grid.Column="2">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
+            
+            <!-- Background -->
+            <Rectangle Grid.ColumnSpan="4" Fill="#EEEEEE"/>
 
-            <Rectangle Grid.Column="0" Panel.ZIndex="0"/>
-            <Button Grid.Column="0" Panel.ZIndex="1" Click="MinimizeButton" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave"/>
-            <Image Grid.Column="0" Panel.ZIndex="2" Source="/Resource/Minimize.png" Margin="16,13,16,13" IsHitTestVisible="False"/>
+            <!-- PenTool -->
+            <Grid Grid.Column="0">
+                <Button Name="PenTool" Panel.ZIndex="0" Margin="5" Background="Aqua"/>
+                <Image Source="/Resource/PenTool.png" Margin="7"/>
+            </Grid>
 
-            <Rectangle Grid.Column="1" Panel.ZIndex="0"/>
-            <Button Grid.Column="1" Panel.ZIndex="1" Click="MaximizeButton"/>
-            <Image Grid.Column="1" Panel.ZIndex="2" Source="/Resource/Normal.png" Margin="15,13,15,13" IsHitTestVisible="False"/>
+            <Grid Grid.Column="1" Name="QuickActions" Width="130" HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Separator -->
+                <Rectangle Grid.Column="0" Name="PQSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="4" RadiusY="4"/>
 
-            <Rectangle Grid.Column="2" Panel.ZIndex="0"/>
-            <Button Grid.Column="2" Panel.ZIndex="1" Style="{StaticResource CloseButton}" Click="CloseButton"/>
-            <Image Grid.Column="2" Panel.ZIndex="2" Source="/Resource/Close.png" Margin="15,13,15,13" IsHitTestVisible="False"/>
+                <!-- Quick Action - One -->
+                <Button Grid.Column="1" Name="QuickAction1"/>
+                <Image Grid.Column="1" Source="/Resource/NewFile.png" Margin="5"/>
+
+                <!-- Quick Action - Two -->
+                <Button Grid.Column="2" Name="QuickAction2"/>
+                <Image Grid.Column="2" Source="/Resource/NewFile.png" Margin="5"/>
+
+                <!-- Quick Action - Three -->
+                <Button Grid.Column="3" Name="QuickAction3"/>
+                <Image Grid.Column="3" Source="/Resource/NewFile.png" Margin="5"/>
+            </Grid>
+
+            <!-- App and Profile Settings -->
+            <Grid Grid.Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Profile -->
+                <Button Grid.Column="0" Name="ProfileSettings" Panel.ZIndex="0" Margin="18,5,0,5" Background="Aqua"/>
+                <Image Grid.Column="0" Name="ProfilePicture" Source="/Resource/ProfilePicture.png" Margin="18,9,0,9" Panel.ZIndex="1"/>
+
+                <!-- App -->
+                <Button Grid.Column="1" Name="AppSettings" Panel.ZIndex="0" Margin="10,5,10,5" Background="Aqua"/>
+                <Image Grid.Column="1" Source="/Resource/Settings.png" Margin="10" Panel.ZIndex="1"/>
+
+            </Grid>
             
         </Grid>
-
     </Grid>
 </UserControl>

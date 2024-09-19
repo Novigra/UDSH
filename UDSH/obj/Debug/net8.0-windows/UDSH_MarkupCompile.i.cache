@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 D:\Projects\UDSH\UDSH\App.xaml
-5-812979149
+6-1576015095
 
 8406375728
 198-556154604
-MainWindow.xaml;Styles\ButtonStyles.xaml;Styles\TextBlockStyles.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;
+MainWindow.xaml;Styles\ButtonStyles.xaml;Styles\ImageStyles.xaml;Styles\TextBlockStyles.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;
 
 False
 
