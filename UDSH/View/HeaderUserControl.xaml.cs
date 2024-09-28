@@ -8,6 +8,13 @@ namespace UDSH.View
         public HeaderUserControl()
         {
             InitializeComponent();
+            /*PagesList.Items.Add(new Button());
+            PagesList.Items.Add(new Button());
+            PagesList.Items.Add(new Button());*/
+
+            PagesList.Items.Add(new ListViewItem());
+            PagesList.Items.Add(new ListViewItem());
+            PagesList.Items.Add(new ListViewItem());
         }
 
         // Buttons to control the window, there's no need to bind and write the code in the ViewModel section.
@@ -32,16 +39,6 @@ namespace UDSH.View
         private void CloseButton(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
-        }
-
-        private void Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            
-        }
-
-        private void Button_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-           
         }
     }
 }

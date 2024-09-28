@@ -61,7 +61,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Rectangle Grid.Column="0" Panel.ZIndex="0"/>
-                <Button Grid.Column="0" Panel.ZIndex="1" Click="MinimizeButton" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave"/>
+                <Button Grid.Column="0" Panel.ZIndex="1" Click="MinimizeButton"/>
                 <Image Grid.Column="0" Panel.ZIndex="2" Source="/Resource/Minimize.png" Margin="16,13,16,13"/>
 
                 <Rectangle Grid.Column="1" Panel.ZIndex="0"/>
@@ -78,8 +78,8 @@
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50"/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             
@@ -92,30 +92,52 @@
                 <Image Source="/Resource/PenTool.png" Margin="7"/>
             </Grid>
 
+            <!-- Quick Actions -->
             <Grid Grid.Column="1" Name="QuickActions" Width="130" HorizontalAlignment="Left">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="3"/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 
-                <!-- Separator -->
+                <!-- Backup 
                 <Rectangle Grid.Column="0" Name="PQSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="4" RadiusY="4"/>
+                -->
+                
+                <!-- Separator -->
+                <Rectangle Grid.Column="0" Name="PQSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3"/>
 
                 <!-- Quick Action - One -->
-                <Button Grid.Column="1" Name="QuickAction1"/>
-                <Image Grid.Column="1" Source="/Resource/NewFile.png" Margin="5"/>
+                <Button Grid.Column="1" Name="QuickAction1" Background="Aqua" Margin="5"/>
+                <Image Grid.Column="1" Source="/Resource/NewFile.png" Margin="7"/>
 
                 <!-- Quick Action - Two -->
-                <Button Grid.Column="2" Name="QuickAction2"/>
-                <Image Grid.Column="2" Source="/Resource/NewFile.png" Margin="5"/>
+                <Button Grid.Column="2" Name="QuickAction2" Background="Aqua" Margin="5"/>
+                <Image Grid.Column="2" Source="/Resource/NewFile.png" Margin="7"/>
 
                 <!-- Quick Action - Three -->
-                <Button Grid.Column="3" Name="QuickAction3"/>
-                <Image Grid.Column="3" Source="/Resource/NewFile.png" Margin="5"/>
+                <Button Grid.Column="3" Name="QuickAction3" Background="Aqua" Margin="5"/>
+                <Image Grid.Column="3" Source="/Resource/NewFile.png" Margin="7"/>
             </Grid>
 
+            <!-- Files -->
+            <Grid Grid.Column="2" Name="OpenedFiles" HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Separator -->
+                <Rectangle Grid.Column="0" Name="QOSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3"/>
+                
+                <!-- Opened Files -->
+                <ListView Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Left" Name="PagesList" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">
+                    
+                </ListView>
+
+            </Grid>
+            
             <!-- App and Profile Settings -->
             <Grid Grid.Column="3">
                 <Grid.ColumnDefinitions>

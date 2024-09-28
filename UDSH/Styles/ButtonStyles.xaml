@@ -8,6 +8,9 @@
     -->
 
     <CornerRadius x:Key="Button.Radius" TopLeft="0" BottomLeft="0" TopRight="0" BottomRight="0"/>
+    <CornerRadius x:Key="CloseOpenedPageButton.Radius" TopLeft="0" BottomLeft="0" TopRight="5" BottomRight="0"/>
+    
+    
     <Style TargetType="Button">
         <Setter Property="Background" Value="#00707070"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -48,6 +51,29 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="#F83030"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#828282"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Button" x:Key="CloseOpenedPageButton">
+        <Setter Property="Background" Value="#00707070"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="{StaticResource CloseOpenedPageButton.Radius}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#3E577E"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="#828282"/>
