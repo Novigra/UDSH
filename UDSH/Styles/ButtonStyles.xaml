@@ -9,10 +9,10 @@
 
     <CornerRadius x:Key="Button.Radius" TopLeft="0" BottomLeft="0" TopRight="0" BottomRight="0"/>
     <CornerRadius x:Key="CloseOpenedPageButton.Radius" TopLeft="0" BottomLeft="0" TopRight="5" BottomRight="0"/>
-    
-    
+
+
     <Style TargetType="Button">
-        <Setter Property="Background" Value="#00707070"/>
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonColor}"/>
         <Setter Property="BorderThickness" Value="0"/>
         
         <Setter Property="Template">
@@ -27,16 +27,16 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#BFBFBF"/>
+                <Setter Property="Background" Value="{StaticResource MainHoveredControlButtonColor}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#828282"/>
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonColor}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="Button" x:Key="CloseButton">
-        <Setter Property="Background" Value="#00707070"/>
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonColor}"/>
 
         <Setter Property="Template">
             <Setter.Value>
@@ -50,16 +50,16 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#F83030"/>
+                <Setter Property="Background" Value="{StaticResource MainHoveredCloseAppButtonColor}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#828282"/>
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonColor}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="Button" x:Key="CloseOpenedPageButton">
-        <Setter Property="Background" Value="#00707070"/>
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonColor}"/>
 
         <Setter Property="Template">
             <Setter.Value>
@@ -73,16 +73,46 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#3E577E"/>
+                <Setter Property="Background" Value="{StaticResource MainHoveredClosePageButtonColor}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#828282"/>
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonColor}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="Rectangle">
-        <Setter Property="Fill" Value="#CDCDCD"/>
+        <Setter Property="Fill" Value="{StaticResource MainTopHeaderColor}"/>
     </Style>
     
+    
+    <!-- Testing Ground -->
+    <Style TargetType="Button" x:Key="ButtonInterp">
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonColor}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="{StaticResource CloseOpenedPageButton.Radius}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Button.MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation
+                                        Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="Yellow"
+                                        Duration="0:0:0.3"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+           
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

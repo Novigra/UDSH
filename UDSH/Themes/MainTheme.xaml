@@ -1,0 +1,32 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Header/Footer -->
+    <SolidColorBrush x:Key="MainTopHeaderColor">#CDCDCD</SolidColorBrush>
+    <SolidColorBrush x:Key="MainAppColor">#ADADAD</SolidColorBrush>
+    <SolidColorBrush x:Key="MainProjectHeaderColor">#EEEEEE</SolidColorBrush>
+    <SolidColorBrush x:Key="MainProjectConnectionColor">#D9D9D9</SolidColorBrush>
+    
+    <!-- Button -->
+    <SolidColorBrush x:Key="MainSelectedButtonColor">#393E46</SolidColorBrush> <!--Important Note: It is mostly used as a selected listview item, but it may get used for buttons if required-->
+    <SolidColorBrush x:Key="MainUnselectedButtonColor">#00707070</SolidColorBrush>
+    <SolidColorBrush x:Key="MainPressedButtonColor">#828282</SolidColorBrush>
+    <SolidColorBrush x:Key="MainHoveredPageButtonColor">#677283</SolidColorBrush>
+    <SolidColorBrush x:Key="MainHoveredControlButtonColor">#BFBFBF</SolidColorBrush>
+    <SolidColorBrush x:Key="MainHoveredCloseAppButtonColor">#F83030</SolidColorBrush>
+    <SolidColorBrush x:Key="MainHoveredClosePageButtonColor">#3E577E</SolidColorBrush>
+    
+    <!-- CSF/MK -->
+    <SolidColorBrush x:Key="MainBackgroundColor">#C6C6C6</SolidColorBrush>
+    <SolidColorBrush x:Key="MainPaperColor">#F7F7F7</SolidColorBrush>
+    
+    <!-- BN -->
+    <SolidColorBrush x:Key="MainAttachedNodeColor">#E0911A</SolidColorBrush>
+    <SolidColorBrush x:Key="MainInputNodeColor">#C41CFF</SolidColorBrush>
+    
+    <!-- Text -->
+    <Color x:Key="MainStandardTextColor">#000000</Color>
+    <Color x:Key="MainToggleTextColor">#393E46</Color>
+    <Color x:Key="MainActionTextColor">#757575</Color>
+    
+</ResourceDictionary>
