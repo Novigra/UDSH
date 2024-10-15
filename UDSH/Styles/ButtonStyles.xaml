@@ -12,7 +12,7 @@
 
 
     <Style TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonColor}"/>
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
         <Setter Property="BorderThickness" Value="0"/>
         
         <Setter Property="Template">
@@ -27,16 +27,36 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource MainHoveredControlButtonColor}"/>
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainHoveredControlButtonColor}"
+                                            Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainUnselectedButtonColor}"
+                                            Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
             </Trigger>
+            
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource MainPressedButtonColor}"/>
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonSCB}"/>
             </Trigger>
         </Style.Triggers>
+        
     </Style>
 
     <Style TargetType="Button" x:Key="CloseButton">
-        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonColor}"/>
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
 
         <Setter Property="Template">
             <Setter.Value>
@@ -50,16 +70,35 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource MainHoveredCloseAppButtonColor}"/>
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainHoveredCloseAppButtonColor}"
+                                            Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainUnselectedButtonColor}"
+                                            Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
             </Trigger>
+
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource MainPressedButtonColor}"/>
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonSCB}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="Button" x:Key="CloseOpenedPageButton">
-        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonColor}"/>
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
 
         <Setter Property="Template">
             <Setter.Value>
@@ -73,22 +112,41 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource MainHoveredClosePageButtonColor}"/>
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainHoveredClosePageButtonColor}"
+                                            Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainUnselectedButtonColor}"
+                                            Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
             </Trigger>
+
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{StaticResource MainPressedButtonColor}"/>
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonSCB}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="Rectangle">
-        <Setter Property="Fill" Value="{StaticResource MainTopHeaderColor}"/>
+        <Setter Property="Fill" Value="{StaticResource MainTopHeaderSCB}"/>
     </Style>
     
     
     <!-- Testing Ground -->
     <Style TargetType="Button" x:Key="ButtonInterp">
-        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonColor}"/>
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
 
         <Setter Property="Template">
             <Setter.Value>
@@ -107,12 +165,28 @@
                         <ColorAnimation
                                         Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
                                         To="Yellow"
-                                        Duration="0:0:0.3"/>
+                                        Duration="0:0:0.1"/>
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
-           
+
+            <EventTrigger RoutedEvent="Button.MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation
+                            Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                            To="{StaticResource MainUnselectedButtonColor}"
+                            Duration="0:0:0.1"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+
         </Style.Triggers>
+    </Style>
+
+    <!-- Temp -->
+    <Style TargetType="RichTextBox">
+        <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/CourierPrime/#Courier Prime"/>
     </Style>
 
 </ResourceDictionary>

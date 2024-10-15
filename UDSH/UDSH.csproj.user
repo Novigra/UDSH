@@ -7,6 +7,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\CSFUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\FooterUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -31,6 +34,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Themes\MainTheme.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\CSFUserControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\FooterUserControl.xaml">

@@ -2,9 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <CornerRadius x:Key="SelectedFile.Radius" TopLeft="5" BottomLeft="0" TopRight="5" BottomRight="0"/>
+    <CornerRadius x:Key="SideContentHighlight.Radius" TopLeft="0" BottomLeft="0" TopRight="4000" BottomRight="4000"/>
 
     <Style TargetType="ListView" x:Key="OpenedPagesLayout">
-        <Setter Property="Background" Value="#EEEEEE"/>
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
@@ -18,15 +19,27 @@
             </Setter.Value>
         </Setter>
 
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListView">
+                    <Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
     </Style>
 
     <Style TargetType="ListViewItem" x:Key="OpenedPages">
-        <Setter Property="Background" Value="#EEEEEE"/>
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListViewItem">
-                    <Border Height="38" Background="{TemplateBinding Background}" CornerRadius="{StaticResource SelectedFile.Radius}">
+                    <Border Height="40" BorderThickness="0" Padding="0" Background="{TemplateBinding Background}" CornerRadius="{StaticResource SelectedFile.Radius}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="/Resource/NewFile.png" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
                             <TextBlock Text="HelloWorld.csf" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,5,5,5"/>
@@ -42,17 +55,67 @@
 
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="#393E46"/>
-                <Setter Property="Foreground" Value="#F7F7F7"/>
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainSelectedButtonColor}"
+                                            Duration="0:0:0.1"/>
+
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainSelectedItemTextColor}"
+                                            Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainUnselectedButtonColor}"
+                                            Duration="0:0:0.1"/>
+
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainStandardTextColor}"
+                                            Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
             </Trigger>
 
+            <!--
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsSelected" Value="False"/>
                     <Condition Property="IsMouseOver" Value="True"/>
                 </MultiTrigger.Conditions>
+
+                <MultiTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainHoveredPageButtonColor}"
+                                            Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiTrigger.EnterActions>
+
+                <MultiTrigger.ExitActions>
+                    <BeginStoryboard x:Name="TestStop">
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainUnselectedButtonColor}"
+                                            Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiTrigger.ExitActions>
+
+                
                 <Setter Property="Background" Value="#677283"/>
+                
             </MultiTrigger>
+            -->
         </Style.Triggers>
     </Style>
     

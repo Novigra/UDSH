@@ -9,19 +9,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Fonts\CourierPrime\CourierPrime-Bold.ttf" />
+    <None Remove="Fonts\CourierPrime\CourierPrime-BoldItalic.ttf" />
+    <None Remove="Fonts\CourierPrime\CourierPrime-Italic.ttf" />
+    <None Remove="Fonts\CourierPrime\CourierPrime-Regular.ttf" />
     <None Remove="Resource\Close.png" />
+    <None Remove="Resource\CurrentFiles.png" />
     <None Remove="Resource\Log.png" />
     <None Remove="Resource\Logo.png" />
     <None Remove="Resource\Max.png" />
     <None Remove="Resource\Minimize.png" />
     <None Remove="Resource\NewFile.png" />
     <None Remove="Resource\Normal.png" />
+    <None Remove="Resource\OpenedFilesDropdown.png" />
     <None Remove="Resource\PenTool.png" />
     <None Remove="Resource\ProfilePicture.png" />
     <None Remove="Resource\Settings.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Fonts\CourierPrime\CourierPrime-Bold.ttf" />
+    <Resource Include="Fonts\CourierPrime\CourierPrime-BoldItalic.ttf" />
+    <Resource Include="Fonts\CourierPrime\CourierPrime-Italic.ttf" />
+    <Resource Include="Fonts\CourierPrime\CourierPrime-Regular.ttf" />
+    <Resource Include="Resource\CurrentFiles.png" />
     <Resource Include="Resource\Log.png" />
     <Resource Include="Resource\NewFile.png" />
     <Resource Include="Resource\Normal.png" />
@@ -34,6 +45,7 @@
     </Resource>
     <Resource Include="Resource\Max.png" />
     <Resource Include="Resource\Minimize.png" />
+    <Resource Include="Resource\OpenedFilesDropdown.png" />
     <Resource Include="Resource\PenTool.png" />
     <Resource Include="Resource\ProfilePicture.png" />
     <Resource Include="Resource\Settings.png" />

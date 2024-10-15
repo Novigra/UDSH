@@ -30,3 +30,5 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\TextBlockStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\ImageStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\ListViewStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Themes\MainTheme.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\CSFUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\CSFUserControl.baml

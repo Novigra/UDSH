@@ -2,31 +2,45 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
     <!-- Header/Footer -->
-    <SolidColorBrush x:Key="MainTopHeaderColor">#CDCDCD</SolidColorBrush>
-    <SolidColorBrush x:Key="MainAppColor">#ADADAD</SolidColorBrush>
-    <SolidColorBrush x:Key="MainProjectHeaderColor">#EEEEEE</SolidColorBrush>
-    <SolidColorBrush x:Key="MainProjectConnectionColor">#D9D9D9</SolidColorBrush>
+    <SolidColorBrush x:Key="MainTopHeaderSCB">#CDCDCD</SolidColorBrush>
+    <SolidColorBrush x:Key="MainAppSCB">#ADADAD</SolidColorBrush>
+    <SolidColorBrush x:Key="MainProjectHeaderSCB">#EEEEEE</SolidColorBrush>
+    <SolidColorBrush x:Key="MainProjectConnectionSCB">#D9D9D9</SolidColorBrush>
+    
+    <!-- Side Content Highlight -->
+    <SolidColorBrush x:Key="SideContentHighlight">#80E3EA</SolidColorBrush>
+    <SolidColorBrush x:Key="SideContentBar">#3F9BA1</SolidColorBrush>
     
     <!-- Button -->
-    <SolidColorBrush x:Key="MainSelectedButtonColor">#393E46</SolidColorBrush> <!--Important Note: It is mostly used as a selected listview item, but it may get used for buttons if required-->
-    <SolidColorBrush x:Key="MainUnselectedButtonColor">#00707070</SolidColorBrush>
-    <SolidColorBrush x:Key="MainPressedButtonColor">#828282</SolidColorBrush>
-    <SolidColorBrush x:Key="MainHoveredPageButtonColor">#677283</SolidColorBrush>
-    <SolidColorBrush x:Key="MainHoveredControlButtonColor">#BFBFBF</SolidColorBrush>
-    <SolidColorBrush x:Key="MainHoveredCloseAppButtonColor">#F83030</SolidColorBrush>
-    <SolidColorBrush x:Key="MainHoveredClosePageButtonColor">#3E577E</SolidColorBrush>
-    
+    <SolidColorBrush x:Key="MainSelectedButtonSCB">#393E46</SolidColorBrush> <!--Important Note: It is mostly used as a selected listview item, but it may get used for buttons if required-->
+    <SolidColorBrush x:Key="MainUnselectedButtonSCB">#00707070</SolidColorBrush>
+    <SolidColorBrush x:Key="MainPressedButtonSCB">#828282</SolidColorBrush>
+    <SolidColorBrush x:Key="MainHoveredPageButtonSCB">#677283</SolidColorBrush>
+    <SolidColorBrush x:Key="MainHoveredControlButtonSCB">#BFBFBF</SolidColorBrush>
+    <SolidColorBrush x:Key="MainHoveredCloseAppButtonSCB">#F83030</SolidColorBrush>
+    <SolidColorBrush x:Key="MainHoveredClosePageButtonSCB">#3E577E</SolidColorBrush>
+
+    <Color x:Key="MainSelectedButtonColor">#393E46</Color>
+    <Color x:Key="MainUnselectedButtonColor">#00707070</Color>
+    <Color x:Key="MainPressedButtonColor">#828282</Color>
+    <Color x:Key="MainHoveredPageButtonColor">#677283</Color>
+    <Color x:Key="MainHoveredControlButtonColor">#BFBFBF</Color>
+    <Color x:Key="MainHoveredCloseAppButtonColor">#F83030</Color>
+    <Color x:Key="MainHoveredClosePageButtonColor">#3E577E</Color>
+
     <!-- CSF/MK -->
-    <SolidColorBrush x:Key="MainBackgroundColor">#C6C6C6</SolidColorBrush>
-    <SolidColorBrush x:Key="MainPaperColor">#F7F7F7</SolidColorBrush>
+    <SolidColorBrush x:Key="MainBackgroundCSFSCB">#C6C6C6</SolidColorBrush>
+    <SolidColorBrush x:Key="MainTopHeaderCSFSCB">#393E46</SolidColorBrush>
+    <SolidColorBrush x:Key="MainPaperCSFSCB">#F7F7F7</SolidColorBrush>
     
     <!-- BN -->
-    <SolidColorBrush x:Key="MainAttachedNodeColor">#E0911A</SolidColorBrush>
-    <SolidColorBrush x:Key="MainInputNodeColor">#C41CFF</SolidColorBrush>
+    <SolidColorBrush x:Key="MainAttachedNodeSCB">#E0911A</SolidColorBrush>
+    <SolidColorBrush x:Key="MainInputNodeSCB">#C41CFF</SolidColorBrush>
     
     <!-- Text -->
     <Color x:Key="MainStandardTextColor">#000000</Color>
     <Color x:Key="MainToggleTextColor">#393E46</Color>
     <Color x:Key="MainActionTextColor">#757575</Color>
+    <Color x:Key="MainSelectedItemTextColor">#F7F7F7</Color>
     
 </ResourceDictionary>
