@@ -43,4 +43,7 @@
     <Color x:Key="MainActionTextColor">#757575</Color>
     <Color x:Key="MainSelectedItemTextColor">#F7F7F7</Color>
     
+    <!-- Background -->
+    <SolidColorBrush x:Key="MainBlankSCB">#00707070</SolidColorBrush>
+    
 </ResourceDictionary>

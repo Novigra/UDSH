@@ -184,9 +184,4 @@
         </Style.Triggers>
     </Style>
 
-    <!-- Temp -->
-    <Style TargetType="RichTextBox">
-        <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/CourierPrime/#Courier Prime"/>
-    </Style>
-
 </ResourceDictionary>
