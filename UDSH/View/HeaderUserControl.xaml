@@ -110,11 +110,11 @@
 
                 <!-- Quick Action - One -->
                 <Button Grid.Column="1" Name="QuickAction1" Margin="5"/>
-                <Image Grid.Column="1" Source="/Resource/NewFile.png" Margin="7"/>
+                <Image Grid.Column="1" Source="/Resource/SaveFile.png" Margin="7"/>
 
                 <!-- Quick Action - Two -->
                 <Button Grid.Column="2" Name="QuickAction2" Margin="5"/>
-                <Image Grid.Column="2" Source="/Resource/NewFile.png" Margin="7"/>
+                <Image Grid.Column="2" Source="/Resource/DeleteFile.png" Margin="7"/>
 
                 <!-- Quick Action - Three -->
                 <Button Grid.Column="3" Name="QuickAction3" Margin="5"/>

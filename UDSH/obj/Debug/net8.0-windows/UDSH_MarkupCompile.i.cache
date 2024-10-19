@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 D:\Projects\UDSH\UDSH\App.xaml
-10-1575402689
+12-238836576
 
 9-483362894
 198-556154604
-MainWindow.xaml;Styles\ButtonStyles.xaml;Styles\ImageStyles.xaml;Styles\ListViewStyles.xaml;Styles\TextBlockStyles.xaml;Styles\TextStyles.xaml;Themes\MainTheme.xaml;View\CSFUserControl.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;
+MainWindow.xaml;Styles\ButtonStyles.xaml;Styles\ComboBoxStyles.xaml;Styles\ImageStyles.xaml;Styles\ListViewStyles.xaml;Styles\RectangleStyles.xaml;Styles\TextBlockStyles.xaml;Styles\TextStyles.xaml;Themes\MainTheme.xaml;View\CSFUserControl.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;
 
 True
 

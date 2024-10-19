@@ -38,11 +38,16 @@
     <SolidColorBrush x:Key="MainInputNodeSCB">#C41CFF</SolidColorBrush>
     
     <!-- Text -->
+    <SolidColorBrush x:Key="MainStandardTextSCB">#000000</SolidColorBrush>
+    <SolidColorBrush x:Key="MainToggleTextSCB">#393E46</SolidColorBrush>
+    <SolidColorBrush x:Key="MainActionTextSCB">#757575</SolidColorBrush>
+    <SolidColorBrush x:Key="MainSelectedItemTextSCB">#F7F7F7</SolidColorBrush>
+
     <Color x:Key="MainStandardTextColor">#000000</Color>
     <Color x:Key="MainToggleTextColor">#393E46</Color>
     <Color x:Key="MainActionTextColor">#757575</Color>
     <Color x:Key="MainSelectedItemTextColor">#F7F7F7</Color>
-    
+
     <!-- Background -->
     <SolidColorBrush x:Key="MainBlankSCB">#00707070</SolidColorBrush>
     

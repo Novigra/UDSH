@@ -139,11 +139,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="Rectangle">
-        <Setter Property="Fill" Value="{StaticResource MainTopHeaderSCB}"/>
-    </Style>
-    
-    
+
     <!-- Testing Ground -->
     <Style TargetType="Button" x:Key="ButtonInterp">
         <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
