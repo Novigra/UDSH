@@ -26,9 +26,12 @@
     <None Remove="Resource\Normal.png" />
     <None Remove="Resource\OpenedFilesDropdown.png" />
     <None Remove="Resource\PenTool.png" />
+    <None Remove="Resource\Pin.png" />
     <None Remove="Resource\ProfilePicture.png" />
     <None Remove="Resource\SaveFile.png" />
+    <None Remove="Resource\Search.png" />
     <None Remove="Resource\Settings.png" />
+    <None Remove="Resource\SideContent.png" />
     <None Remove="Resource\White\AddBN-White.png" />
     <None Remove="Resource\White\AddNote-White.png" />
     <None Remove="Resource\White\DeleteFile-White.png" />
@@ -46,6 +49,9 @@
     <Resource Include="Fonts\CourierPrime\CourierPrime-BoldItalic.ttf" />
     <Resource Include="Fonts\CourierPrime\CourierPrime-Italic.ttf" />
     <Resource Include="Fonts\CourierPrime\CourierPrime-Regular.ttf" />
+    <Resource Include="Resource\Pin.png" />
+    <Resource Include="Resource\Search.png" />
+    <Resource Include="Resource\SideContent.png" />
     <Resource Include="Resource\White\AddBN-White.png" />
     <Resource Include="Resource\White\AddNote-White.png" />
     <Resource Include="Resource\White\Bold.png" />
