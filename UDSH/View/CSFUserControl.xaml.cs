@@ -28,6 +28,8 @@ namespace UDSH.View
         public CSFUserControl()
         {
             InitializeComponent();
+            TestList.Items.Add(new ListItem());
+
         }
 
         private void Rectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -159,5 +159,55 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
+    <!--################ CSF - Data Templates ################-->
+    <DataTemplate x:Key="SceneHeadingTemplate"> <!-- TODO: Add data type-->
+        <Grid Width="576">
+            <RichTextBox Style="{StaticResource ScriptText}" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16" Margin="144,96,96,0" 
+                         FontWeight="Bold" Background="{StaticResource MainUnselectedButtonSCB}"/>
+            <TextBox Style="{StaticResource HighlightScriptText}" Panel.ZIndex="1" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="19" Margin="144,96,96,0" 
+                     Text="Scene Heading" Foreground="Gray" BorderThickness="0" FontStyle="Italic"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ActionTemplate">
+        <Grid Margin="144, 12, 96, 0" HorizontalAlignment="Stretch" Width="576">
+            <RichTextBox Style="{StaticResource ScriptText}" Panel.ZIndex="2" FontSize="16"
+                         Background="{StaticResource MainUnselectedButtonSCB}" HorizontalAlignment="Stretch"/>
+            <TextBox Style="{StaticResource HighlightScriptText}" Panel.ZIndex="1" FontSize="19"
+                     Text="Action" Foreground="Gray" BorderThickness="0" FontStyle="Italic" HorizontalAlignment="Stretch"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="CharacterTemplate">
+        <StackPanel Orientation="Horizontal" Margin="355, 18, 96, 0">
+            <Grid Width="365">
+                <RichTextBox Style="{StaticResource ScriptText}" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16"
+                             Background="{StaticResource MainUnselectedButtonSCB}"/>
+                <TextBox Style="{StaticResource HighlightScriptText}" Panel.ZIndex="1" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="19"
+                         Text="Character" Foreground="Gray" BorderThickness="0" FontStyle="Italic"/>
+            </Grid>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="DialogueTemplate">
+        <Grid Margin="240, 6, 96, 0" Width="480">
+            <RichTextBox Style="{StaticResource ScriptText}" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16"
+                         Background="{StaticResource MainUnselectedButtonSCB}"/>
+            <TextBox Style="{StaticResource HighlightScriptText}" Panel.ZIndex="1" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="19"
+                     Text="Dialogue" Foreground="Gray" BorderThickness="0" FontStyle="Italic"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="BranchNodeTemplate"> <!-- Cant't edit text -->
+        <Border Background="{StaticResource MainInputNodeSCB}" HorizontalAlignment="Center" BorderThickness="0" CornerRadius="4" Width="365">
+            <Grid HorizontalAlignment="Center" >
+                <RichTextBox Style="{StaticResource ScriptText}" Panel.ZIndex="2" HorizontalAlignment="Center" FontSize="16"
+                             Background="{StaticResource MainUnselectedButtonSCB}"/>
+                <Image HorizontalAlignment="Right"/>
+            </Grid>
+        </Border>
+    </DataTemplate>
     
 </ResourceDictionary>

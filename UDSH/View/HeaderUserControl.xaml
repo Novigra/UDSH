@@ -132,7 +132,7 @@
                 <Rectangle Grid.Column="0" Name="QOSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3"/>
                 
                 <!-- Opened Files -->
-                <ListView Grid.Column="1" Margin="5,0,0,0" HorizontalAlignment="Left" Name="PagesList" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">
+                <ListView Grid.Column="1" Name="PagesList" Margin="5,0,0,0" HorizontalAlignment="Left" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">
                     
                 </ListView>
 

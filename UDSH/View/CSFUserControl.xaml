@@ -101,10 +101,11 @@
                 </Border>
             </Grid>
 
-            
-
             <Grid Grid.Column="1">
-                <RichTextBox Style="{StaticResource ScriptText}" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16" Margin="144,96,96,0" Background="{StaticResource MainUnselectedButtonSCB}"/>
+
+                <ListView Name="TestList" Panel.ZIndex="3" ItemTemplate="{StaticResource SceneHeadingTemplate}"> <!-- Don't forget to change it to "ItemTemplateSelector" -->
+                </ListView>
+                <RichTextBox Style="{StaticResource ScriptText}" Panel.ZIndex="2" VerticalAlignment="Top" FontWeight="Bold" HorizontalAlignment="Left" FontSize="16" Margin="144,96,96,0" Background="{StaticResource MainUnselectedButtonSCB}"/>
                 <TextBox Style="{StaticResource HighlightScriptText}" Panel.ZIndex="1" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="19" Margin="144,96,96,0" Text="Scene Heading" Foreground="Gray" BorderThickness="0" FontStyle="Italic"/>
                 <Rectangle Panel.ZIndex="0" Fill="{StaticResource MainPaperCSFSCB}"/>
             </Grid>
