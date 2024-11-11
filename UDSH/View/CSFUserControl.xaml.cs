@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UDSH.ViewModel;
 
 namespace UDSH.View
 {
@@ -28,7 +20,14 @@ namespace UDSH.View
         public CSFUserControl()
         {
             InitializeComponent();
-            TestList.Items.Add(new ListItem());
+            
+            CSFUserControlViewModel ViewModel = new CSFUserControlViewModel();
+            DataContext = ViewModel;
+            TestGrid.DataContext = ViewModel.CSFData;
+
+            /*TesstList.Items.Add(new ListItem());
+            TesstList.Items.Add(new ListItem());*/
+            //TestList.Items.Add(new ListItem());
 
         }
 
@@ -83,5 +82,24 @@ namespace UDSH.View
 
             rec.BeginAnimation(Rectangle.WidthProperty, WidthAnim);
         }
+
+        private void TestCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int changeTemplate = TestCombo.SelectedIndex;
+        }
+
+        private void TesstList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //TestActive.Text = TesstList.SelectedIndex.ToString();
+        }
+
+        /*private void TestTextChange(object sender, RoutedEventArgs e)
+        {
+            var TB = sender as TextBox;
+            if(TB.Text == "Scene Header")
+            {
+                TB.Text = "";
+            }
+        }*/
     }
 }

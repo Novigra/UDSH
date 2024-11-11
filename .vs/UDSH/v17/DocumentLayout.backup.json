@@ -3,63 +3,100 @@
   "WorkspaceRootPath": "D:\\Projects\\UDSH\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\csfusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\csfusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\controlhelpers\\richtextboxhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\controlhelpers\\richtextboxhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\headerusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\headerusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\viewmodel\\sidecontentusercontrolviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\viewmodel\\sidecontentusercontrolviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\sidecontentusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\sidecontentusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\sidecontentusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\sidecontentusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\mvvm\\relaycommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\mvvm\\relaycommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\defaultusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\defaultusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\activeelementdatatemplateselector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\activeelementdatatemplateselector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\csfusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\csfusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\listviewstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\styles\\listviewstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\csfusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\csfusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\buttonstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\styles\\buttonstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\viewmodel\\csfusercontrolviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\viewmodel\\csfusercontrolviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\comboboxstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\styles\\comboboxstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Lenovo\\AppData\\Local\\Temp\\.vsdbgsrc\\0a84cc53936b314ba955b54f50bf4796d8234943f3fd7b93873381b45d404026\\XamlReader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\themes\\maintheme.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\themes\\maintheme.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\headerusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\headerusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\model\\csfdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\model\\csfdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\rectanglestyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\styles\\rectanglestyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\listviewstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\styles\\listviewstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\textstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\styles\\textstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\headerusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\headerusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\rectanglestyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\styles\\rectanglestyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\mvvm\\viewmodelbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\mvvm\\viewmodelbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\footerusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\footerusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\headerusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\headerusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\textstyles.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\styles\\textstyles.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\textblockstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
@@ -68,6 +105,14 @@
     {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\udsh.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\udsh.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\footerusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\footerusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\buttonstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\styles\\buttonstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\imagestyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
@@ -81,7 +126,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 12,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
@@ -93,18 +138,231 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "XamlReader.cs",
-              "DocumentMoniker": "C:\\Users\\Lenovo\\AppData\\Local\\Temp\\.vsdbgsrc\\0a84cc53936b314ba955b54f50bf4796d8234943f3fd7b93873381b45d404026\\XamlReader.cs",
-              "ToolTip": "C:\\Users\\Lenovo\\AppData\\Local\\Temp\\.vsdbgsrc\\0a84cc53936b314ba955b54f50bf4796d8234943f3fd7b93873381b45d404026\\XamlReader.cs [Read Only]",
-              "ViewState": "AgIAAKYBAAAAAAAAAAAewLUBAAACAAAAAQAAAA==",
+              "DocumentIndex": 3,
+              "Title": "SideContentUserControl.xaml.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\SideContentUserControl.xaml.cs",
+              "RelativeDocumentMoniker": "UDSH\\View\\SideContentUserControl.xaml.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\SideContentUserControl.xaml.cs",
+              "RelativeToolTip": "UDSH\\View\\SideContentUserControl.xaml.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAMwBsAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-22T20:17:11.438Z",
-              "EditorCaption": " [Read Only]"
+              "WhenOpened": "2024-11-10T13:46:45.847Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 4,
+              "Title": "RelayCommand.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\MVVM\\RelayCommand.cs",
+              "RelativeDocumentMoniker": "UDSH\\MVVM\\RelayCommand.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\MVVM\\RelayCommand.cs",
+              "RelativeToolTip": "UDSH\\MVVM\\RelayCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-10T08:51:26.496Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SideContentUserControlViewModel.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\ViewModel\\SideContentUserControlViewModel.cs",
+              "RelativeDocumentMoniker": "UDSH\\ViewModel\\SideContentUserControlViewModel.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\ViewModel\\SideContentUserControlViewModel.cs",
+              "RelativeToolTip": "UDSH\\ViewModel\\SideContentUserControlViewModel.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAowDQAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-10T08:47:15.484Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SideContentUserControl.xaml",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\SideContentUserControl.xaml",
+              "RelativeDocumentMoniker": "UDSH\\View\\SideContentUserControl.xaml",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\SideContentUserControl.xaml",
+              "RelativeToolTip": "UDSH\\View\\SideContentUserControl.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-11-10T06:47:22.665Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DefaultUserControl.xaml",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\DefaultUserControl.xaml",
+              "RelativeDocumentMoniker": "UDSH\\View\\DefaultUserControl.xaml",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\DefaultUserControl.xaml",
+              "RelativeToolTip": "UDSH\\View\\DefaultUserControl.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-11-10T06:18:00.038Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ActiveElementDataTemplateSelector.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\ActiveElementDataTemplateSelector.cs",
+              "RelativeDocumentMoniker": "UDSH\\View\\ActiveElementDataTemplateSelector.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\ActiveElementDataTemplateSelector.cs",
+              "RelativeToolTip": "UDSH\\View\\ActiveElementDataTemplateSelector.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-04T22:03:09.228Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CSFUserControl.xaml.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\CSFUserControl.xaml.cs",
+              "RelativeDocumentMoniker": "UDSH\\View\\CSFUserControl.xaml.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\CSFUserControl.xaml.cs",
+              "RelativeToolTip": "UDSH\\View\\CSFUserControl.xaml.cs",
+              "ViewState": "AgIAADIAAAAAAAAAAAAIwE8AAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-02T04:34:59.564Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RichTextBoxHelper.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\ControlHelpers\\RichTextBoxHelper.cs",
+              "RelativeDocumentMoniker": "UDSH\\ControlHelpers\\RichTextBoxHelper.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\ControlHelpers\\RichTextBoxHelper.cs",
+              "RelativeToolTip": "UDSH\\ControlHelpers\\RichTextBoxHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-02T01:16:11.219Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ViewModelBase.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\MVVM\\ViewModelBase.cs",
+              "RelativeDocumentMoniker": "UDSH\\MVVM\\ViewModelBase.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\MVVM\\ViewModelBase.cs",
+              "RelativeToolTip": "UDSH\\MVVM\\ViewModelBase.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-01T22:47:28.477Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "CSFUserControlViewModel.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\ViewModel\\CSFUserControlViewModel.cs",
+              "RelativeDocumentMoniker": "UDSH\\ViewModel\\CSFUserControlViewModel.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\ViewModel\\CSFUserControlViewModel.cs",
+              "RelativeToolTip": "UDSH\\ViewModel\\CSFUserControlViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-01T22:31:51.099Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "CSFData.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Model\\CSFData.cs",
+              "RelativeDocumentMoniker": "UDSH\\Model\\CSFData.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\Model\\CSFData.cs",
+              "RelativeToolTip": "UDSH\\Model\\CSFData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-01T21:51:06.026Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CSFUserControl.xaml",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\CSFUserControl.xaml",
+              "RelativeDocumentMoniker": "UDSH\\View\\CSFUserControl.xaml",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\CSFUserControl.xaml",
+              "RelativeToolTip": "UDSH\\View\\CSFUserControl.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-10-14T23:04:01.052Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ListViewStyles.xaml",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\ListViewStyles.xaml",
+              "RelativeDocumentMoniker": "UDSH\\Styles\\ListViewStyles.xaml",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\Styles\\ListViewStyles.xaml",
+              "RelativeToolTip": "UDSH\\Styles\\ListViewStyles.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-09-28T06:39:05.946Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "TextStyles.xaml",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\TextStyles.xaml",
+              "RelativeDocumentMoniker": "UDSH\\Styles\\TextStyles.xaml",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\Styles\\TextStyles.xaml",
+              "RelativeToolTip": "UDSH\\Styles\\TextStyles.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-10-17T22:48:49.643Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "TextStyles.xaml.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\TextStyles.xaml.cs",
+              "RelativeDocumentMoniker": "UDSH\\Styles\\TextStyles.xaml.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\Styles\\TextStyles.xaml.cs",
+              "RelativeToolTip": "UDSH\\Styles\\TextStyles.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAIBJwBAAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-26T15:07:53.834Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "UDSH\\AssemblyInfo.cs",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\AssemblyInfo.cs",
+              "RelativeToolTip": "UDSH\\AssemblyInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-26T17:52:25.012Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "UDSH.csproj",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\UDSH.csproj",
+              "RelativeDocumentMoniker": "UDSH\\UDSH.csproj",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\UDSH.csproj",
+              "RelativeToolTip": "UDSH\\UDSH.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-10-15T03:22:17.021Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "App.xaml",
+              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\App.xaml",
+              "RelativeDocumentMoniker": "UDSH\\App.xaml",
+              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\App.xaml",
+              "RelativeToolTip": "UDSH\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-09-15T16:16:40.215Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
               "Title": "RectangleStyles.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\RectangleStyles.xaml",
               "RelativeDocumentMoniker": "UDSH\\Styles\\RectangleStyles.xaml",
@@ -117,42 +375,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 11,
-              "Title": "TextStyles.xaml",
-              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\TextStyles.xaml",
-              "RelativeDocumentMoniker": "UDSH\\Styles\\TextStyles.xaml",
-              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\Styles\\TextStyles.xaml",
-              "RelativeToolTip": "UDSH\\Styles\\TextStyles.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-10-17T22:48:49.643Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "UDSH.csproj",
-              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\UDSH.csproj",
-              "RelativeDocumentMoniker": "UDSH\\UDSH.csproj",
-              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\UDSH.csproj",
-              "RelativeToolTip": "UDSH\\UDSH.csproj",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAADoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-10-15T03:22:17.021Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "App.xaml",
-              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\App.xaml",
-              "RelativeDocumentMoniker": "UDSH\\App.xaml",
-              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\App.xaml",
-              "RelativeToolTip": "UDSH\\App.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-09-15T16:16:40.215Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
               "Title": "MainTheme.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Themes\\MainTheme.xaml",
               "RelativeDocumentMoniker": "UDSH\\Themes\\MainTheme.xaml",
@@ -164,19 +386,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ListViewStyles.xaml",
-              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\ListViewStyles.xaml",
-              "RelativeDocumentMoniker": "UDSH\\Styles\\ListViewStyles.xaml",
-              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\Styles\\ListViewStyles.xaml",
-              "RelativeToolTip": "UDSH\\Styles\\ListViewStyles.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-09-28T06:39:05.946Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 27,
               "Title": "ButtonStyles.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\ButtonStyles.xaml",
               "RelativeDocumentMoniker": "UDSH\\Styles\\ButtonStyles.xaml",
@@ -188,7 +398,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 10,
               "Title": "ComboBoxStyles.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\ComboBoxStyles.xaml",
               "RelativeDocumentMoniker": "UDSH\\Styles\\ComboBoxStyles.xaml",
@@ -200,32 +410,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CSFUserControl.xaml.cs",
-              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\CSFUserControl.xaml.cs",
-              "RelativeDocumentMoniker": "UDSH\\View\\CSFUserControl.xaml.cs",
-              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\CSFUserControl.xaml.cs",
-              "RelativeToolTip": "UDSH\\View\\CSFUserControl.xaml.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAswB4AAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-20T08:35:39.244Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "CSFUserControl.xaml",
-              "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\CSFUserControl.xaml",
-              "RelativeDocumentMoniker": "UDSH\\View\\CSFUserControl.xaml",
-              "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\CSFUserControl.xaml",
-              "RelativeToolTip": "UDSH\\View\\CSFUserControl.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-10-14T23:04:01.052Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 15,
               "Title": "HeaderUserControl.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\HeaderUserControl.xaml",
               "RelativeDocumentMoniker": "UDSH\\View\\HeaderUserControl.xaml",
@@ -237,7 +422,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 20,
               "Title": "HeaderUserControl.xaml.cs",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\HeaderUserControl.xaml.cs",
               "RelativeDocumentMoniker": "UDSH\\View\\HeaderUserControl.xaml.cs",
@@ -245,36 +430,33 @@
               "RelativeToolTip": "UDSH\\View\\HeaderUserControl.xaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-16T15:43:21.182Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-16T15:43:21.182Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 18,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\MainWindow.xaml",
               "RelativeDocumentMoniker": "UDSH\\MainWindow.xaml",
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\MainWindow.xaml",
               "RelativeToolTip": "UDSH\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-09-13T16:49:35.996Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-13T16:49:35.996Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 26,
               "Title": "FooterUserControl.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\FooterUserControl.xaml",
               "RelativeDocumentMoniker": "UDSH\\View\\FooterUserControl.xaml",
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\FooterUserControl.xaml",
               "RelativeToolTip": "UDSH\\View\\FooterUserControl.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-09-17T18:16:09.215Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-17T18:16:09.215Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 28,
               "Title": "ImageStyles.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\ImageStyles.xaml",
               "RelativeDocumentMoniker": "UDSH\\Styles\\ImageStyles.xaml",
@@ -286,7 +468,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 24,
               "Title": "TextBlockStyles.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\TextBlockStyles.xaml",
               "RelativeDocumentMoniker": "UDSH\\Styles\\TextBlockStyles.xaml",
@@ -298,13 +480,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 19,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "UDSH\\MainWindow.xaml.cs",
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\MainWindow.xaml.cs",
               "RelativeToolTip": "UDSH\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAXAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-13T16:44:44.117Z"
             }

@@ -1,12 +1,21 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:Class="UDSH.Styles.TextStyles">
 
     <Style TargetType="RichTextBox" x:Key="ScriptText">
         <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/CourierPrime/#Courier Prime"/>
+        <!-- <EventSetter Event="TextChanged" Handler="RichTextBox_TextChanged"/>
+        -->
     </Style>
 
     <Style TargetType="TextBox" x:Key="HighlightScriptText">
         <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/CourierPrime/#Courier Prime"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Content}" Value="">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

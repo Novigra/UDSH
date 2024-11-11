@@ -21,7 +21,8 @@
         </Grid.RowDefinitions>
         
         <userControls:HeaderUserControl Grid.Row="0" MouseLeftButtonDown="HeaderMovement"/>
-        <userControls:CSFUserControl Grid.Row="1"/>
+        <!-- <userControls:CSFUserControl Grid.Row="1"/> -->
+        <userControls:DefaultUserControl Grid.Row="1"/>
         <userControls:FooterUserControl Grid.Row="2"/>
 
     </Grid>

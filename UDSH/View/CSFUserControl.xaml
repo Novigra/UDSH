@@ -27,9 +27,9 @@
             <Rectangle Fill="#FFFFFF" Margin="2,3,0,3" RadiusX="3" RadiusY="3" Width="3"/>
 
             <!-- Part Two -->
-            <TextBlock Text="Active Element" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="18" Foreground="#FFFFFF"/>
-            <ComboBox Name="TestCombo" Margin="5,7,0,7">
-                <ComboBoxItem Content="Scene Heading" IsSelected="True"/>
+            <TextBlock Name="TestActive" Text="{Binding SelectedData.DataType}" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="18" Foreground="#FFFFFF"/>
+            <ComboBox Name="TestCombo" Margin="5,7,0,7" SelectionChanged="TestCombo_SelectionChanged" SelectedItem="{Binding SelectedData.DataType, UpdateSourceTrigger=PropertyChanged}">
+                <ComboBoxItem Content="Scene Heading"/>
                 <ComboBoxItem Content="Action"/>
                 <ComboBoxItem Content="Character"/>
                 <ComboBoxItem Content="Dialogue"/>
@@ -102,11 +102,58 @@
             </Grid>
 
             <Grid Grid.Column="1">
+                <Grid x:Name="TestGrid" Panel.ZIndex="10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="380">
+                    <ListView Style="{StaticResource CSFContentLayout}" ItemContainerStyle="{StaticResource CSFContent}">
+                        <ListViewItem>
+                            <Grid>
+                                <RichTextBox Style="{StaticResource ScriptText}" Panel.ZIndex="1" FontSize="16" 
+             FontWeight="Bold" Background="{StaticResource MainUnselectedButtonSCB}">
+                                    <RichTextBox.Document>
+                                        <FlowDocument>
+                                            <Paragraph>
+                                                <Run Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}"/>
+                                            </Paragraph>
+                                        </FlowDocument>
+                                    </RichTextBox.Document>
+                                </RichTextBox>
+                                <TextBox Style="{StaticResource HighlightScriptText}" Panel.ZIndex="0"  FontSize="19"
+         Text="Scene Heading" Foreground="Gray" BorderThickness="0" FontStyle="Italic" Background="{StaticResource MainBlankSCB}"/>
+                            </Grid>
+                        </ListViewItem>
+                    </ListView>
+                    
+                </Grid>
 
-                <ListView Name="TestList" Panel.ZIndex="3" ItemTemplate="{StaticResource SceneHeadingTemplate}"> <!-- Don't forget to change it to "ItemTemplateSelector" -->
+                <!-- ItemTemplate="{StaticResource SceneHeadingTemplate}" -->
+                <ListView Name="TesstList" Panel.ZIndex="4" 
+                          Style="{StaticResource CSFContentLayout}" 
+                          ItemContainerStyle="{StaticResource CSFContent}" 
+                          ItemTemplateSelector="{StaticResource AEDataSelector}"
+                          ItemsSource="{Binding CSFData}"
+                          SelectedItem="{Binding SelectedData}"
+                          SelectionChanged="TesstList_SelectionChanged">
+                    <!--
+                    <ListViewItem Padding="0" Margin="144,96,96,0">
+                        <Grid>
+                            <RichTextBox Panel.ZIndex="1" Style="{StaticResource ScriptText}" FontSize="16" Background="{StaticResource MainBlankSCB}"/>
+                            <TextBox Style="{StaticResource HighlightScriptText}" Panel.ZIndex="0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="19"
+                                     Text="Scene Heading" Foreground="Gray" BorderThickness="0" FontStyle="Italic" Background="{StaticResource MainBlankSCB}"/>
+                        </Grid>
+                    </ListViewItem>
+                    <ListViewItem Content="test3"/>
+                    -->
                 </ListView>
+
+                <!--
+                <ListView Name="TestList" Panel.ZIndex="3" ItemTemplate="{StaticResource SceneHeadingTemplate}"> Don't forget to change it to "ItemTemplateSelector"
+                </ListView>
+                -->
+
+                <!--
                 <RichTextBox Style="{StaticResource ScriptText}" Panel.ZIndex="2" VerticalAlignment="Top" FontWeight="Bold" HorizontalAlignment="Left" FontSize="16" Margin="144,96,96,0" Background="{StaticResource MainUnselectedButtonSCB}"/>
                 <TextBox Style="{StaticResource HighlightScriptText}" Panel.ZIndex="1" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="19" Margin="144,96,96,0" Text="Scene Heading" Foreground="Gray" BorderThickness="0" FontStyle="Italic"/>
+                -->
+                
                 <Rectangle Panel.ZIndex="0" Fill="{StaticResource MainPaperCSFSCB}"/>
             </Grid>
 

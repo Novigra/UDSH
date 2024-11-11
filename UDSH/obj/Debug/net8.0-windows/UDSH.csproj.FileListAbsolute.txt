@@ -35,3 +35,11 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\CSFUserControl.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\TextStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\ComboBoxStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\RectangleStyles.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\TextStyles.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\DefaultUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\DefaultUserControl.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\SideContentUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\SideContentUserControl.baml
+D:\Projects\UDSH\UDSH\bin\Debug\net8.0-windows\Microsoft.Xaml.Behaviors.dll
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\UDSH.csproj.AssemblyReference.cache
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\UDSH.csproj.Up2Date

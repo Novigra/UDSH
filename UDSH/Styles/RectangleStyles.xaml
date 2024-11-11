@@ -6,6 +6,7 @@
     
     <Style TargetType="Rectangle">
         <Setter Property="Fill" Value="{StaticResource MainTopHeaderSCB}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     </Style>
 
     <!-- I'm using border insteasd of rectangle for highlight capture. delete this later on if not needed -->

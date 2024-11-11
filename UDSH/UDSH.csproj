@@ -45,6 +45,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Fonts\CourierPrime\CourierPrime-Bold.ttf" />
     <Resource Include="Fonts\CourierPrime\CourierPrime-BoldItalic.ttf" />
     <Resource Include="Fonts\CourierPrime\CourierPrime-Italic.ttf" />
@@ -83,12 +87,6 @@
     <Resource Include="Resource\White\SaveFile-White.png" />
     <Resource Include="Resource\White\Strikethrough.png" />
     <Resource Include="Resource\White\Underline.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MVVM\" />
-    <Folder Include="Model\" />
-    <Folder Include="ViewModel\" />
   </ItemGroup>
 
 </Project>

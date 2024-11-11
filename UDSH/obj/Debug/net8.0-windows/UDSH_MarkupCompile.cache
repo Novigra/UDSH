@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 D:\Projects\UDSH\UDSH\App.xaml
-12-238836576
+141143157883
 
-7-794698113
-198-556154604
-MainWindow.xaml;Styles\ButtonStyles.xaml;Styles\ComboBoxStyles.xaml;Styles\ImageStyles.xaml;Styles\ListViewStyles.xaml;Styles\RectangleStyles.xaml;Styles\TextBlockStyles.xaml;Styles\TextStyles.xaml;Themes\MainTheme.xaml;View\CSFUserControl.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;
+18-2113450155
+199432428195
+MainWindow.xaml;Styles\ButtonStyles.xaml;Styles\ComboBoxStyles.xaml;Styles\ImageStyles.xaml;Styles\ListViewStyles.xaml;Styles\RectangleStyles.xaml;Styles\TextBlockStyles.xaml;Styles\TextStyles.xaml;Themes\MainTheme.xaml;View\CSFUserControl.xaml;View\DefaultUserControl.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;View\SideContentUserControl.xaml;
 
 False
 

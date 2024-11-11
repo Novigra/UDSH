@@ -10,10 +10,16 @@
     <Compile Update="View\CSFUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\DefaultUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\FooterUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\HeaderUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\SideContentUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -52,6 +58,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\HeaderUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\SideContentUserControl.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
