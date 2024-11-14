@@ -27,17 +27,76 @@ namespace UDSH.ViewModel
             set { canExpandSideContent = value; OnPropertyChanged(); }
         }
 
-        private double sideContentWidth = 200;
+        private double sideContentWidth = 202;
         public double SideContentWidth
         {
             get { return sideContentWidth; }
             set { sideContentWidth = value; OnPropertyChanged(); }
         }
 
+        private bool canPinSideContent = false;
+        public bool CanPinSideContent
+        {
+            get { return canExpandSideContent; }
+            set { canExpandSideContent = value; OnPropertyChanged(); }
+        }
+
         private double BorderWidth;
 
         private Border? TargetControl;
         private Grid? TargetGrid;
+
+        /*
+         * Search Box
+        */
+        private bool canSearchBoxTextBeFocusable;
+        public bool CanSearchBoxTextBeFocusable
+        {
+            get { return canSearchBoxTextBeFocusable; }
+            set { canSearchBoxTextBeFocusable = value; OnPropertyChanged(); }
+        }
+
+        private bool searchGotFocused = false;
+        public bool SearchGotFocused
+        {
+            get { return searchGotFocused; }
+            set { searchGotFocused = value; OnPropertyChanged(); }
+        }
+
+        private bool resetSearchBox = false;
+        public bool ResetSearchBox
+        {
+            get { return resetSearchBox; }
+            set { resetSearchBox = value; OnPropertyChanged(); }
+        }
+
+        private float searchIconOpacity;
+        public float SearchIconOpacity
+        {
+            get { return searchIconOpacity; }
+            set { searchIconOpacity = value; OnPropertyChanged(); }
+        }
+
+        private string highlightText = "Search...";
+        public string HighlightText
+        {
+            get { return highlightText; }
+            set { highlightText = value; OnPropertyChanged(); }
+        }
+
+        private string searchText = "";
+        public string SearchText
+        {
+            get { return searchText; }
+            set { searchText = value; OnPropertyChanged(); }
+        }
+
+        private float textBoxWidth = 175;
+        public float TextBoxWidth
+        {
+            get { return textBoxWidth; }
+            set { textBoxWidth = value; OnPropertyChanged(); }
+        }
         #endregion
 
         #region Commands
@@ -47,7 +106,13 @@ namespace UDSH.ViewModel
         public RelayCommand<MouseButtonEventArgs> BorderMouseButtonDown => new RelayCommand<MouseButtonEventArgs>(BorderMouseRecord, canExecute=>CanRecordMouse);
         public RelayCommand<Border> BorderMouseButtonUp => new RelayCommand<Border>(BorderMouseStopRecord);
         public RelayCommand<MouseEventArgs> BorderMouseMove => new RelayCommand<MouseEventArgs>(BorderWidthChange, canExecute => CanRecordMouse);
-        public RelayCommand<Grid> SideContentMouseLeave => new RelayCommand<Grid>(SideContentCollapse, canExecute => { return true; }); // Don't forget to change bool, for pin action!!!
+        public RelayCommand<Grid> SideContentMouseLeave => new RelayCommand<Grid>(SideContentCollapse, canExecute => CanPinSideContent);
+
+        public RelayCommand<Object> SearchBoxFocus => new RelayCommand<Object>(execute => OnSearchBoxGotFocus());
+        public RelayCommand<TextBox> SearchBoxTextChange => new RelayCommand<TextBox>(OnSearchBoxTextChanged);
+        public RelayCommand<TextBox> SearchBoxLeftMouseButtonDown => new RelayCommand<TextBox>(SetSearchBoxTextFocus);
+        public RelayCommand<Grid> SideContentBackgroundLeftMouseButtonDown => new RelayCommand<Grid>(LoseSearchBoxFocus);
+        public RelayCommand<Button> PinSideContent => new RelayCommand<Button>(PinSidebar);
         #endregion
 
         // TODO: Pin button command, and textbox width modification.
@@ -63,8 +128,8 @@ namespace UDSH.ViewModel
 
 
         /// <summary>
-        /// Record Mouse when entering the border of the sidebar, and two things may happen:
-        /// 1- if user holds left ctrl button, the user can modify the width of the sidebar.
+        /// Record Mouse when entering the border of the sidebar, and two things may happen:<br/><br/>
+        /// 1- if user holds left ctrl button, the user can modify the width of the sidebar.<br/>
         /// 2- if no key has been recorded, then open the sidebar.
         /// </summary>
         /// <param name="border"></param>
@@ -75,7 +140,7 @@ namespace UDSH.ViewModel
                 Debug.WriteLine($"CurrentAnimNumber = {CurrentAnimationNumber}");
                 EnableModification(border);
             }
-            else
+            else // Maybe add options whether the user wants to use Alt or not.
             {
                 Debug.WriteLine($"OPEN SIDE CONTENT");
                 Debug.WriteLine($"SideContentWidth = {SideContentWidth}");
@@ -130,8 +195,9 @@ namespace UDSH.ViewModel
         }
 
         /// <summary>
-        /// Record mouse movement and calculate the difference between the initial hit position 
-        /// and the new hit position, which will decide whether the mouse moves left or right on the X axis, and assign the new width.
+        /// Record mouse movement and calculate the difference between the initial hit position <br/>
+        /// and the new hit position, which will decide whether the mouse moves left or right on <br/>
+        /// the X axis, and assign the new width.
         /// </summary>
         /// <param name="e"></param>
         private void BorderWidthChange(MouseEventArgs e)
@@ -146,7 +212,8 @@ namespace UDSH.ViewModel
                 if (BorderWidth > 65)
                 {
                     TargetControl.Width = BorderWidth;
-                    SideContentWidth = TargetControl.Width;
+                    SideContentWidth = TargetControl.Width + 2;
+                    TextBoxWidth = (float)TargetControl.Width - 26;
                     Debug.WriteLine($"Side Content Width = {SideContentWidth}");
                 }
             }
@@ -222,8 +289,60 @@ namespace UDSH.ViewModel
             Storyboard.SetTarget(WidthAnimation, grid);
             Storyboard.SetTargetProperty(WidthAnimation, new PropertyPath(Grid.WidthProperty));
             Storyboard.Children.Add(WidthAnimation);
-            Storyboard.Completed += (sender, args) => { CanExpandSideContent = false; };
+            Storyboard.Completed += (sender, args) => { CanExpandSideContent = false; CanSearchBoxTextBeFocusable = false; };
             Storyboard.Begin();
+        }
+
+        // May remove it.
+        private void OnSearchBoxGotFocus()
+        {
+            SearchGotFocused = true;
+        }
+
+        /// <summary>
+        /// Update Search Text when typing.
+        /// </summary>
+        /// <param name="textBox"></param>
+        private void OnSearchBoxTextChanged(TextBox textBox)
+        {
+            if(textBox != null)
+            {
+                SearchText = textBox.Text;
+            }
+        }
+
+        /// <summary>
+        /// Set Focus when pressing on the search bar.
+        /// </summary>
+        /// <param name="textBox"></param>
+        private void SetSearchBoxTextFocus(TextBox textBox)
+        {
+            if (textBox != null)
+            {
+                CanSearchBoxTextBeFocusable = true;
+                ResetSearchBox = false;
+                textBox.Focus();
+            }
+        }
+
+        /// <summary>
+        /// Lose Search Text Box focus when pressing on the background of the sidebar.
+        /// </summary>
+        /// <param name="grid"></param>
+        private void LoseSearchBoxFocus(Grid grid)
+        {
+            SearchGotFocused = false;
+            CanSearchBoxTextBeFocusable = false;
+            ResetSearchBox = true;
+        }
+
+        /// <summary>
+        /// Pin the sidebar, so when the user leave it, the sidebar won't collapse.
+        /// </summary>
+        /// <param name="btn"></param>
+        private void PinSidebar(Button btn)
+        {
+            CanPinSideContent = !CanPinSideContent;
         }
     }
 }

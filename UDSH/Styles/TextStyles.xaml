@@ -10,6 +10,7 @@
 
     <Style TargetType="TextBox" x:Key="HighlightScriptText">
         <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/CourierPrime/#Courier Prime"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Visibility" Value="Collapsed"/>
         <Style.Triggers>
             <DataTrigger Binding="{Binding Content}" Value="">

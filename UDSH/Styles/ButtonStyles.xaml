@@ -139,6 +139,28 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="ToggleButton" x:Key="HoldButton">
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="{StaticResource Button.Radius}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonSCB}"/>
+            </Trigger>
+        </Style.Triggers>
+
+    </Style>
+
 
     <!-- Testing Ground -->
     <Style TargetType="Button" x:Key="ButtonInterp">

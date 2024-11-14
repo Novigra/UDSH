@@ -13,6 +13,7 @@
     <None Remove="Fonts\CourierPrime\CourierPrime-BoldItalic.ttf" />
     <None Remove="Fonts\CourierPrime\CourierPrime-Italic.ttf" />
     <None Remove="Fonts\CourierPrime\CourierPrime-Regular.ttf" />
+    <None Remove="Resource\Bird.png" />
     <None Remove="Resource\Bold.png" />
     <None Remove="Resource\Close.png" />
     <None Remove="Resource\CurrentFiles.png" />
@@ -53,6 +54,7 @@
     <Resource Include="Fonts\CourierPrime\CourierPrime-BoldItalic.ttf" />
     <Resource Include="Fonts\CourierPrime\CourierPrime-Italic.ttf" />
     <Resource Include="Fonts\CourierPrime\CourierPrime-Regular.ttf" />
+    <Resource Include="Resource\Bird.png" />
     <Resource Include="Resource\Pin.png" />
     <Resource Include="Resource\Search.png" />
     <Resource Include="Resource\SideContent.png" />

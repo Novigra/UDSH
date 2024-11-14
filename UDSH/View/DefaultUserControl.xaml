@@ -12,6 +12,8 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <Image Grid.ColumnSpan="2" Panel.ZIndex="1" Source="/Resource/Bird.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200" Focusable="False"/>
+
         <Rectangle Grid.ColumnSpan="2" Fill="{StaticResource MainBackgroundCSFSCB}"/>
 
         <Grid Grid.Column="0">
