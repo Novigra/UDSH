@@ -88,7 +88,132 @@
 
             <!-- PenTool -->
             <Grid Grid.Column="0">
-                <Button Name="PenTool" Panel.ZIndex="0" Margin="5"/>
+                <ToggleButton Name="PenTool" Panel.ZIndex="0" Margin="5">
+                    <StackPanel Orientation="Vertical"> <!-- remove it, if we know mouse location? -->
+                        <Popup IsOpen="True" AllowsTransparency="True">
+                            <Border BorderThickness="0" Background="{StaticResource SideContentSCB}" Width="300" CornerRadius="10">
+                                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                    <!-- Project Content -->
+                                    <StackPanel Orientation="Horizontal" Margin="5,5,0,0">
+                                        <!-- Don't forget to bind the textblock to the project name -->
+                                        <TextBlock Text="Monster" FontSize="12" FontWeight="Medium"/>
+                                        <Rectangle Fill="{StaticResource SideContentTitleBarSCB}" Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="240" Height="3" RenderTransformOrigin="0.5,0.5">
+                                            <Rectangle.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform/>
+                                                    <TranslateTransform Y="1.5"/>
+                                                </TransformGroup>
+                                            </Rectangle.RenderTransform>
+                                        </Rectangle>
+                                    </StackPanel>
+
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/NewFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="New File" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="2"/>
+                                    </Grid>
+
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="MyHouseWad.mkc" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="3"/>
+                                    </Grid>
+
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveAllFiles.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save All" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="2"/>
+                                    </Grid>
+
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/DeleteFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Delete" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="MyHouseWad.mkc" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="3"/>
+                                    </Grid>
+
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/Localization.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Localization" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="2"/>
+                                    </Grid>
+
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Content" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="2"/>
+                                    </Grid>
+                                    
+                                    <!-- UDSH Content -->
+                                    <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                                        <TextBlock Text="UDSH" FontSize="12" FontWeight="Medium"/>
+                                        <Rectangle Fill="{StaticResource SideContentTitleBarSCB}" Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="250" Height="3" RenderTransformOrigin="0.5,0.5">
+                                            <Rectangle.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform/>
+                                                    <TranslateTransform Y="1.5"/>
+                                                </TransformGroup>
+                                            </Rectangle.RenderTransform>
+                                        </Rectangle>
+                                    </StackPanel>
+
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderNewContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="New Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="2"/>
+                                    </Grid>
+
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderSwitchContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="New Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="2"/>
+                                    </Grid>
+                                </StackPanel>
+                                
+                                <!--<TextBlock Text="Testing my popup!!!"/>-->
+                            </Border>
+                        </Popup>
+                    </StackPanel>
+                </ToggleButton>
                 <Image Source="/Resource/PenTool.png" Margin="7"/>
             </Grid>
 

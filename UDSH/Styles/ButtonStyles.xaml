@@ -139,6 +139,51 @@
         </Style.Triggers>
     </Style>
 
+    <!-- Toggle Buttons -->
+    <Style TargetType="ToggleButton" x:Key="HeaderToggleButtons">
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="{StaticResource Button.Radius}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainHoveredControlButtonColor}"
+                                        Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainUnselectedButtonColor}"
+                                        Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonSCB}"/>
+            </Trigger>
+        </Style.Triggers>
+
+    </Style>
+
     <Style TargetType="ToggleButton" x:Key="HoldButton">
         <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
         <Setter Property="BorderThickness" Value="0"/>

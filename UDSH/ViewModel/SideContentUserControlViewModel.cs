@@ -140,7 +140,7 @@ namespace UDSH.ViewModel
                 Debug.WriteLine($"CurrentAnimNumber = {CurrentAnimationNumber}");
                 EnableModification(border);
             }
-            else // Maybe add options whether the user wants to use Alt or not.
+            else if (Keyboard.IsKeyDown(Key.LeftAlt)) // Maybe add options whether the user wants to use Alt or not.
             {
                 Debug.WriteLine($"OPEN SIDE CONTENT");
                 Debug.WriteLine($"SideContentWidth = {SideContentWidth}");
