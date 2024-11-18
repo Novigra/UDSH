@@ -21,7 +21,11 @@
     <None Remove="Resource\DeleteFile.png" />
     <None Remove="Resource\Dropdown.png" />
     <None Remove="Resource\FolderContent.png" />
+    <None Remove="Resource\FolderDeleteContent.png" />
+    <None Remove="Resource\FolderImportContent.png" />
     <None Remove="Resource\FolderNewContent.png" />
+    <None Remove="Resource\FolderOpenContent.png" />
+    <None Remove="Resource\FolderSaveContentAs.png" />
     <None Remove="Resource\FolderSwitchContent.png" />
     <None Remove="Resource\Localization.png" />
     <None Remove="Resource\Log.png" />
@@ -63,7 +67,11 @@
     <Resource Include="Resource\BackgroundIcon.png" />
     <Resource Include="Resource\Bird.png" />
     <Resource Include="Resource\FolderContent.png" />
+    <Resource Include="Resource\FolderDeleteContent.png" />
+    <Resource Include="Resource\FolderImportContent.png" />
     <Resource Include="Resource\FolderNewContent.png" />
+    <Resource Include="Resource\FolderOpenContent.png" />
+    <Resource Include="Resource\FolderSaveContentAs.png" />
     <Resource Include="Resource\FolderSwitchContent.png" />
     <Resource Include="Resource\Localization.png" />
     <Resource Include="Resource\Pin.png" />

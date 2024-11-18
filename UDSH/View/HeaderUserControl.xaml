@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:UDSH.View"
              mc:Ignorable="d" 
              d:DesignHeight="80" d:DesignWidth="1200">
@@ -29,7 +30,7 @@
 
             <!-- Titles -->
             <Rectangle Grid.Column="1" Fill="#CDCDCD"/>
-            <TextBlock Name="ProjectName" Grid.Column="1" Text="Monster" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+            <TextBlock Name="ProjectName" Grid.Column="1" Style="{StaticResource DefaultText}" Text="Monster" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
 
 
             <Grid Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -43,13 +44,13 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="UDSH" VerticalAlignment="Center" Margin="0,0,0,0"/>
-                <TextBlock Grid.Column="1" Text="|" VerticalAlignment="Center" Margin="5,0,5,5" FontWeight="SemiBold"/>
-                <TextBlock Name="UserName" Grid.Column="2" Text="Mohammed Kenawy" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" Text="UDSH" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Grid.Column="1" Style="{StaticResource DefaultText}" Text="|" VerticalAlignment="Center" Margin="5,0,5,5" FontWeight="SemiBold"/>
+                <TextBlock Name="UserName" Style="{StaticResource DefaultText}" Grid.Column="2" Text="Mohammed Kenawy" VerticalAlignment="Center" Margin="0,0,0,0"/>
 
-                <TextBlock Grid.Column="3" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
-                <TextBlock Grid.Column="4" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
-                <TextBlock Grid.Column="5" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Grid.Column="3" Style="{StaticResource DefaultText}" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Grid.Column="4" Style="{StaticResource DefaultText}" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBlock Grid.Column="5" Style="{StaticResource DefaultText}" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
             </Grid>
 
             <!-- Page Controls -->
@@ -82,15 +83,21 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            
+
             <!-- Background -->
             <Rectangle Grid.ColumnSpan="4" Fill="#EEEEEE"/>
 
             <!-- PenTool -->
             <Grid Grid.Column="0">
-                <ToggleButton Name="PenTool" Panel.ZIndex="0" Margin="5">
-                    <StackPanel Orientation="Vertical"> <!-- remove it, if we know mouse location? -->
-                        <Popup IsOpen="True" AllowsTransparency="True">
+                <Button Name="PenTool" Panel.ZIndex="0" Margin="5" Command="{Binding PenToolLeftMouseButtonDown}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="LostFocus">
+                            <i:InvokeCommandAction Command="{Binding PenToolButtonFocus}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
+                    <StackPanel Orientation="Horizontal"> <!-- remove it, if we know mouse location? -->
+                        <Popup IsOpen="{Binding CanClosePopup}" StaysOpen="False" AllowsTransparency="True" Placement="Mouse" PopupAnimation="Fade" VerticalOffset="5">
                             <Border BorderThickness="0" Background="{StaticResource SideContentSCB}" Width="300" CornerRadius="10">
                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                                     <!-- Project Content -->
@@ -109,16 +116,20 @@
                                         </Rectangle>
                                     </StackPanel>
 
+                                    <!-- New File -->
                                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"/>
                                             <ColumnDefinition/>
+                                            <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/NewFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="New File" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="2"/>
+                                        <Button Grid.ColumnSpan="3" Command="{Binding NewFile}"/>
+                                        <Button Grid.Column="2" Background="Blue" HorizontalAlignment="Right" VerticalAlignment="Center" Height="20" Width="20" Margin="0,0,5,0" Command="{Binding QNewFile}" CommandParameter="0"/>
                                     </Grid>
 
+                                    <!-- Save -->
                                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"/>
@@ -131,6 +142,7 @@
                                         <Button Grid.ColumnSpan="3"/>
                                     </Grid>
 
+                                    <!-- Save All -->
                                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"/>
@@ -141,6 +153,7 @@
                                         <Button Grid.ColumnSpan="2"/>
                                     </Grid>
 
+                                    <!-- Delete -->
                                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"/>
@@ -153,6 +166,7 @@
                                         <Button Grid.ColumnSpan="3"/>
                                     </Grid>
 
+                                    <!-- Localization -->
                                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"/>
@@ -163,6 +177,7 @@
                                         <Button Grid.ColumnSpan="2"/>
                                     </Grid>
 
+                                    <!-- Content -->
                                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"/>
@@ -172,7 +187,9 @@
                                         <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Content" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                         <Button Grid.ColumnSpan="2"/>
                                     </Grid>
-                                    
+
+                                    <!-- ############################ -->
+
                                     <!-- UDSH Content -->
                                     <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
                                         <TextBlock Text="UDSH" FontSize="12" FontWeight="Medium"/>
@@ -188,6 +205,7 @@
                                         </Rectangle>
                                     </StackPanel>
 
+                                    <!-- New Project -->
                                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"/>
@@ -198,23 +216,125 @@
                                         <Button Grid.ColumnSpan="2"/>
                                     </Grid>
 
+                                    <!-- Switch Project -->
                                     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderSwitchContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="New Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Switch Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="2"/>
+                                    </Grid>
+
+                                    <!-- Save Project As... -->
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderSaveContentAs.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save Project As..." FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="2"/>
+                                    </Grid>
+
+                                    <!-- Delete Project -->
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderDeleteContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Delete Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="2"/>
+                                    </Grid>
+
+                                    <!-- Import Project -->
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderImportContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Import Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <Button Grid.ColumnSpan="2"/>
+                                    </Grid>
+
+                                    <!-- Open Directory -->
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderOpenContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Open Directory" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                         <Button Grid.ColumnSpan="2"/>
                                     </Grid>
                                 </StackPanel>
-                                
+
                                 <!--<TextBlock Text="Testing my popup!!!"/>-->
                             </Border>
                         </Popup>
                     </StackPanel>
-                </ToggleButton>
-                <Image Source="/Resource/PenTool.png" Margin="7"/>
+                </Button>
+                <Image Source="/Resource/PenTool.png" Margin="7" RenderOptions.BitmapScalingMode="HighQuality" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="0"/> <!-- Target 35 -->
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsPenToolButtonClicked}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[2].Angle"
+                                                                 From="0.0"
+                                                                 To="35.0"
+                                                                 Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[2].Angle"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding CanClosePopup}" Value="False">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[2].Angle"
+                                 To="0.0"
+                                 Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[2].Angle"
+                                 To="35.0"
+                                 Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
             </Grid>
 
             <!-- Quick Actions -->
@@ -225,16 +345,16 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                
+
                 <!-- Backup 
                 <Rectangle Grid.Column="0" Name="PQSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="4" RadiusY="4"/>
                 -->
-                
+
                 <!-- Separator -->
                 <Rectangle Grid.Column="0" Name="PQSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3"/>
 
                 <!-- Quick Action - One -->
-                <Button Grid.Column="1" Name="QuickAction1" Margin="5"/>
+                <Button Grid.Column="1" Name="QuickAction1" Margin="5" Command="{Binding QuickActionButton1}"/>
                 <Image Grid.Column="1" Source="/Resource/SaveFile.png" Margin="7"/>
 
                 <!-- Quick Action - Two -->
@@ -252,17 +372,17 @@
                     <ColumnDefinition Width="3"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <!-- Separator -->
                 <Rectangle Grid.Column="0" Name="QOSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3"/>
-                
+
                 <!-- Opened Files -->
                 <ListView Grid.Column="1" Name="PagesList" Margin="5,0,0,0" HorizontalAlignment="Left" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">
-                    
+
                 </ListView>
 
             </Grid>
-            
+
             <!-- App and Profile Settings -->
             <Grid Grid.Column="3">
                 <Grid.ColumnDefinitions>
@@ -270,7 +390,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                
+
                 <!-- Profile -->
                 <Button Grid.Column="1" Name="ProfileSettings" Panel.ZIndex="0" Margin="18,5,0,5"/>
                 <Image Grid.Column="1" Name="ProfilePicture" Source="/Resource/ProfilePicture.png" Margin="18,9,0,9" Panel.ZIndex="1"/>
@@ -278,13 +398,13 @@
                 <!-- App -->
                 <Button Grid.Column="2" Name="AppSettings" Panel.ZIndex="0" Margin="10,5,10,5"/>
                 <Image Grid.Column="2" Source="/Resource/Settings.png" Margin="10" Panel.ZIndex="1"/>
-                
+
                 <!-- Opened Pages List -->
                 <Button Grid.Column="0" Name="OpenedFilesList" Panel.ZIndex="0" Margin="10,5,10,5"/>
                 <Image Grid.Column="0" Source="/Resource/OpenedFilesDropdown.png" Margin="10" Panel.ZIndex="1"/>
 
             </Grid>
-            
+
         </Grid>
     </Grid>
 </UserControl>

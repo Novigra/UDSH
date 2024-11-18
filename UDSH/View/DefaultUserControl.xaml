@@ -12,9 +12,10 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Image Grid.ColumnSpan="2" Panel.ZIndex="1" Source="/Resource/BackgroundIcon.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="270" Height="270" Focusable="False"/>
+        <Image Grid.ColumnSpan="2" Panel.ZIndex="1" Source="/Resource/BackgroundIcon.png" MouseLeftButtonDown="ObjectFocus" 
+               IsHitTestVisible="True" HorizontalAlignment="Center" VerticalAlignment="Center" Width="270" Height="270" Focusable="True" FocusVisualStyle="{x:Null}"/>
 
-        <Rectangle Grid.ColumnSpan="2" Fill="{StaticResource MainBackgroundCSFSCB}"/>
+        <Rectangle Grid.ColumnSpan="2" Fill="{StaticResource MainBackgroundCSFSCB}" MouseLeftButtonDown="ObjectFocus" Focusable="True"/>
 
         <Grid Grid.Column="0">
             <local:SideContentUserControl/>

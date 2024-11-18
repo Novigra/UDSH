@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using UDSH.ViewModel;
 
 namespace UDSH.View
 {
@@ -11,6 +12,9 @@ namespace UDSH.View
             /*PagesList.Items.Add(new Button());
             PagesList.Items.Add(new Button());
             PagesList.Items.Add(new Button());*/
+
+            HeaderUserControlViewModel viewModel = new HeaderUserControlViewModel();
+            DataContext = viewModel;
 
             PagesList.Items.Add(new ListViewItem());
             PagesList.Items.Add(new ListViewItem());

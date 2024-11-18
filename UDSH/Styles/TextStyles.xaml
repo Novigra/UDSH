@@ -19,4 +19,9 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="DefaultText">
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="FontSize" Value="20"/>
+    </Style>
+
 </ResourceDictionary>

@@ -43,7 +43,7 @@
                     <Border Height="40" BorderThickness="0" Padding="0" Background="{TemplateBinding Background}" CornerRadius="{StaticResource SelectedFile.Radius}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="/Resource/NewFile.png" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
-                            <TextBlock Text="HelloWorld.csf" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,5,5,5"/>
+                            <TextBlock Text="HelloWorld.csf" Style="{StaticResource DefaultText}" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,5,5,5"/>
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Button Panel.ZIndex="0" Style="{StaticResource CloseOpenedPageButton}"/>
                                 <Image Panel.ZIndex="1" Margin="13,15,13,11" Source="/Resource/Close.png"/>
