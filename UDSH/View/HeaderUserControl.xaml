@@ -441,81 +441,49 @@
 
                 <!-- Separator -->
                 <Rectangle Grid.Column="0" Name="QOSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3" RenderTransformOrigin="0.5,0.5">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding Sep}" CommandParameter="{Binding ElementName=QOSeparator}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <Rectangle.RenderTransform>
-                        <TranslateTransform X="-130" Y="0"/> <!-- Starting point -130 (No quick actions) Transform -> {-130 -> -85 -> -43 -> 0} -->
+                        <TranslateTransform X="-130" Y="0"/>
                     </Rectangle.RenderTransform>
-                    <Rectangle.Style>
-                        <Style TargetType="Rectangle">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding QuickActionsList.Count}" Value="1">
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
-                                                                 From="-130.0"
-                                                                 To="-85.0"
-                                                                 Duration="0:0:0.1"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
-                                    <DataTrigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
-                                                                 To="-130.0"
-                                                                 Duration="0:0:0.1"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.ExitActions>
-                                </DataTrigger>
 
-                                <DataTrigger Binding="{Binding QuickActionsList.Count}" Value="2">
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
-                                                                 From="-85.0"
-                                                                 To="-43.0"
-                                                                 Duration="0:0:0.1"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
-                                    <DataTrigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
-                                                                 To="-85.0"
-                                                                 Duration="0:0:0.1"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.ExitActions>
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding QuickActionsList.Count}" Value="3">
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
-                                 From="-43.0"
-                                 To="0.0"
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup Name="QuickActionStates">
+                            <VisualState Name="State0">
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                 To="-130.0"
                                  Duration="0:0:0.1"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
-                                    <DataTrigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                </Storyboard>
+                            </VisualState>
+                            <VisualState Name="State1">
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                 To="-85.0"
+                                 Duration="0:0:0.1"/>
+                                </Storyboard>
+                            </VisualState>
+                            <VisualState Name="State2">
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
                                  To="-43.0"
                                  Duration="0:0:0.1"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.ExitActions>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Rectangle.Style>
+                                </Storyboard>
+                            </VisualState>
+                            <VisualState Name="State3">
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                 To="0.0"
+                                 Duration="0:0:0.1"/>
+                                </Storyboard>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
                 </Rectangle>
+
 
                 <!-- Opened Files -->
                 <ListView Grid.Column="1" Name="PagesList" Margin="5,0,0,0" HorizontalAlignment="Left" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">

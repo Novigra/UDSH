@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using System.Windows.Shapes;
 using UDSH.MVVM;
 
 namespace UDSH.ViewModel
@@ -111,8 +112,61 @@ namespace UDSH.ViewModel
             set { isQAButtonEnabled3 = value; OnPropertyChanged(); }
         }
 
+        private bool canRemove;
+        public bool CanRemove
+        {
+            get { return canRemove; }
+            set { canRemove = value; OnPropertyChanged(); }
+        }
+
+        private Rectangle targetRectangle;
+        public Rectangle TargetRectangle
+        {
+            get { return targetRectangle; }
+            set { targetRectangle = value; OnPropertyChanged(); }
+        }
+
+        private bool canTransition1;
+        public bool CanTransition1
+        {
+            get { return canTransition1; }
+            set { canTransition1 = value; OnPropertyChanged(); }
+        }
+        private bool canTransition2;
+        public bool CanTransition2
+        {
+            get { return canTransition2; }
+            set { canTransition2 = value; OnPropertyChanged(); }
+        }
+        private bool canTransition3;
+        public bool CanTransition3
+        {
+            get { return canTransition3; }
+            set { canTransition3 = value; OnPropertyChanged(); }
+        }
+
+        private bool canReTransition0;
+        public bool CanReTransition0
+        {
+            get { return canReTransition0; }
+            set { canReTransition0 = value; OnPropertyChanged(); }
+        }
+        private bool canReTransition1;
+        public bool CanReTransition1
+        {
+            get { return canReTransition1; }
+            set { canReTransition1 = value; OnPropertyChanged(); }
+        }
+        private bool canReTransition2;
+        public bool CanReTransition2
+        {
+            get { return canReTransition2; }
+            set { canReTransition2 = value; OnPropertyChanged(); }
+        }
+
         #region Commands
         public RelayCommand<Button> PlaceholderCommand => new RelayCommand<Button>(execute => { });
+        public RelayCommand<Rectangle> Sep => new RelayCommand<Rectangle>(AssignRect);
         public RelayCommand<Button> PenToolLeftMouseButtonDown => new RelayCommand<Button>(execute => ClosePenTool());
         public RelayCommand<Button> PenToolButtonFocus => new RelayCommand<Button>(execute => OnPenToolLoseFocus());
         public RelayCommand<Button> NewFile => new RelayCommand<Button>(execute => CreateNewFile());
@@ -140,6 +194,21 @@ namespace UDSH.ViewModel
             IsQAButtonEnabled1 = false;
             IsQAButtonEnabled2 = false;
             IsQAButtonEnabled3 = false;
+
+            CanTransition1 = false;
+            CanTransition2 = false;
+            CanTransition3 = false;
+
+            CanReTransition0 = false;
+            CanReTransition1 = false;
+            CanReTransition2 = false;
+
+            CanRemove = false;
+        }
+
+        private void AssignRect(Rectangle rectangle)
+        {
+            TargetRectangle = rectangle;
         }
 
         // TODO: doesn't work, try two commands, to set true or false.
@@ -180,36 +249,71 @@ namespace UDSH.ViewModel
         private void SetQuickAction(string index)
         {
             int CurrentIndex = Int32.Parse(index);
-            if(QuickActionsList.Count < 3)
+            if(QuickActionsList.Count < 3 && !QuickActionsList.Contains(CurrentIndex))
             {
-                switch(QuickActionsList.Count)
+                switch (QuickActionsList.Count)
                 {
                     case 0:
                         QuickActionsList.Add(CurrentIndex);
                         QuickActionButton1 = ListOfQuickActionCommands[CurrentIndex];
                         QButtonImage1 = CurrentIndex;
                         IsQAButtonEnabled1 = true;
+                        CanTransition1 = true;
+                        VisualStateManager.GoToElementState(TargetRectangle, "State1", true);
                         break;
                     case 1:
                         QuickActionsList.Add(CurrentIndex);
                         QuickActionButton2 = ListOfQuickActionCommands[CurrentIndex];
                         QButtonImage2 = CurrentIndex;
+                        CanTransition2 = true;
                         IsQAButtonEnabled2 = true;
+                        VisualStateManager.GoToElementState(TargetRectangle, "State2", true);
                         break;
                     case 2:
                         QuickActionsList.Add(CurrentIndex);
                         QuickActionButton3 = ListOfQuickActionCommands[CurrentIndex];
                         QButtonImage3 = CurrentIndex;
+                        CanTransition3 = true;
                         IsQAButtonEnabled3 = true;
+                        VisualStateManager.GoToElementState(TargetRectangle, "State3", true);
                         break;
                 }
+            }
+            else if(QuickActionsList.Contains(CurrentIndex))
+            {
+                QuickActionsList.Remove(CurrentIndex);
 
+                switch (QuickActionsList.Count)
+                {
+                    case 0:
+                        CanTransition1 = false;
+                        CanReTransition0 = true;
+                        VisualStateManager.GoToElementState(TargetRectangle, "State0", true);
+                        break;
+                    case 1:
+                        CanTransition2 = false;
+                        CanReTransition1 = true;
+                        VisualStateManager.GoToElementState(TargetRectangle, "State1", true);
+                        break;
+                    case 2:
+                        CanTransition3 = false;
+                        CanReTransition2 = true;
+                        VisualStateManager.GoToElementState(TargetRectangle, "State2", true);
+                        break;
+                }
             }
         }
 
         private void AssignQuickActionCommand()
         {
-
+            /*
+             * I used visual state which means all the booleans are not useful and needs to be removed.
+             * the rect moves correctly when adding or removing a button, but there's more we need to add:
+             *  
+             *  1-we need to update the images, and also disable the buttons once removed.
+             *  2- We only transition, so we need to do a logic for removing buttons(re-assign commands).
+             *  
+             */
         }
 
         /*
