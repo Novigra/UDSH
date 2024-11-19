@@ -96,7 +96,8 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
 
-                    <StackPanel Orientation="Horizontal"> <!-- remove it, if we know mouse location? -->
+                    <StackPanel Orientation="Horizontal">
+                        <!-- remove it, if we know mouse location? -->
                         <Popup IsOpen="{Binding CanClosePopup}" StaysOpen="False" AllowsTransparency="True" Placement="Mouse" PopupAnimation="Fade" VerticalOffset="5">
                             <Border BorderThickness="0" Background="{StaticResource SideContentSCB}" Width="300" CornerRadius="10">
                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
@@ -135,11 +136,13 @@
                                             <ColumnDefinition Width="30"/>
                                             <ColumnDefinition Width="auto"/>
                                             <ColumnDefinition/>
+                                            <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                         <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="MyHouseWad.mkc" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="3"/>
+                                        <Button Grid.ColumnSpan="4" Command="{Binding SaveFile}"/>
+                                        <Button Grid.Column="3" Background="Blue" HorizontalAlignment="Right" VerticalAlignment="Center" Height="20" Width="20" Margin="0,0,5,0" Command="{Binding QSaveFile}" CommandParameter="1"/>
                                     </Grid>
 
                                     <!-- Save All -->
@@ -147,10 +150,12 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"/>
                                             <ColumnDefinition/>
+                                            <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveAllFiles.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save All" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="2"/>
+                                        <Button Grid.ColumnSpan="3" Command="{Binding SaveAllFiles}"/>
+                                        <Button Grid.Column="2" Background="Blue" HorizontalAlignment="Right" VerticalAlignment="Center" Height="20" Width="20" Margin="0,0,5,0" Command="{Binding QSaveAllFiles}" CommandParameter="2"/>
                                     </Grid>
 
                                     <!-- Delete -->
@@ -282,7 +287,8 @@
                         <TransformGroup>
                             <ScaleTransform/>
                             <SkewTransform/>
-                            <RotateTransform Angle="0"/> <!-- Target 35 -->
+                            <RotateTransform Angle="0"/>
+                            <!-- Target 35 -->
                             <TranslateTransform/>
                         </TransformGroup>
                     </Image.RenderTransform>
@@ -354,16 +360,76 @@
                 <Rectangle Grid.Column="0" Name="PQSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3"/>
 
                 <!-- Quick Action - One -->
-                <Button Grid.Column="1" Name="QuickAction1" Margin="5" Command="{Binding QuickActionButton1}"/>
-                <Image Grid.Column="1" Source="/Resource/SaveFile.png" Margin="7"/>
+                <Button Grid.Column="1" Name="QuickAction1" Margin="5" Command="{Binding QuickActionButton1}" IsEnabled="{Binding IsQAButtonEnabled1}"/>
+                <Image Grid.Column="1" Margin="7"> <!-- Source="/Resource/SaveFile.png" -->
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                            <Setter Property="Source" Value="/Resource/Placeholder.png"/>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding QButtonImage1}" Value="0">
+                                    <Setter Property="Source" Value="/Resource/NewFile.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage1}" Value="1">
+                                    <Setter Property="Source" Value="/Resource/SaveFile.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage1}" Value="2">
+                                    <Setter Property="Source" Value="/Resource/SaveAllFiles.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
 
                 <!-- Quick Action - Two -->
-                <Button Grid.Column="2" Name="QuickAction2" Margin="5"/>
-                <Image Grid.Column="2" Source="/Resource/DeleteFile.png" Margin="7"/>
+                <Button Grid.Column="2" Name="QuickAction2" Margin="5" Command="{Binding QuickActionButton2}" IsEnabled="{Binding IsQAButtonEnabled2}"/>
+                <Image Grid.Column="2" Margin="7">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                            <Setter Property="Source" Value="/Resource/Placeholder.png"/>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding QButtonImage2}" Value="0">
+                                    <Setter Property="Source" Value="/Resource/NewFile.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage2}" Value="1">
+                                    <Setter Property="Source" Value="/Resource/SaveFile.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage2}" Value="2">
+                                    <Setter Property="Source" Value="/Resource/SaveAllFiles.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
 
                 <!-- Quick Action - Three -->
-                <Button Grid.Column="3" Name="QuickAction3" Margin="5"/>
-                <Image Grid.Column="3" Source="/Resource/NewFile.png" Margin="7"/>
+                <Button Grid.Column="3" Name="QuickAction3" Margin="5" Command="{Binding QuickActionButton3}" IsEnabled="{Binding IsQAButtonEnabled3}"/>
+                <Image Grid.Column="3" Margin="7">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                            <Setter Property="Source" Value="/Resource/Placeholder.png"/>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding QButtonImage3}" Value="0">
+                                    <Setter Property="Source" Value="/Resource/NewFile.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage3}" Value="1">
+                                    <Setter Property="Source" Value="/Resource/SaveFile.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage3}" Value="2">
+                                    <Setter Property="Source" Value="/Resource/SaveAllFiles.png"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
             </Grid>
 
             <!-- Files -->
@@ -374,7 +440,82 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Separator -->
-                <Rectangle Grid.Column="0" Name="QOSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3"/>
+                <Rectangle Grid.Column="0" Name="QOSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3" RenderTransformOrigin="0.5,0.5">
+                    <Rectangle.RenderTransform>
+                        <TranslateTransform X="-130" Y="0"/> <!-- Starting point -130 (No quick actions) Transform -> {-130 -> -85 -> -43 -> 0} -->
+                    </Rectangle.RenderTransform>
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding QuickActionsList.Count}" Value="1">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                                 From="-130.0"
+                                                                 To="-85.0"
+                                                                 Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                                 To="-130.0"
+                                                                 Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding QuickActionsList.Count}" Value="2">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                                 From="-85.0"
+                                                                 To="-43.0"
+                                                                 Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                                 To="-85.0"
+                                                                 Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding QuickActionsList.Count}" Value="3">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                 From="-43.0"
+                                 To="0.0"
+                                 Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                 To="-43.0"
+                                 Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
 
                 <!-- Opened Files -->
                 <ListView Grid.Column="1" Name="PagesList" Margin="5,0,0,0" HorizontalAlignment="Left" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">

@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using UDSH.MVVM;
 
 namespace UDSH.ViewModel
@@ -39,7 +41,12 @@ namespace UDSH.ViewModel
             set { canClosePopup = value; OnPropertyChanged(); }
         }
 
-        private List<int> quickActionsList;
+        private ObservableCollection<int> quickActionsList;
+        public ObservableCollection<int> QuickActionsList
+        {
+            get { return quickActionsList; }
+            set { quickActionsList = value; OnPropertyChanged(); }
+        }
 
         private RelayCommand<Button> quickActionButton1;
         public RelayCommand<Button> QuickActionButton1
@@ -48,17 +55,91 @@ namespace UDSH.ViewModel
             set { quickActionButton1 = value; OnPropertyChanged(); }
         }
 
-        // We don't need focus
+        private RelayCommand<Button> quickActionButton2;
+        public RelayCommand<Button> QuickActionButton2
+        {
+            get { return quickActionButton2; }
+            set { quickActionButton2 = value; OnPropertyChanged(); }
+        }
+
+        private RelayCommand<Button> quickActionButton3;
+        public RelayCommand<Button> QuickActionButton3
+        {
+            get { return quickActionButton3; }
+            set { quickActionButton3 = value; OnPropertyChanged(); }
+        }
+
+        private int qButtonImage1;
+        public int QButtonImage1
+        {
+            get { return qButtonImage1; }
+            set { qButtonImage1 = value; OnPropertyChanged(); }
+        }
+
+        private int qButtonImage2;
+        public int QButtonImage2
+        {
+            get { return qButtonImage2; }
+            set { qButtonImage2 = value; OnPropertyChanged(); }
+        }
+
+        private int qButtonImage3;
+        public int QButtonImage3
+        {
+            get { return qButtonImage3; }
+            set { qButtonImage3 = value; OnPropertyChanged(); }
+        }
+
+        private bool isQAButtonEnabled1;
+        public bool IsQAButtonEnabled1
+        {
+            get { return isQAButtonEnabled1; }
+            set { isQAButtonEnabled1 = value; OnPropertyChanged(); }
+        }
+
+        private bool isQAButtonEnabled2;
+        public bool IsQAButtonEnabled2
+        {
+            get { return isQAButtonEnabled2; }
+            set { isQAButtonEnabled2 = value; OnPropertyChanged(); }
+        }
+
+        private bool isQAButtonEnabled3;
+        public bool IsQAButtonEnabled3
+        {
+            get { return isQAButtonEnabled3; }
+            set { isQAButtonEnabled3 = value; OnPropertyChanged(); }
+        }
+
+        #region Commands
+        public RelayCommand<Button> PlaceholderCommand => new RelayCommand<Button>(execute => { });
         public RelayCommand<Button> PenToolLeftMouseButtonDown => new RelayCommand<Button>(execute => ClosePenTool());
         public RelayCommand<Button> PenToolButtonFocus => new RelayCommand<Button>(execute => OnPenToolLoseFocus());
         public RelayCommand<Button> NewFile => new RelayCommand<Button>(execute => CreateNewFile());
+        public RelayCommand<Button> SaveFile => new RelayCommand<Button>(execute => SaveCurrentOpenedFile());
+        public RelayCommand<Button> SaveAllFiles => new RelayCommand<Button>(execute => SaveAllCurrentFiles());
 
         public RelayCommand<string> QNewFile => new RelayCommand<string>(SetQuickAction);
+        public RelayCommand<string> QSaveFile => new RelayCommand<string>(SetQuickAction);
+        public RelayCommand<string> QSaveAllFiles => new RelayCommand<string>(SetQuickAction);
+
+        private List<RelayCommand<Button>> ListOfQuickActionCommands;
+        #endregion
 
         public HeaderUserControlViewModel()
         {
             IsPenToolButtonClicked = false;
             CanClosePopup = false;
+            QuickActionsList = new ObservableCollection<int>();
+
+            ListOfQuickActionCommands = new List<RelayCommand<Button>> { NewFile, SaveFile, SaveAllFiles };
+            QButtonImage1 = -1;
+            QButtonImage2 = -1;
+            QButtonImage3 = -1;
+
+            IsQAButtonEnabled1 = false;
+            IsQAButtonEnabled2 = false;
+            IsQAButtonEnabled3 = false;
         }
 
         // TODO: doesn't work, try two commands, to set true or false.
@@ -86,13 +167,49 @@ namespace UDSH.ViewModel
             MessageBox.Show("Create a new file...");
         }
 
+        private void SaveCurrentOpenedFile()
+        {
+            MessageBox.Show("Saved MyHouseWad.mkc...");
+        }
+
+        private void SaveAllCurrentFiles()
+        {
+            MessageBox.Show("Saved All Files...");
+        }
+
         private void SetQuickAction(string index)
         {
             int CurrentIndex = Int32.Parse(index);
-            if (CurrentIndex == 0)
+            if(QuickActionsList.Count < 3)
             {
-                QuickActionButton1 = NewFile;
+                switch(QuickActionsList.Count)
+                {
+                    case 0:
+                        QuickActionsList.Add(CurrentIndex);
+                        QuickActionButton1 = ListOfQuickActionCommands[CurrentIndex];
+                        QButtonImage1 = CurrentIndex;
+                        IsQAButtonEnabled1 = true;
+                        break;
+                    case 1:
+                        QuickActionsList.Add(CurrentIndex);
+                        QuickActionButton2 = ListOfQuickActionCommands[CurrentIndex];
+                        QButtonImage2 = CurrentIndex;
+                        IsQAButtonEnabled2 = true;
+                        break;
+                    case 2:
+                        QuickActionsList.Add(CurrentIndex);
+                        QuickActionButton3 = ListOfQuickActionCommands[CurrentIndex];
+                        QButtonImage3 = CurrentIndex;
+                        IsQAButtonEnabled3 = true;
+                        break;
+                }
+
             }
+        }
+
+        private void AssignQuickActionCommand()
+        {
+
         }
 
         /*

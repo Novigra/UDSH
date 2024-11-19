@@ -37,6 +37,7 @@
     <None Remove="Resource\OpenedFilesDropdown.png" />
     <None Remove="Resource\PenTool.png" />
     <None Remove="Resource\Pin.png" />
+    <None Remove="Resource\Placeholder.png" />
     <None Remove="Resource\ProfilePicture.png" />
     <None Remove="Resource\SaveAllFiles.png" />
     <None Remove="Resource\SaveFile.png" />
@@ -75,6 +76,7 @@
     <Resource Include="Resource\FolderSwitchContent.png" />
     <Resource Include="Resource\Localization.png" />
     <Resource Include="Resource\Pin.png" />
+    <Resource Include="Resource\Placeholder.png" />
     <Resource Include="Resource\SaveAllFiles.png" />
     <Resource Include="Resource\Search.png" />
     <Resource Include="Resource\SideContent.png" />
