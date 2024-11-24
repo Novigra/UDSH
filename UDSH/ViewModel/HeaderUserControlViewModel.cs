@@ -1,33 +1,16 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Documents;
-using System.Windows.Shapes;
+using System.Windows.Input;
 using UDSH.MVVM;
+using UDSH.View;
 
 namespace UDSH.ViewModel
 {
     internal class HeaderUserControlViewModel : ViewModelBase
     {
-        /*
-         * Important Note: the toggle button doesn't work as expected when using Left Mouse Button Down.
-         * When pressing the toggle button, the IsPenToolButtonClicked gets changed multiple times instead
-         * of once.
-         * 
-         * Expected: False --> {Mouse Pressed} --> True
-         * What happens: False --> {Mouse Pressed} --> True --> False
-         * 
-         * Possible Causes: the boolean changes when an event happens and maybe because the popup "StaysOpen"
-         * is equal to "False". What ever happens, there's a "Race" between events that needs to be solved.
-         * 
-         * The problem needs more investigation. I'm going to leave it as it is, BUT COME BACK TO IT AND SOLVE IT. DO NOT BE LAZY FOR THE LOVE OF GOD!!!!!
-         * 
-         * UPDATE: I've swapped toggle button with button(I prefer toggle button as it makes more sense).
-         * It works, but i'm using losing focus, is it the best solution? of course not, but for now, i
-         * will stick with this solution. Also, the "staysOpen" theory is debunked, it doesn't effect the call.
-         */
-
+        #region Properties
         private bool isPenToolButtonClicked;
         public bool IsPenToolButtonClicked
         {
@@ -42,6 +25,7 @@ namespace UDSH.ViewModel
             set { canClosePopup = value; OnPropertyChanged(); }
         }
 
+        // Holds all the available commands.
         private ObservableCollection<int> quickActionsList;
         public ObservableCollection<int> QuickActionsList
         {
@@ -49,25 +33,12 @@ namespace UDSH.ViewModel
             set { quickActionsList = value; OnPropertyChanged(); }
         }
 
+        #region Quick Action Button One Properties
         private RelayCommand<Button> quickActionButton1;
         public RelayCommand<Button> QuickActionButton1
         {
             get { return quickActionButton1; }
             set { quickActionButton1 = value; OnPropertyChanged(); }
-        }
-
-        private RelayCommand<Button> quickActionButton2;
-        public RelayCommand<Button> QuickActionButton2
-        {
-            get { return quickActionButton2; }
-            set { quickActionButton2 = value; OnPropertyChanged(); }
-        }
-
-        private RelayCommand<Button> quickActionButton3;
-        public RelayCommand<Button> QuickActionButton3
-        {
-            get { return quickActionButton3; }
-            set { quickActionButton3 = value; OnPropertyChanged(); }
         }
 
         private int qButtonImage1;
@@ -77,25 +48,48 @@ namespace UDSH.ViewModel
             set { qButtonImage1 = value; OnPropertyChanged(); }
         }
 
-        private int qButtonImage2;
-        public int QButtonImage2
-        {
-            get { return qButtonImage2; }
-            set { qButtonImage2 = value; OnPropertyChanged(); }
-        }
-
-        private int qButtonImage3;
-        public int QButtonImage3
-        {
-            get { return qButtonImage3; }
-            set { qButtonImage3 = value; OnPropertyChanged(); }
-        }
-
         private bool isQAButtonEnabled1;
         public bool IsQAButtonEnabled1
         {
             get { return isQAButtonEnabled1; }
             set { isQAButtonEnabled1 = value; OnPropertyChanged(); }
+        }
+
+        private bool canPlayAssignAnim1;
+        public bool CanPlayAssignAnim1
+        {
+            get { return canPlayAssignAnim1; }
+            set { canPlayAssignAnim1 = value; OnPropertyChanged(); }
+        }
+
+        private bool canPlayReassignAnim1;
+        public bool CanPlayReassignAnim1
+        {
+            get { return canPlayReassignAnim1; }
+            set { canPlayReassignAnim1 = value; OnPropertyChanged(); }
+        }
+
+        private bool canPlayRemoveAnim1;
+        public bool CanPlayRemoveAnim1
+        {
+            get { return canPlayRemoveAnim1; }
+            set { canPlayRemoveAnim1 = value; OnPropertyChanged(); }
+        }
+        #endregion
+
+        #region Quick Action Button Two Properties
+        private RelayCommand<Button> quickActionButton2;
+        public RelayCommand<Button> QuickActionButton2
+        {
+            get { return quickActionButton2; }
+            set { quickActionButton2 = value; OnPropertyChanged(); }
+        }
+
+        private int qButtonImage2;
+        public int QButtonImage2
+        {
+            get { return qButtonImage2; }
+            set { qButtonImage2 = value; OnPropertyChanged(); }
         }
 
         private bool isQAButtonEnabled2;
@@ -105,6 +99,43 @@ namespace UDSH.ViewModel
             set { isQAButtonEnabled2 = value; OnPropertyChanged(); }
         }
 
+        private bool canPlayAssignAnim2;
+        public bool CanPlayAssignAnim2
+        {
+            get { return canPlayAssignAnim2; }
+            set { canPlayAssignAnim2 = value; OnPropertyChanged(); }
+        }
+
+        private bool canPlayReassignAnim2;
+        public bool CanPlayReassignAnim2
+        {
+            get { return canPlayReassignAnim2; }
+            set { canPlayReassignAnim2 = value; OnPropertyChanged(); }
+        }
+
+        private bool canPlayRemoveAnim2;
+        public bool CanPlayRemoveAnim2
+        {
+            get { return canPlayRemoveAnim2; }
+            set { canPlayRemoveAnim2 = value; OnPropertyChanged(); }
+        }
+        #endregion
+
+        #region Quick Action Button Three Properties
+        private RelayCommand<Button> quickActionButton3;
+        public RelayCommand<Button> QuickActionButton3
+        {
+            get { return quickActionButton3; }
+            set { quickActionButton3 = value; OnPropertyChanged(); }
+        }
+        
+        private int qButtonImage3;
+        public int QButtonImage3
+        {
+            get { return qButtonImage3; }
+            set { qButtonImage3 = value; OnPropertyChanged(); }
+        }
+
         private bool isQAButtonEnabled3;
         public bool IsQAButtonEnabled3
         {
@@ -112,72 +143,105 @@ namespace UDSH.ViewModel
             set { isQAButtonEnabled3 = value; OnPropertyChanged(); }
         }
 
-        private bool canRemove;
-        public bool CanRemove
+        private bool canPlayAssignAnim3;
+        public bool CanPlayAssignAnim3
         {
-            get { return canRemove; }
-            set { canRemove = value; OnPropertyChanged(); }
+            get { return canPlayAssignAnim3; }
+            set { canPlayAssignAnim3 = value; OnPropertyChanged(); }
         }
 
-        private Rectangle targetRectangle;
-        public Rectangle TargetRectangle
+        private bool canPlayReassignAnim3;
+        public bool CanPlayReassignAnim3
         {
-            get { return targetRectangle; }
-            set { targetRectangle = value; OnPropertyChanged(); }
+            get { return canPlayReassignAnim3; }
+            set { canPlayReassignAnim3 = value; OnPropertyChanged(); }
         }
 
-        private bool canTransition1;
-        public bool CanTransition1
+        private bool canPlayRemoveAnim3;
+        public bool CanPlayRemoveAnim3
         {
-            get { return canTransition1; }
-            set { canTransition1 = value; OnPropertyChanged(); }
+            get { return canPlayRemoveAnim3; }
+            set { canPlayRemoveAnim3 = value; OnPropertyChanged(); }
         }
-        private bool canTransition2;
-        public bool CanTransition2
+        #endregion
+
+
+        public Dictionary<int, bool> QuickActionDots { get; set; }
+
+        private int currentDot;
+        public int CurrentDot
         {
-            get { return canTransition2; }
-            set { canTransition2 = value; OnPropertyChanged(); }
-        }
-        private bool canTransition3;
-        public bool CanTransition3
-        {
-            get { return canTransition3; }
-            set { canTransition3 = value; OnPropertyChanged(); }
+            get { return currentDot; }
+            set { currentDot = value; OnPropertyChanged(); }
         }
 
-        private bool canReTransition0;
-        public bool CanReTransition0
+        private bool playDotAnim;
+        public bool PlayDotAnim
         {
-            get { return canReTransition0; }
-            set { canReTransition0 = value; OnPropertyChanged(); }
+            get { return playDotAnim; }
+            set { playDotAnim = value; OnPropertyChanged(); }
         }
-        private bool canReTransition1;
-        public bool CanReTransition1
+
+        private bool reverseDotAnim;
+        public bool ReverseDotAnim
         {
-            get { return canReTransition1; }
-            set { canReTransition1 = value; OnPropertyChanged(); }
+            get { return reverseDotAnim; }
+            set { reverseDotAnim = value; OnPropertyChanged(); }
         }
-        private bool canReTransition2;
-        public bool CanReTransition2
+
+        private bool isPenToolButtonDisabled;
+        public bool IsPenToolButtonDisabled
         {
-            get { return canReTransition2; }
-            set { canReTransition2 = value; OnPropertyChanged(); }
+            get { return isPenToolButtonDisabled; }
+            set { isPenToolButtonDisabled = value; OnPropertyChanged(); }
         }
+
+        private bool canEnablePenToolButton;
+        public bool CanEnablePenToolButton
+        {
+            get { return canEnablePenToolButton; }
+            set { canEnablePenToolButton = value; OnPropertyChanged(); }
+        }
+
+        // Holds the content layout for animation. Yes we will be breaking some MVVM rules in a sneaky way!
+        private Grid targetGrid;
+        public Grid TargetGrid
+        {
+            get { return targetGrid; }
+            set { targetGrid = value; OnPropertyChanged(); }
+        }
+
+        private Window mainWindow;
+        public Window MainWindow
+        {
+            get { return mainWindow; }
+            set { mainWindow = value; }
+        }
+        #endregion
 
         #region Commands
         public RelayCommand<Button> PlaceholderCommand => new RelayCommand<Button>(execute => { });
-        public RelayCommand<Rectangle> Sep => new RelayCommand<Rectangle>(AssignRect);
+        public RelayCommand<Grid> LoadedContentLayoutGrid => new RelayCommand<Grid>(AssignGrid);
         public RelayCommand<Button> PenToolLeftMouseButtonDown => new RelayCommand<Button>(execute => ClosePenTool());
-        public RelayCommand<Button> PenToolButtonFocus => new RelayCommand<Button>(execute => OnPenToolLoseFocus());
+        public RelayCommand<object> PenToolPopupClosed => new RelayCommand<object>(execute => OnPenToolPopupClosed());
+
         public RelayCommand<Button> NewFile => new RelayCommand<Button>(execute => CreateNewFile());
         public RelayCommand<Button> SaveFile => new RelayCommand<Button>(execute => SaveCurrentOpenedFile());
         public RelayCommand<Button> SaveAllFiles => new RelayCommand<Button>(execute => SaveAllCurrentFiles());
+        public RelayCommand<Button> DeleteFile => new RelayCommand<Button>(execute => DeleteCurrentFile());
+        public RelayCommand<Button> Localization => new RelayCommand<Button>(execute => OpenLocalization());
+        public RelayCommand<Button> ContentFolder => new RelayCommand<Button>(execute => OpenContentFolder());
 
         public RelayCommand<string> QNewFile => new RelayCommand<string>(SetQuickAction);
         public RelayCommand<string> QSaveFile => new RelayCommand<string>(SetQuickAction);
         public RelayCommand<string> QSaveAllFiles => new RelayCommand<string>(SetQuickAction);
+        public RelayCommand<string> QDeleteFile => new RelayCommand<string>(SetQuickAction);
+        public RelayCommand<string> QLocalization => new RelayCommand<string>(SetQuickAction);
+        public RelayCommand<string> QContentFolder => new RelayCommand<string>(SetQuickAction);
 
         private List<RelayCommand<Button>> ListOfQuickActionCommands;
+
+        public RelayCommand<StackPanel> MouseEnterPenToolPopup => new RelayCommand<StackPanel>(EnableQuickActionEdit);
         #endregion
 
         public HeaderUserControlViewModel()
@@ -186,7 +250,7 @@ namespace UDSH.ViewModel
             CanClosePopup = false;
             QuickActionsList = new ObservableCollection<int>();
 
-            ListOfQuickActionCommands = new List<RelayCommand<Button>> { NewFile, SaveFile, SaveAllFiles };
+            ListOfQuickActionCommands = new List<RelayCommand<Button>> { NewFile, SaveFile, SaveAllFiles, DeleteFile, Localization, ContentFolder };
             QButtonImage1 = -1;
             QButtonImage2 = -1;
             QButtonImage3 = -1;
@@ -195,45 +259,86 @@ namespace UDSH.ViewModel
             IsQAButtonEnabled2 = false;
             IsQAButtonEnabled3 = false;
 
-            CanTransition1 = false;
-            CanTransition2 = false;
-            CanTransition3 = false;
+            CanPlayAssignAnim1 = false;
+            CanPlayReassignAnim1 = false;
+            CanPlayRemoveAnim1 = false;
 
-            CanReTransition0 = false;
-            CanReTransition1 = false;
-            CanReTransition2 = false;
+            CanPlayAssignAnim2 = false;
+            CanPlayReassignAnim2 = false;
+            CanPlayRemoveAnim2 = false;
 
-            CanRemove = false;
+            CanPlayAssignAnim3 = false;
+            CanPlayReassignAnim3 = false;
+            CanPlayRemoveAnim3 = false;
+
+            CurrentDot = -1;
+            PlayDotAnim = false;
+            ReverseDotAnim = false;
+
+            IsPenToolButtonDisabled = false;
+            CanEnablePenToolButton = true;
         }
 
-        private void AssignRect(Rectangle rectangle)
+        private void AssignGrid(Grid grid)
         {
-            TargetRectangle = rectangle;
+            TargetGrid = grid;
         }
 
-        // TODO: doesn't work, try two commands, to set true or false.
         private void ClosePenTool()
         {
             IsPenToolButtonClicked = !IsPenToolButtonClicked;
             CanClosePopup = IsPenToolButtonClicked;
         }
 
-        private void OnPenToolLoseFocus()
+        // A "Race" happens when pressing on the pen tool to close the popup, so there're two ways of doing it:
+        // 1- Make the function work async and add delay, so when closing, the bool would be already false.
+        // 2- We can add a new logic to execute/cancel (canExecute{bool}), but it would make it harder to follow the code.
+        private async void OnPenToolPopupClosed()
         {
+            //IsPenToolButtonClicked = false;
+            await DelaySetting();
+        }
+
+        private async Task DelaySetting()
+        {
+            await Task.Delay(100);
             IsPenToolButtonClicked = false;
         }
 
-        // Remove if PenToolFocus not used
-        private bool CanClose()
+        private void EnableQuickActionEdit(StackPanel rectangle)
         {
-            return IsPenToolButtonClicked;
+            rectangle.Focus();
+        }
+
+        public void LockPenToolButtons(KeyEventArgs e)
+        {
+            Debug.WriteLine("Key View Working!!!");
+            if(e.Key == Key.LeftCtrl)
+            {
+                IsPenToolButtonDisabled = true;
+                CanEnablePenToolButton = !IsPenToolButtonDisabled;
+            }
+        }
+
+        public void ReleasePenToolButtons(KeyEventArgs e)
+        {
+            Debug.WriteLine("##### Key Stopped #####");
+            if (e.Key == Key.LeftCtrl)
+            {
+                IsPenToolButtonDisabled = false;
+                CanEnablePenToolButton = !IsPenToolButtonDisabled;
+            }
         }
 
         private void CreateNewFile()
         {
             IsPenToolButtonClicked = false;
             CanClosePopup = false;
-            MessageBox.Show("Create a new file...");
+
+            NewFileCreationWindow newFileCreationWindow = new NewFileCreationWindow(MainWindow);
+            newFileCreationWindow.ShowDialog();
+
+            Debug.WriteLine("Create a new file...");
         }
 
         private void SaveCurrentOpenedFile()
@@ -246,36 +351,69 @@ namespace UDSH.ViewModel
             MessageBox.Show("Saved All Files...");
         }
 
+        private void DeleteCurrentFile()
+        {
+            MessageBox.Show("Deleted MyHouseWad.mkc...");
+        }
+
+        private void OpenLocalization()
+        {
+            MessageBox.Show("Opening Localization...");
+        }
+
+        private void OpenContentFolder()
+        {
+            MessageBox.Show("Opening Content Folder...");
+        }
+
         private void SetQuickAction(string index)
         {
             int CurrentIndex = Int32.Parse(index);
-            if(QuickActionsList.Count < 3 && !QuickActionsList.Contains(CurrentIndex))
+
+            
+
+            //if(QuickActionDots.)
+
+            if (QuickActionsList.Count < 3 && !QuickActionsList.Contains(CurrentIndex))
             {
+                CurrentDot = CurrentIndex;
+                PlayDotAnim = true;
+                PlayDotAnim = false;
+
                 switch (QuickActionsList.Count)
                 {
                     case 0:
                         QuickActionsList.Add(CurrentIndex);
                         QuickActionButton1 = ListOfQuickActionCommands[CurrentIndex];
                         QButtonImage1 = CurrentIndex;
+                        
+                        CanPlayRemoveAnim1 = false;
+                        CanPlayAssignAnim1 = true;
+
                         IsQAButtonEnabled1 = true;
-                        CanTransition1 = true;
-                        VisualStateManager.GoToElementState(TargetRectangle, "State1", true);
+                        VisualStateManager.GoToElementState(targetGrid, "State1", true);
                         break;
                     case 1:
                         QuickActionsList.Add(CurrentIndex);
                         QuickActionButton2 = ListOfQuickActionCommands[CurrentIndex];
                         QButtonImage2 = CurrentIndex;
-                        CanTransition2 = true;
+
+                        CanPlayAssignAnim2 = true;
+                        CanPlayRemoveAnim2 = false;
+
                         IsQAButtonEnabled2 = true;
-                        VisualStateManager.GoToElementState(TargetRectangle, "State2", true);
+                        VisualStateManager.GoToElementState(targetGrid, "State2", true);
                         break;
                     case 2:
                         QuickActionsList.Add(CurrentIndex);
                         QuickActionButton3 = ListOfQuickActionCommands[CurrentIndex];
                         QButtonImage3 = CurrentIndex;
-                        CanTransition3 = true;
+
+                        CanPlayAssignAnim3 = true;
+                        CanPlayRemoveAnim3 = false;
+
                         IsQAButtonEnabled3 = true;
-                        VisualStateManager.GoToElementState(TargetRectangle, "State3", true);
+                        VisualStateManager.GoToElementState(targetGrid, "State3", true);
                         break;
                 }
             }
@@ -283,68 +421,72 @@ namespace UDSH.ViewModel
             {
                 QuickActionsList.Remove(CurrentIndex);
 
+                CurrentDot = CurrentIndex;
+                ReverseDotAnim = true;
+                ReverseDotAnim = false;
+
                 switch (QuickActionsList.Count)
                 {
                     case 0:
-                        CanTransition1 = false;
-                        CanReTransition0 = true;
-                        VisualStateManager.GoToElementState(TargetRectangle, "State0", true);
+                        QuickActionButton1 = PlaceholderCommand;
+                        //QButtonImage1 = -1;
+                        IsQAButtonEnabled1 = false;
+
+                        CanPlayRemoveAnim1 = true;
+                        CanPlayAssignAnim1 = false;
+                        VisualStateManager.GoToElementState(targetGrid, "State0", true);
                         break;
                     case 1:
-                        CanTransition2 = false;
-                        CanReTransition1 = true;
-                        VisualStateManager.GoToElementState(TargetRectangle, "State1", true);
+                        if (QuickActionButton1 != ListOfQuickActionCommands[QuickActionsList[0]])
+                        {
+                            QuickActionButton1 = ListOfQuickActionCommands[QuickActionsList[0]];
+                            QButtonImage1 = QuickActionsList[0];
+                            CanPlayReassignAnim1 = true;
+                            CanPlayReassignAnim1 = false;
+                        }
+
+                        QuickActionButton2 = PlaceholderCommand;
+                        //QButtonImage2 = -1;
+                        CanPlayRemoveAnim2 = true;
+                        CanPlayAssignAnim2 = false;
+
+                        IsQAButtonEnabled2 = false;
+                        VisualStateManager.GoToElementState(targetGrid, "State1", true);
                         break;
                     case 2:
-                        CanTransition3 = false;
-                        CanReTransition2 = true;
-                        VisualStateManager.GoToElementState(TargetRectangle, "State2", true);
+                        if (QuickActionButton1 != ListOfQuickActionCommands[QuickActionsList[0]])
+                        {
+                            QuickActionButton1 = ListOfQuickActionCommands[QuickActionsList[0]];
+                            QButtonImage1 = QuickActionsList[0];
+                            CanPlayReassignAnim1 = true;
+                            CanPlayReassignAnim1 = false;
+                        }
+
+                        if (QuickActionButton2 != ListOfQuickActionCommands[QuickActionsList[1]])
+                        {
+                            QuickActionButton2 = ListOfQuickActionCommands[QuickActionsList[1]];
+                            QButtonImage2 = QuickActionsList[1];
+                            CanPlayReassignAnim2 = true;
+                            CanPlayReassignAnim2 = false;
+                        }
+
+                        QuickActionButton3 = PlaceholderCommand;
+                        //QButtonImage3 = -1;
+                        CanPlayRemoveAnim3 = true;
+                        CanPlayAssignAnim3 = false;
+
+                        IsQAButtonEnabled3 = false;
+                        VisualStateManager.GoToElementState(targetGrid, "State2", true);
                         break;
                 }
             }
         }
 
-        private void AssignQuickActionCommand()
-        {
-            /*
-             * I used visual state which means all the booleans are not useful and needs to be removed.
-             * the rect moves correctly when adding or removing a button, but there's more we need to add:
-             *  
-             *  1-we need to update the images, and also disable the buttons once removed.
-             *  2- We only transition, so we need to do a logic for removing buttons(re-assign commands).
-             *  
-             */
-        }
-
         /*
          * TODO List
          * 
-         * Pen Tool
-         * 1- Change Pen Tool toggle style
-         *  - Change background. [NO NEED]
-         *  - Image rotation animation. [DONE]
-         * 
-         * 2- there's extra stack panel, test if you can remove it, by updating mouse detection.
-         *    Also, you can use this stack panel to add sub-popups.[KEEPING IT]
-         * 
-         * 3- update popups animation, there're build-in ones, test them first![DONE]
-         * 
-         * 4- do each button commands for the pen tool.[IN-PROGRESS]
-         * 
-         * {Quick Save}
-         * - add a circular button, so when the user add a new quick button, it gets added automatically. Maybe add Control button.[IN-PROGRESS]
-         * 
-         * {Quick Save Logic}
-         * - I will use a list to determine how many quick items we have. When adding a quick item,
-         * we first check which index we stopped at, if we didn't exceed it then, we assign the
-         * command to the quick action button. We also need to update the image, we can do that
-         * in the image styles files through data triggers. Don't forget to animate the items
-         * that will get affected by this process. (PenTool Lost Focus fires when assigning quick buttons, adding control input can help us)
-         * 
-         * 
-         * P.S. Do the bindings before commiting to the toggle button style, so you make sure
-         * everything is working. Also, the popup only closes when pressing the button, so
-         * try losing focus.
+         * Pen Tool:
+         * - Do each button commands for the pen tool.[IN-PROGRESS]
         */
     }
 }

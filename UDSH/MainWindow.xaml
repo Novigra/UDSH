@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UDSH"
         xmlns:userControls="clr-namespace:UDSH.View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="1200" WindowStyle="None" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="900" Width="1600" WindowStyle="None" WindowStartupLocation="CenterScreen">
     
     <!-- Zero or a super small number? Keep in mind it will affect how the window controls work -->
     <WindowChrome.WindowChrome>

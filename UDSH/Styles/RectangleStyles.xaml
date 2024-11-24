@@ -14,4 +14,43 @@
         <Setter Property="Fill" Value="{StaticResource SideContentHighlight}"/>
         <Setter Property="Opacity" Value="0.55"/>
     </Style>
+
+    <Style TargetType="Rectangle" x:Key="DisabledPenToolButton">
+        <Setter Property="Fill" Value="{StaticResource DisabledPenToolButtonSCB}"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="RenderTransformOrigin" Value="0.0,0.5"/>
+
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="0" ScaleY="1"/>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsPenToolButtonDisabled}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                             To="1.0"
+                                             Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                             To="0.0"
+                                             Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Grid">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+    </Style>
 </ResourceDictionary>

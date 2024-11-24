@@ -14,6 +14,7 @@
                 <ResourceDictionary Source="Styles/ListViewStyles.xaml"/>
                 <ResourceDictionary Source="Styles/ComboBoxStyles.xaml"/>
                 <ResourceDictionary Source="Styles/RectangleStyles.xaml"/>
+                <ResourceDictionary Source="Styles/BorderStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
          

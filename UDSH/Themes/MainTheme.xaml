@@ -6,7 +6,12 @@
     <SolidColorBrush x:Key="MainAppSCB">#ADADAD</SolidColorBrush>
     <SolidColorBrush x:Key="MainProjectHeaderSCB">#EEEEEE</SolidColorBrush>
     <SolidColorBrush x:Key="MainProjectConnectionSCB">#D9D9D9</SolidColorBrush>
-    
+    <LinearGradientBrush x:Key="DisabledPenToolButtonSCB" StartPoint="0, 0.5" EndPoint="1, 0.5">
+        <GradientStop Color="#939393" Offset="0.0"/>
+        <GradientStop Color="#00707070" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="QuickActionDotsSCB">#393E46</SolidColorBrush>
+
     <!-- Side Content -->
     <LinearGradientBrush x:Key="SideContentSCB" StartPoint="0.5, 0" EndPoint="0.5, 1">
         <GradientStop Color="#EEEEEE" Offset="0"/>
@@ -65,4 +70,16 @@
     <!-- Background -->
     <SolidColorBrush x:Key="MainBlankSCB">#00707070</SolidColorBrush>
     
+    <!-- New File Creation Process Window -->
+    <LinearGradientBrush x:Key="NewFileProcessBackgroundSCB" StartPoint="0.5, 0" EndPoint="0.5, 1">
+        <GradientStop Color="#EEEEEE" Offset="0"/>
+        <GradientStop Color="#DADADA" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="NewFileProcessSelectedTypeSCB" StartPoint="0.5, 0" EndPoint="0.5, 1">
+        <GradientStop Color="#898989" Offset="0"/>
+        <GradientStop Color="#BABABA" Offset="0.5"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="ShortcutButtonSCB">#FFFFFF</SolidColorBrush>
+    <Color x:Key="ShortcutButtonColor">#FFFFFF</Color>
+
 </ResourceDictionary>

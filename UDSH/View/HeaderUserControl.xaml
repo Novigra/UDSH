@@ -2,10 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:UDSH.View"
              mc:Ignorable="d" 
+             Focusable="True"
              d:DesignHeight="80" d:DesignWidth="1200">
     <Grid>
         <Grid.RowDefinitions>
@@ -90,192 +92,544 @@
             <!-- PenTool -->
             <Grid Grid.Column="0">
                 <Button Name="PenTool" Panel.ZIndex="0" Margin="5" Command="{Binding PenToolLeftMouseButtonDown}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="LostFocus">
-                            <i:InvokeCommandAction Command="{Binding PenToolButtonFocus}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
+                    <StackPanel Orientation="Horizontal"> <!-- remove it, if we know mouse location? -->
+                        <Popup x:Name="MyPop" IsOpen="{Binding CanClosePopup}" StaysOpen="False" AllowsTransparency="True" Placement="Mouse" PopupAnimation="Fade" VerticalOffset="5">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Closed">
+                                    <i:InvokeCommandAction Command="{Binding PenToolPopupClosed}"/>
+                                </i:EventTrigger>
 
-                    <StackPanel Orientation="Horizontal">
-                        <!-- remove it, if we know mouse location? -->
-                        <Popup IsOpen="{Binding CanClosePopup}" StaysOpen="False" AllowsTransparency="True" Placement="Mouse" PopupAnimation="Fade" VerticalOffset="5">
-                            <Border BorderThickness="0" Background="{StaticResource SideContentSCB}" Width="300" CornerRadius="10">
-                                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                                    <!-- Project Content -->
-                                    <StackPanel Orientation="Horizontal" Margin="5,5,0,0">
-                                        <!-- Don't forget to bind the textblock to the project name -->
-                                        <TextBlock Text="Monster" FontSize="12" FontWeight="Medium"/>
-                                        <Rectangle Fill="{StaticResource SideContentTitleBarSCB}" Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="240" Height="3" RenderTransformOrigin="0.5,0.5">
-                                            <Rectangle.RenderTransform>
-                                                <TransformGroup>
-                                                    <ScaleTransform/>
-                                                    <SkewTransform/>
-                                                    <RotateTransform/>
-                                                    <TranslateTransform Y="1.5"/>
-                                                </TransformGroup>
-                                            </Rectangle.RenderTransform>
-                                        </Rectangle>
+
+                            </i:Interaction.Triggers>
+
+                            <Border BorderThickness="0" KeyDown="HandleKeyDown" KeyUp="HandleKeyUp" Background="{StaticResource SideContentSCB}" Width="300" CornerRadius="10">
+                                <Grid>
+                                    <StackPanel x:Name="StackCollision" FocusVisualStyle="{x:Null}" Focusable="True" Panel.ZIndex="0" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="MouseEnter">
+                                                <i:InvokeCommandAction Command="{Binding MouseEnterPenToolPopup}" CommandParameter="{Binding ElementName=StackCollision}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                        <!-- Project Content -->
+                                        <StackPanel Orientation="Horizontal" Margin="5,5,0,0">
+                                            <!-- Don't forget to bind the textblock to the project name -->
+                                            <TextBlock Text="Monster" FontSize="12" FontWeight="Medium"/>
+                                            <Rectangle Fill="{StaticResource SideContentTitleBarSCB}" Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="240" Height="3" RenderTransformOrigin="0.5,0.5">
+                                                <Rectangle.RenderTransform>
+                                                    <TransformGroup>
+                                                        <ScaleTransform/>
+                                                        <SkewTransform/>
+                                                        <RotateTransform/>
+                                                        <TranslateTransform Y="1.5"/>
+                                                    </TransformGroup>
+                                                </Rectangle.RenderTransform>
+                                            </Rectangle>
+                                        </StackPanel>
+
+                                        <!-- New File -->
+                                        <Grid Focusable="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/NewFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="New File" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="3" Command="{Binding NewFile}" IsEnabled="{Binding CanEnablePenToolButton}"/>
+                                            <Button Grid.Column="2" Style="{StaticResource QADots}" Command="{Binding QNewFile}" CommandParameter="0"/>
+                                            <Border Grid.Column="2" Style="{StaticResource QABorder}"/>
+                                            <Border Grid.Column="2" CornerRadius="20" BorderThickness="0" Background="#393E46" Panel.ZIndex="2" HorizontalAlignment="Right" VerticalAlignment="Center" Height="{StaticResource QuickActionDotsWidthAndHeight}" Width="{StaticResource QuickActionDotsWidthAndHeight}" Margin="{StaticResource QuickActionDotsMargins}" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+                                                <Border.RenderTransform>
+                                                    <ScaleTransform ScaleX="0.0" ScaleY="0.0"/>
+                                                </Border.RenderTransform>
+
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Opacity" Value="1"/>
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="0"/>
+                                                                    <Condition Binding="{Binding PlayDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <RemoveStoryboard BeginStoryboardName="Rev1"/>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="0"/>
+                                                                    <Condition Binding="{Binding ReverseDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <BeginStoryboard x:Name="Rev1">
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                            </Border>
+                                            <Rectangle Grid.ColumnSpan="2" Style="{StaticResource DisabledPenToolButton}"/> <!-- Stopped Here!!!! -->
+                                        </Grid>
+
+                                        <!-- Save -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="MyHouseWad.mkc" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="4" Command="{Binding SaveFile}" IsEnabled="{Binding CanEnablePenToolButton}"/>
+                                            <Button Grid.Column="3" Style="{StaticResource QADots}" Command="{Binding QSaveFile}" CommandParameter="1"/>
+                                            <Border Grid.Column="3" Style="{StaticResource QABorder}"/>
+                                            <Border Grid.Column="3" CornerRadius="20" BorderThickness="0" Background="#393E46" Panel.ZIndex="2" HorizontalAlignment="Right" VerticalAlignment="Center" Height="{StaticResource QuickActionDotsWidthAndHeight}" Width="{StaticResource QuickActionDotsWidthAndHeight}" Margin="{StaticResource QuickActionDotsMargins}" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+                                                <Border.RenderTransform>
+                                                    <ScaleTransform ScaleX="0.0" ScaleY="0.0"/>
+                                                </Border.RenderTransform>
+
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="1"/>
+                                                                    <Condition Binding="{Binding PlayDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <RemoveStoryboard BeginStoryboardName="Rev2"/>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="1"/>
+                                                                    <Condition Binding="{Binding ReverseDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <BeginStoryboard x:Name="Rev2">
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                            </Border>
+                                            <Rectangle Grid.ColumnSpan="3" Style="{StaticResource DisabledPenToolButton}"/>
+                                        </Grid>
+
+                                        <!-- Save All -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveAllFiles.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save All" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="3" Command="{Binding SaveAllFiles}" IsEnabled="{Binding CanEnablePenToolButton}"/>
+                                            <Button Grid.Column="2" Style="{StaticResource QADots}" Command="{Binding QSaveAllFiles}" CommandParameter="2"/>
+                                            <Border Grid.Column="2" Style="{StaticResource QABorder}"/>
+                                            <Border Grid.Column="2" CornerRadius="20" BorderThickness="0" Background="#393E46" Panel.ZIndex="2" HorizontalAlignment="Right" VerticalAlignment="Center" Height="{StaticResource QuickActionDotsWidthAndHeight}" Width="{StaticResource QuickActionDotsWidthAndHeight}" Margin="{StaticResource QuickActionDotsMargins}" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+                                                <Border.RenderTransform>
+                                                    <ScaleTransform ScaleX="0.0" ScaleY="0.0"/>
+                                                </Border.RenderTransform>
+
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="2"/>
+                                                                    <Condition Binding="{Binding PlayDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <RemoveStoryboard BeginStoryboardName="Rev3"/>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="2"/>
+                                                                    <Condition Binding="{Binding ReverseDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <BeginStoryboard x:Name="Rev3">
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                            </Border>
+                                            <Rectangle Grid.ColumnSpan="2" Style="{StaticResource DisabledPenToolButton}"/>
+                                        </Grid>
+
+                                        <!-- Delete -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition Width="auto"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/DeleteFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Delete" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="MyHouseWad.mkc" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="4" Command="{Binding DeleteFile}" IsEnabled="{Binding CanEnablePenToolButton}"/>
+                                            <Button Grid.Column="3" Style="{StaticResource QADots}" Command="{Binding QDeleteFile}" CommandParameter="3"/>
+                                            <Border Grid.Column="3" Style="{StaticResource QABorder}"/>
+                                            <Border Grid.Column="3" CornerRadius="20" BorderThickness="0" Background="#393E46" Panel.ZIndex="2" HorizontalAlignment="Right" VerticalAlignment="Center" Height="{StaticResource QuickActionDotsWidthAndHeight}" Width="{StaticResource QuickActionDotsWidthAndHeight}" Margin="{StaticResource QuickActionDotsMargins}" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+                                                <Border.RenderTransform>
+                                                    <ScaleTransform ScaleX="0.0" ScaleY="0.0"/>
+                                                </Border.RenderTransform>
+
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="3"/>
+                                                                    <Condition Binding="{Binding PlayDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <RemoveStoryboard BeginStoryboardName="Rev4"/>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="3"/>
+                                                                    <Condition Binding="{Binding ReverseDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <BeginStoryboard x:Name="Rev4">
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                            </Border>
+                                            <Rectangle Grid.ColumnSpan="3" Style="{StaticResource DisabledPenToolButton}"/>
+                                        </Grid>
+
+                                        <!-- Localization -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/Localization.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Localization" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="3" Command="{Binding Localization}" IsEnabled="{Binding CanEnablePenToolButton}"/>
+                                            <Button Grid.Column="2" Style="{StaticResource QADots}" Command="{Binding QLocalization}" CommandParameter="4"/>
+                                            <Border Grid.Column="2" Style="{StaticResource QABorder}"/>
+                                            <Border Grid.Column="2" CornerRadius="20" BorderThickness="0" Background="#393E46" Panel.ZIndex="2" HorizontalAlignment="Right" VerticalAlignment="Center" Height="{StaticResource QuickActionDotsWidthAndHeight}" Width="{StaticResource QuickActionDotsWidthAndHeight}" Margin="{StaticResource QuickActionDotsMargins}" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+                                                <Border.RenderTransform>
+                                                    <ScaleTransform ScaleX="0.0" ScaleY="0.0"/>
+                                                </Border.RenderTransform>
+
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="4"/>
+                                                                    <Condition Binding="{Binding PlayDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <RemoveStoryboard BeginStoryboardName="Rev5"/>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="4"/>
+                                                                    <Condition Binding="{Binding ReverseDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <BeginStoryboard x:Name="Rev5">
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                            </Border>
+                                            <Rectangle Grid.ColumnSpan="2" Style="{StaticResource DisabledPenToolButton}"/>
+                                        </Grid>
+
+                                        <!-- Content -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Content" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="3" Command="{Binding ContentFolder}" IsEnabled="{Binding CanEnablePenToolButton}"/>
+                                            <Button Grid.Column="2" Style="{StaticResource QADots}" Command="{Binding QContentFolder}" CommandParameter="5"/>
+                                            <Border Grid.Column="2" Style="{StaticResource QABorder}"/>
+                                            <Border Grid.Column="2" CornerRadius="20" BorderThickness="0" Background="#393E46" Panel.ZIndex="2" HorizontalAlignment="Right" VerticalAlignment="Center" Height="{StaticResource QuickActionDotsWidthAndHeight}" Width="{StaticResource QuickActionDotsWidthAndHeight}" Margin="{StaticResource QuickActionDotsMargins}" IsHitTestVisible="False" RenderTransformOrigin="0.5,0.5">
+                                                <Border.RenderTransform>
+                                                    <ScaleTransform ScaleX="0.0" ScaleY="0.0"/>
+                                                </Border.RenderTransform>
+
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="5"/>
+                                                                    <Condition Binding="{Binding PlayDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <RemoveStoryboard BeginStoryboardName="Rev6"/>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="0.0"
+                                                                                             To="1.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding CurrentDot}" Value="5"/>
+                                                                    <Condition Binding="{Binding ReverseDotAnim}" Value="True"/>
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.EnterActions>
+                                                                    <BeginStoryboard x:Name="Rev6">
+                                                                        <Storyboard>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                                                             From="1.0"
+                                                                                             To="0.0"
+                                                                                             Duration="0:0:0.1"/>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </MultiDataTrigger.EnterActions>
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                            </Border>
+                                            <Rectangle Grid.ColumnSpan="2" Style="{StaticResource DisabledPenToolButton}"/>
+                                        </Grid>
+
+                                        <!-- ############################ -->
+
+                                        <!-- UDSH Content -->
+                                        <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                                            <TextBlock Text="UDSH" FontSize="12" FontWeight="Medium"/>
+                                            <Rectangle Fill="{StaticResource SideContentTitleBarSCB}" Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="250" Height="3" RenderTransformOrigin="0.5,0.5">
+                                                <Rectangle.RenderTransform>
+                                                    <TransformGroup>
+                                                        <ScaleTransform/>
+                                                        <SkewTransform/>
+                                                        <RotateTransform/>
+                                                        <TranslateTransform Y="1.5"/>
+                                                    </TransformGroup>
+                                                </Rectangle.RenderTransform>
+                                            </Rectangle>
+                                        </StackPanel>
+
+                                        <!-- New Project -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderNewContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="New Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="2"/>
+                                        </Grid>
+
+                                        <!-- Switch Project -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderSwitchContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Switch Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="2"/>
+                                        </Grid>
+
+                                        <!-- Save Project As... -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderSaveContentAs.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save Project As..." FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="2"/>
+                                        </Grid>
+
+                                        <!-- Delete Project -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderDeleteContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Delete Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="2"/>
+                                        </Grid>
+
+                                        <!-- Import Project -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderImportContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Import Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="2"/>
+                                        </Grid>
+
+                                        <!-- Open Directory -->
+                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderOpenContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Open Directory" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <Button Grid.ColumnSpan="2"/>
+                                        </Grid>
                                     </StackPanel>
-
-                                    <!-- New File -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/NewFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="New File" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="3" Command="{Binding NewFile}"/>
-                                        <Button Grid.Column="2" Background="Blue" HorizontalAlignment="Right" VerticalAlignment="Center" Height="20" Width="20" Margin="0,0,5,0" Command="{Binding QNewFile}" CommandParameter="0"/>
-                                    </Grid>
-
-                                    <!-- Save -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="MyHouseWad.mkc" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="4" Command="{Binding SaveFile}"/>
-                                        <Button Grid.Column="3" Background="Blue" HorizontalAlignment="Right" VerticalAlignment="Center" Height="20" Width="20" Margin="0,0,5,0" Command="{Binding QSaveFile}" CommandParameter="1"/>
-                                    </Grid>
-
-                                    <!-- Save All -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveAllFiles.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save All" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="3" Command="{Binding SaveAllFiles}"/>
-                                        <Button Grid.Column="2" Background="Blue" HorizontalAlignment="Right" VerticalAlignment="Center" Height="20" Width="20" Margin="0,0,5,0" Command="{Binding QSaveAllFiles}" CommandParameter="2"/>
-                                    </Grid>
-
-                                    <!-- Delete -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/DeleteFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Delete" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="MyHouseWad.mkc" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="3"/>
-                                    </Grid>
-
-                                    <!-- Localization -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/Localization.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Localization" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="2"/>
-                                    </Grid>
-
-                                    <!-- Content -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Content" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="2"/>
-                                    </Grid>
-
-                                    <!-- ############################ -->
-
-                                    <!-- UDSH Content -->
-                                    <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
-                                        <TextBlock Text="UDSH" FontSize="12" FontWeight="Medium"/>
-                                        <Rectangle Fill="{StaticResource SideContentTitleBarSCB}" Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="250" Height="3" RenderTransformOrigin="0.5,0.5">
-                                            <Rectangle.RenderTransform>
-                                                <TransformGroup>
-                                                    <ScaleTransform/>
-                                                    <SkewTransform/>
-                                                    <RotateTransform/>
-                                                    <TranslateTransform Y="1.5"/>
-                                                </TransformGroup>
-                                            </Rectangle.RenderTransform>
-                                        </Rectangle>
-                                    </StackPanel>
-
-                                    <!-- New Project -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderNewContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="New Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="2"/>
-                                    </Grid>
-
-                                    <!-- Switch Project -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderSwitchContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Switch Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="2"/>
-                                    </Grid>
-
-                                    <!-- Save Project As... -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderSaveContentAs.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save Project As..." FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="2"/>
-                                    </Grid>
-
-                                    <!-- Delete Project -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderDeleteContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Delete Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="2"/>
-                                    </Grid>
-
-                                    <!-- Import Project -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderImportContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Import Project" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="2"/>
-                                    </Grid>
-
-                                    <!-- Open Directory -->
-                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/FolderOpenContent.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Open Directory" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                        <Button Grid.ColumnSpan="2"/>
-                                    </Grid>
-                                </StackPanel>
+                                </Grid>
+                                
 
                                 <!--<TextBlock Text="Testing my popup!!!"/>-->
                             </Border>
@@ -322,8 +676,8 @@
                                         <BeginStoryboard>
                                             <Storyboard>
                                                 <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[2].Angle"
-                                 To="0.0"
-                                 Duration="0:0:0.1"/>
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.1"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </DataTrigger.EnterActions>
@@ -331,8 +685,8 @@
                                         <BeginStoryboard>
                                             <Storyboard>
                                                 <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Children[2].Angle"
-                                 To="35.0"
-                                 Duration="0:0:0.1"/>
+                                                                 To="35.0"
+                                                                 Duration="0:0:0.1"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </DataTrigger.ExitActions>
@@ -362,13 +716,20 @@
                 <!-- Quick Action - One -->
                 <Button Grid.Column="1" Name="QuickAction1" Margin="5" Command="{Binding QuickActionButton1}" IsEnabled="{Binding IsQAButtonEnabled1}"/>
                 <Image Grid.Column="1" Margin="7"> <!-- Source="/Resource/SaveFile.png" -->
+                    <Image.RenderTransform>
+                        <TranslateTransform X="0" Y="0"/>
+                    </Image.RenderTransform>
+                    
                     <Image.Style>
                         <Style TargetType="Image">
                             <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
-                            <Setter Property="Source" Value="/Resource/Placeholder.png"/>
+                            <Setter Property="Opacity" Value="0"/>
                             <Setter Property="IsHitTestVisible" Value="False"/>
 
                             <Style.Triggers>
+                                <DataTrigger Binding="{Binding QButtonImage1}" Value="-1">
+                                    <Setter Property="Source" Value="/Resource/Placeholder.png"/>
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding QButtonImage1}" Value="0">
                                     <Setter Property="Source" Value="/Resource/NewFile.png"/>
                                 </DataTrigger>
@@ -378,6 +739,72 @@
                                 <DataTrigger Binding="{Binding QButtonImage1}" Value="2">
                                     <Setter Property="Source" Value="/Resource/SaveAllFiles.png"/>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage1}" Value="3">
+                                    <Setter Property="Source" Value="/Resource/DeleteFile.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage1}" Value="4">
+                                    <Setter Property="Source" Value="/Resource/Localization.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage1}" Value="5">
+                                    <Setter Property="Source" Value="/Resource/FolderContent.png"/>
+                                </DataTrigger>
+
+                                <!-- Animation -->
+                                <DataTrigger Binding="{Binding CanPlayAssignAnim1}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <RemoveStoryboard BeginStoryboardName="A1"/>
+                                        <RemoveStoryboard BeginStoryboardName="B1"/>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="0.0"
+                                                                 To="1.0"
+                                                                 Duration="0:0:0.2"/>
+
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 From="5.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding CanPlayReassignAnim1}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="A1">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.2" AutoReverse="True"/>
+
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 From="0.0"
+                                                                 To="5.0"
+                                                                 Duration="0:0:0.2" AutoReverse="True"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding CanPlayRemoveAnim1}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="B1">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.2"/>
+
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 From="0.0"
+                                                                 To="5.0"
+                                                                 Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
@@ -386,13 +813,19 @@
                 <!-- Quick Action - Two -->
                 <Button Grid.Column="2" Name="QuickAction2" Margin="5" Command="{Binding QuickActionButton2}" IsEnabled="{Binding IsQAButtonEnabled2}"/>
                 <Image Grid.Column="2" Margin="7">
+                    <Image.RenderTransform>
+                        <TranslateTransform X="0" Y="0"/>
+                    </Image.RenderTransform>
+                    
                     <Image.Style>
                         <Style TargetType="Image">
                             <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
-                            <Setter Property="Source" Value="/Resource/Placeholder.png"/>
                             <Setter Property="IsHitTestVisible" Value="False"/>
 
                             <Style.Triggers>
+                                <DataTrigger Binding="{Binding QButtonImage2}" Value="-1">
+                                    <Setter Property="Source" Value="/Resource/Placeholder.png"/>
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding QButtonImage2}" Value="0">
                                     <Setter Property="Source" Value="/Resource/NewFile.png"/>
                                 </DataTrigger>
@@ -402,6 +835,72 @@
                                 <DataTrigger Binding="{Binding QButtonImage2}" Value="2">
                                     <Setter Property="Source" Value="/Resource/SaveAllFiles.png"/>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage2}" Value="3">
+                                    <Setter Property="Source" Value="/Resource/DeleteFile.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage2}" Value="4">
+                                    <Setter Property="Source" Value="/Resource/Localization.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage2}" Value="5">
+                                    <Setter Property="Source" Value="/Resource/FolderContent.png"/>
+                                </DataTrigger>
+
+                                <!-- Animation -->
+                                <DataTrigger Binding="{Binding CanPlayAssignAnim2}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <RemoveStoryboard BeginStoryboardName="A2"/>
+                                        <RemoveStoryboard BeginStoryboardName="B2"/>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="0.0"
+                                                                 To="1.0"
+                                                                 Duration="0:0:0.2"/>
+
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 From="5.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding CanPlayReassignAnim2}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="A2">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.2" AutoReverse="True"/>
+
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 From="0.0"
+                                                                 To="5.0"
+                                                                 Duration="0:0:0.2" AutoReverse="True"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding CanPlayRemoveAnim2}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="B2">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.2"/>
+
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 From="0.0"
+                                                                 To="5.0"
+                                                                 Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
@@ -410,13 +909,19 @@
                 <!-- Quick Action - Three -->
                 <Button Grid.Column="3" Name="QuickAction3" Margin="5" Command="{Binding QuickActionButton3}" IsEnabled="{Binding IsQAButtonEnabled3}"/>
                 <Image Grid.Column="3" Margin="7">
+                    <Image.RenderTransform>
+                        <TranslateTransform X="0" Y="0"/>
+                    </Image.RenderTransform>
+                    
                     <Image.Style>
                         <Style TargetType="Image">
                             <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
-                            <Setter Property="Source" Value="/Resource/Placeholder.png"/>
                             <Setter Property="IsHitTestVisible" Value="False"/>
 
                             <Style.Triggers>
+                                <DataTrigger Binding="{Binding QButtonImage3}" Value="-1">
+                                    <Setter Property="Source" Value="/Resource/Placeholder.png"/>
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding QButtonImage3}" Value="0">
                                     <Setter Property="Source" Value="/Resource/NewFile.png"/>
                                 </DataTrigger>
@@ -425,6 +930,72 @@
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding QButtonImage3}" Value="2">
                                     <Setter Property="Source" Value="/Resource/SaveAllFiles.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage3}" Value="3">
+                                    <Setter Property="Source" Value="/Resource/DeleteFile.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage3}" Value="4">
+                                    <Setter Property="Source" Value="/Resource/Localization.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding QButtonImage3}" Value="5">
+                                    <Setter Property="Source" Value="/Resource/FolderContent.png"/>
+                                </DataTrigger>
+
+                                <!-- Animation -->
+                                <DataTrigger Binding="{Binding CanPlayAssignAnim3}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <RemoveStoryboard BeginStoryboardName="A3"/>
+                                        <RemoveStoryboard BeginStoryboardName="B3"/>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="0.0"
+                                                                 To="1.0"
+                                                                 Duration="0:0:0.2"/>
+
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 From="5.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding CanPlayReassignAnim3}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="A3">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.2" AutoReverse="True"/>
+
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 From="0.0"
+                                                                 To="5.0"
+                                                                 Duration="0:0:0.2" AutoReverse="True"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding CanPlayRemoveAnim3}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard x:Name="B3">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 From="1.0"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.2"/>
+
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 From="0.0"
+                                                                 To="5.0"
+                                                                 Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -439,49 +1010,56 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Separator -->
-                <Rectangle Grid.Column="0" Name="QOSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3" RenderTransformOrigin="0.5,0.5">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Loaded">
-                            <i:InvokeCommandAction Command="{Binding Sep}" CommandParameter="{Binding ElementName=QOSeparator}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <Rectangle.RenderTransform>
-                        <TranslateTransform X="-130" Y="0"/>
-                    </Rectangle.RenderTransform>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding LoadedContentLayoutGrid}" CommandParameter="{Binding ElementName=OpenedFiles}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
 
-                    <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroup Name="QuickActionStates">
-                            <VisualState Name="State0">
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                <Grid.RenderTransform>
+                    <TranslateTransform X="-130" Y="0"/>
+                </Grid.RenderTransform>
+
+                <!-- Visual States are more managable in this situation more than data triggers -->
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup Name="QuickActionStates">
+                        <VisualState Name="State0">
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
                                  To="-130.0"
                                  Duration="0:0:0.1"/>
-                                </Storyboard>
-                            </VisualState>
-                            <VisualState Name="State1">
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState Name="State1">
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
                                  To="-85.0"
                                  Duration="0:0:0.1"/>
-                                </Storyboard>
-                            </VisualState>
-                            <VisualState Name="State2">
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState Name="State2">
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
                                  To="-43.0"
                                  Duration="0:0:0.1"/>
-                                </Storyboard>
-                            </VisualState>
-                            <VisualState Name="State3">
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState Name="State3">
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
                                  To="0.0"
                                  Duration="0:0:0.1"/>
-                                </Storyboard>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateManager.VisualStateGroups>
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+
+                <!-- Separator -->
+                <Rectangle Grid.Column="0" Name="QOSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3" RenderTransformOrigin="0.5,0.5">
+                    
+                    
+
+                    
                 </Rectangle>
 
 

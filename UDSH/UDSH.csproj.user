@@ -19,12 +19,18 @@
     <Compile Update="View\HeaderUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\NewFileCreationWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\SideContentUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\BorderStyles.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\ButtonStyles.xaml">
@@ -58,6 +64,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\HeaderUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\NewFileCreationWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\SideContentUserControl.xaml">

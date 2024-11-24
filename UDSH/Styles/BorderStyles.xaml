@@ -1,0 +1,59 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:System="clr-namespace:System;assembly=mscorlib">
+
+    <Thickness x:Key="QuickActionDotsMargins" Left="0" Top="0" Right="8" Bottom="0"/>
+    <System:Double x:Key="QuickActionDotsWidthAndHeight">17</System:Double>
+
+    <Style TargetType="Border" x:Key="QABorderStructure">
+        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="BorderBrush" Value="{StaticResource QuickActionDotsSCB}"/>
+        <Setter Property="Panel.ZIndex" Value="1"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Height" Value="{StaticResource QuickActionDotsWidthAndHeight}"/>
+        <Setter Property="Width" Value="{StaticResource QuickActionDotsWidthAndHeight}"/>
+        <Setter Property="Margin" Value="{StaticResource QuickActionDotsMargins}"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+    </Style>
+
+    <Style TargetType="Border" x:Key="QABorderInner" BasedOn="{StaticResource QABorderStructure}">
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="0.0" ScaleY="0.0"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Border" x:Key="QABorder" BasedOn="{StaticResource QABorderStructure}">
+        <Setter Property="Opacity" Value="0"/>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsPenToolButtonDisabled}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="1.0"
+                                             Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.0"
+                                             Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

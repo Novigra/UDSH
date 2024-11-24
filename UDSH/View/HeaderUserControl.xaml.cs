@@ -6,6 +6,8 @@ namespace UDSH.View
 {
     public partial class HeaderUserControl : UserControl
     {
+        private HeaderUserControlViewModel viewModel;
+
         public HeaderUserControl()
         {
             InitializeComponent();
@@ -13,12 +15,19 @@ namespace UDSH.View
             PagesList.Items.Add(new Button());
             PagesList.Items.Add(new Button());*/
 
-            HeaderUserControlViewModel viewModel = new HeaderUserControlViewModel();
+            viewModel = new HeaderUserControlViewModel();
             DataContext = viewModel;
 
             PagesList.Items.Add(new ListViewItem());
             PagesList.Items.Add(new ListViewItem());
             PagesList.Items.Add(new ListViewItem());
+
+            Loaded += OnUserControlLoaded;
+        }
+
+        private void OnUserControlLoaded(object sender, RoutedEventArgs e)
+        {
+            viewModel.MainWindow = Window.GetWindow(this);
         }
 
         // Buttons to control the window, there's no need to bind and write the code in the ViewModel section.
@@ -36,13 +45,23 @@ namespace UDSH.View
                 OwnerWindow.WindowState = WindowState.Normal;
             else
                 OwnerWindow.WindowState = WindowState.Maximized;
-
-            
         }
 
         private void CloseButton(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void HandleKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if(viewModel != null)
+                viewModel.LockPenToolButtons(e);
+        }
+
+        private void HandleKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (viewModel != null)
+                viewModel.ReleasePenToolButtons(e);
         }
     }
 }

@@ -43,3 +43,6 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\SideContentUserControl.baml
 D:\Projects\UDSH\UDSH\bin\Debug\net8.0-windows\Microsoft.Xaml.Behaviors.dll
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\UDSH.csproj.AssemblyReference.cache
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\UDSH.csproj.Up2Date
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\BorderStyles.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NewFileCreationWindow.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NewFileCreationWindow.baml

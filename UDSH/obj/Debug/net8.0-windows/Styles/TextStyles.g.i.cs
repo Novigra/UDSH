@@ -52,7 +52,7 @@ namespace UDSH.Styles {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/UDSH;component/styles/textstyles.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/UDSH;V1.0.0.0;component/styles/textstyles.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Styles\TextStyles.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

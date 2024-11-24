@@ -15,6 +15,7 @@
     <None Remove="Fonts\CourierPrime\CourierPrime-Regular.ttf" />
     <None Remove="Resource\BackgroundIcon.png" />
     <None Remove="Resource\Bird.png" />
+    <None Remove="Resource\BN_Large.png" />
     <None Remove="Resource\Bold.png" />
     <None Remove="Resource\Close.png" />
     <None Remove="Resource\CurrentFiles.png" />
@@ -32,6 +33,8 @@
     <None Remove="Resource\Logo.png" />
     <None Remove="Resource\Max.png" />
     <None Remove="Resource\Minimize.png" />
+    <None Remove="Resource\MKC_Large.png" />
+    <None Remove="Resource\MKM_Large.png" />
     <None Remove="Resource\NewFile.png" />
     <None Remove="Resource\Normal.png" />
     <None Remove="Resource\OpenedFilesDropdown.png" />
@@ -44,6 +47,7 @@
     <None Remove="Resource\Search.png" />
     <None Remove="Resource\Settings.png" />
     <None Remove="Resource\SideContent.png" />
+    <None Remove="Resource\StartWritingIcon.png" />
     <None Remove="Resource\White\AddBN-White.png" />
     <None Remove="Resource\White\AddNote-White.png" />
     <None Remove="Resource\White\DeleteFile-White.png" />
@@ -67,6 +71,7 @@
     <Resource Include="Fonts\CourierPrime\CourierPrime-Regular.ttf" />
     <Resource Include="Resource\BackgroundIcon.png" />
     <Resource Include="Resource\Bird.png" />
+    <Resource Include="Resource\BN_Large.png" />
     <Resource Include="Resource\FolderContent.png" />
     <Resource Include="Resource\FolderDeleteContent.png" />
     <Resource Include="Resource\FolderImportContent.png" />
@@ -75,11 +80,14 @@
     <Resource Include="Resource\FolderSaveContentAs.png" />
     <Resource Include="Resource\FolderSwitchContent.png" />
     <Resource Include="Resource\Localization.png" />
+    <Resource Include="Resource\MKC_Large.png" />
+    <Resource Include="Resource\MKM_Large.png" />
     <Resource Include="Resource\Pin.png" />
     <Resource Include="Resource\Placeholder.png" />
     <Resource Include="Resource\SaveAllFiles.png" />
     <Resource Include="Resource\Search.png" />
     <Resource Include="Resource\SideContent.png" />
+    <Resource Include="Resource\StartWritingIcon.png" />
     <Resource Include="Resource\White\AddBN-White.png" />
     <Resource Include="Resource\White\AddNote-White.png" />
     <Resource Include="Resource\White\Bold.png" />
