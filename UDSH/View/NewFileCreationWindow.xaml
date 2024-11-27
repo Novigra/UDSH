@@ -19,6 +19,15 @@
         <System:String x:Key="CSFDataType">CSF</System:String>
         <System:String x:Key="BNDataType">BN</System:String>
         <System:String x:Key="MiscDataType">MISC</System:String>
+
+        <Storyboard x:Key="ChooseNameAnim">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                     To="0.0"
+                     Duration="0:0:0.5"/>
+            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                     To="-150.0"
+                     Duration="0:0:0.5" Completed="Storyboard_Completed"/>
+        </Storyboard>
     </Window.Resources>
 
     <Grid x:Name="WindowLayout">
@@ -40,26 +49,100 @@
             </StackPanel>
 
             <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,30,0">
-                <Button Width="40" Height="40" Command="{Binding CloseWindow}"/>
+                <Button Width="40" Height="40" Style="{StaticResource NewFileCreationCloseButton}" Command="{Binding CloseWindow}"/>
                 <Image Source="/Resource/Close.png" Width="10" Height="10"/>
             </Grid>
         </Grid>
 
         <!-- Choose &. Name textblocks -->
-        <!--
         <Grid Grid.Row="1" Margin="0,-10,0,10">
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Choose" FontSize="40" Style="{StaticResource DefaultText}"/>
-                    <TextBlock Text="." FontSize="40" Style="{StaticResource DefaultText}"/>
-                    <TextBlock Text="." FontSize="40" Style="{StaticResource DefaultText}"/>
-                    <TextBlock Text="." FontSize="40" Style="{StaticResource DefaultText}"/>
+                    <TextBlock Text="." FontSize="40" Margin="6,0,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimationUsingKeyFrames BeginTime="0:0:0.25" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                 Duration="0:0:1" AutoReverse="True" RepeatBehavior="Forever">
+                                                    <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.27"/>
+                                                    <LinearDoubleKeyFrame Value="-10" KeyTime="0:0:1"/>
+
+                                                </DoubleAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock Text="." FontSize="40">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                               BeginTime="0:0:0.6" Duration="0:0:1" AutoReverse="True" RepeatBehavior="Forever">
+                                                    <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.27"/>
+                                                    <LinearDoubleKeyFrame Value="-10" KeyTime="0:0:1"/>
+                                                </DoubleAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock Text="." FontSize="40">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                               BeginTime="0:0:0.9" Duration="0:0:1" AutoReverse="True" RepeatBehavior="Forever">
+                                                    <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.27"/>
+                                                    <LinearDoubleKeyFrame Value="-10" KeyTime="0:0:1"/>
+                                                </DoubleAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StackPanel>
             </Grid>
-        </Grid>
-        -->
 
-        <Grid Grid.Row="1" Margin="0,-13,0,13">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform X="0" Y="0"/>
+                        </Setter.Value>
+                    </Setter>
+
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsItemSelected}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource ChooseNameAnim}"/>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
+        
+
+        <Grid Grid.Row="1" Margin="0,-13,0,13"> <!-- Don't forget to put row back to 1 -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="Name" FontSize="40" Style="{StaticResource DefaultText}"/>
                 <Border HorizontalAlignment="Stretch" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
@@ -69,22 +152,33 @@
                         <!-- Text Container -->
                         <Grid Margin="4,0,4,0" VerticalAlignment="Center">
                             <!-- Search Highlight -->
-                            <TextBlock Text="Habibi Leh" Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="20" FontWeight="SemiBold" Focusable="False">
+                            <TextBlock x:Name="HighlightText" Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="20" FontWeight="SemiBold" Focusable="False">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Visible"/> <!-- Should be collapsed!!! -->
+                                        <Setter Property="Visibility" Value="Collapsed"/> <!-- Should be collapsed!!! -->
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SearchText}" Value="">
+                                            <DataTrigger Binding="{Binding NewFileName}" Value="">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
+                                
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Loaded">
+                                        <i:InvokeCommandAction Command="{Binding LoadedText}" CommandParameter="{Binding ElementName=HighlightText}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                             </TextBlock>
 
                             <!-- Search Text -->
                             <TextBox x:Name="UserSearchBox" Background="{StaticResource MainBlankSCB}" FontSize="20" FontWeight="Bold" Width="400"
-                                     Text="{Binding SearchText}" Panel.ZIndex="1" Focusable="{Binding CanSearchBoxTextBeFocusable}" BorderThickness="0" FocusVisualStyle="{x:Null}">
+                                     Text="{Binding NewFileName, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding FileNameChanged}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
 
                             </TextBox>
 
@@ -92,6 +186,35 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
+
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform X="350" Y="0"/>
+                        </Setter.Value>
+                    </Setter>
+
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsItemSelected}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="1.0"
+                                             Duration="0:0:0.8" BeginTime="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                             To="0.0"
+                                             Duration="0:0:0.8" BeginTime="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
         </Grid>
 
         <!-- Using Stack -->
@@ -429,12 +552,53 @@
             </Border>
         </Grid>
 
+        <!-- New File Creation -->
         <Grid Grid.Row="3">
             <Grid HorizontalAlignment="Right" Width="210" Margin="0,20,30,20">
-                <Button Style="{StaticResource NewFileCreationButton}"/>
+                <Button Style="{StaticResource NewFileCreationButton}" Command="{Binding NewFileCreation}"/>
                 <TextBlock Text="Start Writing!" Style="{StaticResource DefaultText}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0" IsHitTestVisible="False"/>
                 <Image Source="/Resource/StartWritingIcon.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,9,10,11"/>
             </Grid>
+
+            <Grid.Resources>
+                <Style TargetType="Grid">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform X="70" Y="0"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CanCreateFile}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         To="1.0"
+                                                         Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                         To="0.0"
+                                                         Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         To="0.0"
+                                                         Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                         To="70.0"
+                                                         Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Resources>
         </Grid>
 
         <i:Interaction.Triggers>
@@ -456,13 +620,13 @@
                         <BeginStoryboard>
                             <Storyboard>
                                 <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                         From="0.0"
-                                         To="1.0"
-                                         Duration="0:0:0.3"/>
+                                                 From="0.0"
+                                                 To="1.0"
+                                                 Duration="0:0:0.3"/>
                                 <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
-                                         From="100.0"
-                                         To="0.0"
-                                         Duration="0:0:0.3"/>
+                                                 From="100.0"
+                                                 To="0.0"
+                                                 Duration="0:0:0.3"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </EventTrigger>

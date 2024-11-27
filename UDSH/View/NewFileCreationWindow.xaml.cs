@@ -8,12 +8,18 @@ namespace UDSH.View
     /// </summary>
     public partial class NewFileCreationWindow : Window
     {
+        private NewFileCreationWindowViewModel viewModel;
         public NewFileCreationWindow(Window ParentWindow)
         {
             Owner = ParentWindow;
             InitializeComponent();
-            NewFileCreationWindowViewModel viewModel = new NewFileCreationWindowViewModel(this);
+            viewModel = new NewFileCreationWindowViewModel(this);
             DataContext = viewModel;
+        }
+
+        private void Storyboard_Completed(object sender, EventArgs e)
+        {
+            viewModel.PlayHighlightedText();
         }
     }
 }

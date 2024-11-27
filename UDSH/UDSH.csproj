@@ -19,6 +19,7 @@
     <None Remove="Resource\Bold.png" />
     <None Remove="Resource\Close.png" />
     <None Remove="Resource\CurrentFiles.png" />
+    <None Remove="Resource\Data\NewFileHighlightedTitle.json" />
     <None Remove="Resource\DeleteFile.png" />
     <None Remove="Resource\Dropdown.png" />
     <None Remove="Resource\FolderContent.png" />
@@ -58,6 +59,10 @@
     <None Remove="Resource\White\SaveFile-White.png" />
     <None Remove="Resource\White\Strikethrough.png" />
     <None Remove="Resource\White\Underline.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\Data\NewFileHighlightedTitle.json" />
   </ItemGroup>
 
   <ItemGroup>

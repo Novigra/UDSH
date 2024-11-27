@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "keyHgRKAF5Y=",
+  "success": true,
+  "projectFilePath": "D:\\Projects\\UDSH\\UDSH\\UDSH.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Lenovo\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.135\\microsoft.xaml.behaviors.wpf.1.1.135.nupkg.sha512"
+  ],
+  "logs": []
+}
