@@ -61,15 +61,19 @@
     <SolidColorBrush x:Key="MainToggleTextSCB">#393E46</SolidColorBrush>
     <SolidColorBrush x:Key="MainActionTextSCB">#757575</SolidColorBrush>
     <SolidColorBrush x:Key="MainSelectedItemTextSCB">#F7F7F7</SolidColorBrush>
+    <SolidColorBrush x:Key="MainMKHighlightedTextSCB">#D9D9D9</SolidColorBrush>
 
     <Color x:Key="MainStandardTextColor">#000000</Color>
     <Color x:Key="MainToggleTextColor">#393E46</Color>
     <Color x:Key="MainActionTextColor">#757575</Color>
     <Color x:Key="MainSelectedItemTextColor">#F7F7F7</Color>
+    <Color x:Key="MainMKHighlightedTextColor">#D9D9D9</Color>
 
     <!-- Background -->
     <SolidColorBrush x:Key="MainBlankSCB">#00707070</SolidColorBrush>
-    
+
+    <Color x:Key="MainBlankColor">#00707070</Color>
+
     <!-- New File Creation Process Window -->
     <LinearGradientBrush x:Key="NewFileProcessBackgroundSCB" StartPoint="0.5, 0" EndPoint="0.5, 1">
         <GradientStop Color="#EEEEEE" Offset="0"/>

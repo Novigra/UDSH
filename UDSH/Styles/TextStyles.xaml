@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    x:Class="UDSH.Styles.TextStyles">
+                    x:Class="UDSH.Styles.TextStyles"
+                    xmlns:local="clr-namespace:UDSH.MVVM">
 
     <Style TargetType="RichTextBox" x:Key="ScriptText">
         <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/CourierPrime/#Courier Prime"/>
@@ -28,6 +29,49 @@
                 <TranslateTransform X="0" Y="0"/>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style TargetType="RichTextBox" x:Key="MKText">
+        <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/Lora/#Lora"/>
+        <Setter Property="TextElement.FontSize" Value="20"/>
+        <Setter Property="Background" Value="{StaticResource MainBlankSCB}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style TargetType="Paragraph">
+        <Setter Property="Background" Value="{StaticResource MainBlankSCB}"/>
+        <Setter Property="Focusable" Value="True"/>
+        
+        <Setter Property="local:ParagraphMouseClickBehavior.MouseLeftButtonDownCommand" Value="{Binding CaptureParagraph}"/>
+        <Setter Property="local:ParagraphMouseClickBehavior.GotKeyboardFocusCommand" Value="{Binding KeyboardFocus}"/>
+        
+
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True"/>
+                    <Condition Property="Focusable" Value="True"/>
+                </MultiTrigger.Conditions>
+                <MultiTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Paragraph.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainMKHighlightedTextColor}"
+                                            Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiTrigger.EnterActions>
+                <MultiTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Paragraph.Background).(SolidColorBrush.Color)"
+                                            To="{StaticResource MainBlankColor}"
+                                            Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiTrigger.ExitActions>
+            </MultiTrigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

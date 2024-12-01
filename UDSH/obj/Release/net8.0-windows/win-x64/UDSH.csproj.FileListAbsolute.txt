@@ -46,3 +46,5 @@ D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\refint\UDSH.dll
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\UDSH.pdb
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\UDSH.genruntimeconfig.cache
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\ref\UDSH.dll
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\View\MKUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\View\MKUserControl.baml

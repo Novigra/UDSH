@@ -2,10 +2,12 @@
 FD:\Projects\UDSH\UDSH\App.xaml;;
 FD:\Projects\UDSH\UDSH\MainWindow.xaml;;
 FD:\Projects\UDSH\UDSH\Styles\ListViewStyles.xaml;;
+FD:\Projects\UDSH\UDSH\Styles\TextStyles.xaml;;
 FD:\Projects\UDSH\UDSH\View\CSFUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\DefaultUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\FooterUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\HeaderUserControl.xaml;;
+FD:\Projects\UDSH\UDSH\View\MKUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\NewFileCreationWindow.xaml;;
 FD:\Projects\UDSH\UDSH\View\SideContentUserControl.xaml;;
 

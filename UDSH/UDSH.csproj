@@ -13,6 +13,14 @@
     <None Remove="Fonts\CourierPrime\CourierPrime-BoldItalic.ttf" />
     <None Remove="Fonts\CourierPrime\CourierPrime-Italic.ttf" />
     <None Remove="Fonts\CourierPrime\CourierPrime-Regular.ttf" />
+    <None Remove="Fonts\Lora\Lora-Bold.ttf" />
+    <None Remove="Fonts\Lora\Lora-BoldItalic.ttf" />
+    <None Remove="Fonts\Lora\Lora-Italic.ttf" />
+    <None Remove="Fonts\Lora\Lora-Medium.ttf" />
+    <None Remove="Fonts\Lora\Lora-MediumItalic.ttf" />
+    <None Remove="Fonts\Lora\Lora-Regular.ttf" />
+    <None Remove="Fonts\Lora\Lora-SemiBold.ttf" />
+    <None Remove="Fonts\Lora\Lora-SemiBoldItalic.ttf" />
     <None Remove="Resource\BackgroundIcon.png" />
     <None Remove="Resource\Bird.png" />
     <None Remove="Resource\BN_Large.png" />
@@ -51,6 +59,9 @@
     <None Remove="Resource\StartWritingIcon.png" />
     <None Remove="Resource\White\AddBN-White.png" />
     <None Remove="Resource\White\AddNote-White.png" />
+    <None Remove="Resource\White\AlignLeft.png" />
+    <None Remove="Resource\White\AlignMid.png" />
+    <None Remove="Resource\White\AlignRight.png" />
     <None Remove="Resource\White\DeleteFile-White.png" />
     <None Remove="Resource\White\Italic.png" />
     <None Remove="Resource\White\LinkBN-White.png" />
@@ -62,6 +73,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Fonts\Lora\Lora-Bold.ttf" />
+    <Resource Include="Fonts\Lora\Lora-BoldItalic.ttf" />
+    <Resource Include="Fonts\Lora\Lora-Italic.ttf" />
+    <Resource Include="Fonts\Lora\Lora-Medium.ttf" />
+    <Resource Include="Fonts\Lora\Lora-MediumItalic.ttf" />
+    <Resource Include="Fonts\Lora\Lora-Regular.ttf" />
+    <Resource Include="Fonts\Lora\Lora-SemiBold.ttf" />
+    <Resource Include="Fonts\Lora\Lora-SemiBoldItalic.ttf" />
     <Resource Include="Resource\Data\NewFileHighlightedTitle.json" />
   </ItemGroup>
 
@@ -95,6 +114,9 @@
     <Resource Include="Resource\StartWritingIcon.png" />
     <Resource Include="Resource\White\AddBN-White.png" />
     <Resource Include="Resource\White\AddNote-White.png" />
+    <Resource Include="Resource\White\AlignLeft.png" />
+    <Resource Include="Resource\White\AlignMid.png" />
+    <Resource Include="Resource\White\AlignRight.png" />
     <Resource Include="Resource\White\Bold.png" />
     <Resource Include="Resource\CurrentFiles.png" />
     <Resource Include="Resource\DeleteFile.png" />

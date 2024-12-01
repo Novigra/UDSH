@@ -46,3 +46,5 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\UDSH.csproj.Up2Date
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\BorderStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NewFileCreationWindow.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NewFileCreationWindow.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\MKUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\MKUserControl.baml

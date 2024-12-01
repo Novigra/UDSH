@@ -16,6 +16,9 @@
     <CornerRadius x:Key="ShortcutButton.Radius">15</CornerRadius>
     <CornerRadius x:Key="NewFileCloseButton.Radius">10</CornerRadius>
 
+    <Style TargetType="Button" x:Key="Placeholder">
+        
+    </Style>
 
     <Style TargetType="Button">
         <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
