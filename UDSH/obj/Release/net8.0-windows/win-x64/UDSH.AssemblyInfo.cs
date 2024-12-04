@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UDSH")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ae846ba39143c0645d3795a582aa61ae49d6be77")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ce085801c9f11492cbc255e5e2e5a902e0bc68d")]
 [assembly: System.Reflection.AssemblyProductAttribute("UDSH")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UDSH")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

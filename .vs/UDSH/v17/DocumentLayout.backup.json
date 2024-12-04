@@ -3,36 +3,36 @@
   "WorkspaceRootPath": "D:\\Projects\\UDSH\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\viewmodel\\mkusercontrolviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\viewmodel\\mkusercontrolviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\mkusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\mkusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\mkusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\mkusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\viewmodel\\mkusercontrolviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\viewmodel\\mkusercontrolviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\styles\\textstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\styles\\textstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\mvvm\\paragraphmouseclickbehavior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\mvvm\\paragraphmouseclickbehavior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\viewmodel\\headerusercontrolviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\viewmodel\\headerusercontrolviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\mkusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\mkusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\headerusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\view\\headerusercontrol.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\mvvm\\paragraphmouseclickbehavior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\mvvm\\paragraphmouseclickbehavior.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|solutionrelative:udsh\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7A0AD3A0-0576-4F53-AC57-450FE711AC32}|UDSH\\UDSH.csproj|d:\\projects\\udsh\\udsh\\view\\headerusercontrol.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
@@ -98,7 +98,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -110,13 +110,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "ParagraphMouseClickBehavior.cs",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\MVVM\\ParagraphMouseClickBehavior.cs",
               "RelativeDocumentMoniker": "UDSH\\MVVM\\ParagraphMouseClickBehavior.cs",
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\MVVM\\ParagraphMouseClickBehavior.cs",
               "RelativeToolTip": "UDSH\\MVVM\\ParagraphMouseClickBehavior.cs",
-              "ViewState": "AgIAAFcAAAAAAAAAAAAIwGcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-30T08:09:41.132Z",
               "EditorCaption": ""
@@ -130,38 +130,37 @@
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\CSFUserControl.xaml",
               "RelativeToolTip": "UDSH\\View\\CSFUserControl.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-11-29T14:13:18.99Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-29T14:13:18.99Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "MKUserControl.xaml.cs",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\MKUserControl.xaml.cs",
               "RelativeDocumentMoniker": "UDSH\\View\\MKUserControl.xaml.cs",
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\MKUserControl.xaml.cs",
               "RelativeToolTip": "UDSH\\View\\MKUserControl.xaml.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAowGMAAABAAAAAAAAAAA==",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAwwGMAAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-29T15:02:17.061Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "MKUserControlViewModel.cs",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\ViewModel\\MKUserControlViewModel.cs",
               "RelativeDocumentMoniker": "UDSH\\ViewModel\\MKUserControlViewModel.cs",
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\ViewModel\\MKUserControlViewModel.cs",
               "RelativeToolTip": "UDSH\\ViewModel\\MKUserControlViewModel.cs",
-              "ViewState": "AgIAAEYAAAAAAAAAAAArwFEAAAA+AAAAAAAAAA==",
+              "ViewState": "AgIAADcAAAAAAAAAAAA0wFEAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-29T19:42:21.509Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "MKUserControl.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\MKUserControl.xaml",
               "RelativeDocumentMoniker": "UDSH\\View\\MKUserControl.xaml",
@@ -173,7 +172,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "App.xaml.cs",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\App.xaml.cs",
               "RelativeDocumentMoniker": "UDSH\\App.xaml.cs",
@@ -181,8 +180,7 @@
               "RelativeToolTip": "UDSH\\App.xaml.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAgwCAAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-27T12:08:55.047Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-27T12:08:55.047Z"
             },
             {
               "$type": "Document",
@@ -194,7 +192,8 @@
               "RelativeToolTip": "UDSH\\Model\\NewFileNameGenerator.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-25T16:06:13.316Z"
+              "WhenOpened": "2024-11-25T16:06:13.316Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -242,7 +241,8 @@
               "RelativeToolTip": "UDSH\\ViewModel\\NewFileCreationWindowViewModel.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAAowDIAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-24T02:21:54.433Z"
+              "WhenOpened": "2024-11-24T02:21:54.433Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -253,8 +253,7 @@
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\NewFileCreationWindow.xaml",
               "RelativeToolTip": "UDSH\\View\\NewFileCreationWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-11-23T18:39:17.557Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-23T18:39:17.557Z"
             },
             {
               "$type": "Document",
@@ -294,26 +293,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 5,
               "Title": "HeaderUserControl.xaml.cs",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\View\\HeaderUserControl.xaml.cs",
               "RelativeDocumentMoniker": "UDSH\\View\\HeaderUserControl.xaml.cs",
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\HeaderUserControl.xaml.cs",
               "RelativeToolTip": "UDSH\\View\\HeaderUserControl.xaml.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAgwBwAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-09-16T15:43:21.182Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 3,
               "Title": "HeaderUserControlViewModel.cs",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\ViewModel\\HeaderUserControlViewModel.cs",
               "RelativeDocumentMoniker": "UDSH\\ViewModel\\HeaderUserControlViewModel.cs",
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\ViewModel\\HeaderUserControlViewModel.cs",
               "RelativeToolTip": "UDSH\\ViewModel\\HeaderUserControlViewModel.cs",
-              "ViewState": "AgIAABEBAAAAAAAAAAAgwIkBAABYAAAAAAAAAA==",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAjwC8BAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-15T23:32:12.752Z",
               "EditorCaption": ""
@@ -327,8 +326,7 @@
               "ToolTip": "D:\\Projects\\UDSH\\UDSH\\View\\HeaderUserControl.xaml",
               "RelativeToolTip": "UDSH\\View\\HeaderUserControl.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-09-15T14:15:57.08Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-15T14:15:57.08Z"
             },
             {
               "$type": "Document",
@@ -367,7 +365,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "TextStyles.xaml",
               "DocumentMoniker": "D:\\Projects\\UDSH\\UDSH\\Styles\\TextStyles.xaml",
               "RelativeDocumentMoniker": "UDSH\\Styles\\TextStyles.xaml",

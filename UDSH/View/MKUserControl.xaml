@@ -88,7 +88,7 @@
                 <!-- Paper -->
                 <Rectangle Panel.ZIndex="0" Fill="{StaticResource MainPaperCSFSCB}"/>
 
-                <RichTextBox x:Name="MKContentLayout" Style="{StaticResource MKText}" PreviewKeyDown="MKContentLayout_KeyDown" SpellCheck.IsEnabled="True" Margin="30,30,30,0" AcceptsReturn="True" AcceptsTab="True">
+                <RichTextBox x:Name="MKContentLayout" Style="{StaticResource MKText}" VerticalScrollBarVisibility="Visible" PreviewKeyDown="MKContentLayout_KeyDown" SpellCheck.IsEnabled="True" Margin="30,30,30,0" AcceptsReturn="True" AcceptsTab="True">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Loaded">
                             <i:InvokeCommandAction Command="{Binding RichTextLoaded}" CommandParameter="{Binding ElementName=MKContentLayout}"/>
@@ -99,12 +99,11 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <FlowDocument TextAlignment="Left">
-                        <Paragraph>This is Para1</Paragraph>
-                        <Paragraph>And, this is Para2</Paragraph>
                     </FlowDocument>
                     
                     <RichTextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding PressedEnter}"/>
+                        <KeyBinding Modifiers="Ctrl" Key="A" Command="{Binding DeleteAll}"/>
                     </RichTextBox.InputBindings>
                     
                 </RichTextBox>

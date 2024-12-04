@@ -79,7 +79,7 @@ namespace UDSH.View
             }
         }
 
-        private void MKContentLayout_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private async void MKContentLayout_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if(e.Key == Key.Space)
             {
@@ -97,7 +97,21 @@ namespace UDSH.View
             }
             else if (e.Key == Key.Back)
             {
-                viewModel.SetLastPickedParagraphAfterDeletion();
+                bool BackResult = await viewModel.SetLastPickedParagraphAfterParagraphUpdate();
+
+                if(BackResult)
+                {
+                    e.Handled = true;
+                }
+                else
+                {
+                    e.Handled = false;
+                }
+                
+            }
+            else if(e.Key == Key.Up || e.Key == Key.Down)
+            {
+                viewModel.NavigateListItem(e.Key);
                 e.Handled = false;
             }
                 
