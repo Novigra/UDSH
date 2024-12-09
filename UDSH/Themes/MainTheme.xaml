@@ -85,5 +85,18 @@
     </LinearGradientBrush>
     <SolidColorBrush x:Key="ShortcutButtonSCB">#FFFFFF</SolidColorBrush>
     <Color x:Key="ShortcutButtonColor">#FFFFFF</Color>
+    
+    <!-- Page Scroll -->
+    <SolidColorBrush x:Key="RepeatButtonNormalSCB">#949494</SolidColorBrush>
+    <SolidColorBrush x:Key="RepeatButtonPressedSCB">#6C6C6C</SolidColorBrush>
+    <SolidColorBrush x:Key="RepeatButtonArrowSCB">#393E46</SolidColorBrush>
+    <SolidColorBrush x:Key="ScrollBarBackgroundSCB">#D9D9D9</SolidColorBrush>
+    <SolidColorBrush x:Key="ScrollBarTrackThumbSCB">#393E46</SolidColorBrush>
+
+    <Color x:Key="RepeatButtonNormalColor">#949494</Color>
+    <Color x:Key="RepeatButtonPressedColor">#6C6C6C</Color>
+    <Color x:Key="RepeatButtonArrowColor">#393E46</Color>
+    <Color x:Key="ScrollBarBackgroundColor">#D9D9D9</Color>
+    <Color x:Key="ScrollBarTrackThumbColor">#393E46</Color>
 
 </ResourceDictionary>

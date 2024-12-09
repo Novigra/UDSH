@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Shapes;
 
 namespace UDSH.MVVM
 {
@@ -12,10 +14,20 @@ namespace UDSH.MVVM
             new PropertyMetadata(null, OnCommandChanged));
 
         public static readonly DependencyProperty MouseEnterDragProperty = DependencyProperty.RegisterAttached("DragEnterCommand", typeof(ICommand), typeof(ParagraphMouseClickBehavior),
-            new PropertyMetadata(null, OnMouseEnterCommandChanged));
+            new PropertyMetadata(null, OnMouseEnterDragCommandChanged));
 
         public static readonly DependencyProperty GotKeyboardFocusCommandProperty = DependencyProperty.RegisterAttached("GotKeyboardFocusCommand", typeof(ICommand), typeof(ParagraphMouseClickBehavior),
                 new PropertyMetadata(null, OnGotKeyboardFocusCommandChanged));
+
+        public static readonly DependencyProperty MouseEnterCommandProperty = DependencyProperty.RegisterAttached("MouseEnterCommand", typeof(ICommand), typeof(ParagraphMouseClickBehavior),
+                new PropertyMetadata(null, OnMouseEnterCommandChanged));
+        public static readonly DependencyProperty MouseLeaveCommandProperty = DependencyProperty.RegisterAttached("MouseLeaveCommand", typeof(ICommand), typeof(ParagraphMouseClickBehavior),
+                new PropertyMetadata(null, OnMouseLeaveCommandChanged));
+
+        public static readonly DependencyProperty MouseEnterScrollBarCommandProperty = DependencyProperty.RegisterAttached("MouseEnterScrollBarCommand", typeof(ICommand), typeof(ParagraphMouseClickBehavior),
+                new PropertyMetadata(null, OnMouseEnterScrollBarCommandChanged));
+        public static readonly DependencyProperty MouseLeaveScrollBarCommandProperty = DependencyProperty.RegisterAttached("MouseLeaveScrollBarCommand", typeof(ICommand), typeof(ParagraphMouseClickBehavior),
+                new PropertyMetadata(null, OnMouseLeaveScrollBarCommandChanged));
         #endregion
 
         #region L_Mouse Down
@@ -63,7 +75,7 @@ namespace UDSH.MVVM
             return (ICommand)Dep.GetValue(MouseEnterDragProperty);
         }
 
-        private static void OnMouseEnterCommandChanged(DependencyObject Dep, DependencyPropertyChangedEventArgs Event)
+        private static void OnMouseEnterDragCommandChanged(DependencyObject Dep, DependencyPropertyChangedEventArgs Event)
         {
             if (Dep is Paragraph paragraph)
             {
@@ -124,6 +136,146 @@ namespace UDSH.MVVM
                     command.Execute(paragraph);
                 }
             }*/
+        }
+        #endregion
+
+        #region Mouse Enter Scroll Bar Collision Hit
+        public static void SetMouseEnterCommand(DependencyObject Dep, ICommand Command)
+        {
+            Dep.SetValue(MouseEnterCommandProperty, Command);
+        }
+
+        public static ICommand GetMouseEnterCommand(DependencyObject Dep)
+        {
+            return (ICommand)Dep.GetValue(MouseEnterCommandProperty);
+        }
+
+        private static void OnMouseEnterCommandChanged(DependencyObject Dep, DependencyPropertyChangedEventArgs Event)
+        {
+            if (Dep is Rectangle rectangle)
+            {
+                rectangle.MouseEnter -= RecordMouseEnter;
+
+                if (Event.NewValue is ICommand)
+                    rectangle.MouseEnter += RecordMouseEnter;
+            }
+        }
+
+        private static void RecordMouseEnter(object sender, MouseEventArgs e)
+        {
+            if (sender is Rectangle rectangle)
+            {
+                Debug.WriteLine($"Rectangle Name: {rectangle.Name}");
+                ICommand Command = GetMouseEnterCommand(rectangle);
+                if (Command != null && Command.CanExecute(rectangle))
+                    Command.Execute(rectangle);
+            }
+
+        }
+        #endregion
+
+        #region Mouse Leave Scroll Bar Collision Hit
+        public static void SetMouseLeaveCommand(DependencyObject Dep, ICommand Command)
+        {
+            Dep.SetValue(MouseLeaveCommandProperty, Command);
+        }
+
+        public static ICommand GetMouseLeaveCommand(DependencyObject Dep)
+        {
+            return (ICommand)Dep.GetValue(MouseLeaveCommandProperty);
+        }
+
+        private static void OnMouseLeaveCommandChanged(DependencyObject Dep, DependencyPropertyChangedEventArgs Event)
+        {
+            if (Dep is Rectangle rectangle)
+            {
+                rectangle.MouseLeave -= RecordMouseLeave;
+
+                if (Event.NewValue is ICommand)
+                    rectangle.MouseLeave += RecordMouseLeave;
+            }
+        }
+
+        private static void RecordMouseLeave(object sender, MouseEventArgs e)
+        {
+            if (sender is Rectangle rectangle)
+            {
+                Debug.WriteLine($"Rectangle Name: {rectangle.Name}");
+                ICommand Command = GetMouseLeaveCommand(rectangle);
+                if (Command != null && Command.CanExecute(rectangle))
+                    Command.Execute(rectangle);
+            }
+
+        }
+        #endregion
+
+        #region Mouse Enter Scroll Bar
+        public static void SetMouseEnterScrollBarCommand(DependencyObject Dep, ICommand Command)
+        {
+            Dep.SetValue(MouseEnterScrollBarCommandProperty, Command);
+        }
+
+        public static ICommand GetMouseEnterScrollBarCommand(DependencyObject Dep)
+        {
+            return (ICommand)Dep.GetValue(MouseEnterScrollBarCommandProperty);
+        }
+
+        private static void OnMouseEnterScrollBarCommandChanged(DependencyObject Dep, DependencyPropertyChangedEventArgs Event)
+        {
+            if (Dep is ScrollBar scrollBar)
+            {
+                scrollBar.MouseEnter -= RecordMouseEnterScrollBar;
+
+                if (Event.NewValue is ICommand)
+                    scrollBar.MouseEnter += RecordMouseEnterScrollBar;
+            }
+        }
+
+        private static void RecordMouseEnterScrollBar(object sender, MouseEventArgs e)
+        {
+            if (sender is ScrollBar scrollBar)
+            {
+                Debug.WriteLine($"ScrollBar Name: {scrollBar.Name}");
+                ICommand Command = GetMouseEnterScrollBarCommand(scrollBar);
+                if (Command != null && Command.CanExecute(scrollBar))
+                    Command.Execute(scrollBar);
+            }
+
+        }
+        #endregion
+
+        #region Mouse Leave Scroll Bar
+        public static void SetMouseLeaveScrollBarCommand(DependencyObject Dep, ICommand Command)
+        {
+            Dep.SetValue(MouseLeaveScrollBarCommandProperty, Command);
+        }
+
+        public static ICommand GetMouseLeaveScrollBarCommand(DependencyObject Dep)
+        {
+            return (ICommand)Dep.GetValue(MouseLeaveScrollBarCommandProperty);
+        }
+
+        private static void OnMouseLeaveScrollBarCommandChanged(DependencyObject Dep, DependencyPropertyChangedEventArgs Event)
+        {
+            if (Dep is ScrollBar scrollBar)
+            {
+                scrollBar.MouseLeave -= RecordMouseLeaveScrollBar;
+
+                if (Event.NewValue is ICommand)
+                    scrollBar.MouseLeave += RecordMouseLeaveScrollBar;
+            }
+        }
+
+        private static void RecordMouseLeaveScrollBar(object sender, MouseEventArgs e)
+        {
+            if (sender is ScrollBar scrollBar)
+            {
+                Debug.WriteLine($"ScrollBar Name: {scrollBar.Name}");
+                ICommand Command = GetMouseLeaveScrollBarCommand(scrollBar);
+                if (Command != null && Command.CanExecute(scrollBar))
+                    Command.Execute(scrollBar);
+            }
+
         }
         #endregion
     }

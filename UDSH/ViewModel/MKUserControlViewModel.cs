@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using UDSH.MVVM;
 
 namespace UDSH.ViewModel
@@ -32,6 +33,41 @@ namespace UDSH.ViewModel
         private bool ReachedListBoundary;
         private bool CanDeleteAllText;
 
+        private bool firstStartAnimPlayed;
+        public bool FirstStartAnimPlayed
+        {
+            get { return firstStartAnimPlayed; }
+            set { firstStartAnimPlayed = value; OnPropertyChanged(); }
+        }
+
+        private bool canUpdateTransition;
+        public bool CanUpdateTransition
+        {
+            get { return canUpdateTransition; }
+            set { canUpdateTransition = value; OnPropertyChanged(); }
+        }
+
+        private bool isInsideScrollBar;
+        public bool IsInsideScrollBar
+        {
+            get { return isInsideScrollBar; }
+            set { isInsideScrollBar = value; OnPropertyChanged(); }
+        }
+
+        private bool isScrollBarMouseDown;
+        public bool IsScrollBarMouseDown
+        {
+            get { return isScrollBarMouseDown; }
+            set { isScrollBarMouseDown = value; OnPropertyChanged(); }
+        }
+
+        private bool isInsideScrollBarHitCollision;
+        public bool IsInsideScrollBarHitCollision
+        {
+            get { return isInsideScrollBarHitCollision; }
+            set { isInsideScrollBarHitCollision = value; OnPropertyChanged(); }
+        }
+
         private RichTextBox mKRichTextBox;
         public RichTextBox MKRichTextBox
         {
@@ -48,6 +84,8 @@ namespace UDSH.ViewModel
         private int HeaderThreeFontSize;
 
         private Thickness DefaultMargin;
+
+        private Grid GridTarget;
         #endregion
 
         #region Commands
@@ -67,6 +105,15 @@ namespace UDSH.ViewModel
 
         public RelayCommand<Paragraph> CaptureParagraph => new RelayCommand<Paragraph> (GetParagraph);
         public RelayCommand<RichTextBox> ParagraphFocus => new RelayCommand<RichTextBox>(execute => UpdateLastPickedParagraph());
+
+        public RelayCommand<ScrollViewer> ScrollChanged => new RelayCommand<ScrollViewer>(UpdateVisuals);
+        public RelayCommand<Grid> GridLoaded => new RelayCommand<Grid>(InitiateGrid);
+
+        public RelayCommand<Rectangle> SideScrollCollisionMouseEnter => new RelayCommand<Rectangle>(UpdatedScrollBarShape);
+        public RelayCommand<Rectangle> SideScrollCollisionMouseLeave => new RelayCommand<Rectangle>(UpdatedScrollBarShape);
+
+        public RelayCommand<ScrollBar> SideScrollMouseEnter => new RelayCommand<ScrollBar>(UpdatedScrollBarData);
+        public RelayCommand<ScrollBar> SideScrollMouseLeave => new RelayCommand<ScrollBar>(UpdatedScrollBarData);
         #endregion
 
         public MKUserControlViewModel()
@@ -75,6 +122,11 @@ namespace UDSH.ViewModel
             IsListItem = false;
             ReachedListBoundary = false;
             CanDeleteAllText = false;
+            CanUpdateTransition = false;
+            FirstStartAnimPlayed = false;
+            IsInsideScrollBar = false;
+            IsScrollBarMouseDown = false;
+            IsInsideScrollBarHitCollision = false;
 
             NormalFontSize = 20;
             HeaderOneFontSize = 40;
@@ -542,6 +594,51 @@ namespace UDSH.ViewModel
             Debug.WriteLine("Delete All Text");
         }
         #endregion
+
+        private void UpdateVisuals(ScrollViewer scrollViewer)
+        {
+            if(scrollViewer != null)
+            {
+                double VerticalOffset = scrollViewer.VerticalOffset;
+                double ScreenViewportHeight = scrollViewer.ViewportHeight;
+                double ScrollHeight = scrollViewer.ScrollableHeight;
+
+                double Result = VerticalOffset + ScreenViewportHeight;
+                if (VerticalOffset > 30.0)
+                {
+                    FirstStartAnimPlayed = true;
+                }
+                else
+                {
+                    FirstStartAnimPlayed = false;
+                }
+
+                Debug.WriteLine($"VerticalOffset = {VerticalOffset} --- ScreenViewportHeight = {ScreenViewportHeight} --- ScrollableHeight = {ScrollHeight}");
+            }
+        }
+
+        private void InitiateGrid(Grid grid)
+        {
+            if(grid != null)
+            {
+                GridTarget = grid;
+            }
+        }
+
+        private void UpdatedScrollBarShape(Rectangle rectangle)
+        {
+            IsInsideScrollBarHitCollision = !IsInsideScrollBarHitCollision;
+            Debug.WriteLine("Hit Collision Changed.");
+        }
+
+        private void UpdatedScrollBarData(ScrollBar scrollBar)
+        {
+            IsInsideScrollBar = !IsInsideScrollBar;
+            Debug.WriteLine("Scroll Bar State Changed.");
+
+            if (IsInsideScrollBar == false)
+                Debug.WriteLine("Leaved Scroll Bar");
+        }
     }
 
 

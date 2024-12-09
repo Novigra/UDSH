@@ -117,6 +117,16 @@ namespace UDSH.View
                 
         }
 
+        private void ScrollViewer_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            MessageBox.Show("huh");
+        }
+
+        private void Rectangle_MouseEnter(object sender, MouseEventArgs e)
+        {
+            MessageBox.Show("aaaaa");
+        }
+
         /*private void RichTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             Paragraph para = sender as Paragraph;

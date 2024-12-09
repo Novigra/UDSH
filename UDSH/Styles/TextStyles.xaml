@@ -36,6 +36,12 @@
         <Setter Property="TextElement.FontSize" Value="20"/>
         <Setter Property="Background" Value="{StaticResource MainBlankSCB}"/>
         <Setter Property="BorderThickness" Value="0"/>
+
+        <Style.Triggers>
+            <Trigger Property="ScrollViewer.CanContentScroll" Value="True">
+                <Setter Property="Background" Value="Blue"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="Paragraph">

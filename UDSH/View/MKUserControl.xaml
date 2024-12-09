@@ -84,40 +84,80 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="1">
+            <Grid x:Name="PaperGrid" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
+
                 <!-- Paper -->
                 <Rectangle Panel.ZIndex="0" Fill="{StaticResource MainPaperCSFSCB}"/>
 
-                <RichTextBox x:Name="MKContentLayout" Style="{StaticResource MKText}" VerticalScrollBarVisibility="Visible" PreviewKeyDown="MKContentLayout_KeyDown" SpellCheck.IsEnabled="True" Margin="30,30,30,0" AcceptsReturn="True" AcceptsTab="True">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Loaded">
-                            <i:InvokeCommandAction Command="{Binding RichTextLoaded}" CommandParameter="{Binding ElementName=MKContentLayout}"/>
-                        </i:EventTrigger>
+                <ScrollViewer x:Name="RTB_ScrollViewer" Style="{StaticResource PageScrollViewer}" VerticalScrollBarVisibility="Visible" Panel.ZIndex="2" Margin="0,30,3,40">
+                    <RichTextBox x:Name="MKContentLayout" Style="{StaticResource MKText}" PreviewKeyDown="MKContentLayout_KeyDown" SpellCheck.IsEnabled="True" Margin="30,0,30,0" AcceptsReturn="True" AcceptsTab="True">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Loaded">
+                                <i:InvokeCommandAction Command="{Binding RichTextLoaded}" CommandParameter="{Binding ElementName=MKContentLayout}"/>
+                            </i:EventTrigger>
 
-                        <i:EventTrigger EventName="GotMouseCapture">
-                            <i:InvokeCommandAction Command="{Binding ParagraphFocus}" CommandParameter="{Binding ElementName=MKContentLayout}"/>
+                            <i:EventTrigger EventName="GotMouseCapture">
+                                <i:InvokeCommandAction Command="{Binding ParagraphFocus}" CommandParameter="{Binding ElementName=MKContentLayout}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <FlowDocument TextAlignment="Left">
+                        </FlowDocument>
+
+                        <RichTextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding PressedEnter}"/>
+                            <KeyBinding Modifiers="Ctrl" Key="A" Command="{Binding DeleteAll}"/>
+                        </RichTextBox.InputBindings>
+
+                    </RichTextBox>
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="ScrollChanged">
+                            <i:InvokeCommandAction Command="{Binding ScrollChanged}" CommandParameter="{Binding ElementName=RTB_ScrollViewer}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                    <FlowDocument TextAlignment="Left">
-                    </FlowDocument>
-                    
-                    <RichTextBox.InputBindings>
-                        <KeyBinding Key="Enter" Command="{Binding PressedEnter}"/>
-                        <KeyBinding Modifiers="Ctrl" Key="A" Command="{Binding DeleteAll}"/>
-                    </RichTextBox.InputBindings>
-                    
-                </RichTextBox>
+                </ScrollViewer>
 
+
+                <Grid.RenderTransform>
+                    <TranslateTransform X="0" Y="20"/>
+                </Grid.RenderTransform>
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-                        <Setter Property="RenderTransform">
-                            <Setter.Value>
-                                <TranslateTransform X="0" Y="20"/>
-                            </Setter.Value>
-                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FirstStartAnimPlayed}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <RemoveStoryboard BeginStoryboardName="DownAnim"/>
+                                    <BeginStoryboard x:Name="UpAnim">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                             To="0.0"
+                                                             Duration="0:0:0.3" BeginTime="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+
+                            <DataTrigger Binding="{Binding FirstStartAnimPlayed}" Value="False">
+                                <DataTrigger.EnterActions>
+                                    <RemoveStoryboard BeginStoryboardName="UpAnim"/>
+                                    <BeginStoryboard x:Name="DownAnim">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                             To="20.0"
+                                                             Duration="0:0:0.3" BeginTime="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
                     </Style>
                 </Grid.Style>
+                
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding GridLoaded}" CommandParameter="{Binding ElementName=PaperGrid}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </Grid>
 
         </Grid>
