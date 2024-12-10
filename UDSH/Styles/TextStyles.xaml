@@ -31,6 +31,49 @@
         </Setter>
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="NoteHeadlineTextBlock">
+        <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/Lora/#Lora"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Title}" Value="">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="NoteContentTextBlock">
+        <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/Lora/#Lora"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Content}" Value="">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="TextBox" x:Key="NoteContentTextBox">
+        <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/Lora/#Lora"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Background" Value="{StaticResource MainBlankSCB}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform X="0" Y="0"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="RichTextBox" x:Key="MKText">
         <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/Lora/#Lora"/>
         <Setter Property="TextElement.FontSize" Value="20"/>

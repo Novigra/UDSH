@@ -98,5 +98,10 @@
     <Color x:Key="RepeatButtonArrowColor">#393E46</Color>
     <Color x:Key="ScrollBarBackgroundColor">#D9D9D9</Color>
     <Color x:Key="ScrollBarTrackThumbColor">#393E46</Color>
+    
+    <!-- Note Background -->
+    <SolidColorBrush x:Key="MainNoteBackgroundSCB">#393E46</SolidColorBrush>
+
+    <Color x:Key="MainNoteBackgroundColor">#393E46</Color>
 
 </ResourceDictionary>

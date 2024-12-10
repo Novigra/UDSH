@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -7,6 +8,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using UDSH.MVVM;
+using UDSH.View;
 
 namespace UDSH.ViewModel
 {
@@ -25,6 +27,9 @@ namespace UDSH.ViewModel
     class MKUserControlViewModel : ViewModelBase
     {
         #region Properties
+        private Point InitialMousePosition;
+        private Point CurrentMousePosition;
+
         private List CurrentList;
         private ListItem CurrentListItem;
 
@@ -32,6 +37,9 @@ namespace UDSH.ViewModel
         private bool IsListItem;
         private bool ReachedListBoundary;
         private bool CanDeleteAllText;
+
+        private bool IsMouseLeftButtonPressed;
+        private bool CanCreateANewNote;
 
         private bool firstStartAnimPlayed;
         public bool FirstStartAnimPlayed
@@ -86,6 +94,10 @@ namespace UDSH.ViewModel
         private Thickness DefaultMargin;
 
         private Grid GridTarget;
+        private Grid ParentGridTarget;
+        private Button NoteButton;
+
+        private NoteUserControl TempNoteUserControl;
         #endregion
 
         #region Commands
@@ -114,6 +126,12 @@ namespace UDSH.ViewModel
 
         public RelayCommand<ScrollBar> SideScrollMouseEnter => new RelayCommand<ScrollBar>(UpdatedScrollBarData);
         public RelayCommand<ScrollBar> SideScrollMouseLeave => new RelayCommand<ScrollBar>(UpdatedScrollBarData);
+
+        public RelayCommand<Grid> ParentGridLoaded => new RelayCommand<Grid>(GetParentGridRef);
+        public RelayCommand<Button> NoteButtonLoaded => new RelayCommand<Button>(GetNoteButtonRef);
+        public RelayCommand<MouseButtonEventArgs> AddNote => new RelayCommand<MouseButtonEventArgs>(NoteFunctionality);
+        public RelayCommand<MouseEventArgs> NoteButtonMouseMove => new RelayCommand<MouseEventArgs>(RecordNoteButtonMouseMovement);
+        public RelayCommand<MouseButtonEventArgs> StopAddingNoteProcess => new RelayCommand<MouseButtonEventArgs>(StopRecordingNoteButtonMouseMovement);
         #endregion
 
         public MKUserControlViewModel()
@@ -127,6 +145,8 @@ namespace UDSH.ViewModel
             IsInsideScrollBar = false;
             IsScrollBarMouseDown = false;
             IsInsideScrollBarHitCollision = false;
+            IsMouseLeftButtonPressed = false;
+            CanCreateANewNote = true;
 
             NormalFontSize = 20;
             HeaderOneFontSize = 40;
@@ -639,7 +659,73 @@ namespace UDSH.ViewModel
             if (IsInsideScrollBar == false)
                 Debug.WriteLine("Leaved Scroll Bar");
         }
+
+        private void GetParentGridRef(Grid grid)
+        {
+            if (grid != null)
+            {
+                ParentGridTarget = grid;
+            }
+        }
+
+        private void GetNoteButtonRef(Button Btn)
+        {
+            if(Btn != null)
+            {
+                NoteButton = Btn;
+                Debug.WriteLine($"Note Button Ref: {NoteButton.Name}");
+            }
+        }
+        private void NoteFunctionality(MouseButtonEventArgs e)
+        {
+            if(e != null && ParentGridTarget != null)
+            {
+                InitialMousePosition = e.GetPosition(ParentGridTarget);
+                IsMouseLeftButtonPressed = true;
+                ParentGridTarget.CaptureMouse();
+            }
+        }
+
+        private void RecordNoteButtonMouseMovement(MouseEventArgs e)
+        {
+            if (IsMouseLeftButtonPressed == true && e != null)
+            {
+                CurrentMousePosition = e.GetPosition(ParentGridTarget);
+                if(CurrentMousePosition != InitialMousePosition && (CurrentMousePosition.Y - InitialMousePosition.Y) > 30)
+                {
+                    CreateNewNote(CurrentMousePosition);
+                }
+                Debug.WriteLine($"Current Mouse Position: X = {e.GetPosition(ParentGridTarget).X}, Y = {e.GetPosition(ParentGridTarget).Y}");
+            }
+        }
+
+        private void CreateNewNote(Point Position)
+        {
+            if(CanCreateANewNote == true)
+            {
+                TempNoteUserControl = new NoteUserControl();
+                CanCreateANewNote = false;
+
+                ParentGridTarget.Children.Add(TempNoteUserControl);
+
+                Grid.SetRow(TempNoteUserControl, 1);
+                Panel.SetZIndex(TempNoteUserControl, 10);
+
+                Debug.WriteLine("Create A New Note...");
+            }
+
+            TempNoteUserControl.Margin = new Thickness(Position.X - TempNoteUserControl.ActualWidth / 2, Position.Y - TempNoteUserControl.ActualHeight / 2, 0, 0);
+        }
+
+        private void StopRecordingNoteButtonMouseMovement(MouseButtonEventArgs e)
+        {
+            if (e != null && ParentGridTarget != null)
+            {
+                IsMouseLeftButtonPressed = false;
+                CanCreateANewNote = true;
+
+                ParentGridTarget.ReleaseMouseCapture();
+            }
+        }
     }
-
-
 }

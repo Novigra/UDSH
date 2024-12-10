@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -125,6 +126,16 @@ namespace UDSH.View
         private void Rectangle_MouseEnter(object sender, MouseEventArgs e)
         {
             MessageBox.Show("aaaaa");
+        }
+
+        private void NoteButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Debug.WriteLine($"Button Name: {e.ButtonState}");
+        }
+
+        private void Grid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            MessageBox.Show("Start Now");
         }
 
         /*private void RichTextBox_GotFocus(object sender, RoutedEventArgs e)

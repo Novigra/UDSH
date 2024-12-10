@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:UDSH.View"
              mc:Ignorable="d" 
              d:DesignHeight="650" d:DesignWidth="1200">
-    <Grid>
+    <Grid x:Name="ParentGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition/>
@@ -70,7 +70,19 @@
                 <Image Margin="8" Source="/Resource/White/Photo-White.png"/>
             </Grid>
             <Grid>
-                <Button Margin="5"/>
+                <Button x:Name="NoteButton" Margin="5">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding AddNote}" PassEventArgsToCommand="True"/>
+                        </i:EventTrigger>
+
+                        
+
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding NoteButtonLoaded}" CommandParameter="{Binding ElementName=NoteButton}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
                 <Image Margin="8" Source="/Resource/White/AddNote-White.png"/>
             </Grid>
         </StackPanel>
@@ -168,6 +180,21 @@
 
 
         <!-- Background -->
-        <Rectangle Grid.RowSpan="2" Fill="{StaticResource MainBackgroundCSFSCB}"/>
+        <Rectangle Grid.RowSpan="2" Fill="{StaticResource MainBackgroundCSFSCB}">
+        </Rectangle>
+
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding ParentGridLoaded}" CommandParameter="{Binding ElementName=ParentGrid}"/>
+            </i:EventTrigger>
+
+            <i:EventTrigger EventName="MouseMove">
+                <i:InvokeCommandAction Command="{Binding NoteButtonMouseMove}" PassEventArgsToCommand="True"/>
+            </i:EventTrigger>
+
+            <i:EventTrigger EventName="PreviewMouseLeftButtonUp">
+                <i:InvokeCommandAction Command="{Binding StopAddingNoteProcess}" PassEventArgsToCommand="True"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
     </Grid>
 </UserControl>

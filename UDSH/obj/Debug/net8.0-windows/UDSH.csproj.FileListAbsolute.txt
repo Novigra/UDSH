@@ -50,3 +50,5 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\MKUserControl.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\MKUserControl.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\ScrollViewerStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\ScrollBarStyles.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NoteUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NoteUserControl.baml
