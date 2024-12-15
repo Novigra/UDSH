@@ -15,6 +15,7 @@
     <CornerRadius x:Key="CloseOpenedPageButton.Radius" TopLeft="0" BottomLeft="0" TopRight="5" BottomRight="0"/>
     <CornerRadius x:Key="ShortcutButton.Radius">15</CornerRadius>
     <CornerRadius x:Key="NewFileCloseButton.Radius">10</CornerRadius>
+    <CornerRadius x:Key="NoteCloseButton.Radius">8</CornerRadius>
 
     <Style TargetType="Button" x:Key="Placeholder">
         
@@ -146,6 +147,50 @@
                 <Setter Property="Background" Value="{StaticResource MainPressedButtonSCB}"/>
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Button" x:Key="NoteCloseButton">
+        <Setter Property="Background" Value="{StaticResource MainNoteClosePageButtonSCB}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="{StaticResource NoteCloseButton.Radius}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainHoveredNoteClosePageButtonColor}"
+                                        Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainNoteClosePageButtonColor}"
+                                        Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonSCB}"/>
+            </Trigger>
+        </Style.Triggers>
+
     </Style>
 
     <Style TargetType="Button" x:Key="NewFileCreationButton">

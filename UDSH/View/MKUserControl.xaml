@@ -101,7 +101,7 @@
                 <!-- Paper -->
                 <Rectangle Panel.ZIndex="0" Fill="{StaticResource MainPaperCSFSCB}"/>
 
-                <ScrollViewer x:Name="RTB_ScrollViewer" Style="{StaticResource PageScrollViewer}" VerticalScrollBarVisibility="Visible" Panel.ZIndex="2" Margin="0,30,3,40">
+                <ScrollViewer x:Name="RTB_ScrollViewer" Style="{StaticResource PageScrollViewer}" PreviewMouseWheel="OnMouseScroll" VerticalScrollBarVisibility="Visible" Panel.ZIndex="2" Margin="0,30,3,40">
                     <RichTextBox x:Name="MKContentLayout" Style="{StaticResource MKText}" PreviewKeyDown="MKContentLayout_KeyDown" SpellCheck.IsEnabled="True" Margin="30,0,30,0" AcceptsReturn="True" AcceptsTab="True">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Loaded">

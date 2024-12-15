@@ -17,6 +17,7 @@
                 <ResourceDictionary Source="Styles/BorderStyles.xaml"/>
                 <ResourceDictionary Source="Styles/ScrollBarStyles.xaml"/>
                 <ResourceDictionary Source="Styles/ScrollViewerStyles.xaml"/>
+                <ResourceDictionary Source="Styles/CheckboxStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
          

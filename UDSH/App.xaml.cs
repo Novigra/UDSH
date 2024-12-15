@@ -1,8 +1,13 @@
-﻿using System.Configuration;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using UDSH.Model;
+using UDSH.Services;
+using UDSH.View;
+using UDSH.ViewModel;
 
 namespace UDSH
 {
@@ -11,26 +16,46 @@ namespace UDSH
     /// </summary>
     public partial class App : Application
     {
+        private readonly IServiceProvider serviceProvider;
         public App()
         {
-            Debug.WriteLine("Application Launched");
+            ServiceCollection serviceCollection = new ServiceCollection();
+            ManageServices(serviceCollection);
 
-            try
-            {
-                using StreamReader streamReader = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "hmm.txt"));
-                string text = streamReader.ReadToEnd();
-                Debug.WriteLine(text);
-            }
-            catch
-            {
-                Debug.WriteLine("Couldn't Find Hmm");
-            }
+            serviceProvider = serviceCollection.BuildServiceProvider();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            MainWindow window = new MainWindow();
-            window.Show();
+            //Session session = new Session();
+            /*MainWindow window = new MainWindow();
+            window.Show();*/
+
+            MainWindow mainWindow = serviceProvider.GetRequiredService<MainWindow>();
+            mainWindow.Show();
+
+
+            #if DEBUG
+            Console.WriteLine("MODE::DEBUG");
+            #else
+            Console.WriteLine("MODE::Release");
+            #endif
+        }
+
+        private void ManageServices(IServiceCollection services)
+        {
+            services.AddSingleton<Session>();
+            services.AddSingleton<IUserDataServices, UserDataServices>();
+            services.AddTransient<IHeaderServices>(provider =>
+            {
+                var userDataServices = provider.GetRequiredService<IUserDataServices>();
+                return new HeaderServices(userDataServices);
+            });
+            services.AddTransient<HeaderUserControlViewModel>();
+            services.AddTransient<HeaderUserControl>();
+            /*services.AddTransient<NewProjectCreationWindowViewModel>();
+            services.AddTransient<NewProjectCreationWindow>();*/
+            services.AddTransient<MainWindow>();
         }
     }
 

@@ -19,12 +19,16 @@
             <RowDefinition/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
-        
-        <userControls:HeaderUserControl Grid.Row="0" MouseLeftButtonDown="HeaderMovement"/>
-        <!-- <userControls:CSFUserControl Grid.Row="1"/> -->
+
+        <Grid x:Name="HeaderUserControl" Grid.Row="0"/>
+        <!-- <userControls:CSFUserControl Grid.Row="1"/> <ContentControl x:Name="HeaderContentControl" Grid.Row="0"/> -->
         <!-- <userControls:DefaultUserControl Grid.Row="1"/> -->
-        <userControls:MKUserControl Grid.Row="1"/>
+        <!-- <userControls:MKUserControl Grid.Row="1"/> -->
         <userControls:FooterUserControl Grid.Row="2"/>
+
+        <ContentControl x:Name="TestContent" Grid.Row="1">
+            
+        </ContentControl>
 
     </Grid>
 </Window>

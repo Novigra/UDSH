@@ -10,11 +10,11 @@ none
 false
 TRACE;RELEASE;NET;NET8_0;NETCOREAPP
 D:\Projects\UDSH\UDSH\App.xaml
-17-282207271
+20-2017367644
 
-32-1956618503
+341259817591
 199432428195
-MainWindow.xaml;Styles\BorderStyles.xaml;Styles\ButtonStyles.xaml;Styles\ComboBoxStyles.xaml;Styles\ImageStyles.xaml;Styles\ListViewStyles.xaml;Styles\RectangleStyles.xaml;Styles\TextBlockStyles.xaml;Styles\TextStyles.xaml;Themes\MainTheme.xaml;View\CSFUserControl.xaml;View\DefaultUserControl.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;View\MKUserControl.xaml;View\NewFileCreationWindow.xaml;View\SideContentUserControl.xaml;
+MainWindow.xaml;Styles\BorderStyles.xaml;Styles\ButtonStyles.xaml;Styles\ComboBoxStyles.xaml;Styles\ImageStyles.xaml;Styles\ListViewStyles.xaml;Styles\RectangleStyles.xaml;Styles\ScrollBarStyles.xaml;Styles\ScrollViewerStyles.xaml;Styles\TextBlockStyles.xaml;Styles\TextStyles.xaml;Themes\MainTheme.xaml;View\CSFUserControl.xaml;View\DefaultUserControl.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;View\MKUserControl.xaml;View\NewFileCreationWindow.xaml;View\NoteUserControl.xaml;View\SideContentUserControl.xaml;
 
 True
 

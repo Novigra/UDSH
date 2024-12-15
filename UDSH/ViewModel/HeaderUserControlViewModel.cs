@@ -4,13 +4,28 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using UDSH.MVVM;
+using UDSH.Services;
 using UDSH.View;
 
 namespace UDSH.ViewModel
 {
-    internal class HeaderUserControlViewModel : ViewModelBase
+    public class HeaderUserControlViewModel : ViewModelBase
     {
         #region Properties
+        //private readonly IUserDataServices userDataServices;
+        //private readonly Session session;
+        private readonly IHeaderServices _headerServices;
+        private string displayName;
+        public string DisplayName
+        {
+            get { return displayName; }
+            set { if(displayName != value)
+                {
+                    displayName = value; OnPropertyChanged(); //_headerServices.UserDataServices.DisplayName = value; (do it in a function instead of real-time update in settings)
+                }
+            }
+        }
+
         private bool isPenToolButtonClicked;
         public bool IsPenToolButtonClicked
         {
@@ -232,6 +247,8 @@ namespace UDSH.ViewModel
         public RelayCommand<Button> Localization => new RelayCommand<Button>(execute => OpenLocalization());
         public RelayCommand<Button> ContentFolder => new RelayCommand<Button>(execute => OpenContentFolder());
 
+        public RelayCommand<Button> NewProject => new RelayCommand<Button>(execute => CreateNewProject());
+
         public RelayCommand<string> QNewFile => new RelayCommand<string>(SetQuickAction);
         public RelayCommand<string> QSaveFile => new RelayCommand<string>(SetQuickAction);
         public RelayCommand<string> QSaveAllFiles => new RelayCommand<string>(SetQuickAction);
@@ -244,8 +261,20 @@ namespace UDSH.ViewModel
         public RelayCommand<StackPanel> MouseEnterPenToolPopup => new RelayCommand<StackPanel>(EnableQuickActionEdit);
         #endregion
 
-        public HeaderUserControlViewModel()
+        public HeaderUserControlViewModel(IHeaderServices headerServices)
         {
+            _headerServices = headerServices;
+            DisplayName = _headerServices.UserDataServices.DisplayName;
+            _headerServices.UserDataServices.DisplayNameChanged += UserDataServices_DisplayNameChanged;
+            /*userDataServices = userData;
+            DisplayName = userDataServices.DisplayName;
+            userDataServices.DisplayNameChanged += UserDataServices_DisplayNameChanged;*/
+            /*this.session = session;
+            if(this.session.User != null)
+                DisplayName = this.session.User.DisplayName;
+
+            this.session.UserDataLoaded += Session_UserDataLoaded;*/
+
             IsPenToolButtonClicked = false;
             CanClosePopup = false;
             QuickActionsList = new ObservableCollection<int>();
@@ -277,6 +306,11 @@ namespace UDSH.ViewModel
 
             IsPenToolButtonDisabled = false;
             CanEnablePenToolButton = true;
+        }
+
+        private void UserDataServices_DisplayNameChanged(object? sender, string NewDisplayName)
+        {
+            DisplayName = NewDisplayName;
         }
 
         private void AssignGrid(Grid grid)
@@ -364,6 +398,18 @@ namespace UDSH.ViewModel
         private void OpenContentFolder()
         {
             MessageBox.Show("Opening Content Folder...");
+        }
+
+        private void CreateNewProject()
+        {
+            IsPenToolButtonClicked = false;
+            CanClosePopup = false;
+
+            Window mainWindowRef = _headerServices.UserDataServices.Session.mainWindow;
+            NewProjectCreationWindow newProjectCreationWindow = new NewProjectCreationWindow(new NewProjectCreationWindowViewModel(_headerServices.UserDataServices.Session), mainWindowRef);
+            newProjectCreationWindow.ShowDialog();
+
+            MessageBox.Show("Creating A New Project...");
         }
 
         private void SetQuickAction(string index)

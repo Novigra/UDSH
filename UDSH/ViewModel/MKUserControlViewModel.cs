@@ -97,6 +97,7 @@ namespace UDSH.ViewModel
         private Grid ParentGridTarget;
         private Button NoteButton;
 
+        private MKUserControl MKCurrentUserControl;
         private NoteUserControl TempNoteUserControl;
         #endregion
 
@@ -134,7 +135,7 @@ namespace UDSH.ViewModel
         public RelayCommand<MouseButtonEventArgs> StopAddingNoteProcess => new RelayCommand<MouseButtonEventArgs>(StopRecordingNoteButtonMouseMovement);
         #endregion
 
-        public MKUserControlViewModel()
+        public MKUserControlViewModel(MKUserControl control)
         {
             IsNextToAMarkdown = false;
             IsListItem = false;
@@ -152,6 +153,8 @@ namespace UDSH.ViewModel
             HeaderOneFontSize = 40;
             HeaderTwoFontSize = 30;
             HeaderThreeFontSize = 25;
+
+            MKCurrentUserControl = control;
         }
 
         #region Rich Text Box Initiation And Starting The First Paragraph
@@ -633,7 +636,7 @@ namespace UDSH.ViewModel
                     FirstStartAnimPlayed = false;
                 }
 
-                Debug.WriteLine($"VerticalOffset = {VerticalOffset} --- ScreenViewportHeight = {ScreenViewportHeight} --- ScrollableHeight = {ScrollHeight}");
+                //Debug.WriteLine($"VerticalOffset = {VerticalOffset} --- ScreenViewportHeight = {ScreenViewportHeight} --- ScrollableHeight = {ScrollHeight}");
             }
         }
 
@@ -680,7 +683,7 @@ namespace UDSH.ViewModel
         {
             if(e != null && ParentGridTarget != null)
             {
-                InitialMousePosition = e.GetPosition(ParentGridTarget);
+                InitialMousePosition = e.GetPosition(MKCurrentUserControl);
                 IsMouseLeftButtonPressed = true;
                 ParentGridTarget.CaptureMouse();
             }
@@ -690,12 +693,12 @@ namespace UDSH.ViewModel
         {
             if (IsMouseLeftButtonPressed == true && e != null)
             {
-                CurrentMousePosition = e.GetPosition(ParentGridTarget);
+                CurrentMousePosition = e.GetPosition(MKCurrentUserControl);
                 if(CurrentMousePosition != InitialMousePosition && (CurrentMousePosition.Y - InitialMousePosition.Y) > 30)
                 {
                     CreateNewNote(CurrentMousePosition);
                 }
-                Debug.WriteLine($"Current Mouse Position: X = {e.GetPosition(ParentGridTarget).X}, Y = {e.GetPosition(ParentGridTarget).Y}");
+                Debug.WriteLine($"Current Mouse Position: X = {e.GetPosition(MKCurrentUserControl).X}, Y = {e.GetPosition(MKCurrentUserControl).Y}");
             }
         }
 
@@ -703,7 +706,8 @@ namespace UDSH.ViewModel
         {
             if(CanCreateANewNote == true)
             {
-                TempNoteUserControl = new NoteUserControl();
+                TempNoteUserControl = new NoteUserControl(MKCurrentUserControl);
+                TempNoteUserControl.RemoveCurrentNote += RemoveNote;
                 CanCreateANewNote = false;
 
                 ParentGridTarget.Children.Add(TempNoteUserControl);
@@ -714,7 +718,16 @@ namespace UDSH.ViewModel
                 Debug.WriteLine("Create A New Note...");
             }
 
-            TempNoteUserControl.Margin = new Thickness(Position.X - TempNoteUserControl.ActualWidth / 2, Position.Y - TempNoteUserControl.ActualHeight / 2, 0, 0);
+            Position.X -= TempNoteUserControl.ActualWidth / 2;
+            Position.Y -= TempNoteUserControl.ActualHeight / 2;
+            TempNoteUserControl.Margin = new Thickness(Position.X, Position.Y, 0, 0);
+
+            OnUpdateCoordinates(this, Position);
+        }
+
+        private void RemoveNote(object? sender, EventArgs e)
+        {
+            ParentGridTarget.Children.Remove((UIElement)sender!);
         }
 
         private void StopRecordingNoteButtonMouseMovement(MouseButtonEventArgs e)

@@ -2,7 +2,7 @@
 
 namespace UDSH.MVVM
 {
-    class RelayCommand<T> : ICommand
+    public class RelayCommand<T> : ICommand
     {
         private Action<T> execute;
         private Func<T, bool> canExecute;

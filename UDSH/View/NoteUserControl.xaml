@@ -8,28 +8,196 @@
              mc:Ignorable="d" 
              d:DesignHeight="260" d:DesignWidth="400">
 
-    <Border x:Name="NoteBorder" Background="{StaticResource MainNoteBackgroundSCB}" CornerRadius="10">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <TextBlock Style="{StaticResource NoteHeadlineTextBlock}" Text="Title" FontSize="30" Opacity="0.8" Margin="30,30,0,10"/>
-                <TextBox x:Name="TitleTextBox" Style="{StaticResource NoteContentTextBox}" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" FontSize="30" Margin="30,30,0,10">
-                </TextBox>
-            </Grid>
+    <Grid x:Name="OuterGrid">
+        <Border x:Name="NoteBorder" KeyDown="Control_KeyDown" BorderThickness="{StaticResource NoteBorderThickness}" BorderBrush="{StaticResource MainNoteBorderSCB}"
+        KeyUp="Control_KeyUp" Focusable="True" Background="{StaticResource MainNoteBackgroundSCB}" CornerRadius="10" FocusVisualStyle="{x:Null}">
+            <Grid ClipToBounds="{Binding Test}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
 
-            <Grid Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Stretch">
-                <TextBlock Style="{StaticResource NoteContentTextBlock}" Text="Write your note..." FontSize="15" Opacity="0.8" Margin="30,0,20,30"/>
-                <TextBox x:Name="ContentTextBox" Style="{StaticResource NoteContentTextBox}" Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}" FontSize="15" AcceptsReturn="True" TextWrapping="Wrap" Margin="30,0,20,30">
+                <Grid Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="0" FocusVisualStyle="{x:Null}">
+                    <TextBlock Style="{StaticResource NoteHeadlineTextBlock}" Text="Title" FontSize="30" Opacity="0.8" Margin="30,30,0,10"/>
+                    <TextBox x:Name="TitleTextBox" Style="{StaticResource NoteContentTextBox}" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" FontSize="30" Margin="30,30,0,10">
+                    </TextBox>
+                </Grid>
+
+                <Grid Grid.Row="0" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Center" Panel.ZIndex="2" Margin="0,0,30,0" FocusVisualStyle="{x:Null}">
+                    <Button Style="{StaticResource NoteCloseButton}" Click="OnRemoveCurrentNote" IsEnabled="{Binding CanStartEditing}"/>
+                    <Image Source="/Resource/CloseNoteIcon.png" Width="10" Height="10"/>
+
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Opacity" Value="0.0"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CanStartEditing}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                        To="1.0"
+                                                        Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         To="0.0"
+                                                         Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
+
+                <Grid Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Stretch" Panel.ZIndex="0" FocusVisualStyle="{x:Null}">
+                    <TextBlock Style="{StaticResource NoteContentTextBlock}" Text="Write your note..." FontSize="15" Opacity="0.8" Margin="30,0,20,30"/>
+                    <TextBox x:Name="ContentTextBox" Style="{StaticResource NoteContentTextBox}" Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}" FontSize="15" AcceptsReturn="True" 
+                     TextWrapping="Wrap" Margin="30,0,20,30">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="TextChanged">
+                                <i:InvokeCommandAction Command="{Binding CheckHeight}" CommandParameter="{Binding ElementName=ContentTextBox}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
+                </Grid>
+
+                <Border x:Name="BorderCollision" Grid.RowSpan="2" Panel.ZIndex="1" CornerRadius="10" IsHitTestVisible="{Binding CanStartEditing}" Focusable="True" 
+                Background="{StaticResource MainBlankSCB}" Margin="0,0,0,-132">
                     <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="TextChanged">
-                            <i:InvokeCommandAction Command="{Binding CheckHeight}" CommandParameter="{Binding ElementName=ContentTextBox}"/>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding BorderCollisionLoaded}" CommandParameter="{Binding ElementName=BorderCollision}"/>
+                        </i:EventTrigger>
+
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding BorderCollisionMouseLeftButtonDown}" PassEventArgsToCommand="True"/>
+                        </i:EventTrigger>
+
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding BorderCollisionMouseLeftButtonUp}" PassEventArgsToCommand="True"/>
+                        </i:EventTrigger>
+
+                        <i:EventTrigger EventName="MouseMove">
+                            <i:InvokeCommandAction Command="{Binding BorderCollisionMouseMovement}" PassEventArgsToCommand="True"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                </TextBox>
+
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Opacity" Value="0.0"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CanStartEditing}" Value="True">
+                                    <Setter Property="Opacity" Value="1.0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+
+                
+                <!--
+        <Border Grid.RowSpan="2" Background="Green" HorizontalAlignment="Right" VerticalAlignment="Center" Width="20" Height="20" Margin="0,0,-10,0">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Opacity" Value="1.0"/>
+
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CanStartEditing}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                        To="1.0"
+                                        Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                         To="0.0"
+                                         Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+        -->
             </Grid>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Loaded">
+                    <i:InvokeCommandAction Command="{Binding BorderLoaded}" CommandParameter="{Binding ElementName=NoteBorder}"/>
+                </i:EventTrigger>
+
+                <i:EventTrigger EventName="MouseEnter">
+                    <i:InvokeCommandAction Command="{Binding NoteBorderMouseEnter}"/>
+                </i:EventTrigger>
+
+                <i:EventTrigger EventName="MouseLeave">
+                    <i:InvokeCommandAction Command="{Binding NoteBorderMouseLeave}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             From="0.0"
+                                             To="1.0"
+                                             Duration="0:0:0.3"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+        </Border>
+
+        <Grid x:Name="R_BorderEdge" Grid.RowSpan="2" Background="Green" HorizontalAlignment="Right" VerticalAlignment="Center" Width="20" Height="260" Margin="0,0,-10,0">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <i:InvokeCommandAction Command="{Binding NoteOuterGridMouseEnter}" CommandParameter="{Binding ElementName=R_BorderEdge}"/>
+                </i:EventTrigger>
+
+                <i:EventTrigger EventName="MouseLeave">
+                    <i:InvokeCommandAction Command="{Binding NoteOuterGridMouseLeave}"/>
+                </i:EventTrigger>
+
+                <i:EventTrigger EventName="MouseLeftButtonDown">
+                    <i:InvokeCommandAction Command="{Binding R_NoteOuterGridMouseLeftButtonDown}" PassEventArgsToCommand="True"/>
+                </i:EventTrigger>
+
+                <i:EventTrigger EventName="MouseLeftButtonUp">
+                    <i:InvokeCommandAction Command="{Binding R_NoteOuterGridMouseLeftButtonUp}" PassEventArgsToCommand="True"/>
+                </i:EventTrigger>
+
+                <i:EventTrigger EventName="MouseMove">
+                    <i:InvokeCommandAction Command="{Binding R_NoteOuterGridMouseMove}" PassEventArgsToCommand="True"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </Grid>
-    </Border>
+
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding OuterGridLoaded}" CommandParameter="{Binding ElementName=OuterGrid}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+    </Grid>
+    
 </UserControl>

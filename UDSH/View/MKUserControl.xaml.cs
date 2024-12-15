@@ -14,11 +14,14 @@ namespace UDSH.View
     public partial class MKUserControl : UserControl
     {
         private MKUserControlViewModel viewModel;
+
+        public event EventHandler<int> MouseScroll;
+
         public MKUserControl()
         {
             InitializeComponent();
 
-            viewModel = new MKUserControlViewModel();
+            viewModel = new MKUserControlViewModel(this);
             DataContext = viewModel;
         }
 
@@ -136,6 +139,12 @@ namespace UDSH.View
         private void Grid_MouseEnter(object sender, MouseEventArgs e)
         {
             MessageBox.Show("Start Now");
+        }
+
+        private void OnMouseScroll(object sender, MouseWheelEventArgs e)
+        {
+            MouseScroll?.Invoke(sender, e.Delta);
+            //Debug.WriteLine($"Delta = {e.Delta}");
         }
 
         /*private void RichTextBox_GotFocus(object sender, RoutedEventArgs e)

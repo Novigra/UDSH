@@ -27,6 +27,9 @@
     <Compile Update="View\NewFileCreationWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\NewProjectCreationWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\NoteUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -42,6 +45,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\ButtonStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Styles\CheckboxStyles.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\ComboBoxStyles.xaml">
@@ -84,6 +90,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\NewFileCreationWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\NewProjectCreationWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\NoteUserControl.xaml">

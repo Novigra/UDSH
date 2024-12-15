@@ -52,3 +52,8 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\ScrollViewerStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\ScrollBarStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NoteUserControl.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NoteUserControl.baml
+D:\Projects\UDSH\UDSH\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyInjection.dll
+D:\Projects\UDSH\UDSH\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NewProjectCreationWindow.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NewProjectCreationWindow.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\CheckboxStyles.baml

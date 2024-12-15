@@ -8,16 +8,16 @@ namespace UDSH.View
     {
         private HeaderUserControlViewModel viewModel;
 
-        public HeaderUserControl()
+        public HeaderUserControl(HeaderUserControlViewModel viewModel)
         {
             InitializeComponent();
             /*PagesList.Items.Add(new Button());
             PagesList.Items.Add(new Button());
             PagesList.Items.Add(new Button());*/
 
-            viewModel = new HeaderUserControlViewModel();
+            //viewModel = new HeaderUserControlViewModel();
+            this.viewModel = viewModel;
             DataContext = viewModel;
-
             PagesList.Items.Add(new ListViewItem());
             PagesList.Items.Add(new ListViewItem());
             PagesList.Items.Add(new ListViewItem());

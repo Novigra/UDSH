@@ -3,6 +3,7 @@
                     xmlns:System="clr-namespace:System;assembly=mscorlib">
 
     <Thickness x:Key="QuickActionDotsMargins" Left="0" Top="0" Right="8" Bottom="0"/>
+    <Thickness x:Key="NoteBorderThickness" Left="10" Top="0" Right="10" Bottom="0"/>
     <System:Double x:Key="QuickActionDotsWidthAndHeight">17</System:Double>
 
     <Style TargetType="Border" x:Key="QABorderStructure">
