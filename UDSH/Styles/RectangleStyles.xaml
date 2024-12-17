@@ -50,6 +50,53 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="Rectangle" x:Key="NewProjectBar">
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.0"/>
+
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1" ScaleY="0.75"/> <!--75-->
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Rectangle.Loaded">
+                <BeginStoryboard x:Name="Start">
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                         From="0.0" To="0.0"
+                                         Duration="0:0:0.3"/>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                         To="0.75"
+                                         Duration="0:0:0.3" BeginTime="0:0:0.6"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            
+            <DataTrigger Binding="{Binding CanSecure}" Value="True">
+                <DataTrigger.EnterActions>
+                    <RemoveStoryboard BeginStoryboardName="Start"/>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                         To="1.0"
+                                         Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                         To="0.75"
+                                         Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="Grid">
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     </Style>

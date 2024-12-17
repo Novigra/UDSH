@@ -9,8 +9,11 @@ namespace UDSH.Services
         //string ProjectName { get; set; }
 
         event EventHandler<string> DisplayNameChanged;
+        event EventHandler<string> AddNewProjectTitle;
 
         Task LoadUserDataAsync();
         Task SaveUserDataAsync();
+
+        Task CreateNewProjectAsync(string NewProjectName, string ProjectVersion, bool IsSecured, string Password);
     }
 }

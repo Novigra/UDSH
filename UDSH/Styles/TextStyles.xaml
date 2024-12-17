@@ -31,6 +31,183 @@
         </Setter>
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="LRow1" BasedOn="{StaticResource DefaultText}">
+        <Setter Property="Opacity" Value="0.0"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform X="-67" Y="0"/>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="TextBlock.Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                         To="0.0"
+                                         Duration="0:0:0.3" BeginTime="0:0:0.7"/>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                         To="1.0"
+                                         Duration="0:0:0.3" BeginTime="0:0:0.7"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    <Style TargetType="TextBlock" x:Key="LRow2" BasedOn="{StaticResource DefaultText}">
+        <Setter Property="Opacity" Value="0.0"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform X="-67" Y="0"/>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="TextBlock.Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                     To="0.0"
+                                     Duration="0:0:0.3" BeginTime="0:0:0.8"/>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                     To="1.0"
+                                     Duration="0:0:0.3" BeginTime="0:0:0.8"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="LRow3" BasedOn="{StaticResource DefaultText}">
+        <Setter Property="Opacity" Value="0.0"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform X="-67" Y="0"/>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="TextBlock.Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                 To="0.0"
+                                 Duration="0:0:0.3" BeginTime="0:0:0.9"/>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                 To="1.0"
+                                 Duration="0:0:0.3" BeginTime="0:0:0.9"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="RRow3" BasedOn="{StaticResource DefaultText}">
+        <Setter Property="Opacity" Value="0.0"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform X="67" Y="0"/>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="TextBlock.Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                             To="0.0"
+                             Duration="0:0:0.3" BeginTime="0:0:0.9"/>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             To="1.0"
+                             Duration="0:0:0.3" BeginTime="0:0:0.9"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="OnOffOptionText">
+        <Setter Property="Text" Value="OFF"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform X="0" Y="0"/>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding CanSecure}" Value="True">
+                <Setter Property="Text" Value="ON"/>
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                                <ColorAnimation Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                To="{StaticResource OnTextColor}"
+                                                Duration="0:0:0.1"/>
+                            </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                To="{StaticResource OffTextColor}"
+                Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="SecureOptionText">
+        <Setter Property="Opacity" Value="0.0"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <TranslateTransform X="-60" Y="0"/>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding CanSecure}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard BeginTime="0:0:0.3">
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                 To="1.0"
+                                 Duration="0:0:0.3"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                             To="0.0"
+                                             Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                 To="0.0"
+                                 Duration="0:0:0.3"/>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                             To="-60.0"
+                                             Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="TextBlock" x:Key="NoteHeadlineTextBlock">
         <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/Lora/#Lora"/>
         <Setter Property="FontWeight" Value="DemiBold"/>

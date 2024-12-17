@@ -6,6 +6,17 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+
+    <AssemblyTitle>UDSH</AssemblyTitle>
+    <AssemblyCompany>Mohammed Kenawy</AssemblyCompany>
+    <AssemblyDescription>A Screenwriting Software</AssemblyDescription>
+    <Copyright>Copyright © 2024</Copyright>
+    
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0</FileVersion>
+    <ProductVersion>0.1.0</ProductVersion>
+
+    <AssemblyNeutralResourceLanguage>en-US</AssemblyNeutralResourceLanguage>
   </PropertyGroup>
 
   <ItemGroup>

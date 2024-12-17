@@ -109,7 +109,7 @@ namespace UDSH.View {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/UDSH;V1.0.0.0;component/view/csfusercontrol.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/UDSH;V0.1.0.0;component/view/csfusercontrol.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\View\CSFUserControl.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

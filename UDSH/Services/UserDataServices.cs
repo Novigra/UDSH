@@ -6,6 +6,7 @@ namespace UDSH.Services
     {
         private readonly Session session;
         public event EventHandler<string> DisplayNameChanged;
+        public event EventHandler<string> AddNewProjectTitle;
 
         public string DisplayName
         {
@@ -41,6 +42,12 @@ namespace UDSH.Services
         public async Task SaveUserDataAsync()
         {
             await Task.Run(() => session.SaveUserData());
+        }
+
+        public async Task CreateNewProjectAsync(string NewProjectName, string ProjectVersion, bool IsSecured, string Password)
+        {
+            await Task.Run(() => session.CreateNewProject(NewProjectName, ProjectVersion, IsSecured, Password));
+            AddNewProjectTitle?.Invoke(this, NewProjectName);
         }
     }
 }

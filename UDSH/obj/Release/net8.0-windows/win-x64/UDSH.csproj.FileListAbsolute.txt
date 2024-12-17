@@ -48,3 +48,12 @@ D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\UDSH.genruntimeconfig.c
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\ref\UDSH.dll
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\View\MKUserControl.g.cs
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\View\MKUserControl.baml
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\win-x64\Microsoft.Extensions.DependencyInjection.dll
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\win-x64\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\Styles\CheckboxStyles.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\View\NewProjectCreationWindow.g.cs
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\View\NoteUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\Styles\ScrollBarStyles.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\Styles\ScrollViewerStyles.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\View\NewProjectCreationWindow.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\win-x64\View\NoteUserControl.baml

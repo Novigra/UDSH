@@ -48,3 +48,12 @@ D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\SideContentUserControl.bam
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\UDSH.csproj.Up2Date
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\MKUserControl.g.cs
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\MKUserControl.baml
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.dll
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\Styles\CheckboxStyles.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\NewProjectCreationWindow.g.cs
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\NoteUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\Styles\ScrollBarStyles.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\Styles\ScrollViewerStyles.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\NewProjectCreationWindow.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\NoteUserControl.baml

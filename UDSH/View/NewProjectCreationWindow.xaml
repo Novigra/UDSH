@@ -12,7 +12,7 @@
         <RectangleGeometry Rect="0,0,1000,550" RadiusX="10" RadiusY="10"/>
     </Window.Clip>
 
-    <Grid Background="{StaticResource NewFileProcessBackgroundSCB}">
+    <Grid x:Name="WindowGrid" Background="{StaticResource NewFileProcessBackgroundSCB}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -28,7 +28,7 @@
             </StackPanel>
 
             <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,30,0">
-                <Button Width="40" Height="40" Style="{StaticResource NewFileCreationCloseButton}" Command="{Binding CloseWindow}"/>
+                <Button Width="40" Height="40" Style="{StaticResource NewFileCreationCloseButton}" Command="{Binding CloseWindow}" CommandParameter="{Binding ElementName=WindowGrid}"/>
                 <Image Source="/Resource/Close.png" Width="10" Height="10"/>
             </Grid>
         </Grid>
@@ -36,34 +36,67 @@
         <!-- Creation Header -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="15,5,0,0">
             <TextBlock Text="Let's Create Your Project, " FontSize="40" Style="{StaticResource DefaultText}"/>
-            <TextBlock Text="Alexandrina!" FontSize="40" Style="{StaticResource DefaultText}"/>
+            <TextBlock x:Name="UserName" Text="" FontSize="40" Style="{StaticResource DefaultText}"/>
         </StackPanel>
 
         <!-- Content -->
         <Grid Grid.Row="2" Margin="15,15,0,0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,0">
                 <StackPanel Orientation="Vertical" Margin="0,7,0,0">
-                    <TextBlock Text="Project Name" Style="{StaticResource DefaultText}"/>
-                    <TextBlock Text="Secure It" Style="{StaticResource DefaultText}" Margin="0,43,0,0"/>
+                    <TextBlock Text="Project Name" Style="{StaticResource LRow1}"/>
+                    <TextBlock Text="Secure It" Style="{StaticResource LRow2}" Margin="0,43,0,0"/>
                     <Grid Margin="0,44,0,0">
-                        <TextBlock Text="Password" Style="{StaticResource DefaultText}" Margin="0,0,0,0"/>
-                        <TextBlock Text="Project Version" Style="{StaticResource DefaultText}" Margin="0,67,0,0"/>
+                        <TextBlock Text="Password" Style="{StaticResource SecureOptionText}" Margin="0,0,0,0"/>
+                        <TextBlock Text="Project Version" Style="{StaticResource LRow3}" Margin="0,67,0,0"/>
+
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform X="0" Y="-67"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CanSecure}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                     To="0.0"
+                                                                     Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard BeginTime="0:0:0.3">
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                     To="-67.0"
+                                                                     Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
                     </Grid>
 
                 </StackPanel>
-                <Rectangle Width="6" Margin="20,-5,0,0" Fill="{StaticResource BorderLBG}" RadiusX="2" RadiusY="2"/>
+                <Rectangle Style="{StaticResource NewProjectBar}" Width="6" Margin="20,-5,0,0" Fill="{StaticResource BorderLBG}" RadiusX="2" RadiusY="2"/>
                 <StackPanel Orientation="Vertical" Margin="20,0,0,0">
-                    <Border HorizontalAlignment="Stretch" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
+                    <Border x:Name="TitleBorder" HorizontalAlignment="Left" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
                             CornerRadius="4" Height="40" FocusVisualStyle="{x:Null}">
                         <!-- Textbox Details -->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" FocusVisualStyle="{x:Null}">
                             <!-- Text Container -->
                             <Grid Margin="4,0,4,0" VerticalAlignment="Center">
                                 <!-- Text Highlight -->
-                                <TextBlock x:Name="HighlightText" Text="Enter Project Name..." Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="20" FontWeight="SemiBold" Focusable="False">
+                                <TextBlock x:Name="HighlightText" Text="" Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="20" FontWeight="SemiBold" Focusable="False">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Visibility" Value="Collapsed"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding NewProjectName}" Value="">
                                                     <Setter Property="Visibility" Value="Visible"/>
@@ -84,7 +117,7 @@
                                          Text="{Binding NewProjectName, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="TextChanged">
-                                            <i:InvokeCommandAction Command="{Binding FileNameChanged}"/>
+                                            <i:InvokeCommandAction Command="{Binding ProjectNameChanged}" CommandParameter="{Binding ElementName=UserSearchBox}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
 
@@ -92,30 +125,73 @@
 
                             </Grid>
                         </StackPanel>
+
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Opacity" Value="0.0"/>
+                                <Setter Property="Width" Value="50"/> <!--412-->
+                                <Setter Property="RenderTransformOrigin" Value="0.0,0.5"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform X="67" Y="0"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="Border.Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                                 To="0.75"
+                                                                 Duration="0:0:0.3" BeginTime="0:0:0.7"/>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 To="1"
+                                                                 Duration="0:0:0.3" BeginTime="0:0:0.7"/>
+                                                <DoubleAnimation Storyboard.TargetProperty="Width"
+                                                                 To="412"
+                                                                 Duration="0:0:0.3" BeginTime="0:0:1.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Loaded">
+                                <i:InvokeCommandAction Command="{Binding TitleLoaded}" CommandParameter="{Binding ElementName=HighlightText}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </Border>
 
-                    <StackPanel Orientation="Horizontal" Margin="0,35,0,0">
-                        <TextBlock Text="Yes" Style="{StaticResource DefaultText}"/>
-                        <CheckBox Margin="10,0,0,0"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,35,0,0" Panel.ZIndex="1">
+                        <CheckBox IsChecked="{Binding CanSecure, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,0">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <i:InvokeCommandAction Command="{Binding CheckboxMouseLeftButtonDown}" CommandParameter="{Binding ElementName=HighlightPassText}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </CheckBox>
 
+                        <!--
                         <TextBlock Text="No" Style="{StaticResource DefaultText}" Margin="20,0,0,0"/>
-                        <CheckBox Margin="10,0,0,0"/>
+                        <CheckBox IsChecked="{Binding StopSecureOption}" Margin="10,0,0,0"/>
+                        -->
                     </StackPanel>
 
-                    <Grid Margin="0,25,0,0">
-                        <Border HorizontalAlignment="Stretch" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
-                                CornerRadius="4" Height="40" FocusVisualStyle="{x:Null}" Margin="0,10,0,61" >
+                    <Grid Margin="0,25,0,0" Panel.ZIndex="0">
+                        <Border x:Name="PassBorder" HorizontalAlignment="Left" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
+                                CornerRadius="4" Height="40" FocusVisualStyle="{x:Null}" Margin="0,10,0,61" IsHitTestVisible="{Binding CanSecure}">
                             <!-- Textbox Details -->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" FocusVisualStyle="{x:Null}">
                                 <!-- Text Container -->
                                 <Grid Margin="4,0,4,0" VerticalAlignment="Center">
                                     <!-- Text Highlight -->
-                                    <TextBlock x:Name="HighlightPassText" Text="Enter Password..." Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="20" FontWeight="SemiBold" Focusable="False">
+                                    <TextBlock x:Name="HighlightPassText" Text="" Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="20" FontWeight="SemiBold" Focusable="False">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Setter Property="Visibility" Value="Collapsed"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding NewPasswordName}" Value="">
+                                                    <DataTrigger Binding="{Binding NewPassword}" Value="">
                                                         <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -131,20 +207,102 @@
 
                                     <!-- Password Text -->
                                     <TextBox x:Name="PassText" Background="{StaticResource MainBlankSCB}" FontSize="20" FontWeight="Bold" Width="400"
-                                             Text="{Binding NewPasswordName, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
+                                             Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="TextChanged">
-                                                <i:InvokeCommandAction Command="{Binding FileNameChanged}"/>
+                                                <i:InvokeCommandAction Command="{Binding ProjectPassChanged}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </TextBox>
                                 </Grid>
                             </StackPanel>
+
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Opacity" Value="0.0"/>
+                                    <Setter Property="Width" Value="50"/> <!--412-->
+                                    <Setter Property="RenderTransformOrigin" Value="0.0,0.5"/>
+                                    <Setter Property="RenderTransform">
+                                        <Setter.Value>
+                                            <TransformGroup>
+                                                <TranslateTransform X="60" Y="0"/>
+                                            </TransformGroup>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CanSecure}" Value="True">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard BeginTime="0:0:0.3">
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                         To="1.0"
+                                                                         Duration="0:0:0.3"/>
+                                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TransformGroup.Children)[0].X"
+                                                                         To="0.0"
+                                                                         Duration="0:0:0.3"/>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Width"
+                                                                         To="412.0"
+                                                                         Duration="0:0:0.3" BeginTime="0:0:0.7"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                         To="0.0"
+                                                                         Duration="0:0:0.3"/>
+                                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TransformGroup.Children)[0].X"
+                                                                         To="60.0"
+                                                                         Duration="0:0:0.3"/>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Width"
+                                                                         To="50.0"
+                                                                         Duration="0:0:0.3" BeginTime="0:0:0.4"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
                         </Border>
 
                         <StackPanel Orientation="Horizontal" Margin="0,84,0,0">
-                            <TextBlock Text="0.1.0" Style="{StaticResource DefaultText}"/>
+                            <TextBlock Text="{Binding ProjectVersion}" Style="{StaticResource RRow3}"/>
                         </StackPanel>
+
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform X="0" Y="-67"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CanSecure}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                     To="0.0"
+                                                                     Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                                                     To="-67.0"
+                                                                     Duration="0:0:0.3" BeginTime="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
                     </Grid>
                 </StackPanel>
             </StackPanel>
@@ -152,24 +310,33 @@
 
         <Grid Grid.Row="3">
             <Grid HorizontalAlignment="Right" Width="210" Margin="0,20,30,20">
-                <Button Style="{StaticResource NewFileCreationButton}" Command="{Binding NewFileCreation}"/>
+                <Button Style="{StaticResource NewFileCreationButton}" Command="{Binding NewProjectCreation}" CommandParameter="{Binding ElementName=WindowGrid}"/>
                 <TextBlock Text="Create Project" Style="{StaticResource DefaultText}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0" IsHitTestVisible="False"/>
                 <Image Source="/Resource/StartWritingIcon.png" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,9,10,11"/>
             </Grid>
 
             <Grid.Resources>
                 <Style TargetType="Grid">
-                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="Opacity" Value="0.0"/>
                     <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
                     <Setter Property="RenderTransform">
                         <Setter.Value>
-                            <TranslateTransform X="0" Y="0"/>
+                            <TranslateTransform X="125" Y="0"/>
                         </Setter.Value>
                     </Setter>
+                    <!-- This sucks and the combination of cs and visual states would've been better, but i wanted to know how this would look like :) -->
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding CanCreateFile}" Value="True">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding CanSecure}" Value="False"/>
+                                <Condition Binding="{Binding ContainsTitleText}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="Dev2"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev3"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev4"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev5"/>
+                                <BeginStoryboard x:Name="Dev1">
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetProperty="Opacity"
                                                  To="1.0"
@@ -179,23 +346,139 @@
                                                  Duration="0:0:0.5"/>
                                     </Storyboard>
                                 </BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                        </MultiDataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding CanSecure}" Value="False"/>
+                                <Condition Binding="{Binding ContainsTitleText}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="Dev1"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev3"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev4"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev5"/>
+                                <BeginStoryboard x:Name="Dev2">
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                 To="0.0"
-                                                 Duration="0:0:0.5"/>
+                                                         To="0.0"
+                                                         Duration="0:0:0.5"/>
                                         <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
-                                                 To="70.0"
-                                                 Duration="0:0:0.5"/>
+                                                         To="125.0"
+                                                         Duration="0:0:0.5"/>
                                     </Storyboard>
                                 </BeginStoryboard>
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
+                            </MultiDataTrigger.EnterActions>
+                        </MultiDataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ContainsPassText}" Value="False"/>
+                                <Condition Binding="{Binding CanSecure}" Value="True"/>
+                                <Condition Binding="{Binding ContainsTitleText}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="Dev1"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev2"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev4"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev5"/>
+                                <BeginStoryboard x:Name="Dev3">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         To="0.0"
+                                                         Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                         To="125.0"
+                                                         Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                        </MultiDataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ContainsPassText}" Value="True"/>
+                                <Condition Binding="{Binding CanSecure}" Value="True"/>
+                                <Condition Binding="{Binding ContainsTitleText}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="Dev1"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev2"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev3"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev5"/>
+                                <BeginStoryboard x:Name="Dev4">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         To="0.0"
+                                                         Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                         To="125.0"
+                                                         Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                        </MultiDataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ContainsPassText}" Value="True"/>
+                                <Condition Binding="{Binding CanSecure}" Value="True"/>
+                                <Condition Binding="{Binding ContainsTitleText}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="Dev1"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev2"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev3"/>
+                                <RemoveStoryboard BeginStoryboardName="Dev4"/>
+                                <BeginStoryboard x:Name="Dev5">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         To="1.0"
+                                                         Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                         To="0.0"
+                                                         Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </Grid.Resources>
         </Grid>
+
+        <Grid.Resources>
+            <Style TargetType="Grid">
+                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <TranslateTransform X="0" Y="0"/>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <EventTrigger RoutedEvent="Window.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                         From="0.0"
+                                         To="1.0"
+                                         Duration="0:0:0.3"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                         From="100.0"
+                                         To="0.0"
+                                         Duration="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
+
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding GridLoaded}" CommandParameter="{Binding ElementName=UserName}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
     </Grid>
 </Window>

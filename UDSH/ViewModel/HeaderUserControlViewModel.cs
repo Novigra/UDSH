@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +25,13 @@ namespace UDSH.ViewModel
                     displayName = value; OnPropertyChanged(); //_headerServices.UserDataServices.DisplayName = value; (do it in a function instead of real-time update in settings)
                 }
             }
+        }
+
+        private string projectName;
+        public string ProjectName
+        {
+            get { return projectName; }
+            set { projectName = value; OnPropertyChanged(); }
         }
 
         private bool isPenToolButtonClicked;
@@ -266,14 +274,7 @@ namespace UDSH.ViewModel
             _headerServices = headerServices;
             DisplayName = _headerServices.UserDataServices.DisplayName;
             _headerServices.UserDataServices.DisplayNameChanged += UserDataServices_DisplayNameChanged;
-            /*userDataServices = userData;
-            DisplayName = userDataServices.DisplayName;
-            userDataServices.DisplayNameChanged += UserDataServices_DisplayNameChanged;*/
-            /*this.session = session;
-            if(this.session.User != null)
-                DisplayName = this.session.User.DisplayName;
-
-            this.session.UserDataLoaded += Session_UserDataLoaded;*/
+            _headerServices.UserDataServices.AddNewProjectTitle += UserDataServices_AddNewProjectTitle;
 
             IsPenToolButtonClicked = false;
             CanClosePopup = false;
@@ -306,6 +307,11 @@ namespace UDSH.ViewModel
 
             IsPenToolButtonDisabled = false;
             CanEnablePenToolButton = true;
+        }
+
+        private void UserDataServices_AddNewProjectTitle(object? sender, string e)
+        {
+            ProjectName = e;
         }
 
         private void UserDataServices_DisplayNameChanged(object? sender, string NewDisplayName)
@@ -406,10 +412,9 @@ namespace UDSH.ViewModel
             CanClosePopup = false;
 
             Window mainWindowRef = _headerServices.UserDataServices.Session.mainWindow;
-            NewProjectCreationWindow newProjectCreationWindow = new NewProjectCreationWindow(new NewProjectCreationWindowViewModel(_headerServices.UserDataServices.Session), mainWindowRef);
+            var NewProjService = _headerServices.Services.GetRequiredService<IUserDataServices>();
+            NewProjectCreationWindow newProjectCreationWindow = new NewProjectCreationWindow(new NewProjectCreationWindowViewModel(NewProjService), mainWindowRef);
             newProjectCreationWindow.ShowDialog();
-
-            MessageBox.Show("Creating A New Project...");
         }
 
         private void SetQuickAction(string index)

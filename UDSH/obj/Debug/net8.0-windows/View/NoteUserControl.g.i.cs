@@ -106,7 +106,7 @@ namespace UDSH.View {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/UDSH;component/view/noteusercontrol.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/UDSH;V0.1.0.0;component/view/noteusercontrol.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\View\NoteUserControl.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

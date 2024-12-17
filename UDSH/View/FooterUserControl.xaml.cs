@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Reflection;
+using System.Windows.Controls;
 
 namespace UDSH.View
 {
@@ -10,6 +11,9 @@ namespace UDSH.View
         public FooterUserControl()
         {
             InitializeComponent();
+
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            ApplicationVersion.Text = $"{version.Major}.{version.Minor}.{version.Build}";
         }
     }
 }

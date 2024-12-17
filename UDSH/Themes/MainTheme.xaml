@@ -99,6 +99,11 @@
     <SolidColorBrush x:Key="CheckboxBorderSCB">#A5A5A5</SolidColorBrush>
     <SolidColorBrush x:Key="CheckboxBackgroundSCB">#FFFFFF</SolidColorBrush>
 
+    <Color x:Key="CheckboxCheckedBorderColor">#393E46</Color>
+    <Color x:Key="CheckboxBorderColor">#A5A5A5</Color>
+    <Color x:Key="OnTextColor">#FFFFFF</Color>
+    <Color x:Key="OffTextColor">#000000</Color>
+
     <!-- Page Scroll -->
     <SolidColorBrush x:Key="RepeatButtonNormalSCB">#949494</SolidColorBrush>
     <SolidColorBrush x:Key="RepeatButtonPressedSCB">#6C6C6C</SolidColorBrush>

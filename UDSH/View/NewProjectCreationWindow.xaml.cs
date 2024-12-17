@@ -8,12 +8,15 @@ namespace UDSH.View
     /// </summary>
     public partial class NewProjectCreationWindow : Window
     {
+        NewProjectCreationWindowViewModel viewModel;
         public NewProjectCreationWindow(NewProjectCreationWindowViewModel viewModel, Window window)
         {
             Owner = window;
             InitializeComponent();
 
             DataContext = viewModel;
+            viewModel.AssociatedWindow = this;
+            this.viewModel = viewModel;
         }
     }
 }

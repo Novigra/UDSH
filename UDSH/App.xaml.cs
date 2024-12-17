@@ -49,7 +49,7 @@ namespace UDSH
             services.AddTransient<IHeaderServices>(provider =>
             {
                 var userDataServices = provider.GetRequiredService<IUserDataServices>();
-                return new HeaderServices(userDataServices);
+                return new HeaderServices(userDataServices, serviceProvider);
             });
             services.AddTransient<HeaderUserControlViewModel>();
             services.AddTransient<HeaderUserControl>();

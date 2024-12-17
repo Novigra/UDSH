@@ -13,11 +13,12 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("UDSH")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ce085801c9f11492cbc255e5e2e5a902e0bc68d")]
+[assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2024")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("0.1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f670da8d641aa7fddd78d96f2f690785baf19c72")]
 [assembly: System.Reflection.AssemblyProductAttribute("UDSH")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UDSH")]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
+[assembly: System.Reflection.AssemblyVersionAttribute("0.1.0.0")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows7.0")]
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows7.0")]
 

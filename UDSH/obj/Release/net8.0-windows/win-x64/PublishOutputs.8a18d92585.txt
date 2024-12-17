@@ -3,4 +3,6 @@ D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\UDSH.dll
 D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\UDSH.deps.json
 D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\UDSH.runtimeconfig.json
 D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\UDSH.pdb
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\Microsoft.Extensions.DependencyInjection.dll
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\Microsoft.Xaml.Behaviors.dll
