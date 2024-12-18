@@ -10,6 +10,7 @@
         public bool IsLastOpenedProject { get; set; }
         public bool IsProjectProtected { get; set; }
         public string ProjectPassword { get; set; }
+        public string ProjectDirectory { get; set; }
         public List<FileSystem> Files { get; set; }
     }
 }

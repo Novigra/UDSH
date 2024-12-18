@@ -10,15 +10,9 @@ namespace UDSH
 {
     public partial class MainWindow : Window
     {
-        //private readonly IUserDataServices userDataServices;
-        //private IServiceProvider serviceProvider;
         public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
-
-            /*this.serviceProvider = serviceProvider;
-            var header = this.serviceProvider.GetRequiredService<HeaderUserControl>();*/
-            //userDataServices = userService;
 
             var session = serviceProvider.GetRequiredService<Session>();
             session.mainWindow = this;

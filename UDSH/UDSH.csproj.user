@@ -30,10 +30,19 @@
     <Compile Update="View\NewProjectCreationWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\NewUserStartupWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\NoteUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\SideContentUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\WelcomeNameUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\WelcomeUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -95,10 +104,19 @@
     <Page Update="View\NewProjectCreationWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="View\NewUserStartupWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\NoteUserControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\SideContentUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\WelcomeNameUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\WelcomeUserControl.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

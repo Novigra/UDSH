@@ -14,7 +14,7 @@ namespace UDSH.Model
 
         public Project CurrentProject { get; set; }
 
-        public int CurrentProjectIndex { get; set; }
+        public int NumberOfProjects { get; set; }
 
         private string UserFileDirectory { get; set; }
 
@@ -69,21 +69,27 @@ namespace UDSH.Model
 
         private void ManageContentFolder()
         {
-            if(User.Projects.Count == 0)
+            string ApplicationPath = AppContext.BaseDirectory;
+            string ProjectsPath = Path.Combine(ApplicationPath, "Workflow", $"{User.DisplayName}", "Projects");
+            CurrentProjectsDirectory = ProjectsPath;
+
+            if (User.Projects.Count == 0)
             {
-                string ApplicationPath = AppContext.BaseDirectory;
-                string ProjectsPath = Path.Combine(ApplicationPath, "Workflow", $"{User.DisplayName}", "Projects");
-                if(Path.Exists(ProjectsPath))
-                {
-                    CurrentProjectsDirectory = ProjectsPath;
-                    CurrentProjectIndex = -1;
-                }
-                else
+                NumberOfProjects = 0;
+
+                if (!Path.Exists(ProjectsPath))
                 {
                     Directory.CreateDirectory(ProjectsPath);
-                    CurrentProjectsDirectory = ProjectsPath;
-
-                    CurrentProjectIndex = -1;
+                }
+            }
+            else
+            {
+                NumberOfProjects = User.Projects.Count;
+                
+                foreach (Project project in User.Projects)
+                {
+                    if(project.IsLastOpenedProject == true)
+                        CurrentProject = project;
                 }
             }
         }
@@ -95,19 +101,21 @@ namespace UDSH.Model
 
         public void CreateNewProject(string NewProjectName, string ProjectVersion, bool IsSecured, string Password)
         {
-            CurrentProjectIndex++;
-
             Project project = new Project();
             project.ProjectName = NewProjectName;
             project.ProjectAuthor = User.DisplayName;
             project.ProjectVersion = ProjectVersion;
-            project.IsLastOpenedProject = true;
+            if (NumberOfProjects == 0)
+                project.IsLastOpenedProject = true;
             project.IsProjectProtected = IsSecured;
             project.ProjectPassword = Password;
             project.ProjectCreationDate = DateTime.Now;
             project.ProjectLastModificationDate = DateTime.Now;
+            project.ProjectDirectory = Path.Combine(CurrentProjectsDirectory, NewProjectName);
 
             User.Projects.Add(project);
+            NumberOfProjects++;
+
             CurrentProject = project;
 
             try

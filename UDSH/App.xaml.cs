@@ -27,13 +27,18 @@ namespace UDSH
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            //Session session = new Session();
-            /*MainWindow window = new MainWindow();
-            window.Show();*/
-
-            MainWindow mainWindow = serviceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
-
+            // Check the UDSH UserData file, not the directory
+            string AppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UDSH");
+            if (!Directory.Exists(AppData))
+            {
+                NewUserStartupWindow newUserStartupWindow = serviceProvider.GetRequiredService<NewUserStartupWindow>();
+                newUserStartupWindow.Show();
+            }
+            else
+            {
+                MainWindow mainWindow = serviceProvider.GetRequiredService<MainWindow>();
+                mainWindow.Show();
+            }
 
             #if DEBUG
             Console.WriteLine("MODE::DEBUG");
@@ -53,8 +58,7 @@ namespace UDSH
             });
             services.AddTransient<HeaderUserControlViewModel>();
             services.AddTransient<HeaderUserControl>();
-            /*services.AddTransient<NewProjectCreationWindowViewModel>();
-            services.AddTransient<NewProjectCreationWindow>();*/
+            services.AddTransient<NewUserStartupWindow>();
             services.AddTransient<MainWindow>();
         }
     }

@@ -6,7 +6,8 @@ namespace UDSH.Services
     {
         Session Session { get; }
         string DisplayName { get; set; }
-        //string ProjectName { get; set; }
+        Project ActiveProject { get; }
+        int NumberOfProjects { get; }
 
         event EventHandler<string> DisplayNameChanged;
         event EventHandler<string> AddNewProjectTitle;

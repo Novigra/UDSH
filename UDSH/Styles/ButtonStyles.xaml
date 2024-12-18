@@ -16,6 +16,7 @@
     <CornerRadius x:Key="ShortcutButton.Radius">15</CornerRadius>
     <CornerRadius x:Key="NewFileCloseButton.Radius">10</CornerRadius>
     <CornerRadius x:Key="NoteCloseButton.Radius">8</CornerRadius>
+    <CornerRadius x:Key="StartupButton.Radius">8</CornerRadius>
 
     <Style TargetType="Button" x:Key="Placeholder">
         
@@ -354,6 +355,50 @@
                             <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
                                         To="{StaticResource MainUnselectedButtonColor}"
                                         Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonSCB}"/>
+            </Trigger>
+        </Style.Triggers>
+
+    </Style>
+
+    <Style TargetType="Button" x:Key="StartupButton">
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="{StaticResource StartupButton.Radius}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainHoveredControlButtonColor}"
+                                        Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainUnselectedButtonColor}"
+                                        Duration="0:0:0.3"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.ExitActions>

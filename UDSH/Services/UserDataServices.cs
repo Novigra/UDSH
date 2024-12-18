@@ -24,10 +24,12 @@ namespace UDSH.Services
 
         public Session Session { get { return session; } }
 
-        /*public string ProjectName
+        public Project ActiveProject
         {
-            get => session.User.Projects[0].ProjectName;
-        }*/
+            get => session.CurrentProject;
+        }
+
+        public int NumberOfProjects { get => session.NumberOfProjects; }
 
         public UserDataServices(Session session)
         {
@@ -47,7 +49,8 @@ namespace UDSH.Services
         public async Task CreateNewProjectAsync(string NewProjectName, string ProjectVersion, bool IsSecured, string Password)
         {
             await Task.Run(() => session.CreateNewProject(NewProjectName, ProjectVersion, IsSecured, Password));
-            AddNewProjectTitle?.Invoke(this, NewProjectName);
+            if (session.NumberOfProjects == 1)
+                AddNewProjectTitle?.Invoke(this, NewProjectName);
         }
     }
 }

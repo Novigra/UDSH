@@ -274,6 +274,10 @@ namespace UDSH.ViewModel
             _headerServices = headerServices;
             DisplayName = _headerServices.UserDataServices.DisplayName;
             _headerServices.UserDataServices.DisplayNameChanged += UserDataServices_DisplayNameChanged;
+
+            if (_headerServices.UserDataServices.NumberOfProjects != 0)
+                ProjectName = _headerServices.UserDataServices.ActiveProject.ProjectName;
+
             _headerServices.UserDataServices.AddNewProjectTitle += UserDataServices_AddNewProjectTitle;
 
             IsPenToolButtonClicked = false;

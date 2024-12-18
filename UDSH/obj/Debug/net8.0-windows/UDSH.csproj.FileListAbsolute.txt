@@ -57,3 +57,9 @@ D:\Projects\UDSH\UDSH\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyIn
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NewProjectCreationWindow.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NewProjectCreationWindow.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\CheckboxStyles.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NewUserStartupWindow.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\NewUserStartupWindow.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeUserControl.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeNameUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeNameUserControl.baml
