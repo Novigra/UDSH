@@ -97,6 +97,31 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="Rectangle" x:Key="ProfilePicBar">
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.0"/>
+
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1" ScaleY="0.75"/><!--75-->
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Rectangle.Loaded">
+                <BeginStoryboard x:Name="Start">
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                     From="0.0" To="0.0"
+                                     Duration="0:0:0.3"/>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                     To="0.75"
+                                     Duration="0:0:0.3" BeginTime="0:0:3.5"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="Grid">
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     </Style>

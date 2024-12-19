@@ -29,7 +29,8 @@ namespace UDSH
         {
             // Check the UDSH UserData file, not the directory
             string AppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UDSH");
-            if (!Directory.Exists(AppData))
+            string FilePath = Path.Combine(AppData, "UserData.json");
+            if (!File.Exists(FilePath))
             {
                 NewUserStartupWindow newUserStartupWindow = serviceProvider.GetRequiredService<NewUserStartupWindow>();
                 newUserStartupWindow.Show();

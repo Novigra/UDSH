@@ -63,3 +63,5 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeUserControl.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeUserControl.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeNameUserControl.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeNameUserControl.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeProfilePictureUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeProfilePictureUserControl.baml

@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
+using System.Xml.Linq;
 
 namespace UDSH.View
 {
@@ -43,38 +44,6 @@ namespace UDSH.View
 
             TextAnim(5, 1, HighlightText, "My Name Is...");
             TextAnim(2, 1.8, Para, "Life consumed me; all that remains is my name.");
-
-            /*DiscreteStringKeyFrame discreteStringKeyFrame;
-            StringAnimationUsingKeyFrames stringAnimationUsingKeyFrames = new StringAnimationUsingKeyFrames();
-            stringAnimationUsingKeyFrames.BeginTime = TimeSpan.FromSeconds(1.7);
-            stringAnimationUsingKeyFrames.Duration = new Duration(TimeSpan.FromSeconds(1));
-
-            string OutputName = "My Name Is...";
-            string Conj = string.Empty;
-
-            foreach (char i in OutputName)
-            {
-                Conj += i;
-                discreteStringKeyFrame = new DiscreteStringKeyFrame();
-                discreteStringKeyFrame.KeyTime = KeyTime.Paced;
-                discreteStringKeyFrame.Value = Conj;
-
-                stringAnimationUsingKeyFrames.KeyFrames.Add(discreteStringKeyFrame);
-            }
-
-            Storyboard.SetTarget(stringAnimationUsingKeyFrames, HighlightText);
-            Storyboard.SetTargetProperty(stringAnimationUsingKeyFrames, new PropertyPath("Text"));
-            storyboard.Children.Add(stringAnimationUsingKeyFrames);
-
-            storyboard.Completed += (sender, args) =>
-            {
-                storyboard.Remove();
-                storyboard = new Storyboard();
-
-                NameBorder.Opacity = 1.0;
-                NameBorder.Width = 500.0;
-                HighlightText.Text = "My Name Is...";
-            };*/
 
             storyboard.Completed += (sender, args) =>
             {
@@ -152,16 +121,57 @@ namespace UDSH.View
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             CurrentWindow.Close();
-            /*if (!string.IsNullOrEmpty(NameText.Text))
-                CurrentWindow.UserDisplayName = NameText.Text;*/
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("asgdsa");
+            //MessageBox.Show("asgdsa");
             // TODO: Close animation for Upper, Pata, and Bottom Text.
             // Add Display name to the New User startup window when hitting Next button.
             // In App, we check directory, that's not good, so check the file itself.
+
+            if (!string.IsNullOrEmpty(NameText.Text))
+                CurrentWindow.UserDisplayName = NameText.Text;
+
+            ClosingAnimation(ButtonContainer);
+            ClosingAnimation(UpperPara);
+            ClosingAnimation(Para);
+            ClosingAnimation(BottomPara);
+            ClosingAnimation(NameText);
+            ClosingBorderAnimation();
+            NextButton.IsEnabled = false;
+
+            storyboard.Begin();
+        }
+
+        private void ClosingAnimation(UIElement element)
+        {
+            DoubleAnimation opacityAnimation = new DoubleAnimation();
+            opacityAnimation.To = 0.0;
+            opacityAnimation.Duration = new Duration(TimeSpan.FromSeconds(1));
+
+            Storyboard.SetTarget(opacityAnimation, element);
+            Storyboard.SetTargetProperty(opacityAnimation, new PropertyPath("Opacity"));
+
+            storyboard.Children.Add(opacityAnimation);
+        }
+
+        private void ClosingBorderAnimation()
+        {
+            DoubleAnimation widthAnimation = new DoubleAnimation();
+            widthAnimation.BeginTime = TimeSpan.FromSeconds(1);
+            widthAnimation.To = 0.0;
+            widthAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+
+            Storyboard.SetTarget(widthAnimation, NameBorder);
+            Storyboard.SetTargetProperty(widthAnimation, new PropertyPath("Width"));
+            storyboard.Children.Add(widthAnimation);
+
+            storyboard.Completed += (sender, args) =>
+            {
+                WelcomeProfilePictureUserControl pictureUserControl = new WelcomeProfilePictureUserControl(CurrentWindow);
+                CurrentWindow.Main.Content = pictureUserControl;
+            };
         }
     }
 }

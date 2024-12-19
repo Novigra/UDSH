@@ -1,0 +1,240 @@
+﻿<UserControl x:Class="UDSH.View.WelcomeProfilePictureUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UDSH.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="510" d:DesignWidth="1000">
+
+    <UserControl.Resources>
+        <Storyboard x:Key="ShowParagraphs">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             To="1.0"
+                             Duration="0:0:0.5" BeginTime="0:0:1.3"/>
+        </Storyboard>
+    </UserControl.Resources>
+    
+    <Grid Background="{StaticResource NewFileProcessBackgroundSCB}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Image Panel.ZIndex="3" Grid.Row="0" VerticalAlignment="Top" Source="/Resource/StoryHeader.png" Width="150" Height="38" Margin="325,10,325,0"/>
+        <Border Panel.ZIndex="1" Grid.RowSpan="2">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFEEEEEE"/>
+                    <GradientStop Color="#FFDADADA" Offset="0.963"/>
+                    <GradientStop Color="#FFE7E7E7" Offset="0.67"/>
+                    <GradientStop Color="#00E0E0E0" Offset="0.8"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <Grid Panel.ZIndex="2" Grid.Row="0">
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,-30,0,0">
+                <Image Source="/Resource/LogoLarge.png" Width="200" Height="200"/>
+            </StackPanel>
+
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,30,0">
+                <Button Width="40" Height="40" Style="{StaticResource NewFileCreationCloseButton}" Click="Button_Click"/>
+                <Image Source="/Resource/Close.png" Width="10" Height="10"/>
+            </Grid>
+        </Grid>
+
+        <StackPanel Panel.ZIndex="1" Grid.RowSpan="2" Orientation="Horizontal">
+            <Grid Margin="110,140,0,0">
+                <TextBlock x:Name="ProfilePictureLabel" Text="Profile Picture" FontSize="20" FontWeight="SemiBold">
+                </TextBlock>
+
+                <Grid Margin="0,40,0,185">
+                    <Ellipse Width="150">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="/Resource/emojitest.png"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </Grid>
+                
+                <Border Background="#FFFFFF" CornerRadius="20" BorderThickness="2" VerticalAlignment="Top" Margin="0,40,0,185" Opacity="0">
+                    <Border.BorderBrush>
+                        <VisualBrush>
+                            <VisualBrush.Visual>
+                                <Rectangle StrokeDashArray="4 4" Stroke="#A5A5A5" StrokeThickness="2" RadiusX="20" RadiusY="20"
+                                   Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualWidth}"
+                                   Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualHeight}"/>
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Border.BorderBrush>
+
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resource/HorusEye.png" Width="80" Height="80" Margin="30,0,0,0"/>
+                            <Line Stroke="#A5A5A5" StrokeThickness="2" StrokeDashArray="2 2" Y1="130" Margin="40,0,0,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="SizeLabel" Text="Square Sizes Recommended" Foreground="#A5A5A5" FontSize="15" FontWeight="SemiBold" Width="160" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0">
+                            </TextBlock>
+                        </StackPanel>
+
+                        <Border x:Name="HighlightProfileBorder" Background="#393E46" Width="0" CornerRadius="20" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Resource/HorusEye.png" Width="80" Height="80" Margin="30,0,0,0"/>
+                                <Line Stroke="#FFFFFF" StrokeThickness="2" StrokeDashArray="2 2" Y1="130" Margin="40,0,0,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Square Sizes Recommended" Foreground="#FFFFFF" FontSize="15" FontWeight="SemiBold" Width="160" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Margin="0,0,0,0">
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <Rectangle x:Name="ProfilePictureHitCollision" MouseLeftButtonDown="ProfilePictureHitCollision_MouseLeftButtonDown" Fill="{StaticResource MainBlankSCB}">
+                            <Rectangle.Triggers>
+                                <EventTrigger RoutedEvent="Rectangle.MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="HighlightProfileBorder"
+                                                             Storyboard.TargetProperty="Width"
+                                                             To="311"
+                                                             Duration="0:0:1">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+
+                                <EventTrigger RoutedEvent="Rectangle.MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="HighlightProfileBorder"
+                                                             Storyboard.TargetProperty="Width"
+                                                             To="0"
+                                                             Duration="0:0:0.5">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseIn"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Rectangle.Triggers>
+                        </Rectangle>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <Rectangle Style="{StaticResource ProfilePicBar}" Width="6" Height="380" Margin="72,110,0,0" Fill="{StaticResource BorderLBG}" RadiusX="2" RadiusY="2"/>
+
+            <Grid Margin="72,140,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="CustomIconLabel" Text="Custom Icons" FontSize="20" FontWeight="SemiBold">
+                    </TextBlock>
+                    <Image Source="/Resource/More Details.png" Width="17" Height="17" VerticalAlignment="Top" Margin="10,7,0,0"/>
+                </StackPanel>
+
+                <StackPanel Margin="0,40,0,185" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Border Background="#FFFFFF" CornerRadius="5" BorderThickness="2" Width="50" Height="30">
+                        <Border.BorderBrush>
+                            <VisualBrush>
+                                <VisualBrush.Visual>
+                                    <Rectangle StrokeDashArray="4 4" Stroke="#A5A5A5" StrokeThickness="2" RadiusX="5" RadiusY="5"
+                                           Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualWidth}"
+                                           Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualHeight}"/>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Border.BorderBrush>
+
+                        <Grid>
+                            <Image Source="/Resource/Add.png" Width="20" Height="20"/>
+                            <Image x:Name="IconOne" />
+                        </Grid>
+                    </Border>
+
+                </StackPanel>
+            </Grid>
+
+        </StackPanel>
+
+        <TextBlock x:Name="UpperPara" Grid.Row="1" Text="remains is my name." FontSize="34" FontWeight="SemiBold" Foreground="#616161" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15,0,0,141">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Opacity" Value="0.0"/>
+                    <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+
+                    <Style.Triggers>
+                        <EventTrigger RoutedEvent="UserControl.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="1.0"
+                                                     Duration="0:0:0.5" BeginTime="0:0:1.0"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <StackPanel Panel.ZIndex="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15,0,0,-40">
+            <TextBlock x:Name="Para" Text="" Width="423" FontSize="34" FontWeight="SemiBold" Foreground="#616161" TextWrapping="Wrap"/>
+            <TextBlock x:Name="BottomPara" Text="But I will speak, for my words are my last weapon." Width="423" FontSize="34" FontWeight="SemiBold" Foreground="#616161" TextWrapping="Wrap">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Opacity" Value="0.0"/>
+                        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                        <Setter Property="IsHitTestVisible" Value="False"/>
+
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="TextBlock.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         To="1.0"
+                                                         Duration="0:0:0.5" BeginTime="0:0:1.0"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </StackPanel>
+
+        <Border x:Name="ButtonContainer" Panel.ZIndex="2" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,35,20">
+            <Grid>
+                <Button x:Name="NextButton" Style="{StaticResource StartupButton}" IsHitTestVisible="False" Margin="-8,0,-4,0">
+                    <Button.Triggers>
+                        <EventTrigger RoutedEvent="Button.MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="NextImg"
+                                                     Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                     To="5"
+                                                     Duration="0:0:0.3"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+
+                        <EventTrigger RoutedEvent="Button.MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="NextImg"
+                                                     Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                     To="0"
+                                                     Duration="0:0:0.3"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Button.Triggers>
+                </Button>
+                <StackPanel IsHitTestVisible="False" Orientation="Horizontal">
+                    <TextBlock Text="Next" FontSize="25" FontWeight="SemiBold" Margin="0,0,3,5"/>
+                    <Image x:Name="NextImg" Source="/Resource/RightArrow.png" RenderTransformOrigin="0.5,0.5" Width="20" Height="20">
+                        <Image.RenderTransform>
+                            <TranslateTransform X="0" Y="0"/>
+                        </Image.RenderTransform>
+                    </Image>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

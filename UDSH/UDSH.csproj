@@ -32,6 +32,7 @@
     <None Remove="Fonts\Lora\Lora-Regular.ttf" />
     <None Remove="Fonts\Lora\Lora-SemiBold.ttf" />
     <None Remove="Fonts\Lora\Lora-SemiBoldItalic.ttf" />
+    <None Remove="Resource\Add.png" />
     <None Remove="Resource\BackgroundIcon.png" />
     <None Remove="Resource\Bird.png" />
     <None Remove="Resource\BN_Large.png" />
@@ -42,6 +43,8 @@
     <None Remove="Resource\Data\NewFileHighlightedTitle.json" />
     <None Remove="Resource\DeleteFile.png" />
     <None Remove="Resource\Dropdown.png" />
+    <None Remove="Resource\emojitest.png" />
+    <None Remove="Resource\FlagTest.png" />
     <None Remove="Resource\FolderContent.png" />
     <None Remove="Resource\FolderDeleteContent.png" />
     <None Remove="Resource\FolderImportContent.png" />
@@ -49,6 +52,7 @@
     <None Remove="Resource\FolderOpenContent.png" />
     <None Remove="Resource\FolderSaveContentAs.png" />
     <None Remove="Resource\FolderSwitchContent.png" />
+    <None Remove="Resource\HorusEye.png" />
     <None Remove="Resource\Localization.png" />
     <None Remove="Resource\Log.png" />
     <None Remove="Resource\Logo.png" />
@@ -58,6 +62,7 @@
     <None Remove="Resource\Minimize.png" />
     <None Remove="Resource\MKC_Large.png" />
     <None Remove="Resource\MKM_Large.png" />
+    <None Remove="Resource\More Details.png" />
     <None Remove="Resource\NewFile.png" />
     <None Remove="Resource\Normal.png" />
     <None Remove="Resource\OpenedFilesDropdown.png" />
@@ -97,6 +102,7 @@
     <Resource Include="Fonts\Lora\Lora-Regular.ttf" />
     <Resource Include="Fonts\Lora\Lora-SemiBold.ttf" />
     <Resource Include="Fonts\Lora\Lora-SemiBoldItalic.ttf" />
+    <Resource Include="Resource\Add.png" />
     <Resource Include="Resource\CloseNoteIcon.png" />
     <Resource Include="Resource\Data\NewFileHighlightedTitle.json" />
   </ItemGroup>
@@ -114,6 +120,8 @@
     <Resource Include="Resource\BackgroundIcon.png" />
     <Resource Include="Resource\Bird.png" />
     <Resource Include="Resource\BN_Large.png" />
+    <Resource Include="Resource\emojitest.png" />
+    <Resource Include="Resource\FlagTest.png" />
     <Resource Include="Resource\FolderContent.png" />
     <Resource Include="Resource\FolderDeleteContent.png" />
     <Resource Include="Resource\FolderImportContent.png" />
@@ -121,11 +129,13 @@
     <Resource Include="Resource\FolderOpenContent.png" />
     <Resource Include="Resource\FolderSaveContentAs.png" />
     <Resource Include="Resource\FolderSwitchContent.png" />
+    <Resource Include="Resource\HorusEye.png" />
     <Resource Include="Resource\Localization.png" />
     <Resource Include="Resource\LogoLarge.png" />
     <Resource Include="Resource\Man.png" />
     <Resource Include="Resource\MKC_Large.png" />
     <Resource Include="Resource\MKM_Large.png" />
+    <Resource Include="Resource\More Details.png" />
     <Resource Include="Resource\Pin.png" />
     <Resource Include="Resource\Placeholder.png" />
     <Resource Include="Resource\RightArrow.png" />

@@ -34,6 +34,8 @@ namespace UDSH.View
             ClosingAnimation(BottomPara);
             ClosingAnimation(ButtonContainer, true);
 
+            NextButton.IsEnabled = false;
+
             storyboard.Begin();
             /*WelcomeNameUserControl welcomeName = new WelcomeNameUserControl();
             CurrentWindow.Main.Content = welcomeName;*/
