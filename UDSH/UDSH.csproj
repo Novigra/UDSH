@@ -53,6 +53,8 @@
     <None Remove="Resource\FolderSaveContentAs.png" />
     <None Remove="Resource\FolderSwitchContent.png" />
     <None Remove="Resource\HorusEye.png" />
+    <None Remove="Resource\HorusEyeBlack.png" />
+    <None Remove="Resource\HorusEyeOrange.png" />
     <None Remove="Resource\Localization.png" />
     <None Remove="Resource\Log.png" />
     <None Remove="Resource\Logo.png" />
@@ -130,6 +132,8 @@
     <Resource Include="Resource\FolderSaveContentAs.png" />
     <Resource Include="Resource\FolderSwitchContent.png" />
     <Resource Include="Resource\HorusEye.png" />
+    <Resource Include="Resource\HorusEyeBlack.png" />
+    <Resource Include="Resource\HorusEyeOrange.png" />
     <Resource Include="Resource\Localization.png" />
     <Resource Include="Resource\LogoLarge.png" />
     <Resource Include="Resource\Man.png" />

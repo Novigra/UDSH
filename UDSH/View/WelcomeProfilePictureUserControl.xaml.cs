@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
@@ -83,13 +84,48 @@ namespace UDSH.View
                     Directory.CreateDirectory(ProfilePicturePath);
 
                 string[] Files = Directory.GetFiles(ProfilePicturePath);
-                if(Files.Length > 0)
+                if (Files.Length > 0)
                     File.Delete(Files[0]);
 
                 FileInfo ProfilePicture = new FileInfo(SelectedImagePath);
                 string FinalDest = Path.Combine(ProfilePicturePath, ProfilePicture.Name);
                 ProfilePicture.CopyTo(FinalDest);
+
+                //PickedImage.Fill = new ImageBrush { ImageSource = new BitmapImage(new Uri(FinalDest)), Stretch = Stretch.UniformToFill };
+
+                //PlaySetImageAnimation();
+
+                ProfilePictureHitCollision.IsHitTestVisible = false;
+                PickImageBorder.IsHitTestVisible = false;
+
+                ImageEditorWindow imageEditorWindow = new ImageEditorWindow(FinalDest);
+                imageEditorWindow.ShowDialog();
             }
+        }
+
+        private void PlaySetImageAnimation()
+        {
+            storyboard = new Storyboard();
+
+            DoubleAnimation opacityFadeAnimation = new DoubleAnimation();
+            opacityFadeAnimation.BeginTime = TimeSpan.FromSeconds(0);
+            opacityFadeAnimation.To = 0.0;
+            opacityFadeAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+
+            Storyboard.SetTarget(opacityFadeAnimation, PickImageBorder);
+            Storyboard.SetTargetProperty(opacityFadeAnimation, new PropertyPath("Opacity"));
+            storyboard.Children.Add(opacityFadeAnimation);
+
+            DoubleAnimation opacityShowAnimation = new DoubleAnimation();
+            opacityShowAnimation.BeginTime = TimeSpan.FromSeconds(0.5);
+            opacityShowAnimation.To = 1.0;
+            opacityShowAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+
+            Storyboard.SetTarget(opacityShowAnimation, PickedImage);
+            Storyboard.SetTargetProperty(opacityShowAnimation, new PropertyPath("Opacity"));
+            storyboard.Children.Add(opacityShowAnimation);
+
+            storyboard.Begin();
         }
     }
 }

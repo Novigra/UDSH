@@ -17,6 +17,7 @@
     <CornerRadius x:Key="NewFileCloseButton.Radius">10</CornerRadius>
     <CornerRadius x:Key="NoteCloseButton.Radius">8</CornerRadius>
     <CornerRadius x:Key="StartupButton.Radius">8</CornerRadius>
+    <CornerRadius x:Key="ConfirmButton.Radius">4</CornerRadius>
 
     <Style TargetType="Button" x:Key="Placeholder">
         
@@ -433,6 +434,50 @@
 
     </Style>
 
+    <Style TargetType="Button" x:Key="ImageConfirm">
+        <Setter Property="Background" Value="#393E46"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="{StaticResource ConfirmButton.Radius}">
+                        <ContentPresenter Content="Confirm" TextBlock.Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        </ContentPresenter>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="#DBAD2F"
+                                        Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="#393E46"
+                                        Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource MainPressedButtonSCB}"/>
+            </Trigger>
+        </Style.Triggers>
+
+    </Style>
 
     <!-- Testing Ground -->
     <Style TargetType="Button" x:Key="ButtonInterp">
