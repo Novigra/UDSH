@@ -3,37 +3,130 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace UDSH.View
 {
-    /// <summary>
-    /// Interaction logic for ImageEditorWindow.xaml
-    /// </summary>
+    /*
+     * Important Notes:
+     *  
+     *  1- The modification stops when both corners collisions record the border.
+     *  2- Speed is not bad, but it can be better. discover a better approach.
+     *     was thinking of using multi-threading, but it can be hard to implement,
+     *     as tasks can pile up and a 'race' may happen resulting in wrong data or
+     *     crashings.
+     */
+    enum Movement
+    {
+        LR,
+        UB,
+        M
+    }
     public partial class ImageEditorWindow : Window
     {
-        Point InitialMousePosition;
-        double InitialMargin;
-        bool IsMousePressed = false;
+        private double InitialWidth;
+        private double InitialHeight;
+        private double XOffset = 0;
+        private double YOffset = 0;
+        private double ChangeRate = 0.485;
+        private int DeltaRateChange;
+        private Movement CurrentMovement;
+        private Point InitialMousePosition;
+        private double InitialMargin;
+        private bool IsMousePressed = false;
+
+        private Thickness LastMargins;
+
+        private string ImagePath;
+        private string tempFilePath;
         public ImageEditorWindow(string ImagePath)
         {
             InitializeComponent();
 
-            CurrentImage.Source = new BitmapImage(new Uri(ImagePath));
-            OutputImage.Fill = new ImageBrush { ImageSource = new BitmapImage(new Uri(ImagePath)), Stretch = Stretch.UniformToFill };
+            tempFilePath = System.IO.Path.GetTempFileName();
+            tempFilePath = System.IO.Path.ChangeExtension(tempFilePath, ".png");
+            try
+            {
+                File.Copy(ImagePath, tempFilePath, true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"ERROR: {ex.Message}");
+            }
+
+            CurrentImage.Source = new BitmapImage(new Uri(tempFilePath));
+            OutputImage.Fill = new ImageBrush { ImageSource = new BitmapImage(new Uri(tempFilePath)), Stretch = Stretch.UniformToFill };
+
+            this.ImagePath = ImagePath;
         }
 
         private void Rectangle_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            Debug.WriteLine($"CurrentMargin = {ImageBorder.Margin.Left}");
             IsMousePressed = true;
             InitialMousePosition = e.GetPosition(this);
-            InitialMargin = ImageBorder.Margin.Right;
-            RM.CaptureMouse();
+            if (sender is Rectangle currentTarget)
+            {
+                switch (currentTarget.Name)
+                {
+                    case "RM":
+                        CurrentMovement = Movement.LR;
+                        DeltaRateChange = 2;
+                        RM.CaptureMouse();
+                        break;
+                    case "LM":
+                        CurrentMovement = Movement.LR;
+                        DeltaRateChange = -2;
+                        LM.CaptureMouse();
+                        break;
+                    case "UM":
+                        CurrentMovement = Movement.UB;
+                        DeltaRateChange = -2;
+                        UM.CaptureMouse();
+                        break;
+                    case "BM":
+                        CurrentMovement = Movement.UB;
+                        DeltaRateChange = 2;
+                        BM.CaptureMouse();
+                        break;
+                    case "MM":
+                        CurrentMovement = Movement.M;
+                        MM.CaptureMouse();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            //InitialMargin = ImageBorder.Margin.Right;
+            //LM.CaptureMouse();
         }
 
         private void Rectangle_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             IsMousePressed = false;
-            RM.ReleaseMouseCapture();
+            if (sender is Rectangle currentTarget)
+            {
+                switch (currentTarget.Name)
+                {
+                    case "RM":
+                        RM.ReleaseMouseCapture();
+                        break;
+                    case "LM":
+                        LM.ReleaseMouseCapture();
+                        break;
+                    case "UM":
+                        UM.ReleaseMouseCapture();
+                        break;
+                    case "BM":
+                        BM.ReleaseMouseCapture();
+                        break;
+                    case "MM":
+                        MM.ReleaseMouseCapture();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         private void RM_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
@@ -41,15 +134,88 @@ namespace UDSH.View
             if(IsMousePressed == true)
             {
                 Point CurrentMousePosition = e.GetPosition(this);
-                double Delta = CurrentMousePosition.X - InitialMousePosition.X;
-                Debug.WriteLine($"Change: {Delta}");
 
-                
-                if (ImageBorder.Width > 60)
-                    ImageBorder.Width += Delta * 2;
+                if(CurrentMovement == Movement.LR)
+                {
+                    double Delta = CurrentMousePosition.X - InitialMousePosition.X;
+                    Debug.WriteLine($"Change: {Delta}");
+                    double Update = ImageBorder.Width + (Delta * DeltaRateChange);
+                    ImageBorder.Margin = new Thickness(0);
+
+                    if (Update > CurrentImage.ActualWidth)
+                        ImageBorder.Width = CurrentImage.ActualWidth;
+                    else if (Update > 60)
+                        ImageBorder.Width = Update;
+                    else
+                        ImageBorder.Width = 61;
+
+                        XOffset = ChangeRate * (ImageBorder.ActualWidth - InitialWidth);
+                }
+                else if(CurrentMovement == Movement.UB)
+                {
+                    double Delta = CurrentMousePosition.Y - InitialMousePosition.Y;
+                    Debug.WriteLine($"Change: {Delta}");
+                    double Update = ImageBorder.Height + (Delta * DeltaRateChange);
+                    ImageBorder.Margin = new Thickness(0);
+
+                    if (Update > CurrentImage.ActualHeight)
+                        ImageBorder.Height = CurrentImage.ActualHeight;
+                    else if (Update > 60)
+                        ImageBorder.Height = Update;
+                    else
+                        ImageBorder.Height = 61;
+
+                    YOffset = ChangeRate * (ImageBorder.ActualHeight - InitialHeight);
+                }
                 else
-                    ImageBorder.Width = 61;
+                {
+                    double DeltaX = CurrentMousePosition.X - InitialMousePosition.X;
+                    double DeltaY = CurrentMousePosition.Y - InitialMousePosition.Y;
+
+                    double ResultX = XOffset;
+                    ResultX -= DeltaX;
+
+                    double ResultY = YOffset;
+                    ResultY -= DeltaY;
+
+                    double TopMargin = ImageBorder.Margin.Top + (DeltaY * 2);
+                    double MaxTopMargin = ImageBorder.ActualHeight - InitialHeight;
+
+                    double LeftMargin = ImageBorder.Margin.Left + (DeltaX * 2);
+                    double MaxLeftMargin = (ImageBorder.ActualWidth - InitialWidth);
+
+
+                    if (LeftMargin >= Math.Abs(MaxLeftMargin))
+                    {
+                        ImageBorder.Margin = new Thickness(Math.Abs(MaxLeftMargin), ImageBorder.Margin.Top, ImageBorder.Margin.Right, ImageBorder.Margin.Bottom);
+                    }
+                    else if (TopMargin >= Math.Abs(MaxTopMargin))
+                    {
+                        ImageBorder.Margin = new Thickness(ImageBorder.Margin.Left, Math.Abs(MaxTopMargin), ImageBorder.Margin.Right, ImageBorder.Margin.Bottom);
+                    }
+                    else if (ResultX >= 0)
+                    {
+                        ImageBorder.Margin = new Thickness(MaxLeftMargin, ImageBorder.Margin.Top, ImageBorder.Margin.Right, ImageBorder.Margin.Bottom);
+                        XOffset = 0;
+                    }
+                    else if (ResultY >= 0)
+                    {
+                        ImageBorder.Margin = new Thickness(ImageBorder.Margin.Left, MaxTopMargin, ImageBorder.Margin.Right, ImageBorder.Margin.Bottom);
+                        YOffset = 0;
+                    }
+                    else if (ResultX <= 0 && ResultY <= 0 && LeftMargin < Math.Abs(MaxLeftMargin) && TopMargin < Math.Abs(MaxLeftMargin))
+                    {
+                        ImageBorder.Margin = new Thickness(LeftMargin, TopMargin, ImageBorder.Margin.Right, ImageBorder.Margin.Bottom);
+                        LastMargins = ImageBorder.Margin; // Currently useless
+                        XOffset = ResultX;
+                        YOffset = ResultY;
+                    }
+
+                    Debug.WriteLine($"TopMargin = {TopMargin}");
+                }
+
                 InitialMousePosition = CurrentMousePosition;
+                ProcessImage(false, true);
             }
         }
 
@@ -57,15 +223,36 @@ namespace UDSH.View
         {
             ImageBorder.Width = CurrentImage.ActualWidth;
             ImageBorder.Height = CurrentImage.ActualHeight;
+
+            InitialWidth = ImageBorder.Width;
+            InitialHeight = ImageBorder.Height;
+
+            MM.Width = ImageBorder.Width;
+            MM.Height = ImageBorder.Height;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessImage(true, false);
+            Debug.WriteLine("Save Complete");
+            DialogResult = true;
+
+            Close();
+        }
+
+        private void ProcessImage(bool IsLastOutput = false, bool RealTimeUpdate = false)
         {
             DrawingVisual drawingVisual = new DrawingVisual();
             using (DrawingContext context = drawingVisual.RenderOpen())
             {
                 VisualBrush brush = new VisualBrush(CurrentImage) { Stretch = Stretch.UniformToFill };
-                context.DrawRectangle(brush, null, new Rect(0, 0, ImageBorder.ActualWidth, ImageBorder.ActualHeight));
+                Rect Canvas = new Rect();
+                Canvas.Width = CurrentImage.ActualWidth;
+                Canvas.Height = CurrentImage.ActualHeight;
+                Canvas.Location = new Point(XOffset, YOffset); // -333.4 at border width = 448
+
+                //context.DrawRectangle(brush, null, new Rect(0, 0, CurrentImage.ActualWidth, CurrentImage.ActualHeight));
+                context.DrawRectangle(brush, null, Canvas);
             }
 
             RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(
@@ -77,12 +264,45 @@ namespace UDSH.View
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
 
-            using (FileStream fileStream = new FileStream("C:\\Users\\Lenovo\\Desktop\\Workflow\\test.png", FileMode.Create))
+            if(IsLastOutput == true)
             {
-                encoder.Save(fileStream);
+                using (FileStream fileStream = new FileStream(ImagePath, FileMode.Create))
+                {
+                    encoder.Save(fileStream);
+                }
             }
+            else
+            {
+                if(RealTimeUpdate == true)
+                {
+                    string TempFilePath = System.IO.Path.GetTempFileName();
+                    TempFilePath = System.IO.Path.ChangeExtension(TempFilePath, ".png");
+                    using (FileStream fileStream = new FileStream(TempFilePath, FileMode.Create))
+                    {
+                        encoder.Save(fileStream);
+                    }
 
-            Debug.WriteLine("Save Complete");
+                    OutputImage.Fill = new ImageBrush
+                    {
+                        ImageSource = new BitmapImage(new Uri(TempFilePath))
+                        {
+                            CacheOption = BitmapCacheOption.OnLoad
+                        },
+                        Stretch = Stretch.UniformToFill
+                    };
+                }
+                else
+                {
+                    
+                }
+            }
+            
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
     }
 }

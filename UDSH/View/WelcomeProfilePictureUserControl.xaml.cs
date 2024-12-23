@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,12 +14,14 @@ namespace UDSH.View
     /// </summary>
     public partial class WelcomeProfilePictureUserControl : UserControl
     {
+        private string TempFilePath;
         private NewUserStartupWindow CurrentWindow;
         private Storyboard storyboard;
         public WelcomeProfilePictureUserControl(NewUserStartupWindow window)
         {
             InitializeComponent();
 
+            TempFilePath = string.Empty;
             CurrentWindow = window;
             storyboard = new Storyboard();
 
@@ -65,9 +68,6 @@ namespace UDSH.View
              *  3- Add the profile picture
              */
 
-            /*string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads\" + "Ge2-jR7XsAAt_mS.jpg";
-            IconOne.Source = new BitmapImage(new Uri(path));*/
-
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Please pick an Image for your profile picture...";
             openFileDialog.Filter = "Image Files|*.bmp;*.gif;*.ico;*.jpg;*.jpeg;*.png;*.wdp;*.tiff";
@@ -91,15 +91,33 @@ namespace UDSH.View
                 string FinalDest = Path.Combine(ProfilePicturePath, ProfilePicture.Name);
                 ProfilePicture.CopyTo(FinalDest);
 
-                //PickedImage.Fill = new ImageBrush { ImageSource = new BitmapImage(new Uri(FinalDest)), Stretch = Stretch.UniformToFill };
-
-                //PlaySetImageAnimation();
-
-                ProfilePictureHitCollision.IsHitTestVisible = false;
-                PickImageBorder.IsHitTestVisible = false;
-
                 ImageEditorWindow imageEditorWindow = new ImageEditorWindow(FinalDest);
-                imageEditorWindow.ShowDialog();
+                bool? Confirm = imageEditorWindow.ShowDialog();
+
+                if(Confirm == true)
+                {
+                    ProfilePictureHitCollision.IsHitTestVisible = false;
+                    PickImageBorder.IsHitTestVisible = false;
+
+                    PickedProfileCollision.IsHitTestVisible = true;
+
+                    TempFilePath = System.IO.Path.GetTempFileName();
+                    TempFilePath = System.IO.Path.ChangeExtension(TempFilePath, ".png");
+                    try
+                    {
+                        File.Copy(FinalDest, TempFilePath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"ERROR: {ex.Message}");
+                    }
+                    PickedImage.Fill = new ImageBrush { ImageSource = new BitmapImage(new Uri(TempFilePath)), Stretch = Stretch.UniformToFill };
+
+                    if(sender is not System.Windows.Shapes.Ellipse ellipse)
+                    {
+                        PlaySetImageAnimation();
+                    }
+                }
             }
         }
 

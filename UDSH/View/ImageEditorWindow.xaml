@@ -43,7 +43,7 @@
             </StackPanel>
 
             <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,30,0">
-                <Button Width="40" Height="40" Style="{StaticResource NewFileCreationCloseButton}"/>
+                <Button Width="40" Height="40" Style="{StaticResource NewFileCreationCloseButton}" Click="Button_Click_1"/>
                 <Image Source="/Resource/Close.png" Width="10" Height="10">
                     <Image.Style>
                         <Style TargetType="Image">
@@ -120,8 +120,16 @@
                 </Border.BorderBrush>
 
                 <Grid>
+                    <!-- Middle Collision -->
+                    <Rectangle Panel.ZIndex="0" x:Name="MM" MouseLeftButtonDown="Rectangle_MouseLeftButtonDown" MouseLeftButtonUp="Rectangle_MouseLeftButtonUp" MouseMove="RM_MouseMove" Fill="{StaticResource MainBlankSCB}" Width="30" Height="30" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    
+                    <!-- Right/Left Collision-->
+                    <Rectangle Panel.ZIndex="1" x:Name="RM" MouseLeftButtonDown="Rectangle_MouseLeftButtonDown" MouseLeftButtonUp="Rectangle_MouseLeftButtonUp" MouseMove="RM_MouseMove" Fill="#DBAD2F" Width="30" Height="30" Margin="0,0,-17,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <Rectangle Panel.ZIndex="1" x:Name="LM" MouseLeftButtonDown="Rectangle_MouseLeftButtonDown" MouseLeftButtonUp="Rectangle_MouseLeftButtonUp" MouseMove="RM_MouseMove" Fill="#DBAD2F" Width="30" Height="30" Margin="-17,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
-                    <Rectangle x:Name="RM" MouseLeftButtonDown="Rectangle_MouseLeftButtonDown" MouseLeftButtonUp="Rectangle_MouseLeftButtonUp" MouseMove="RM_MouseMove" Fill="#DBAD2F" Width="30" Height="30" Margin="0,0,-17,0" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <!-- Up/Down Collision-->
+                    <Rectangle Panel.ZIndex="1" x:Name="UM" MouseLeftButtonDown="Rectangle_MouseLeftButtonDown" MouseLeftButtonUp="Rectangle_MouseLeftButtonUp" MouseMove="RM_MouseMove" Fill="#DBAD2F" Width="30" Height="30" Margin="0,-17,0,0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                    <Rectangle Panel.ZIndex="1" x:Name="BM" MouseLeftButtonDown="Rectangle_MouseLeftButtonDown" MouseLeftButtonUp="Rectangle_MouseLeftButtonUp" MouseMove="RM_MouseMove" Fill="#DBAD2F" Width="30" Height="30" Margin="0,0,0,-17" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
                 </Grid>
             </Border>
         </Grid>

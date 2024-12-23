@@ -46,16 +46,35 @@
         <StackPanel Panel.ZIndex="1" Grid.RowSpan="2" Orientation="Horizontal">
             <Grid Margin="110,140,0,0">
                 <TextBlock x:Name="ProfilePictureLabel" Text="Profile Picture" FontSize="20" FontWeight="SemiBold">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Opacity" Value="0.0"/>
+                            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+
+                            <Style.Triggers>
+                                <EventTrigger RoutedEvent="UserControl.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             To="1.0"
+                                                             Duration="0:0:0.3" BeginTime="0:0:4.0"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
                 </TextBlock>
 
                 <Grid x:Name="PickedImageGrid" Margin="0,40,0,185">
-                    <Ellipse x:Name="PickedImage" RenderOptions.BitmapScalingMode="HighQuality" Width="150" Opacity="0">
+                    <Ellipse x:Name="PickedImage" RenderOptions.BitmapScalingMode="HighQuality" Width="150" Opacity="0" IsHitTestVisible="False">
                         <Ellipse.Fill>
                             <ImageBrush ImageSource="/Resource/emojitest.png"/>
                         </Ellipse.Fill>
                     </Ellipse>
 
-                    <Ellipse x:Name="PickedProfileCollision" Width="150" RenderTransformOrigin="0.5,1.0" Opacity="0">
+                    <Ellipse x:Name="PickedProfileCollision" Width="150" RenderTransformOrigin="0.5,1.0" Opacity="0" MouseLeftButtonDown="ProfilePictureHitCollision_MouseLeftButtonDown" IsHitTestVisible="False">
                         <Ellipse.Fill>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FF393E46" Offset="1"/>
@@ -74,11 +93,21 @@
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
+
+                            <EventTrigger RoutedEvent="Ellipse.MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         To="0.0"
+                                                         Duration="0:0:0.3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
                         </Ellipse.Triggers>
                     </Ellipse>
                 </Grid>
 
-                <Border x:Name="PickImageBorder" Background="#FFFFFF" CornerRadius="20" BorderThickness="2" VerticalAlignment="Top" Margin="0,40,0,185" Opacity="1"> <!--remove opacity-->
+                <Border x:Name="PickImageBorder" Background="#FFFFFF" CornerRadius="20" BorderThickness="2" VerticalAlignment="Top" Margin="0,40,0,185"> <!--remove opacity-->
                     <Border.BorderBrush>
                         <VisualBrush>
                             <VisualBrush.Visual>
@@ -140,6 +169,24 @@
                             </Rectangle.Triggers>
                         </Rectangle>
                     </Grid>
+
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Opacity" Value="0.0"/>
+
+                            <Style.Triggers>
+                                <EventTrigger RoutedEvent="UserControl.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             To="1.0"
+                                                             Duration="0:0:0.3" BeginTime="0:0:4.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                 </Border>
             </Grid>
 
