@@ -125,11 +125,6 @@ namespace UDSH.View
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            //MessageBox.Show("asgdsa");
-            // TODO: Close animation for Upper, Pata, and Bottom Text.
-            // Add Display name to the New User startup window when hitting Next button.
-            // In App, we check directory, that's not good, so check the file itself.
-
             if (!string.IsNullOrEmpty(NameText.Text))
                 CurrentWindow.UserDisplayName = NameText.Text;
 

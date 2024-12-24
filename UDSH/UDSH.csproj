@@ -43,6 +43,7 @@
     <None Remove="Resource\Data\NewFileHighlightedTitle.json" />
     <None Remove="Resource\DeleteFile.png" />
     <None Remove="Resource\Dropdown.png" />
+    <None Remove="Resource\Egyptflag.png" />
     <None Remove="Resource\emojitest.png" />
     <None Remove="Resource\FlagTest.png" />
     <None Remove="Resource\FolderContent.png" />
@@ -67,7 +68,9 @@
     <None Remove="Resource\More Details.png" />
     <None Remove="Resource\NewFile.png" />
     <None Remove="Resource\Normal.png" />
+    <None Remove="Resource\Olive.png" />
     <None Remove="Resource\OpenedFilesDropdown.png" />
+    <None Remove="Resource\palestineflag.png" />
     <None Remove="Resource\PenTool.png" />
     <None Remove="Resource\Pin.png" />
     <None Remove="Resource\Placeholder.png" />
@@ -78,6 +81,7 @@
     <None Remove="Resource\Search.png" />
     <None Remove="Resource\Settings.png" />
     <None Remove="Resource\SideContent.png" />
+    <None Remove="Resource\SmileEmoji.png" />
     <None Remove="Resource\StartWritingIcon.png" />
     <None Remove="Resource\StoryHeader.png" />
     <None Remove="Resource\White\AddBN-White.png" />
@@ -122,6 +126,7 @@
     <Resource Include="Resource\BackgroundIcon.png" />
     <Resource Include="Resource\Bird.png" />
     <Resource Include="Resource\BN_Large.png" />
+    <Resource Include="Resource\Egyptflag.png" />
     <Resource Include="Resource\emojitest.png" />
     <Resource Include="Resource\FlagTest.png" />
     <Resource Include="Resource\FolderContent.png" />
@@ -140,12 +145,15 @@
     <Resource Include="Resource\MKC_Large.png" />
     <Resource Include="Resource\MKM_Large.png" />
     <Resource Include="Resource\More Details.png" />
+    <Resource Include="Resource\Olive.png" />
+    <Resource Include="Resource\palestineflag.png" />
     <Resource Include="Resource\Pin.png" />
     <Resource Include="Resource\Placeholder.png" />
     <Resource Include="Resource\RightArrow.png" />
     <Resource Include="Resource\SaveAllFiles.png" />
     <Resource Include="Resource\Search.png" />
     <Resource Include="Resource\SideContent.png" />
+    <Resource Include="Resource\SmileEmoji.png" />
     <Resource Include="Resource\StartWritingIcon.png" />
     <Resource Include="Resource\StoryHeader.png" />
     <Resource Include="Resource\White\AddBN-White.png" />

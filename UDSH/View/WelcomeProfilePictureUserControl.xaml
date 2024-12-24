@@ -44,7 +44,7 @@
         </Grid>
 
         <StackPanel Panel.ZIndex="1" Grid.RowSpan="2" Orientation="Horizontal">
-            <Grid Margin="110,140,0,0">
+            <Grid x:Name="LeftGrid" Margin="110,140,0,0">
                 <TextBlock x:Name="ProfilePictureLabel" Text="Profile Picture" FontSize="20" FontWeight="SemiBold">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
@@ -190,17 +190,72 @@
                 </Border>
             </Grid>
 
-            <Rectangle Style="{StaticResource ProfilePicBar}" Width="6" Height="380" Margin="72,110,0,0" Fill="{StaticResource BorderLBG}" RadiusX="2" RadiusY="2"/>
+            <Rectangle x:Name="M_Border" Style="{StaticResource ProfilePicBar}" VerticalAlignment="Top" Width="6" Height="380" Margin="72,120,0,0" Fill="{StaticResource BorderLBG}" RadiusX="2" RadiusY="2"/>
 
-            <Grid Margin="72,140,0,0">
+            <Grid x:Name="RightGrid" Margin="72,140,0,0">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock x:Name="CustomIconLabel" Text="Custom Icons" FontSize="20" FontWeight="SemiBold">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Opacity" Value="0.0"/>
+
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="UserControl.Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 To="1.0"
+                                                                 Duration="0:0:0.3" BeginTime="0:0:4.7"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
                     </TextBlock>
-                    <Image Source="/Resource/More Details.png" Width="17" Height="17" VerticalAlignment="Top" Margin="10,7,0,0"/>
+                    <Image Panel.ZIndex="1" Source="/Resource/More Details.png" Width="17" Height="17" VerticalAlignment="Top" Margin="10,7,0,0">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Opacity" Value="0.0"/>
+                                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                                <Setter Property="IsHitTestVisible" Value="False"/>
+
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="UserControl.Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 To="1.0"
+                                                                 Duration="0:0:0.3" BeginTime="0:0:4.7"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                    <Button Panel.ZIndex="0" Width="20" Height="20" VerticalAlignment="Top" Margin="-18.5,5.5,0,0" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave">
+                        <Popup x:Name="GuidPopup" StaysOpen="True" AllowsTransparency="True" Placement="Mouse" PopupAnimation="Fade" VerticalOffset="5" HorizontalOffset="-100">
+                            <Border Background="#FFFFFF" BorderThickness="3" BorderBrush="#A5A5A5" Width="300" Height="210" CornerRadius="10">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock x:Name="TextGuidance" Style="{StaticResource DefaultText}" FontSize="15" Margin="10,10,10,0" TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="TipGuidance" Style="{StaticResource DefaultText}" FontSize="15" Foreground="#FF0000" Margin="10,5,10,10" TextWrapping="Wrap"/>
+                                    <Border Background="#CDCDCD" CornerRadius="0,0,10,10" Height="40">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Style="{StaticResource DefaultText}" Text="UDSH | Hamo" Margin="20,0,0,0"/>
+                                            <Image Source="/Resource/Egyptflag.png" Width="30" Height="30" Margin="10,0,0,0"/>
+                                            <Image Source="/Resource/Olive.png" Width="30" Height="30" Margin="10,0,0,0"/>
+                                            <Image Source="/Resource/SmileEmoji.png" Width="30" Height="30" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+                    </Button>
                 </StackPanel>
 
                 <StackPanel Margin="0,40,0,185" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
-                    <Border Background="#FFFFFF" CornerRadius="5" BorderThickness="2" Width="50" Height="30">
+                    <Border x:Name="BorderIcon1" Background="#FFFFFF" CornerRadius="5" BorderThickness="2" Width="50" Height="30">
                         <Border.BorderBrush>
                             <VisualBrush>
                                 <VisualBrush.Visual>
@@ -213,10 +268,98 @@
 
                         <Grid>
                             <Image Source="/Resource/Add.png" Width="20" Height="20"/>
-                            <Image x:Name="IconOne" />
+                            <Image x:Name="IconOne"/>
+                            <Rectangle x:Name="IconHitColl1" Fill="{StaticResource MainBlankSCB}" MouseLeftButtonDown="Icons_MouseLeftButtonDown"/>
                         </Grid>
-                    </Border>
 
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Opacity" Value="0.0"/>
+
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="UserControl.Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 To="1.0"
+                                                                 Duration="0:0:0.3" BeginTime="0:0:5"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                    </Border>
+                    <Border x:Name="BorderIcon2" Background="#FFFFFF" CornerRadius="5" BorderThickness="2" Width="50" Height="30" Margin="10,0,0,0">
+                        <Border.BorderBrush>
+                            <VisualBrush>
+                                <VisualBrush.Visual>
+                                    <Rectangle StrokeDashArray="4 4" Stroke="#A5A5A5" StrokeThickness="2" RadiusX="5" RadiusY="5"
+                                               Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualWidth}"
+                                               Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualHeight}"/>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Border.BorderBrush>
+
+                        <Grid>
+                            <Image Source="/Resource/Add.png" Width="20" Height="20"/>
+                            <Image x:Name="IconTwo"/>
+                            <Rectangle x:Name="IconHitColl2" Fill="{StaticResource MainBlankSCB}" MouseLeftButtonDown="Icons_MouseLeftButtonDown"/>
+                        </Grid>
+
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Opacity" Value="0.0"/>
+
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="UserControl.Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 To="1.0"
+                                                                 Duration="0:0:0.3" BeginTime="0:0:5.3"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                    </Border>
+                    <Border x:Name="BorderIcon3" Background="#FFFFFF" CornerRadius="5" BorderThickness="2" Width="50" Height="30" Margin="10,0,0,0">
+                        <Border.BorderBrush>
+                            <VisualBrush>
+                                <VisualBrush.Visual>
+                                    <Rectangle StrokeDashArray="4 4" Stroke="#A5A5A5" StrokeThickness="2" RadiusX="5" RadiusY="5"
+                                               Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualWidth}"
+                                               Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualHeight}"/>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Border.BorderBrush>
+
+                        <Grid>
+                            <Image Source="/Resource/Add.png" Width="20" Height="20"/>
+                            <Image x:Name="IconThree"/>
+                            <Rectangle x:Name="IconHitColl3" Fill="{StaticResource MainBlankSCB}" MouseLeftButtonDown="Icons_MouseLeftButtonDown"/>
+                        </Grid>
+
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Opacity" Value="0.0"/>
+
+                                <Style.Triggers>
+                                    <EventTrigger RoutedEvent="UserControl.Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 To="1.0"
+                                                                 Duration="0:0:0.3" BeginTime="0:0:5.6"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                    </Border>
                 </StackPanel>
             </Grid>
 
@@ -270,7 +413,7 @@
 
         <Border x:Name="ButtonContainer" Panel.ZIndex="2" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,35,20">
             <Grid>
-                <Button x:Name="NextButton" Style="{StaticResource StartupButton}" IsHitTestVisible="False" Margin="-8,0,-4,0">
+                <Button x:Name="NextButton" Style="{StaticResource StartupButton}" IsHitTestVisible="False" Click="NextButton_Click" Margin="-8,0,-4,0">
                     <Button.Triggers>
                         <EventTrigger RoutedEvent="Button.MouseEnter">
                             <BeginStoryboard>
@@ -296,7 +439,7 @@
                     </Button.Triggers>
                 </Button>
                 <StackPanel IsHitTestVisible="False" Orientation="Horizontal">
-                    <TextBlock Text="Next" FontSize="25" FontWeight="SemiBold" Margin="0,0,3,5"/>
+                    <TextBlock x:Name="NextTextBlock" Text="Skip" FontSize="25" FontWeight="SemiBold" Margin="0,0,3,5"/>
                     <Image x:Name="NextImg" Source="/Resource/RightArrow.png" RenderTransformOrigin="0.5,0.5" Width="20" Height="20">
                         <Image.RenderTransform>
                             <TranslateTransform X="0" Y="0"/>
@@ -304,6 +447,24 @@
                     </Image>
                 </StackPanel>
             </Grid>
+
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Opacity" Value="0.0"/>
+
+                    <Style.Triggers>
+                        <EventTrigger RoutedEvent="UserControl.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     To="1.0"
+                                                     Duration="0:0:0.3" BeginTime="0:0:5.9"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
         </Border>
     </Grid>
 </UserControl>

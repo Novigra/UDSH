@@ -73,7 +73,7 @@ namespace UDSH.Model
             string ProjectsPath = Path.Combine(ApplicationPath, "Workflow", $"{User.DisplayName}", "Projects");
             CurrentProjectsDirectory = ProjectsPath;
 
-            if (User.Projects.Count == 0)
+            if (User.Projects == null || User.Projects.Count == 0)
             {
                 NumberOfProjects = 0;
 

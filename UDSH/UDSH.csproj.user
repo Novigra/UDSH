@@ -42,6 +42,9 @@
     <Compile Update="View\SideContentUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\WelcomeLastUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\WelcomeNameUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -120,6 +123,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\SideContentUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\WelcomeLastUserControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\WelcomeNameUserControl.xaml">

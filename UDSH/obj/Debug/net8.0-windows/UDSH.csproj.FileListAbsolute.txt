@@ -67,3 +67,5 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeProfilePictureUserCon
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeProfilePictureUserControl.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\ImageEditorWindow.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\ImageEditorWindow.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeLastUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeLastUserControl.baml

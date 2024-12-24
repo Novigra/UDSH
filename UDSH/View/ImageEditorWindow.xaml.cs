@@ -39,23 +39,33 @@ namespace UDSH.View
 
         private string ImagePath;
         private string tempFilePath;
+
+        private List<string> RealTimeTempFiles = new List<string>();
         public ImageEditorWindow(string ImagePath)
         {
             InitializeComponent();
 
-            tempFilePath = System.IO.Path.GetTempFileName();
-            tempFilePath = System.IO.Path.ChangeExtension(tempFilePath, ".png");
+            string AppData = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UDSH");
+            string TempPath = System.IO.Path.Combine(AppData, "Resources", "Images", "Temp");
+
+            if(!Directory.Exists(TempPath))
+                Directory.CreateDirectory(TempPath);
+
+            /*tempFilePath = System.IO.Path.GetTempFileName();
+            tempFilePath = System.IO.Path.ChangeExtension(tempFilePath, ".png");*/
+
+            string TempFilePath = System.IO.Path.Combine(TempPath, Guid.NewGuid().ToString() + ".png");
             try
             {
-                File.Copy(ImagePath, tempFilePath, true);
+                File.Copy(ImagePath, TempFilePath, true);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"ERROR: {ex.Message}");
             }
 
-            CurrentImage.Source = new BitmapImage(new Uri(tempFilePath));
-            OutputImage.Fill = new ImageBrush { ImageSource = new BitmapImage(new Uri(tempFilePath)), Stretch = Stretch.UniformToFill };
+            CurrentImage.Source = new BitmapImage(new Uri(TempFilePath));
+            OutputImage.Fill = new ImageBrush { ImageSource = new BitmapImage(new Uri(TempFilePath)), Stretch = Stretch.UniformToFill };
 
             this.ImagePath = ImagePath;
         }
@@ -237,6 +247,21 @@ namespace UDSH.View
             Debug.WriteLine("Save Complete");
             DialogResult = true;
 
+            CurrentImage.Source = null;
+            OutputImage.Fill = null;
+
+            ImagePath = string.Empty;
+            tempFilePath = string.Empty;
+
+            if (RealTimeTempFiles.Count > 0)
+            {
+                foreach (var file in RealTimeTempFiles)
+                {
+                    if (File.Exists(file))
+                        File.Delete(file);
+                }
+            }
+
             Close();
         }
 
@@ -275,8 +300,10 @@ namespace UDSH.View
             {
                 if(RealTimeUpdate == true)
                 {
-                    string TempFilePath = System.IO.Path.GetTempFileName();
-                    TempFilePath = System.IO.Path.ChangeExtension(TempFilePath, ".png");
+                    string AppData = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UDSH");
+                    string TempPath = System.IO.Path.Combine(AppData, "Resources", "Images", "Temp");
+                    string TempFilePath = System.IO.Path.Combine(TempPath, Guid.NewGuid().ToString() + ".png");
+
                     using (FileStream fileStream = new FileStream(TempFilePath, FileMode.Create))
                     {
                         encoder.Save(fileStream);
@@ -291,10 +318,6 @@ namespace UDSH.View
                         Stretch = Stretch.UniformToFill
                     };
                 }
-                else
-                {
-                    
-                }
             }
             
         }
@@ -302,6 +325,7 @@ namespace UDSH.View
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+
             Close();
         }
     }
