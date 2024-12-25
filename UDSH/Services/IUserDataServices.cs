@@ -8,6 +8,8 @@ namespace UDSH.Services
         string DisplayName { get; set; }
         Project ActiveProject { get; }
         int NumberOfProjects { get; }
+        bool IsProfilePictureSet { get; }
+        bool IsIconSet { get; }
 
         event EventHandler<string> DisplayNameChanged;
         event EventHandler<string> AddNewProjectTitle;

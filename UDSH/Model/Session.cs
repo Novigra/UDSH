@@ -101,8 +101,22 @@ namespace UDSH.Model
 
         public void CreateNewProject(string NewProjectName, string ProjectVersion, bool IsSecured, string Password)
         {
-            Project project = new Project();
-            project.ProjectName = NewProjectName;
+            Project project = new Project()
+            {
+                ProjectName = NewProjectName,
+                ProjectAuthor = User.DisplayName,
+                ProjectVersion = ProjectVersion,
+                IsLastOpenedProject = (NumberOfProjects == 0) ? true : false,
+                IsProjectProtected = IsSecured,
+                ProjectPassword = Password,
+                ProjectCreationDate = DateTime.Now,
+                ProjectLastModificationDate = DateTime.Now,
+                ProjectDirectory = Path.Combine(CurrentProjectsDirectory, NewProjectName),
+                Files = new List<FileSystem>()
+            };
+
+
+            /*project.ProjectName = NewProjectName;
             project.ProjectAuthor = User.DisplayName;
             project.ProjectVersion = ProjectVersion;
             if (NumberOfProjects == 0)
@@ -111,7 +125,7 @@ namespace UDSH.Model
             project.ProjectPassword = Password;
             project.ProjectCreationDate = DateTime.Now;
             project.ProjectLastModificationDate = DateTime.Now;
-            project.ProjectDirectory = Path.Combine(CurrentProjectsDirectory, NewProjectName);
+            project.ProjectDirectory = Path.Combine(CurrentProjectsDirectory, NewProjectName);*/
 
             User.Projects.Add(project);
             NumberOfProjects++;

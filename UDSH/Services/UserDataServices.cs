@@ -31,6 +31,10 @@ namespace UDSH.Services
 
         public int NumberOfProjects { get => session.NumberOfProjects; }
 
+        public bool IsProfilePictureSet { get => session.User.IsProfilePictureSet; }
+
+        public bool IsIconSet { get => session.User.IsCustomIconSet; }
+
         public UserDataServices(Session session)
         {
             this.session = session;

@@ -62,6 +62,20 @@ namespace UDSH
             services.AddTransient<NewUserStartupWindow>();
             services.AddTransient<MainWindow>();
         }
+
+        protected override void OnExit(ExitEventArgs exit)
+        {
+            base.OnExit(exit);
+
+            string AppData = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UDSH");
+            string TempPath = System.IO.Path.Combine(AppData, "Resources", "Images", "Temp");
+
+            if(Directory.Exists(TempPath))
+            {
+                foreach(string file  in Directory.GetFiles(TempPath))
+                    File.Delete(file);
+            }
+        }
     }
 
 }

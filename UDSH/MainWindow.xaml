@@ -6,14 +6,14 @@
         xmlns:local="clr-namespace:UDSH"
         xmlns:userControls="clr-namespace:UDSH.View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="1600" WindowStyle="None" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="900" Width="1600" WindowStartupLocation="CenterScreen">
     
     <!-- Zero or a super small number? Keep in mind it will affect how the window controls work -->
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0.1" CornerRadius="0.1" CaptionHeight="0.1"/>
     </WindowChrome.WindowChrome>
     
-    <Grid>
+    <Grid x:Name="MainWindowGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="80"/>
             <RowDefinition/>

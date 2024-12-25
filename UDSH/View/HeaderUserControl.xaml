@@ -9,6 +9,27 @@
              mc:Ignorable="d" 
              Focusable="True"
              d:DesignHeight="80" d:DesignWidth="1200">
+
+    <UserControl.Resources>
+        <Storyboard x:Key="StartupProjectNameAnim" FillBehavior="Stop" Completed="ProjectNameStoryboard_Completed">
+            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                             To="0.0"
+                             Duration="0:0:0.5" BeginTime="0:0:0.7"/>
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             To="1.0"
+                             Duration="0:0:0.5" BeginTime="0:0:0.7"/>
+        </Storyboard>
+
+        <Storyboard x:Key="AddedProjectNameAnim" FillBehavior="Stop" Completed="ProjectNameStoryboard_Completed">
+            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                             From="-40.0" To="0.0"
+                             Duration="0:0:0.5"/>
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="0.0" To="1.0"
+                             Duration="0:0:0.5"/>
+        </Storyboard>
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -27,33 +48,50 @@
 <TextBlock Name="InterpNumber" Grid.Column="1" Text="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="550,0,0,0" Panel.ZIndex="5"/> -->
 
             <!-- Logo Placement -->
-            <Rectangle Grid.Column="0" Fill="#FFADADAD" Panel.ZIndex="0"/>
-            <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/Logo.png" Margin="-10"/>
+            <Rectangle Grid.Column="0" Fill="#FFADADAD" Panel.ZIndex="1"/>
+            <Image Grid.Column="0" Panel.ZIndex="2" Source="/Resource/Logo.png" Margin="-10"/>
 
             <!-- Titles -->
-            <Rectangle Grid.Column="1" Fill="#CDCDCD"/>
-            <TextBlock Name="ProjectName" Grid.Column="1" Style="{StaticResource DefaultText}" Text="{Binding ProjectName}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+            <Rectangle Panel.ZIndex="0" Grid.Column="1" Fill="#CDCDCD" MouseLeftButtonDown="Rectangle_MouseLeftButtonDown"/>
+            <TextBlock Name="ProjectName" Grid.Column="1" Text="{Binding ProjectName}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" RenderTransformOrigin="0.5,0.5">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+                        <Setter Property="Opacity" Value="0.0"/>
+                        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                        <Setter Property="RenderTransform">
+                            <Setter.Value>
+                                <TranslateTransform X="-40" Y="0"/>
+                            </Setter.Value>
+                        </Setter>
+
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="UserControl.Loaded">
+                                <BeginStoryboard x:Name="Startup" Storyboard="{StaticResource StartupProjectNameAnim}">
+                                </BeginStoryboard>
+                            </EventTrigger>
+
+                            <DataTrigger Binding="{Binding CanPlayProjectAnimation}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard x:Name="NewProjectAdded" Storyboard="{StaticResource AddedProjectNameAnim}">
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
 
 
-            <Grid Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <!-- Emoji and flags placeholders -->
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource DefaultText}" Text="UDSH" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                    <TextBlock Style="{StaticResource DefaultText}" Text="|" VerticalAlignment="Center" Margin="5,0,5,5" FontWeight="SemiBold"/>
+                    <TextBlock Name="UserName" Style="{StaticResource DefaultText}" Text="{Binding DisplayName}" VerticalAlignment="Center" Margin="0,0,0,0"/>
 
-                <TextBlock Grid.Column="0" Style="{StaticResource DefaultText}" Text="UDSH" VerticalAlignment="Center" Margin="0,0,0,0"/>
-                <TextBlock Grid.Column="1" Style="{StaticResource DefaultText}" Text="|" VerticalAlignment="Center" Margin="5,0,5,5" FontWeight="SemiBold"/>
-                <TextBlock Name="UserName" Style="{StaticResource DefaultText}" Grid.Column="2" Text="{Binding DisplayName}" VerticalAlignment="Center" Margin="0,0,0,0"/>
-
-                <!-- <Image Grid.Column="3" Source="/Resource/FlagTest.png" VerticalAlignment="Center" Margin="10,8,0,8"/> -->
-                <TextBlock Grid.Column="3" Style="{StaticResource DefaultText}" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
-                <TextBlock Grid.Column="4" Style="{StaticResource DefaultText}" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
-                <TextBlock Grid.Column="5" Style="{StaticResource DefaultText}" Text="𓀀" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                    <Image Source="{Binding Icon1}" VerticalAlignment="Center" Margin="10,8,0,8"/>
+                    <Image Source="{Binding Icon2}" VerticalAlignment="Center" Margin="10,8,0,8"/>
+                    <Image Source="{Binding Icon3}" VerticalAlignment="Center" Margin="10,8,0,8"/>
+                </StackPanel>
             </Grid>
 
             <!-- Page Controls -->
@@ -1081,7 +1119,13 @@
 
                 <!-- Profile -->
                 <Button Grid.Column="1" Name="ProfileSettings" Panel.ZIndex="0" Margin="18,5,0,5"/>
-                <Image Grid.Column="1" Name="ProfilePicture" Source="/Resource/ProfilePicture.png" Margin="18,9,0,9" Panel.ZIndex="1"/>
+                <Ellipse Grid.Column="1" Width="30" Height="30" Margin="17,0,0,0" Panel.ZIndex="1" RenderOptions.BitmapScalingMode="HighQuality" IsHitTestVisible="False">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding ProfilePicture}"/>
+                    </Ellipse.Fill>
+                </Ellipse>
+
+                <Image Grid.Column="1" Name="ProfilePicture" Source="/Resource/ProfilePicture.png" Margin="18,9,0,9" Panel.ZIndex="1" Opacity="{Binding BlankProfilePictureOpacity}"/>
 
                 <!-- App -->
                 <Button Grid.Column="2" Name="AppSettings" Panel.ZIndex="0" Margin="10,5,10,5"/>

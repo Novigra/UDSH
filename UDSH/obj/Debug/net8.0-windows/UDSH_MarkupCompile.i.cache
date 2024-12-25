@@ -16,5 +16,5 @@ D:\Projects\UDSH\UDSH\App.xaml
 201-1721006074
 MainWindow.xaml;Styles\BorderStyles.xaml;Styles\ButtonStyles.xaml;Styles\CheckboxStyles.xaml;Styles\ComboBoxStyles.xaml;Styles\ImageStyles.xaml;Styles\ListViewStyles.xaml;Styles\RectangleStyles.xaml;Styles\ScrollBarStyles.xaml;Styles\ScrollViewerStyles.xaml;Styles\TextBlockStyles.xaml;Styles\TextStyles.xaml;Themes\MainTheme.xaml;View\CSFUserControl.xaml;View\DefaultUserControl.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;View\ImageEditorWindow.xaml;View\MKUserControl.xaml;View\NewFileCreationWindow.xaml;View\NewProjectCreationWindow.xaml;View\NewUserStartupWindow.xaml;View\NoteUserControl.xaml;View\SideContentUserControl.xaml;View\WelcomeLastUserControl.xaml;View\WelcomeNameUserControl.xaml;View\WelcomeProfilePictureUserControl.xaml;View\WelcomeUserControl.xaml;
 
-True
+False
 

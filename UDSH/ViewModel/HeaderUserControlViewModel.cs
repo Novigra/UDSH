@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using UDSH.MVVM;
 using UDSH.Services;
 using UDSH.View;
@@ -16,6 +18,7 @@ namespace UDSH.ViewModel
         //private readonly IUserDataServices userDataServices;
         //private readonly Session session;
         private readonly IHeaderServices _headerServices;
+
         private string displayName;
         public string DisplayName
         {
@@ -27,11 +30,56 @@ namespace UDSH.ViewModel
             }
         }
 
+        private BitmapImage profilePicture;
+        public BitmapImage ProfilePicture
+        {
+            get { return profilePicture; }
+            set { profilePicture = value; OnPropertyChanged(); }
+        }
+
+        private float blankProfilePictureOpacity;
+        public float BlankProfilePictureOpacity
+        {
+            get { return blankProfilePictureOpacity; }
+            set { blankProfilePictureOpacity = value; OnPropertyChanged(); }
+        }
+
+        private BitmapImage icon1;
+        public BitmapImage Icon1
+        {
+            get { return icon1; }
+            set { icon1 = value; OnPropertyChanged(); }
+        }
+
+        private BitmapImage icon2;
+        public BitmapImage Icon2
+        {
+            get { return icon2; }
+            set { icon2 = value; OnPropertyChanged(); }
+        }
+
+        private BitmapImage icon3;
+        public BitmapImage Icon3
+        {
+            get { return icon3; }
+            set { icon3 = value; OnPropertyChanged(); }
+        }
+
         private string projectName;
         public string ProjectName
         {
             get { return projectName; }
             set { projectName = value; OnPropertyChanged(); }
+        }
+
+        private bool canPlayProjectAnimation;
+        public bool CanPlayProjectAnimation
+        {
+            get { return canPlayProjectAnimation; }
+            set
+            {
+                canPlayProjectAnimation = value; OnPropertyChanged();
+            }
         }
 
         private bool isPenToolButtonClicked;
@@ -280,6 +328,16 @@ namespace UDSH.ViewModel
 
             _headerServices.UserDataServices.AddNewProjectTitle += UserDataServices_AddNewProjectTitle;
 
+            if (_headerServices.UserDataServices.IsIconSet == true)
+                LoadIcons();
+
+            BlankProfilePictureOpacity = 0.0f;
+
+            if (_headerServices.UserDataServices.IsProfilePictureSet == true)
+                LoadProfilePicture();
+            else
+                BlankProfilePictureOpacity = 1.0f;
+
             IsPenToolButtonClicked = false;
             CanClosePopup = false;
             QuickActionsList = new ObservableCollection<int>();
@@ -311,16 +369,52 @@ namespace UDSH.ViewModel
 
             IsPenToolButtonDisabled = false;
             CanEnablePenToolButton = true;
+
+            CanPlayProjectAnimation = false;
         }
 
         private void UserDataServices_AddNewProjectTitle(object? sender, string e)
         {
             ProjectName = e;
+            CanPlayProjectAnimation = true;
         }
 
         private void UserDataServices_DisplayNameChanged(object? sender, string NewDisplayName)
         {
             DisplayName = NewDisplayName;
+        }
+
+        private void LoadIcons()
+        {
+            string AppData = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UDSH");
+            string IconPath = System.IO.Path.Combine(AppData, "Resources", "Images", "Icons");
+
+
+            string IconImage1 = Directory.EnumerateFiles(IconPath, "Icon1.*").First();
+            string IconImage2 = Directory.EnumerateFiles(IconPath, "Icon2.*").First();
+            string IconImage3 = Directory.EnumerateFiles(IconPath, "Icon3.*").First();
+
+            if (File.Exists(IconImage1))
+                Icon1 = new BitmapImage(new Uri(IconImage1));
+
+            if (File.Exists(IconImage2))
+                Icon2 = new BitmapImage(new Uri(IconImage2));
+
+            if (File.Exists(IconImage3))
+                Icon3 = new BitmapImage(new Uri(IconImage3));
+        }
+
+        private void LoadProfilePicture()
+        {
+            string AppData = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "UDSH");
+            string ProfilePicturePath = Path.Combine(AppData, "Resources", "Images", "Profile Picture");
+
+            string File = Directory.EnumerateFiles(ProfilePicturePath).First();
+
+            if (File != null)
+                ProfilePicture = new BitmapImage(new Uri(File));
+            else
+                BlankProfilePictureOpacity = 1.0f;
         }
 
         private void AssignGrid(Grid grid)

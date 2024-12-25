@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using UDSH.Model;
@@ -24,6 +25,8 @@ namespace UDSH
             MKUserControl mKUserControl = new MKUserControl();
             DefaultUserControl defaultUserControl = new DefaultUserControl();
             TestContent.Content = defaultUserControl;
+
+            Debug.WriteLine($"Screen Width: {System.Windows.SystemParameters.WorkArea.Width}");
         }
 
         private void HeaderMovement(object sender, System.Windows.Input.MouseButtonEventArgs e)
