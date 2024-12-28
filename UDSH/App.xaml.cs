@@ -57,6 +57,11 @@ namespace UDSH
                 var userDataServices = provider.GetRequiredService<IUserDataServices>();
                 return new HeaderServices(userDataServices, serviceProvider);
             });
+            services.AddTransient<IWorkspaceServices>(provider =>
+            {
+                var userDataServices = provider.GetRequiredService<IUserDataServices>();
+                return new WorkspaceServices(userDataServices);
+            });
             services.AddTransient<HeaderUserControlViewModel>();
             services.AddTransient<HeaderUserControl>();
             services.AddTransient<NewUserStartupWindow>();

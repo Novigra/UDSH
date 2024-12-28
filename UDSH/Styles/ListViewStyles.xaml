@@ -11,6 +11,7 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -23,8 +24,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListView">
-                    <Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                        <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+                    <Border Background="{TemplateBinding Background}" BorderThickness="0" SnapsToDevicePixels="True">
+                        <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}" BorderThickness="0">
                             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                         </ScrollViewer>
                     </Border>
@@ -36,6 +37,7 @@
 
     <Style TargetType="ListViewItem" x:Key="OpenedPages">
         <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 
         <Setter Property="Template">
             <Setter.Value>
@@ -43,9 +45,9 @@
                     <Border Height="40" BorderThickness="0" Padding="0" Background="{TemplateBinding Background}" CornerRadius="{StaticResource SelectedFile.Radius}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="/Resource/NewFile.png" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
-                            <TextBlock Text="HelloWorld.csf" Style="{StaticResource DefaultText}" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,5,5,5"/>
+                            <TextBlock Text="{Binding file.FileName}" Style="{StaticResource DefaultText}" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,5,5,5"/>
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <Button Panel.ZIndex="0" Style="{StaticResource CloseOpenedPageButton}"/>
+                                <Button Panel.ZIndex="0" Style="{StaticResource CloseOpenedPageButton}" Command="{Binding DataContext.CloseOpenedFile, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"/>
                                 <Image Panel.ZIndex="1" Margin="13,15,13,11" Source="/Resource/Close.png"/>
                             </Grid>
                         </StackPanel>

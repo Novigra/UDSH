@@ -228,7 +228,7 @@
         </Grid>
     </ControlTemplate>
 
-    <Style TargetType="{x:Type ScrollBar}" x:Key="{x:Type ScrollBar}">
+    <Style TargetType="{x:Type ScrollBar}" x:Key="PaperPage">
         <Setter Property="local:ParagraphMouseClickBehavior.MouseEnterScrollBarCommand" Value="{Binding SideScrollMouseEnter}"/>
         <Setter Property="local:ParagraphMouseClickBehavior.MouseLeaveScrollBarCommand" Value="{Binding SideScrollMouseLeave}"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>

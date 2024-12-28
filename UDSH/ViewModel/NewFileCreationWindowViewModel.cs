@@ -4,11 +4,13 @@ using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using UDSH.Model;
 using UDSH.MVVM;
+using UDSH.Services;
 
 namespace UDSH.ViewModel
 {
-    class NewFileCreationWindowViewModel : ViewModelBase
+    public class NewFileCreationWindowViewModel : ViewModelBase
     {
+        private readonly IUserDataServices _userDataServices;
         private bool isItemSelected;
         public bool IsItemSelected
         {
@@ -49,16 +51,17 @@ namespace UDSH.ViewModel
 
         public Window CurrentWindow { get; set; }
         public Grid? GridTarget { get; set; }
+
         public RelayCommand<Button> CloseWindow => new RelayCommand<Button>(execute => CloseNewFileProcessWindow());
         public RelayCommand<Grid> LoadedGrid => new RelayCommand<Grid>(OnGridLoaded);
         public RelayCommand<TextBlock> LoadedText => new RelayCommand<TextBlock>(OnTextBlockLoaded);
         public RelayCommand<string> SelectDataType => new RelayCommand<string>(SelectData);
-        public RelayCommand<Button> NewFileCreation => new RelayCommand<Button>(execute => CreateNewFile());
+        public RelayCommand<Button> NewFileCreation => new RelayCommand<Button>(execute => CreateNewFile(), canExecute => CanCreateFile);
         public RelayCommand<Button> FileNameChanged => new RelayCommand<Button>(execute => UpdateCreationStatus());
 
-        public NewFileCreationWindowViewModel(Window window)
+        public NewFileCreationWindowViewModel(IUserDataServices userDataServices)
         {
-            CurrentWindow = window;
+            _userDataServices = userDataServices;
             IsItemSelected = false;
             CanCreateFile = false;
             NewFileName = string.Empty;
@@ -77,7 +80,7 @@ namespace UDSH.ViewModel
             TextBlockTarget = text;
         }
 
-        private void CloseNewFileProcessWindow()
+        private void CloseNewFileProcessWindow(bool IsCreateNewFile = false)
         {
             var Storyboard = new Storyboard();
             var ClosingTranslateAnimation = new DoubleAnimation
@@ -157,6 +160,8 @@ namespace UDSH.ViewModel
              * 
              */
 
+            _userDataServices.CreateNewFileAsync(NewFileName, CurrentDatatype);
+            CloseNewFileProcessWindow();
             Debug.WriteLine("Create A New File");
         }
 

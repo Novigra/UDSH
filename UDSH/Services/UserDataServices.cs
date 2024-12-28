@@ -7,6 +7,7 @@ namespace UDSH.Services
         private readonly Session session;
         public event EventHandler<string> DisplayNameChanged;
         public event EventHandler<string> AddNewProjectTitle;
+        public event EventHandler<FileSystem> AddNewFile;
 
         public string DisplayName
         {
@@ -27,6 +28,11 @@ namespace UDSH.Services
         public Project ActiveProject
         {
             get => session.CurrentProject;
+        }
+
+        public FileSystem CurrentFile
+        {
+            get => session.CurrentFile;
         }
 
         public int NumberOfProjects { get => session.NumberOfProjects; }
@@ -55,6 +61,14 @@ namespace UDSH.Services
             await Task.Run(() => session.CreateNewProject(NewProjectName, ProjectVersion, IsSecured, Password));
             if (session.NumberOfProjects == 1)
                 AddNewProjectTitle?.Invoke(this, NewProjectName);
+        }
+
+        public async Task CreateNewFileAsync(string NewFileName, string FileType)
+        {
+            await Task.Run(() => session.CreateNewFile(NewFileName, FileType));
+
+            if (CurrentFile != null)
+                AddNewFile?.Invoke(this, CurrentFile);
         }
     }
 }

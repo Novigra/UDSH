@@ -7,16 +7,20 @@ namespace UDSH.Services
         Session Session { get; }
         string DisplayName { get; set; }
         Project ActiveProject { get; }
+        FileSystem CurrentFile { get; }
         int NumberOfProjects { get; }
         bool IsProfilePictureSet { get; }
         bool IsIconSet { get; }
 
         event EventHandler<string> DisplayNameChanged;
         event EventHandler<string> AddNewProjectTitle;
+        event EventHandler<FileSystem> AddNewFile;
 
         Task LoadUserDataAsync();
         Task SaveUserDataAsync();
 
         Task CreateNewProjectAsync(string NewProjectName, string ProjectVersion, bool IsSecured, string Password);
+
+        Task CreateNewFileAsync(string NewFileName, string FileType);
     }
 }

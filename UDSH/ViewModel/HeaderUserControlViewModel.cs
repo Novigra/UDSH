@@ -6,12 +6,19 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using UDSH.Model;
 using UDSH.MVVM;
 using UDSH.Services;
 using UDSH.View;
 
 namespace UDSH.ViewModel
 {
+    public class FileStructure
+    {
+        public FileSystem file { get; set; } // File itself
+        public MKUserControl UserControl { get; set; } // Associated UserControl
+    }
+
     public class HeaderUserControlViewModel : ViewModelBase
     {
         #region Properties
@@ -288,6 +295,19 @@ namespace UDSH.ViewModel
             get { return mainWindow; }
             set { mainWindow = value; }
         }
+
+        public ObservableCollection<FileStructure> OpenFiles { get; set; }
+
+        private FileStructure PrevSelectedFile;
+        private FileStructure selectedFile;
+        public FileStructure SelectedFile
+        {
+            get => selectedFile;
+            set
+            {
+                PrevSelectedFile = selectedFile; selectedFile = value; OnPropertyChanged(); _headerServices.OnFileSelectionChanged(selectedFile);
+            }
+        }
         #endregion
 
         #region Commands
@@ -315,6 +335,8 @@ namespace UDSH.ViewModel
         private List<RelayCommand<Button>> ListOfQuickActionCommands;
 
         public RelayCommand<StackPanel> MouseEnterPenToolPopup => new RelayCommand<StackPanel>(EnableQuickActionEdit);
+
+        public RelayCommand<ListViewItem> CloseOpenedFile => new RelayCommand<ListViewItem>(CloseFile);
         #endregion
 
         public HeaderUserControlViewModel(IHeaderServices headerServices)
@@ -371,6 +393,25 @@ namespace UDSH.ViewModel
             CanEnablePenToolButton = true;
 
             CanPlayProjectAnimation = false;
+
+            OpenFiles = new ObservableCollection<FileStructure> { };
+            _headerServices.UserDataServices.AddNewFile += UserDataServices_AddNewFile;
+        }
+
+        private void UserDataServices_AddNewFile(object? sender, Model.FileSystem e)
+        {
+            MKUserControl userControl = new MKUserControl(new MKUserControlViewModel(_headerServices.Services.GetRequiredService<IWorkspaceServices>()));
+
+            FileStructure structure = new FileStructure()
+            {
+                file = e,
+                UserControl = userControl
+            };
+
+            OpenFiles.Add(structure);
+            SelectedFile = structure;
+
+            _headerServices.OnFileSelectionChanged(SelectedFile);
         }
 
         private void UserDataServices_AddNewProjectTitle(object? sender, string e)
@@ -473,7 +514,10 @@ namespace UDSH.ViewModel
             IsPenToolButtonClicked = false;
             CanClosePopup = false;
 
-            NewFileCreationWindow newFileCreationWindow = new NewFileCreationWindow(MainWindow);
+            Window mainWindowRef = _headerServices.UserDataServices.Session.mainWindow;
+            var NewFileService = _headerServices.Services.GetRequiredService<IUserDataServices>();
+
+            NewFileCreationWindow newFileCreationWindow = new NewFileCreationWindow(new NewFileCreationWindowViewModel(NewFileService), mainWindowRef);
             newFileCreationWindow.ShowDialog();
 
             Debug.WriteLine("Create a new file...");
@@ -628,6 +672,35 @@ namespace UDSH.ViewModel
                         VisualStateManager.GoToElementState(targetGrid, "State2", true);
                         break;
                 }
+            }
+        }
+
+        private void CloseFile(ListViewItem LVItem)
+        {
+            FileStructure? file = LVItem.DataContext as FileStructure;
+            if (file != null)
+            {
+                
+                if (file != SelectedFile)
+                    OpenFiles.Remove(file);
+                else
+                {
+                    int CurrentIndex = OpenFiles.IndexOf(file);
+                    if (CurrentIndex == 0)
+                    {
+                        if(OpenFiles.Count > 1)
+                        {
+                            SelectedFile = OpenFiles[CurrentIndex + 1];
+                        }
+                    }
+                    else
+                    {
+                        SelectedFile = OpenFiles[CurrentIndex - 1];
+                    }
+
+                    OpenFiles.Remove(file);
+                }
+                    
             }
         }
 

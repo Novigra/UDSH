@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using UDSH.MVVM;
+using UDSH.Services;
 using UDSH.View;
 
 namespace UDSH.ViewModel
@@ -24,9 +25,10 @@ namespace UDSH.ViewModel
         ArrowKeyUp,
         ArrowKeyDown
     }
-    class MKUserControlViewModel : ViewModelBase
+    public class MKUserControlViewModel : ViewModelBase
     {
         #region Properties
+        private readonly IWorkspaceServices _workspaceServices;
         private Point InitialMousePosition;
         private Point CurrentMousePosition;
 
@@ -97,7 +99,7 @@ namespace UDSH.ViewModel
         private Grid ParentGridTarget;
         private Button NoteButton;
 
-        private MKUserControl MKCurrentUserControl;
+        public MKUserControl MKCurrentUserControl;
         private NoteUserControl TempNoteUserControl;
         #endregion
 
@@ -135,8 +137,10 @@ namespace UDSH.ViewModel
         public RelayCommand<MouseButtonEventArgs> StopAddingNoteProcess => new RelayCommand<MouseButtonEventArgs>(StopRecordingNoteButtonMouseMovement);
         #endregion
 
-        public MKUserControlViewModel(MKUserControl control)
+        public MKUserControlViewModel(IWorkspaceServices workspaceServices) //MKUserControl control
         {
+            _workspaceServices = workspaceServices;
+
             IsNextToAMarkdown = false;
             IsListItem = false;
             ReachedListBoundary = false;
@@ -154,7 +158,7 @@ namespace UDSH.ViewModel
             HeaderTwoFontSize = 30;
             HeaderThreeFontSize = 25;
 
-            MKCurrentUserControl = control;
+            //MKCurrentUserControl = control;
         }
 
         #region Rich Text Box Initiation And Starting The First Paragraph

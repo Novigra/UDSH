@@ -17,12 +17,14 @@ namespace UDSH.View
 
         public event EventHandler<int> MouseScroll;
 
-        public MKUserControl()
+        public MKUserControl(MKUserControlViewModel viewModel)
         {
             InitializeComponent();
 
-            viewModel = new MKUserControlViewModel(this);
+            this.viewModel = viewModel;
             DataContext = viewModel;
+
+            viewModel.MKCurrentUserControl = this;
         }
 
         // Pick the previous paragraph

@@ -1103,7 +1103,7 @@
 
 
                 <!-- Opened Files -->
-                <ListView Grid.Column="1" Name="PagesList" Margin="5,0,0,0" HorizontalAlignment="Left" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">
+                <ListView Grid.Column="1" Name="PagesList" Margin="5,0,0,0" HorizontalAlignment="Left" ItemsSource="{Binding OpenFiles}" SelectedItem="{Binding SelectedFile}" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">
 
                 </ListView>
 

@@ -22,11 +22,22 @@ namespace UDSH
             HeaderUserControl headerUserControl = new HeaderUserControl(new HeaderUserControlViewModel(header));
             HeaderUserControl.Children.Add(headerUserControl);
 
-            MKUserControl mKUserControl = new MKUserControl();
+            var MK = serviceProvider.GetRequiredService<IWorkspaceServices>();
+            MKUserControl mKUserControl = new MKUserControl(new MKUserControlViewModel(MK));
             DefaultUserControl defaultUserControl = new DefaultUserControl();
             TestContent.Content = defaultUserControl;
 
             Debug.WriteLine($"Screen Width: {System.Windows.SystemParameters.WorkArea.Width}");
+
+            header.FileStructureSelectionChanged += Header_FileStructureSelectionChanged;
+        }
+
+        private void Header_FileStructureSelectionChanged(object? sender, FileStructure e)
+        {
+            if (e != null)
+                TestContent.Content = e.UserControl;
+            else
+                TestContent.Content = new DefaultUserControl();
         }
 
         private void HeaderMovement(object sender, System.Windows.Input.MouseButtonEventArgs e)

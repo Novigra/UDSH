@@ -9,12 +9,15 @@ namespace UDSH.View
     public partial class NewFileCreationWindow : Window
     {
         private NewFileCreationWindowViewModel viewModel;
-        public NewFileCreationWindow(Window ParentWindow)
+        public NewFileCreationWindow(NewFileCreationWindowViewModel viewModel, Window ParentWindow)
         {
             Owner = ParentWindow;
             InitializeComponent();
-            viewModel = new NewFileCreationWindowViewModel(this);
+
+            this.viewModel = viewModel;
             DataContext = viewModel;
+
+            this.viewModel.CurrentWindow = this;
         }
 
         private void Storyboard_Completed(object sender, EventArgs e)

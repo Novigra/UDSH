@@ -16,6 +16,8 @@ namespace UDSH.Model
 
         public int NumberOfProjects { get; set; }
 
+        public FileSystem CurrentFile { get; set; }
+
         private string UserFileDirectory { get; set; }
 
         public Session()
@@ -115,18 +117,6 @@ namespace UDSH.Model
                 Files = new List<FileSystem>()
             };
 
-
-            /*project.ProjectName = NewProjectName;
-            project.ProjectAuthor = User.DisplayName;
-            project.ProjectVersion = ProjectVersion;
-            if (NumberOfProjects == 0)
-                project.IsLastOpenedProject = true;
-            project.IsProjectProtected = IsSecured;
-            project.ProjectPassword = Password;
-            project.ProjectCreationDate = DateTime.Now;
-            project.ProjectLastModificationDate = DateTime.Now;
-            project.ProjectDirectory = Path.Combine(CurrentProjectsDirectory, NewProjectName);*/
-
             User.Projects.Add(project);
             NumberOfProjects++;
 
@@ -142,13 +132,35 @@ namespace UDSH.Model
                 Debug.WriteLine("ERROR::FAILED UPDATING JSON FILE");
             }
 
-            /*
-             * TODO:
-             * - We need to animate the project title when creating a new one.
-             * - When creating a new project, we must set the old one to false (IsLastOpenedProject).
-             * - Manage so when entering "ManageContentFolder", if the count is larger than zero, we open the last opened project.
-             * - if the user doesn't exist we need to create a new one.
-             */
+            Directory.CreateDirectory(project.ProjectDirectory);
+
+        }
+
+        public void CreateNewFile(string NewFileName, string FileType)
+        {
+            CurrentFile = new FileSystem()
+            {
+                FileName = NewFileName,
+                FileType = FileType,
+                FileAuthor = User.DisplayName,
+                FileDirectory = Path.Combine(CurrentProject.ProjectDirectory, NewFileName + "." + FileType),
+                FileVersion = CurrentProject.ProjectVersion,
+                IsLastOpenedFile = true,
+                FileCreationDate = DateTime.Now,
+                FileLastModificationDate = DateTime.Now
+            };
+
+            CurrentProject.Files.Add(CurrentFile);
+
+            try
+            {
+                string JsonUpdate = JsonSerializer.Serialize(User, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(UserFileDirectory, JsonUpdate);
+            }
+            catch
+            {
+                Debug.WriteLine("ERROR::FAILED UPDATING JSON FILE");
+            }
         }
     }
 }

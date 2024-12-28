@@ -7,6 +7,7 @@
         public string FileAuthor { get; set; }
         public string FileVersion { get; set; }
         public string FileDirectory { get; set; }
+        public bool IsLastOpenedFile { get; set; }
         public DateTime FileCreationDate { get; set; }
         public DateTime FileLastModificationDate { get; set; }
     }

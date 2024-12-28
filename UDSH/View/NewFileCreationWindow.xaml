@@ -16,9 +16,9 @@
 
     <Window.Resources>
         <!-- Data Types -->
-        <System:String x:Key="CSFDataType">CSF</System:String>
-        <System:String x:Key="BNDataType">BN</System:String>
-        <System:String x:Key="MiscDataType">MISC</System:String>
+        <System:String x:Key="CSFDataType">mkc</System:String>
+        <System:String x:Key="BNDataType">mkb</System:String>
+        <System:String x:Key="MiscDataType">mkm</System:String>
 
         <Storyboard x:Key="ChooseNameAnim">
             <DoubleAnimation Storyboard.TargetProperty="Opacity"
