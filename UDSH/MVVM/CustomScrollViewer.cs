@@ -43,10 +43,10 @@ namespace UDSH.MVVM
 
             storyboard.Completed += (sender, args) =>
             {
-                if (scrollViewer.HorizontalOffset < 1 || scrollViewer.HorizontalOffset == scrollViewer.ScrollableWidth)
-                    ReachedMaxValue.Invoke(this, EventArgs.Empty);
-                else
-                    Debug.WriteLine($"Didn't reach: {scrollViewer.HorizontalOffset}");
+                /*if (scrollViewer.HorizontalOffset < 1 || scrollViewer.HorizontalOffset == scrollViewer.ScrollableWidth)
+                    ReachedMaxValue.Invoke(this, EventArgs.Empty);*/
+                /*else
+                    Debug.WriteLine($"Didn't reach: {scrollViewer.HorizontalOffset}");*/
             };
 
             storyboard.Begin();

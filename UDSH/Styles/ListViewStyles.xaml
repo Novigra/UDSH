@@ -51,14 +51,48 @@
                 <ControlTemplate TargetType="ListViewItem">
                     <Border Height="40" BorderThickness="0" Padding="0" Background="{TemplateBinding Background}" CornerRadius="{StaticResource SelectedFile.Radius}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Resource/NewFile.png" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
-                            <TextBlock Text="{Binding file.FileName}" Style="{StaticResource DefaultText}" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,5,5,5"/>
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3">
+                                <Image x:Name="ImageNormal" Source="{Binding fileImageNormal}" Panel.ZIndex="0"/>
+                                <Image x:Name="ImageSelected" Source="{Binding fileImageSelected}" Panel.ZIndex="1" Opacity="0"/>
+                            </Grid>
+                            <TextBlock Text="{Binding file.FileName}" Style="{StaticResource DefaultText}" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3,5,5,5"/>
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Button Panel.ZIndex="0" Style="{StaticResource CloseOpenedPageButton}" Command="{Binding DataContext.CloseOpenedFile, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"/>
                                 <Image Panel.ZIndex="1" Margin="13,15,13,11" Source="/Resource/Close.png"/>
+                                <Image x:Name="ImageCloseSelected" Panel.ZIndex="2" Margin="13,15,13,11" Source="/Resource/CloseSelected.png" Opacity="0"/>
                             </Grid>
                         </StackPanel>
                     </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ImageSelected" Storyboard.TargetProperty="Opacity"
+                                                         To="1.0"
+                                                         Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="ImageCloseSelected" Storyboard.TargetProperty="Opacity"
+                                                         To="1.0"
+                                                         Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ImageSelected" Storyboard.TargetProperty="Opacity"
+                                                         To="0.0"
+                                                         Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="ImageCloseSelected" Storyboard.TargetProperty="Opacity"
+                                                         To="0.0"
+                                                         Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

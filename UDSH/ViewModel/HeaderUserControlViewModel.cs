@@ -20,6 +20,8 @@ namespace UDSH.ViewModel
     public class FileStructure
     {
         public FileSystem file { get; set; } // File itself
+        public BitmapImage fileImageNormal { get; set; } // Image Icon - Normal(Not Selected Item)
+        public BitmapImage fileImageSelected { get; set; } // Image Icon - Normal(Not Selected Item)
         public MKUserControl UserControl { get; set; } // Associated UserControl
     }
 
@@ -314,6 +316,20 @@ namespace UDSH.ViewModel
         }
 
         private CustomScrollViewer OpenPagesScrollViewer;
+
+        private bool isRightScrollButtonActive;
+        public bool IsRightScrollButtonActive
+        {
+            get => isRightScrollButtonActive;
+            set { isRightScrollButtonActive = value; OnPropertyChanged(); }
+        }
+
+        private bool isLeftScrollButtonActive;
+        public bool IsLeftScrollButtonActive
+        {
+            get => isLeftScrollButtonActive;
+            set { isLeftScrollButtonActive = value; OnPropertyChanged(); }
+        }
         #endregion
 
         #region Commands
@@ -408,7 +424,10 @@ namespace UDSH.ViewModel
             OpenFiles = new ObservableCollection<FileStructure> { };
             _headerServices.UserDataServices.AddNewFile += UserDataServices_AddNewFile;
 
-            TestScroll();
+            IsRightScrollButtonActive = false;
+            IsLeftScrollButtonActive = false;
+
+            //TestScroll();
         }
 
         private void TestScroll()
@@ -416,7 +435,7 @@ namespace UDSH.ViewModel
             
             FileSystem File = new FileSystem()
             {
-                FileName = "abc"
+                FileName = "First Act"
             };
 
             for(int i = 0; i < 30; ++i)
@@ -440,6 +459,8 @@ namespace UDSH.ViewModel
             FileStructure structure = new FileStructure()
             {
                 file = e,
+                fileImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKM.png")),
+                fileImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKMSelected.png")),
                 UserControl = userControl
             };
 
@@ -757,12 +778,21 @@ namespace UDSH.ViewModel
         private void AssignScrollViewer(CustomScrollViewer scrollViewer)
         {
             OpenPagesScrollViewer = scrollViewer;
-            OpenPagesScrollViewer.ReachedMaxValue += OpenPagesScrollViewer_ReachedMaxValue;
+            //OpenPagesScrollViewer.ReachedMaxValue += OpenPagesScrollViewer_ReachedMaxValue; //better than scroll changed, but is it worth it?
+            OpenPagesScrollViewer.ScrollChanged += OpenPagesScrollViewer_ScrollChanged;
         }
 
-        private void OpenPagesScrollViewer_ReachedMaxValue(object? sender, EventArgs e)
+        private void OpenPagesScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            Debug.WriteLine("Reached Max Value");
+            if (OpenPagesScrollViewer.HorizontalOffset == 0)
+                IsLeftScrollButtonActive = false;
+            else
+                IsLeftScrollButtonActive = true;
+
+            if (OpenPagesScrollViewer.HorizontalOffset == OpenPagesScrollViewer.ScrollableWidth)
+                IsRightScrollButtonActive = false;
+            else
+                IsRightScrollButtonActive = true;
         }
 
         /*

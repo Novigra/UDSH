@@ -483,6 +483,8 @@
     <Style TargetType="Button" x:Key="OpenFilesButtonRight">
         <Setter Property="Background" Value="{StaticResource MainOpenPageRepeatButtonRight}"/>
         <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="IsHitTestVisible" Value="{Binding IsRightScrollButtonActive}"/>
+        <Setter Property="Opacity" Value="0"/>
 
         <Setter Property="Template">
             <Setter.Value>
@@ -517,11 +519,36 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsRightScrollButtonActive}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                    To="1.0"
+                                    Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                     To="0.0"
+                                     Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="Button" x:Key="OpenFilesButtonLeft">
         <Setter Property="Background" Value="{StaticResource MainOpenPageRepeatButtonLeft}"/>
         <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="IsHitTestVisible" Value="{Binding IsLeftScrollButtonActive}"/>
+        <Setter Property="Opacity" Value="0"/>
 
         <Setter Property="Template">
             <Setter.Value>
@@ -556,6 +583,29 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsLeftScrollButtonActive}" Value="True">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                            To="1.0"
+                                            Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.0"
+                                             Duration="0:0:0.2"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <!-- Testing Ground -->

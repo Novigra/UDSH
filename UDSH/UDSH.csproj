@@ -39,6 +39,7 @@
     <None Remove="Resource\Bold.png" />
     <None Remove="Resource\Close.png" />
     <None Remove="Resource\CloseNoteIcon.png" />
+    <None Remove="Resource\CloseSelected.png" />
     <None Remove="Resource\CurrentFiles.png" />
     <None Remove="Resource\Data\NewFileHighlightedTitle.json" />
     <None Remove="Resource\DeleteFile.png" />
@@ -71,6 +72,12 @@
     <None Remove="Resource\Normal.png" />
     <None Remove="Resource\Olive.png" />
     <None Remove="Resource\OpenedFilesDropdown.png" />
+    <None Remove="Resource\OpenFileMKB.png" />
+    <None Remove="Resource\OpenFileMKBSelected.png" />
+    <None Remove="Resource\OpenFileMKC.png" />
+    <None Remove="Resource\OpenFileMKCSelected.png" />
+    <None Remove="Resource\OpenFileMKM.png" />
+    <None Remove="Resource\OpenFileMKMSelected.png" />
     <None Remove="Resource\palestineflag.png" />
     <None Remove="Resource\PenTool.png" />
     <None Remove="Resource\Pin.png" />
@@ -111,6 +118,7 @@
     <Resource Include="Fonts\Lora\Lora-SemiBoldItalic.ttf" />
     <Resource Include="Resource\Add.png" />
     <Resource Include="Resource\CloseNoteIcon.png" />
+    <Resource Include="Resource\CloseSelected.png" />
     <Resource Include="Resource\Data\NewFileHighlightedTitle.json" />
   </ItemGroup>
 
@@ -148,6 +156,12 @@
     <Resource Include="Resource\MKM_Large.png" />
     <Resource Include="Resource\More Details.png" />
     <Resource Include="Resource\Olive.png" />
+    <Resource Include="Resource\OpenFileMKB.png" />
+    <Resource Include="Resource\OpenFileMKBSelected.png" />
+    <Resource Include="Resource\OpenFileMKC.png" />
+    <Resource Include="Resource\OpenFileMKCSelected.png" />
+    <Resource Include="Resource\OpenFileMKM.png" />
+    <Resource Include="Resource\OpenFileMKMSelected.png" />
     <Resource Include="Resource\palestineflag.png" />
     <Resource Include="Resource\Pin.png" />
     <Resource Include="Resource\Placeholder.png" />
