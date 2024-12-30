@@ -12,6 +12,21 @@
     </LinearGradientBrush>
     <SolidColorBrush x:Key="QuickActionDotsSCB">#393E46</SolidColorBrush>
 
+    <LinearGradientBrush x:Key="MainOpenPageRepeatButtonLeft" StartPoint="0.0,0.5" EndPoint="1,0.5">
+        <GradientStop Color="#FFDBAD2F"/>
+        <GradientStop Color="#00DBAD2F" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="MainOpenPageRepeatButtonLeftMouseOver" StartPoint="0.0,0.5" EndPoint="1,0.5">
+        <GradientStop Color="#FFDBAD2F" Offset="0.509"/>
+        <GradientStop Color="#00DBAD2F" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="MainOpenPageRepeatButtonRight" StartPoint="1,0.5" EndPoint="0.0,0.5">
+        <GradientStop Color="#FFDBAD2F"/>
+        <GradientStop Color="#00DBAD2F" Offset="1"/>
+    </LinearGradientBrush>
+
     <!-- Side Content -->
     <LinearGradientBrush x:Key="SideContentSCB" StartPoint="0.5, 0" EndPoint="0.5, 1">
         <GradientStop Color="#EEEEEE" Offset="0"/>

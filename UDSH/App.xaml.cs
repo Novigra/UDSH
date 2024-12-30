@@ -7,6 +7,7 @@ using System.Windows;
 using UDSH.Model;
 using UDSH.Services;
 using UDSH.View;
+using UDSH.View.TestGround;
 using UDSH.ViewModel;
 
 namespace UDSH
@@ -39,6 +40,9 @@ namespace UDSH
             {
                 MainWindow mainWindow = serviceProvider.GetRequiredService<MainWindow>();
                 mainWindow.Show();
+
+                /*TestWindow testWindow = new TestWindow();
+                testWindow.Show();*/
             }
 
             #if DEBUG

@@ -54,4 +54,48 @@
         </Setter>
     </Style>
 
+    <Style TargetType="{x:Type ScrollViewer}" x:Key="OpenFilesScrollViewer">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="local:ParagraphMouseClickBehavior.ScrollViewerLoadedCommand" Value="{Binding HorizontalScrollViewerLoaded}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <Grid Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Column="1" Background="Transparent" BorderThickness="0">
+                            <ScrollContentPresenter CanContentScroll="{TemplateBinding CanContentScroll}"/>
+                        </Border>
+
+                        <ScrollBar x:Name="PART_VerticalScrollBar" Grid.Column="1" HorizontalAlignment="Right" Background="Transparent"
+                               Value="{TemplateBinding VerticalOffset}"
+                               Maximum="{TemplateBinding ScrollableHeight}"
+                               ViewportSize="{TemplateBinding ViewportHeight}"
+                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Style="{StaticResource PaperPageTest}">
+                        </ScrollBar>
+
+                        <ScrollBar x:Name="PART_HorizontalScrollBar"
+                               Orientation="Horizontal"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               Value="{TemplateBinding HorizontalOffset}"
+                               Maximum="{TemplateBinding ScrollableWidth}"
+                               ViewportSize="{TemplateBinding ViewportWidth}"
+                               Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Style="{StaticResource PaperPageTest}" Background="Transparent" Margin="0,-10,0,0"/>
+
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

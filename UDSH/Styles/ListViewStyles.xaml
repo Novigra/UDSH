@@ -1,16 +1,18 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:UDSH.View">
+                    xmlns:local="clr-namespace:UDSH.View"
+                    xmlns:MVVM="clr-namespace:UDSH.MVVM">
 
     <CornerRadius x:Key="SelectedFile.Radius" TopLeft="5" BottomLeft="0" TopRight="5" BottomRight="0"/>
     <CornerRadius x:Key="SideContentHighlight.Radius" TopLeft="0" BottomLeft="0" TopRight="4000" BottomRight="4000"/>
 
     <Style TargetType="ListView" x:Key="OpenedPagesLayout">
-        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 
         <Setter Property="ItemsPanel">
@@ -24,10 +26,15 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListView">
-                    <Border Background="{TemplateBinding Background}" BorderThickness="0" SnapsToDevicePixels="True">
-                        <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}" BorderThickness="0">
+                    <Border Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True">
+                        <MVVM:CustomScrollViewer x:Name="OpenScroll"
+                        HorizontalScrollBarVisibility="Hidden" 
+                        VerticalScrollBarVisibility="Disabled"
+                        PanningMode="HorizontalOnly" 
+                        Padding="{TemplateBinding Padding}" 
+                        BorderThickness="0" Style="{StaticResource OpenFilesScrollViewer}">
                             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                        </ScrollViewer>
+                        </MVVM:CustomScrollViewer>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -86,39 +93,6 @@
                     </BeginStoryboard>
                 </Trigger.ExitActions>
             </Trigger>
-
-            <!--
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsSelected" Value="False"/>
-                    <Condition Property="IsMouseOver" Value="True"/>
-                </MultiTrigger.Conditions>
-
-                <MultiTrigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
-                                            To="{StaticResource MainHoveredPageButtonColor}"
-                                            Duration="0:0:0.1"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </MultiTrigger.EnterActions>
-
-                <MultiTrigger.ExitActions>
-                    <BeginStoryboard x:Name="TestStop">
-                        <Storyboard>
-                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
-                                            To="{StaticResource MainUnselectedButtonColor}"
-                                            Duration="0:0:0.1"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </MultiTrigger.ExitActions>
-
-                
-                <Setter Property="Background" Value="#677283"/>
-                
-            </MultiTrigger>
-            -->
         </Style.Triggers>
     </Style>
 
@@ -246,7 +220,6 @@
                                          CharacterTemplate ="{StaticResource CharacterTemplate}"
                                          DialogueTemplate ="{StaticResource DialogueTemplate}"
                                          BranchNodeTemplate ="{StaticResource BranchNodeTemplate}"/>
-
 </ResourceDictionary>
     
 <!--############### Some Observations ###############-->

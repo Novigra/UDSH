@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace UDSH.MVVM
@@ -28,6 +30,9 @@ namespace UDSH.MVVM
                 new PropertyMetadata(null, OnMouseEnterScrollBarCommandChanged));
         public static readonly DependencyProperty MouseLeaveScrollBarCommandProperty = DependencyProperty.RegisterAttached("MouseLeaveScrollBarCommand", typeof(ICommand), typeof(ParagraphMouseClickBehavior),
                 new PropertyMetadata(null, OnMouseLeaveScrollBarCommandChanged));
+
+        public static readonly DependencyProperty ScrollViewerLoadedCommandProperty = DependencyProperty.RegisterAttached("ScrollViewerLoadedCommand", typeof(ICommand), typeof(ParagraphMouseClickBehavior),
+                new PropertyMetadata(null, OnScrollViewerLoadedCommandChanged));
         #endregion
 
         #region L_Mouse Down
@@ -274,6 +279,42 @@ namespace UDSH.MVVM
                 ICommand Command = GetMouseLeaveScrollBarCommand(scrollBar);
                 if (Command != null && Command.CanExecute(scrollBar))
                     Command.Execute(scrollBar);
+            }
+
+        }
+        #endregion
+
+
+        #region Scroll Viewer Loaded
+        public static void SetScrollViewerLoadedCommand(DependencyObject Dep, ICommand Command)
+        {
+            Dep.SetValue(ScrollViewerLoadedCommandProperty, Command);
+        }
+
+        public static ICommand GetScrollViewerLoadedCommand(DependencyObject Dep)
+        {
+            return (ICommand)Dep.GetValue(ScrollViewerLoadedCommandProperty);
+        }
+
+        private static void OnScrollViewerLoadedCommandChanged(DependencyObject Dep, DependencyPropertyChangedEventArgs Event)
+        {
+            if (Dep is CustomScrollViewer scrollViewer)
+            {
+                scrollViewer.Loaded -= RecordScrollViewerLoad;
+
+                if (Event.NewValue is ICommand)
+                    scrollViewer.Loaded += RecordScrollViewerLoad;
+            }
+        }
+
+        private static void RecordScrollViewerLoad(object sender, RoutedEventArgs e)
+        {
+            if (sender is CustomScrollViewer scrollViewer)
+            {
+                Debug.WriteLine($"ScrollBar Name: {scrollViewer.Name}");
+                ICommand Command = GetScrollViewerLoadedCommand(scrollViewer);
+                if (Command != null && Command.CanExecute(scrollViewer))
+                    Command.Execute(scrollViewer);
             }
 
         }

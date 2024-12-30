@@ -1103,9 +1103,13 @@
 
 
                 <!-- Opened Files -->
-                <ListView Grid.Column="1" Name="PagesList" Margin="5,0,0,0" HorizontalAlignment="Left" ItemsSource="{Binding OpenFiles}" SelectedItem="{Binding SelectedFile}" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">
+                <ListView Grid.Column="1" Name="PagesList" Margin="5,0,0,0" HorizontalAlignment="Left" ItemsSource="{Binding OpenFiles}"
+                          SelectedItem="{Binding SelectedFile}" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">
 
                 </ListView>
+
+                <Button Grid.Column="1" Style="{StaticResource OpenFilesButtonRight}" HorizontalAlignment="Right" Width="50" Command="{Binding ScrollRight}"/>
+                <Button Grid.Column="1" Style="{StaticResource OpenFilesButtonLeft}" HorizontalAlignment="Left" Width="50" Command="{Binding ScrollLeft}"/>
 
             </Grid>
 
@@ -1132,7 +1136,7 @@
                 <Image Grid.Column="2" Source="/Resource/Settings.png" Margin="10" Panel.ZIndex="1"/>
 
                 <!-- Opened Pages List -->
-                <Button Grid.Column="0" Name="OpenedFilesList" Panel.ZIndex="0" Margin="10,5,10,5"/>
+                <Button Grid.Column="0" Name="OpenedFilesList" Panel.ZIndex="0" Margin="10,5,10,5" Command="{Binding OpenFilesList}"/>
                 <Image Grid.Column="0" Source="/Resource/OpenedFilesDropdown.png" Margin="10" Panel.ZIndex="1"/>
 
             </Grid>

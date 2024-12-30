@@ -2,10 +2,14 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 using UDSH.Model;
 using UDSH.MVVM;
 using UDSH.Services;
@@ -308,6 +312,8 @@ namespace UDSH.ViewModel
                 PrevSelectedFile = selectedFile; selectedFile = value; OnPropertyChanged(); _headerServices.OnFileSelectionChanged(selectedFile);
             }
         }
+
+        private CustomScrollViewer OpenPagesScrollViewer;
         #endregion
 
         #region Commands
@@ -337,6 +343,11 @@ namespace UDSH.ViewModel
         public RelayCommand<StackPanel> MouseEnterPenToolPopup => new RelayCommand<StackPanel>(EnableQuickActionEdit);
 
         public RelayCommand<ListViewItem> CloseOpenedFile => new RelayCommand<ListViewItem>(CloseFile);
+
+        public RelayCommand<object> OpenFilesList => new RelayCommand<object>(execute => OpenCurrentFilesList());
+        public RelayCommand<object> ScrollRight => new RelayCommand<object>(execute => ScrollToRight());
+        public RelayCommand<object> ScrollLeft => new RelayCommand<object>(execute => ScrollToLeft());
+        public RelayCommand<CustomScrollViewer> HorizontalScrollViewerLoaded => new RelayCommand<CustomScrollViewer>(AssignScrollViewer);
         #endregion
 
         public HeaderUserControlViewModel(IHeaderServices headerServices)
@@ -396,6 +407,30 @@ namespace UDSH.ViewModel
 
             OpenFiles = new ObservableCollection<FileStructure> { };
             _headerServices.UserDataServices.AddNewFile += UserDataServices_AddNewFile;
+
+            TestScroll();
+        }
+
+        private void TestScroll()
+        {
+            
+            FileSystem File = new FileSystem()
+            {
+                FileName = "abc"
+            };
+
+            for(int i = 0; i < 30; ++i)
+            {
+                MKUserControl userControl = new MKUserControl(new MKUserControlViewModel(_headerServices.Services.GetRequiredService<IWorkspaceServices>()));
+                FileStructure structure = new FileStructure()
+                {
+                    file = File,
+                    UserControl = userControl
+                };
+
+                OpenFiles.Add(structure);
+                SelectedFile = structure;
+            }
         }
 
         private void UserDataServices_AddNewFile(object? sender, Model.FileSystem e)
@@ -702,6 +737,32 @@ namespace UDSH.ViewModel
                 }
                     
             }
+        }
+
+        private void OpenCurrentFilesList()
+        {
+            
+        }
+
+        private void ScrollToRight()
+        {
+            OpenPagesScrollViewer.SmoothScrollToHorizontalOffset(OpenPagesScrollViewer, OpenPagesScrollViewer.HorizontalOffset + 300, 0.5);
+        }
+
+        private void ScrollToLeft()
+        {
+            OpenPagesScrollViewer.SmoothScrollToHorizontalOffset(OpenPagesScrollViewer, OpenPagesScrollViewer.HorizontalOffset - 300, 0.5);
+        }
+
+        private void AssignScrollViewer(CustomScrollViewer scrollViewer)
+        {
+            OpenPagesScrollViewer = scrollViewer;
+            OpenPagesScrollViewer.ReachedMaxValue += OpenPagesScrollViewer_ReachedMaxValue;
+        }
+
+        private void OpenPagesScrollViewer_ReachedMaxValue(object? sender, EventArgs e)
+        {
+            Debug.WriteLine("Reached Max Value");
         }
 
         /*

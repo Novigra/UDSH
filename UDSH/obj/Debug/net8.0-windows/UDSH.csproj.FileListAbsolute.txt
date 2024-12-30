@@ -69,3 +69,5 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\ImageEditorWindow.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\ImageEditorWindow.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeLastUserControl.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\WelcomeLastUserControl.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\TestGround\TestWindow.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\TestGround\TestWindow.baml
