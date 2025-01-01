@@ -10,12 +10,13 @@ namespace UDSH.View
     /// </summary>
     public partial class SideContentUserControl : UserControl
     {
-        public SideContentUserControl()
+        private SideContentUserControlViewModel viewModel;
+        public SideContentUserControl(SideContentUserControlViewModel viewModel)
         {
             InitializeComponent();
 
-            SideContentUserControlViewModel ViewModel = new SideContentUserControlViewModel();
-            DataContext = ViewModel;
+            DataContext = viewModel;
+            this.viewModel = viewModel;
             //this.Loaded += SideContentUserControl_Loaded;
         }
         void SideContentUserControl_Loaded(object sender, RoutedEventArgs e)

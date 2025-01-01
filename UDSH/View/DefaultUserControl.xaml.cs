@@ -1,6 +1,8 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using UDSH.Services;
+using UDSH.ViewModel;
 
 namespace UDSH.View
 {
@@ -9,9 +11,12 @@ namespace UDSH.View
     /// </summary>
     public partial class DefaultUserControl : UserControl
     {
-        public DefaultUserControl()
+        public DefaultUserControl(IUserDataServices userDataServices)
         {
             InitializeComponent();
+
+            SideContentUserControl sideContentUserControl = new SideContentUserControl(new SideContentUserControlViewModel(userDataServices));
+            SideContentGrid.Children.Add(sideContentUserControl);
         }
 
         private void ObjectFocus(object sender, MouseButtonEventArgs e)

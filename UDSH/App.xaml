@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="Styles/ScrollViewerStyles.xaml"/>
                 <ResourceDictionary Source="Styles/CheckboxStyles.xaml"/>
                 <ResourceDictionary Source="Styles/ListViewStyles.xaml"/>
+                <ResourceDictionary Source="Styles/TreeViewStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
          

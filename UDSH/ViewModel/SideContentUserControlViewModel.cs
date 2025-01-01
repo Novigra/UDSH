@@ -1,15 +1,27 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using UDSH.Model;
 using UDSH.MVVM;
+using UDSH.Services;
 
 namespace UDSH.ViewModel
 {
-    class SideContentUserControlViewModel : ViewModelBase
+    public class Node
+    {
+        public string Name { get; set; }
+        public BitmapImage NodeImage { get; set; }
+        public ObservableCollection<Node> SubNodes { get; set; }
+    }
+    public class SideContentUserControlViewModel : ViewModelBase
     {
         #region Side Content Properties
+        private readonly IUserDataServices _userDataServices;
         private double CurrentAnimationNumber = 0.0f;
         private double ShowOpacityTarget = 0.55f;
         private double HideOpacityTarget = 0.0f;
@@ -114,6 +126,14 @@ namespace UDSH.ViewModel
         public RelayCommand<Grid> SideContentBackgroundLeftMouseButtonDown => new RelayCommand<Grid>(LoseSearchBoxFocus);
         public RelayCommand<Button> PinSideContent => new RelayCommand<Button>(PinSidebar);
         #endregion
+
+        public SideContentUserControlViewModel(IUserDataServices userDataServices)
+        {
+            _userDataServices = userDataServices;
+            Project project = _userDataServices.ActiveProject;
+
+            //string[] dir = Directory.GetDirectories(project.ProjectDirectory,"*", SearchOption.AllDirectories);
+        }
 
         // TODO: Pin button command, and textbox width modification.
 

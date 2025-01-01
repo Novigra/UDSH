@@ -95,6 +95,9 @@
     <Page Update="Styles\TextStyles.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Styles\TreeViewStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Themes\MainTheme.xaml">
       <SubType>Designer</SubType>
     </Page>

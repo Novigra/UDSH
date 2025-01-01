@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,9 +12,12 @@ namespace UDSH
 {
     public partial class MainWindow : Window
     {
+        private IServiceProvider _serviceProvider;
         public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
+
+            _serviceProvider = serviceProvider;
 
             var session = serviceProvider.GetRequiredService<Session>();
             session.mainWindow = this;
@@ -24,7 +28,9 @@ namespace UDSH
 
             var MK = serviceProvider.GetRequiredService<IWorkspaceServices>();
             MKUserControl mKUserControl = new MKUserControl(new MKUserControlViewModel(MK));
-            DefaultUserControl defaultUserControl = new DefaultUserControl();
+
+            var userDataServices = serviceProvider.GetRequiredService<IUserDataServices>();
+            DefaultUserControl defaultUserControl = new DefaultUserControl(userDataServices);
             TestContent.Content = defaultUserControl;
 
             Debug.WriteLine($"Screen Width: {System.Windows.SystemParameters.WorkArea.Width}");
@@ -35,9 +41,9 @@ namespace UDSH
         private void Header_FileStructureSelectionChanged(object? sender, FileStructure e)
         {
             if (e != null)
-                TestContent.Content = e.UserControl;
+                TestContent.Content = e.userControl;
             else
-                TestContent.Content = new DefaultUserControl();
+                TestContent.Content = new DefaultUserControl(_serviceProvider.GetRequiredService<IUserDataServices>());
         }
 
         private void HeaderMovement(object sender, System.Windows.Input.MouseButtonEventArgs e)

@@ -130,6 +130,137 @@
         </Style.Triggers>
     </Style>
 
+    <!-- OpenedPagesListView -->
+    <Style TargetType="ListView" x:Key="OpenedPagesListLayout">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListView">
+                    <Border Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True">
+                        <MVVM:CustomScrollViewer x:Name="OpenFilesListScrollviewer"
+                                                 HorizontalScrollBarVisibility="Disabled" 
+                                                 VerticalScrollBarVisibility="Auto"
+                                                 PanningMode="VerticalOnly" 
+                                                 Padding="{TemplateBinding Padding}" 
+                                                 BorderThickness="0"
+                                                 Style="{StaticResource OpenFilesListScrollViewer}">
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </MVVM:CustomScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ListViewItem" x:Key="OpenedPagesListItem">
+        <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border Height="40" BorderThickness="0" Padding="5,0,20,0" Width="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=ActualWidth}" Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3">
+                                    <Image x:Name="ImageNormal" Source="{Binding fileImageNormal}" Panel.ZIndex="0"/>
+                                    <Image x:Name="ImageSelected" Source="{Binding fileImageSelected}" Panel.ZIndex="1" Opacity="0"/>
+                                </Grid>
+                                <TextBlock Text="{Binding file.FileName}" Style="{StaticResource DefaultText}" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3,5,5,5"/>
+                            </StackPanel>
+
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Right">
+                                <Button Panel.ZIndex="0" Style="{StaticResource CloseOpenedPageButton}" Command="{Binding DataContext.CloseOpenedFile, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}}"/>
+                                <Image Panel.ZIndex="1" Margin="13,15,13,11" Source="/Resource/Close.png"/>
+                                <Image x:Name="ImageCloseSelected" Panel.ZIndex="2" Margin="13,15,13,11" Source="/Resource/CloseSelected.png" Opacity="0"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ImageSelected" Storyboard.TargetProperty="Opacity"
+                                                     To="1.0"
+                                                     Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="ImageCloseSelected" Storyboard.TargetProperty="Opacity"
+                                                     To="1.0"
+                                                     Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ImageSelected" Storyboard.TargetProperty="Opacity"
+                                                     To="0.0"
+                                                     Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="ImageCloseSelected" Storyboard.TargetProperty="Opacity"
+                                                     To="0.0"
+                                                     Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainSelectedButtonColor}"
+                                        Duration="0:0:0.1"/>
+
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainSelectedItemTextColor}"
+                                        Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainUnselectedButtonColor}"
+                                        Duration="0:0:0.1"/>
+
+                            <ColorAnimation Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                        To="{StaticResource MainStandardTextColor}"
+                                        Duration="0:0:0.1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+
+
     <!-- CSF - Content Layout -->
     <Style TargetType="ListView" x:Key="CSFContentLayout">
         <Setter Property="Background" Value="{StaticResource MainBlankSCB}"/>

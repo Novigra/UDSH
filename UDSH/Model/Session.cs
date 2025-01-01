@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text.Json;
 
 namespace UDSH.Model
@@ -161,6 +163,9 @@ namespace UDSH.Model
             {
                 Debug.WriteLine("ERROR::FAILED UPDATING JSON FILE");
             }
+
+            FileStream fileStream = File.Create(CurrentFile.FileDirectory);
+            fileStream.Close();
         }
     }
 }

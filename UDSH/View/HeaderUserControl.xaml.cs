@@ -129,5 +129,15 @@ namespace UDSH.View
             ProjectName.Opacity = 1.0;
             viewModel.CanPlayProjectAnimation = false;
         }
+
+        private void Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            OpenFilesListPopup.StaysOpen = true;
+        }
+
+        private void Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            OpenFilesListPopup.StaysOpen = false;
+        }
     }
 }

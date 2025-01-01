@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UDSH.View"
+             xmlns:VM="clr-namespace:UDSH.ViewModel"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              Focusable="True"
@@ -243,6 +244,16 @@
                             </Grid>
                         </StackPanel>
                     </Border>
+                    <TreeView ItemsSource="{Binding Root}" Margin="0,10,0,0">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type VM:Node}" ItemsSource="{Binding SubNodes}">
+                                <StackPanel Orientation="Horizontal" Margin="5">
+                                    <Image Source="{Binding NodeImage}" Width="33" Height="33" Margin="0,-3,0,3"/>
+                                    <TextBlock Style="{StaticResource DefaultText}" Text="{Binding Name}" Margin="-10,0,0,0"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
                 </StackPanel>
             </Grid>
         </Expander>

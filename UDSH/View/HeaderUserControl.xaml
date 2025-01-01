@@ -1136,10 +1136,46 @@
                 <Image Grid.Column="2" Source="/Resource/Settings.png" Margin="10" Panel.ZIndex="1"/>
 
                 <!-- Opened Pages List -->
-                <Button Grid.Column="0" Name="OpenedFilesList" Panel.ZIndex="0" Margin="10,5,10,5" Command="{Binding OpenFilesList}">
-                    
+                <Button Grid.Column="0" Name="OpenedFilesList" Panel.ZIndex="0" Margin="10,5,10,5" Command="{Binding OpenFilesList}" IsEnabled="{Binding CanOpenFilesList}">
+                    <Popup x:Name="OpenFilesListPopup" HorizontalOffset="-200" VerticalOffset="25" StaysOpen="False" AllowsTransparency="True" Placement="Relative" PopupAnimation="Fade" IsOpen="{Binding IsOpenFilesListPopupOpen, UpdateSourceTrigger=PropertyChanged}">
+                        <Border Background="#EEEEEE" Width="300" Height="400" CornerRadius="10" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
+                            <ListView ItemsSource="{Binding OpenFiles}" SelectedItem="{Binding SelectedFile}" SelectionMode="Single" Style="{StaticResource OpenedPagesListLayout}"
+                                      ItemContainerStyle="{StaticResource OpenedPagesListItem}"/>
+                        </Border>
+                    </Popup>
                 </Button>
-                <Image Grid.Column="0" Source="/Resource/OpenedFilesDropdown.png" Margin="10" Panel.ZIndex="1"/>
+                <Image Grid.Column="0" Source="/Resource/OpenedFilesDropdown.png" Margin="10" Panel.ZIndex="1">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Opacity" Value="0"/>
+                            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CanOpenFilesList}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 To="1.0"
+                                                                 Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                                 To="0.0"
+                                                                 Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
 
             </Grid>
 

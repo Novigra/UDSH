@@ -17,8 +17,8 @@
 
         <Rectangle Grid.ColumnSpan="2" Fill="{StaticResource MainBackgroundCSFSCB}" MouseLeftButtonDown="ObjectFocus" Focusable="True"/>
 
-        <Grid Grid.Column="0">
-            <local:SideContentUserControl/>
+        <Grid x:Name="SideContentGrid" Grid.Column="0">
+            <!-- <local:SideContentUserControl/> -->
 
         </Grid>
 

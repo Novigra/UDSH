@@ -53,6 +53,7 @@
     <None Remove="Resource\FolderNewContent.png" />
     <None Remove="Resource\FolderOpenContent.png" />
     <None Remove="Resource\FolderSaveContentAs.png" />
+    <None Remove="Resource\FolderSidebar.png" />
     <None Remove="Resource\FolderSwitchContent.png" />
     <None Remove="Resource\HorusEye.png" />
     <None Remove="Resource\HorusEyeBlack.png" />
@@ -88,6 +89,9 @@
     <None Remove="Resource\SaveFile.png" />
     <None Remove="Resource\Search.png" />
     <None Remove="Resource\Settings.png" />
+    <None Remove="Resource\SidebarMKB.png" />
+    <None Remove="Resource\SidebarMKC.png" />
+    <None Remove="Resource\SidebarMKM.png" />
     <None Remove="Resource\SideContent.png" />
     <None Remove="Resource\SmileEmoji.png" />
     <None Remove="Resource\StartWritingIcon.png" />
@@ -144,6 +148,7 @@
     <Resource Include="Resource\FolderNewContent.png" />
     <Resource Include="Resource\FolderOpenContent.png" />
     <Resource Include="Resource\FolderSaveContentAs.png" />
+    <Resource Include="Resource\FolderSidebar.png" />
     <Resource Include="Resource\FolderSwitchContent.png" />
     <Resource Include="Resource\HorusEye.png" />
     <Resource Include="Resource\HorusEyeBlack.png" />
@@ -168,6 +173,9 @@
     <Resource Include="Resource\RightArrow.png" />
     <Resource Include="Resource\SaveAllFiles.png" />
     <Resource Include="Resource\Search.png" />
+    <Resource Include="Resource\SidebarMKB.png" />
+    <Resource Include="Resource\SidebarMKC.png" />
+    <Resource Include="Resource\SidebarMKM.png" />
     <Resource Include="Resource\SideContent.png" />
     <Resource Include="Resource\SmileEmoji.png" />
     <Resource Include="Resource\StartWritingIcon.png" />

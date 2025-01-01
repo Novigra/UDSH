@@ -22,7 +22,7 @@ namespace UDSH.ViewModel
         public FileSystem file { get; set; } // File itself
         public BitmapImage fileImageNormal { get; set; } // Image Icon - Normal(Not Selected Item)
         public BitmapImage fileImageSelected { get; set; } // Image Icon - Normal(Not Selected Item)
-        public MKUserControl UserControl { get; set; } // Associated UserControl
+        public UserControl userControl { get; set; } // Associated UserControl
     }
 
     public class HeaderUserControlViewModel : ViewModelBase
@@ -316,6 +316,7 @@ namespace UDSH.ViewModel
         }
 
         private CustomScrollViewer OpenPagesScrollViewer;
+        private CustomScrollViewer OpenFilesListScrollViewer;
 
         private bool isRightScrollButtonActive;
         public bool IsRightScrollButtonActive
@@ -329,6 +330,20 @@ namespace UDSH.ViewModel
         {
             get => isLeftScrollButtonActive;
             set { isLeftScrollButtonActive = value; OnPropertyChanged(); }
+        }
+
+        private bool canOpenFilesList;
+        public bool CanOpenFilesList
+        {
+            get => canOpenFilesList;
+            set { canOpenFilesList = value; OnPropertyChanged(); }
+        }
+
+        private bool isOpenFilesListPopupOpen;
+        public bool IsOpenFilesListPopupOpen
+        {
+            get => isOpenFilesListPopupOpen;
+            set { isOpenFilesListPopupOpen = value; OnPropertyChanged(); }
         }
         #endregion
 
@@ -360,10 +375,11 @@ namespace UDSH.ViewModel
 
         public RelayCommand<ListViewItem> CloseOpenedFile => new RelayCommand<ListViewItem>(CloseFile);
 
-        public RelayCommand<object> OpenFilesList => new RelayCommand<object>(execute => OpenCurrentFilesList());
+        public RelayCommand<object> OpenFilesList => new RelayCommand<object>(execute => OpenCurrentFilesList(), canExecute => !IsOpenFilesListPopupOpen);
         public RelayCommand<object> ScrollRight => new RelayCommand<object>(execute => ScrollToRight());
         public RelayCommand<object> ScrollLeft => new RelayCommand<object>(execute => ScrollToLeft());
         public RelayCommand<CustomScrollViewer> HorizontalScrollViewerLoaded => new RelayCommand<CustomScrollViewer>(AssignScrollViewer);
+        public RelayCommand<CustomScrollViewer> VerticalOpenFilesListScrollViewerLoaded => new RelayCommand<CustomScrollViewer>(AssignVerticalScrollViewer);
         #endregion
 
         public HeaderUserControlViewModel(IHeaderServices headerServices)
@@ -427,6 +443,9 @@ namespace UDSH.ViewModel
             IsRightScrollButtonActive = false;
             IsLeftScrollButtonActive = false;
 
+            CanOpenFilesList = false;
+            IsOpenFilesListPopupOpen = false;
+
             //TestScroll();
         }
 
@@ -444,7 +463,9 @@ namespace UDSH.ViewModel
                 FileStructure structure = new FileStructure()
                 {
                     file = File,
-                    UserControl = userControl
+                    fileImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKM.png")),
+                    fileImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKMSelected.png")),
+                    userControl = userControl
                 };
 
                 OpenFiles.Add(structure);
@@ -454,14 +475,26 @@ namespace UDSH.ViewModel
 
         private void UserDataServices_AddNewFile(object? sender, Model.FileSystem e)
         {
-            MKUserControl userControl = new MKUserControl(new MKUserControlViewModel(_headerServices.Services.GetRequiredService<IWorkspaceServices>()));
+            UserControl currentUserControl = new DefaultUserControl(_headerServices.UserDataServices);
+            BitmapImage currentImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/Placeholder.png"));
+            BitmapImage currentImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/Placeholder.png"));
+            switch (e.FileType)
+            {
+                case "mkm":
+                    currentUserControl = new MKUserControl(new MKUserControlViewModel(_headerServices.Services.GetRequiredService<IWorkspaceServices>()));
+                    currentImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKM.png"));
+                    currentImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKMSelected.png"));
+                    break;
+                default:
+                    break;
+            }
 
             FileStructure structure = new FileStructure()
             {
                 file = e,
-                fileImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKM.png")),
-                fileImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKMSelected.png")),
-                UserControl = userControl
+                fileImageNormal = currentImageNormal,
+                fileImageSelected = currentImageSelected,
+                userControl = currentUserControl
             };
 
             OpenFiles.Add(structure);
@@ -762,7 +795,8 @@ namespace UDSH.ViewModel
 
         private void OpenCurrentFilesList()
         {
-            
+            Debug.WriteLine("Pressed on the button");
+            IsOpenFilesListPopupOpen = !IsOpenFilesListPopupOpen;
         }
 
         private void ScrollToRight()
@@ -782,6 +816,11 @@ namespace UDSH.ViewModel
             OpenPagesScrollViewer.ScrollChanged += OpenPagesScrollViewer_ScrollChanged;
         }
 
+        private void AssignVerticalScrollViewer(CustomScrollViewer scrollViewer)
+        {
+            OpenFilesListScrollViewer = scrollViewer;
+        }
+
         private void OpenPagesScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (OpenPagesScrollViewer.HorizontalOffset == 0)
@@ -793,6 +832,11 @@ namespace UDSH.ViewModel
                 IsRightScrollButtonActive = false;
             else
                 IsRightScrollButtonActive = true;
+
+            if (OpenPagesScrollViewer.HorizontalOffset == 0 && OpenPagesScrollViewer.HorizontalOffset == OpenPagesScrollViewer.ScrollableWidth)
+                CanOpenFilesList = false;
+            else
+                CanOpenFilesList = true;
         }
 
         /*
