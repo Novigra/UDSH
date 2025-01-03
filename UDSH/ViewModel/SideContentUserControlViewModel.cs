@@ -3,25 +3,45 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using UDSH.Model;
 using UDSH.MVVM;
 using UDSH.Services;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace UDSH.ViewModel
 {
+    public enum DataType
+    {
+        Folder,
+        File
+    }
+
     public class Node
     {
         public string Name { get; set; }
         public BitmapImage NodeImage { get; set; }
-        public ObservableCollection<Node> SubNodes { get; set; }
+        public DataType NodeType { get; set; }
+        public string NodeDirectory { get; set; }
+        public ObservableCollection<Node> SubNodes { get; set; } = new ObservableCollection<Node>();
     }
+
+    public class Structure
+    {
+        public int Level { get; set; }
+        public DataType ObjectDataType { get; set; }
+        public string Name { get; set; }
+    }
+
     public class SideContentUserControlViewModel : ViewModelBase
     {
         #region Side Content Properties
         private readonly IUserDataServices _userDataServices;
+        public ObservableCollection<Node> Root {  get; set; }
+
         private double CurrentAnimationNumber = 0.0f;
         private double ShowOpacityTarget = 0.55f;
         private double HideOpacityTarget = 0.0f;
@@ -109,6 +129,11 @@ namespace UDSH.ViewModel
             get { return textBoxWidth; }
             set { textBoxWidth = value; OnPropertyChanged(); }
         }
+
+        private bool CanStartCounting;
+        private Dictionary<int, List<Structure>> structureDic = new Dictionary<int, List<Structure>>();
+
+        private Node SelectedNode;
         #endregion
 
         #region Commands
@@ -125,6 +150,10 @@ namespace UDSH.ViewModel
         public RelayCommand<TextBox> SearchBoxLeftMouseButtonDown => new RelayCommand<TextBox>(SetSearchBoxTextFocus);
         public RelayCommand<Grid> SideContentBackgroundLeftMouseButtonDown => new RelayCommand<Grid>(LoseSearchBoxFocus);
         public RelayCommand<Button> PinSideContent => new RelayCommand<Button>(PinSidebar);
+
+
+        public RelayCommand<RoutedPropertyChangedEventArgs<object>> TreeViewSelectionChanged => new RelayCommand<RoutedPropertyChangedEventArgs<object>>(TreeSelectionChanged);
+        public RelayCommand<object> TreeViewMouseDoubleClick => new RelayCommand<object>(execute => OpenFile());
         #endregion
 
         public SideContentUserControlViewModel(IUserDataServices userDataServices)
@@ -132,7 +161,82 @@ namespace UDSH.ViewModel
             _userDataServices = userDataServices;
             Project project = _userDataServices.ActiveProject;
 
-            //string[] dir = Directory.GetDirectories(project.ProjectDirectory,"*", SearchOption.AllDirectories);
+            Root = new ObservableCollection<Node>();
+
+            if (project != null)
+                BuildStructure();
+        }
+
+        private void BuildStructure()
+        {
+            Project project = _userDataServices.ActiveProject;
+            Node root = new Node { Name = project.ProjectName, NodeType = DataType.Folder };
+            string[] files = Directory.GetFiles(project.ProjectDirectory, "*", SearchOption.AllDirectories);
+            foreach (string file in files)
+            {
+                string[] TextSplit = file.Split('\\');
+                
+                // Start at the project root as the user could be storing the app files deep inside.
+                int index = Array.IndexOf(TextSplit, project.ProjectName);
+
+                Node CurrentNode = root;
+                for(int i = index + 1;  i < TextSplit.Length; ++i)
+                {
+                    BitmapImage CurrentImage;
+                    DataType CurrentType;
+                    if (TextSplit[i].Contains(".mkm"))
+                    {
+                        CurrentType = DataType.File;
+                        CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKM.png"));
+                    }
+                    else if (TextSplit[i].Contains(".mkc"))
+                    {
+                        CurrentType = DataType.File;
+                        CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKC.png"));
+                    }
+                    else if (TextSplit[i].Contains(".mkb"))
+                    {
+                        CurrentType = DataType.File;
+                        CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKB.png"));
+                    }
+                    else
+                    {
+                        CurrentType = DataType.Folder;
+                        CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderSidebar.png"));
+                    }
+
+                    // Avoid replicas
+                    var matchingNodes = CurrentNode.SubNodes.Where(n => n.Name == TextSplit[i]).ToList();
+                    Node? subNode = matchingNodes.Count > 0 ? matchingNodes[0] : null;
+
+                    if (subNode == null)
+                    {
+                        subNode = new Node{ Name = TextSplit[i], NodeImage = CurrentImage, NodeType = CurrentType };
+                        CurrentNode.SubNodes.Add(subNode);
+                    }
+
+                    CurrentNode = subNode;
+                }
+            }
+
+            // Sorting
+            SortNodes(root);
+
+            //Root.Add(root.SubNodes);
+            foreach (var subNodes  in root.SubNodes)
+            {
+                Root.Add(subNodes);
+            }
+        }
+
+        private void SortNodes(Node root)
+        {
+            root.SubNodes = new ObservableCollection<Node>(root.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.Ordinal));
+
+            foreach (var subNode in root.SubNodes)
+            {
+                SortNodes(subNode);
+            }
         }
 
         // TODO: Pin button command, and textbox width modification.
@@ -363,6 +467,22 @@ namespace UDSH.ViewModel
         private void PinSidebar(Button btn)
         {
             CanPinSideContent = !CanPinSideContent;
+        }
+
+        private void TreeSelectionChanged(RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is Node node)
+            {
+                SelectedNode = node;
+            }
+        }
+
+        private void OpenFile()
+        {
+            if (SelectedNode.NodeType == DataType.File)
+            {
+                MessageBox.Show($"Open File: {SelectedNode.Name}");
+            }
         }
     }
 }
