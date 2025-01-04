@@ -135,6 +135,8 @@ namespace UDSH.ViewModel
         public RelayCommand<MouseButtonEventArgs> AddNote => new RelayCommand<MouseButtonEventArgs>(NoteFunctionality);
         public RelayCommand<MouseEventArgs> NoteButtonMouseMove => new RelayCommand<MouseEventArgs>(RecordNoteButtonMouseMovement);
         public RelayCommand<MouseButtonEventArgs> StopAddingNoteProcess => new RelayCommand<MouseButtonEventArgs>(StopRecordingNoteButtonMouseMovement);
+
+        public RelayCommand<Grid> SideContentGridLoaded => new RelayCommand<Grid>(AddSideContentControl);
         #endregion
 
         public MKUserControlViewModel(IWorkspaceServices workspaceServices) //MKUserControl control
@@ -743,6 +745,12 @@ namespace UDSH.ViewModel
 
                 ParentGridTarget.ReleaseMouseCapture();
             }
+        }
+
+        private void AddSideContentControl(Grid grid)
+        {
+            /*SideContentUserControl sideContentUserControl = new SideContentUserControl(new SideContentUserControlViewModel(_workspaceServices.UserDataServices));
+            grid.Children.Add(sideContentUserControl);*/
         }
     }
 }

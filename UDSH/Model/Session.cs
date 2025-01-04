@@ -158,14 +158,14 @@ namespace UDSH.Model
             {
                 string JsonUpdate = JsonSerializer.Serialize(User, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(UserFileDirectory, JsonUpdate);
+
+                FileStream fileStream = File.Create(CurrentFile.FileDirectory);
+                fileStream.Close();
             }
             catch
             {
                 Debug.WriteLine("ERROR::FAILED UPDATING JSON FILE");
             }
-
-            FileStream fileStream = File.Create(CurrentFile.FileDirectory);
-            fileStream.Close();
         }
     }
 }

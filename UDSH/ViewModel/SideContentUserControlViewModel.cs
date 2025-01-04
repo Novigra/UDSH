@@ -26,6 +26,7 @@ namespace UDSH.ViewModel
         public BitmapImage NodeImage { get; set; }
         public DataType NodeType { get; set; }
         public string NodeDirectory { get; set; }
+        public FileSystem NodeFile { get; set; }
         public ObservableCollection<Node> SubNodes { get; set; } = new ObservableCollection<Node>();
     }
 
@@ -133,6 +134,7 @@ namespace UDSH.ViewModel
         private bool CanStartCounting;
         private Dictionary<int, List<Structure>> structureDic = new Dictionary<int, List<Structure>>();
 
+        private Node root;
         private Node SelectedNode;
         #endregion
 
@@ -159,6 +161,7 @@ namespace UDSH.ViewModel
         public SideContentUserControlViewModel(IUserDataServices userDataServices)
         {
             _userDataServices = userDataServices;
+            _userDataServices.AddNewFileToContent += _userDataServices_AddNewFileToContent;
             Project project = _userDataServices.ActiveProject;
 
             Root = new ObservableCollection<Node>();
@@ -167,40 +170,109 @@ namespace UDSH.ViewModel
                 BuildStructure();
         }
 
+        private void _userDataServices_AddNewFileToContent(object? sender, FileSystem e)
+        {
+            Project project = _userDataServices.ActiveProject;
+            string[] TextSplit = e.FileDirectory.Split('\\');
+
+            int index = Array.IndexOf(TextSplit, project.ProjectName);
+
+            if (root == null)
+                root = new Node { Name = project.ProjectName, NodeType = DataType.Folder };
+
+            Node CurrentNode = root;
+            for (int i = index + 1; i < TextSplit.Length; ++i)
+            {
+                string CurrentFileNodeDirectory = e.FileDirectory;
+                BitmapImage CurrentImage;
+                DataType CurrentType;
+                bool IsFile = false;
+                if (TextSplit[i].Contains(".mkm"))
+                {
+                    IsFile = true;
+                    CurrentType = DataType.File;
+                    CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKM.png"));
+                }
+                else if (TextSplit[i].Contains(".mkc"))
+                {
+                    IsFile = true;
+                    CurrentType = DataType.File;
+                    CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKC.png"));
+                }
+                else if (TextSplit[i].Contains(".mkb"))
+                {
+                    IsFile = true;
+                    CurrentType = DataType.File;
+                    CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKB.png"));
+                }
+                else
+                {
+                    CurrentFileNodeDirectory = string.Empty;
+                    CurrentType = DataType.Folder;
+                    CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderSidebar.png"));
+                }
+
+                // Avoid replicas
+                var matchingNodes = CurrentNode.SubNodes.Where(n => n.Name == TextSplit[i]).ToList();
+                Node? subNode = matchingNodes.Count > 0 ? matchingNodes[0] : null;
+
+                if (subNode == null)
+                {
+                    subNode = new Node { Name = TextSplit[i], NodeImage = CurrentImage, NodeType = CurrentType, NodeDirectory = CurrentFileNodeDirectory, NodeFile = (IsFile == true) ? e : null };
+                    CurrentNode.SubNodes.Add(subNode);
+                }
+
+                CurrentNode = subNode;
+            }
+
+            SortNodes(root);
+            Root.Clear();
+            foreach (var subNodes in root.SubNodes)
+            {
+                Root.Add(subNodes);
+            }
+        }
+
         private void BuildStructure()
         {
             Project project = _userDataServices.ActiveProject;
-            Node root = new Node { Name = project.ProjectName, NodeType = DataType.Folder };
-            string[] files = Directory.GetFiles(project.ProjectDirectory, "*", SearchOption.AllDirectories);
-            foreach (string file in files)
+            root = new Node { Name = project.ProjectName, NodeType = DataType.Folder };
+            //string[] files = Directory.GetFiles(project.ProjectDirectory, "*", SearchOption.AllDirectories);
+            foreach (var file in project.Files)
             {
-                string[] TextSplit = file.Split('\\');
-                
+                string[] TextSplit = file.FileDirectory.Split('\\');
+
                 // Start at the project root as the user could be storing the app files deep inside.
                 int index = Array.IndexOf(TextSplit, project.ProjectName);
 
                 Node CurrentNode = root;
                 for(int i = index + 1;  i < TextSplit.Length; ++i)
                 {
+                    string CurrentFileNodeDirectory = file.FileDirectory;
                     BitmapImage CurrentImage;
                     DataType CurrentType;
+                    bool IsFile = false;
                     if (TextSplit[i].Contains(".mkm"))
                     {
+                        IsFile = true;
                         CurrentType = DataType.File;
                         CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKM.png"));
                     }
                     else if (TextSplit[i].Contains(".mkc"))
                     {
+                        IsFile = true;
                         CurrentType = DataType.File;
                         CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKC.png"));
                     }
                     else if (TextSplit[i].Contains(".mkb"))
                     {
+                        IsFile = true;
                         CurrentType = DataType.File;
                         CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKB.png"));
                     }
                     else
                     {
+                        CurrentFileNodeDirectory = string.Empty;
                         CurrentType = DataType.Folder;
                         CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderSidebar.png"));
                     }
@@ -211,7 +283,7 @@ namespace UDSH.ViewModel
 
                     if (subNode == null)
                     {
-                        subNode = new Node{ Name = TextSplit[i], NodeImage = CurrentImage, NodeType = CurrentType };
+                        subNode = new Node{ Name = TextSplit[i], NodeImage = CurrentImage, NodeType = CurrentType, NodeDirectory = CurrentFileNodeDirectory, NodeFile = (IsFile == true) ? file : null };
                         CurrentNode.SubNodes.Add(subNode);
                     }
 
@@ -222,7 +294,6 @@ namespace UDSH.ViewModel
             // Sorting
             SortNodes(root);
 
-            //Root.Add(root.SubNodes);
             foreach (var subNodes  in root.SubNodes)
             {
                 Root.Add(subNodes);
@@ -481,7 +552,7 @@ namespace UDSH.ViewModel
         {
             if (SelectedNode.NodeType == DataType.File)
             {
-                MessageBox.Show($"Open File: {SelectedNode.Name}");
+                _userDataServices.AddFileToHeader(SelectedNode.NodeFile);
             }
         }
     }

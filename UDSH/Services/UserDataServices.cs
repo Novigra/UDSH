@@ -8,6 +8,8 @@ namespace UDSH.Services
         public event EventHandler<string> DisplayNameChanged;
         public event EventHandler<string> AddNewProjectTitle;
         public event EventHandler<FileSystem> AddNewFile;
+        public event EventHandler<FileSystem> AddNewFileToContent;
+        //public event EventHandler<FileSystem> AddFileFromContent;
 
         public string DisplayName
         {
@@ -68,7 +70,16 @@ namespace UDSH.Services
             await Task.Run(() => session.CreateNewFile(NewFileName, FileType));
 
             if (CurrentFile != null)
+            {
                 AddNewFile?.Invoke(this, CurrentFile);
+                AddNewFileToContent?.Invoke(this, CurrentFile);
+            }
+        }
+
+        public void AddFileToHeader(FileSystem file)
+        {
+            if (file != null)
+                AddNewFile?.Invoke(this, file);
         }
     }
 }

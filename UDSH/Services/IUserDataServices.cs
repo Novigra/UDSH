@@ -15,6 +15,8 @@ namespace UDSH.Services
         event EventHandler<string> DisplayNameChanged;
         event EventHandler<string> AddNewProjectTitle;
         event EventHandler<FileSystem> AddNewFile;
+        event EventHandler<FileSystem> AddNewFileToContent;
+        //event EventHandler<FileSystem> AddFileFromContent;
 
         Task LoadUserDataAsync();
         Task SaveUserDataAsync();
@@ -22,5 +24,6 @@ namespace UDSH.Services
         Task CreateNewProjectAsync(string NewProjectName, string ProjectVersion, bool IsSecured, string Password);
 
         Task CreateNewFileAsync(string NewFileName, string FileType);
+        void AddFileToHeader(FileSystem file);
     }
 }

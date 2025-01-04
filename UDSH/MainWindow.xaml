@@ -30,5 +30,8 @@
             
         </ContentControl>
 
+        <Grid x:Name="SideGrid" Grid.Row="1" HorizontalAlignment="Left" Margin="0,40,0,0">
+        </Grid>
+
     </Grid>
 </Window>

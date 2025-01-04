@@ -36,9 +36,12 @@ namespace UDSH
             Debug.WriteLine($"Screen Width: {System.Windows.SystemParameters.WorkArea.Width}");
 
             header.FileStructureSelectionChanged += Header_FileStructureSelectionChanged;
+
+            SideContentUserControl sideContentUserControl = new SideContentUserControl(new SideContentUserControlViewModel(userDataServices));
+            SideGrid.Children.Add(sideContentUserControl);
         }
 
-        private void Header_FileStructureSelectionChanged(object? sender, FileStructure e)
+        private void Header_FileStructureSelectionChanged(object? sender, FileSystem e)
         {
             if (e != null)
                 TestContent.Content = e.userControl;

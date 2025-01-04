@@ -15,8 +15,8 @@ namespace UDSH.View
         {
             InitializeComponent();
 
-            SideContentUserControl sideContentUserControl = new SideContentUserControl(new SideContentUserControlViewModel(userDataServices));
-            SideContentGrid.Children.Add(sideContentUserControl);
+            /*SideContentUserControl sideContentUserControl = new SideContentUserControl(new SideContentUserControlViewModel(userDataServices));
+            SideContentGrid.Children.Add(sideContentUserControl);*/
         }
 
         private void ObjectFocus(object sender, MouseButtonEventArgs e)

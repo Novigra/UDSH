@@ -174,10 +174,15 @@
 
         </Grid>
 
-        <Grid Grid.Row="1" HorizontalAlignment="Left" Panel.ZIndex="1">
+        <Grid x:Name="SideContentGrid" Grid.Row="1" HorizontalAlignment="Left" Panel.ZIndex="1">
             <!--
             <local:SideContentUserControl/>
             -->
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Loaded">
+                    <i:InvokeCommandAction Command="{Binding SideContentGridLoaded}" CommandParameter="{Binding ElementName=SideContentGrid}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </Grid>
 
 

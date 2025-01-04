@@ -1,4 +1,8 @@
-﻿namespace UDSH.Model
+﻿using System.Text.Json.Serialization;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+
+namespace UDSH.Model
 {
     public class FileSystem
     {
@@ -10,5 +14,14 @@
         public bool IsLastOpenedFile { get; set; }
         public DateTime FileCreationDate { get; set; }
         public DateTime FileLastModificationDate { get; set; }
+
+        [JsonIgnore]
+        public BitmapImage fileImageNormal { get; set; } // Image Icon - Normal(Not Selected Item)
+        
+        [JsonIgnore]
+        public BitmapImage fileImageSelected { get; set; } // Image Icon - Normal(Not Selected Item)
+
+        [JsonIgnore]
+        public UserControl userControl { get; set; }
     }
 }

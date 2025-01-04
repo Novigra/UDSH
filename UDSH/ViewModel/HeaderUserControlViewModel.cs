@@ -17,14 +17,6 @@ using UDSH.View;
 
 namespace UDSH.ViewModel
 {
-    public class FileStructure
-    {
-        public FileSystem file { get; set; } // File itself
-        public BitmapImage fileImageNormal { get; set; } // Image Icon - Normal(Not Selected Item)
-        public BitmapImage fileImageSelected { get; set; } // Image Icon - Normal(Not Selected Item)
-        public UserControl userControl { get; set; } // Associated UserControl
-    }
-
     public class HeaderUserControlViewModel : ViewModelBase
     {
         #region Properties
@@ -302,11 +294,11 @@ namespace UDSH.ViewModel
             set { mainWindow = value; }
         }
 
-        public ObservableCollection<FileStructure> OpenFiles { get; set; }
+        public ObservableCollection<FileSystem> OpenFiles { get; set; }
 
-        private FileStructure PrevSelectedFile;
-        private FileStructure selectedFile;
-        public FileStructure SelectedFile
+        private FileSystem PrevSelectedFile;
+        private FileSystem selectedFile;
+        public FileSystem SelectedFile
         {
             get => selectedFile;
             set
@@ -437,7 +429,7 @@ namespace UDSH.ViewModel
 
             CanPlayProjectAnimation = false;
 
-            OpenFiles = new ObservableCollection<FileStructure> { };
+            OpenFiles = new ObservableCollection<FileSystem> { };
             _headerServices.UserDataServices.AddNewFile += UserDataServices_AddNewFile;
 
             IsRightScrollButtonActive = false;
@@ -451,18 +443,12 @@ namespace UDSH.ViewModel
 
         private void TestScroll()
         {
-            
-            FileSystem File = new FileSystem()
-            {
-                FileName = "First Act"
-            };
-
             for(int i = 0; i < 30; ++i)
             {
                 MKUserControl userControl = new MKUserControl(new MKUserControlViewModel(_headerServices.Services.GetRequiredService<IWorkspaceServices>()));
-                FileStructure structure = new FileStructure()
+                FileSystem structure = new FileSystem()
                 {
-                    file = File,
+                    FileName = "First Act",
                     fileImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKM.png")),
                     fileImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKMSelected.png")),
                     userControl = userControl
@@ -475,30 +461,35 @@ namespace UDSH.ViewModel
 
         private void UserDataServices_AddNewFile(object? sender, Model.FileSystem e)
         {
-            UserControl currentUserControl = new DefaultUserControl(_headerServices.UserDataServices);
-            BitmapImage currentImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/Placeholder.png"));
-            BitmapImage currentImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/Placeholder.png"));
-            switch (e.FileType)
+            var file = OpenFiles.FirstOrDefault(f => f.FileName == e.FileName);
+
+            if(file != null)
             {
-                case "mkm":
-                    currentUserControl = new MKUserControl(new MKUserControlViewModel(_headerServices.Services.GetRequiredService<IWorkspaceServices>()));
-                    currentImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKM.png"));
-                    currentImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKMSelected.png"));
-                    break;
-                default:
-                    break;
+                SelectedFile = file;
             }
-
-            FileStructure structure = new FileStructure()
+            else
             {
-                file = e,
-                fileImageNormal = currentImageNormal,
-                fileImageSelected = currentImageSelected,
-                userControl = currentUserControl
-            };
+                if (e.userControl == null)
+                {
+                    e.userControl = new DefaultUserControl(_headerServices.UserDataServices);
+                    e.fileImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/Placeholder.png"));
+                    e.fileImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/Placeholder.png"));
 
-            OpenFiles.Add(structure);
-            SelectedFile = structure;
+                    switch (e.FileType)
+                    {
+                        case "mkm":
+                            e.userControl = new MKUserControl(new MKUserControlViewModel(_headerServices.Services.GetRequiredService<IWorkspaceServices>()));
+                            e.fileImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKM.png"));
+                            e.fileImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKMSelected.png"));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                OpenFiles.Add(e);
+                SelectedFile = e;
+            }
 
             _headerServices.OnFileSelectionChanged(SelectedFile);
         }
@@ -766,7 +757,7 @@ namespace UDSH.ViewModel
 
         private void CloseFile(ListViewItem LVItem)
         {
-            FileStructure? file = LVItem.DataContext as FileStructure;
+            FileSystem? file = LVItem.DataContext as FileSystem;
             if (file != null)
             {
                 
