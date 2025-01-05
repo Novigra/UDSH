@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -46,11 +48,48 @@ namespace UDSH.ViewModel
             set { textBlockTarget = value; OnPropertyChanged(); }
         }
 
+        private Stack<ObservableCollection<string>> PrevStack;
+        private Stack<string> CurrentDirectoriesStack;
+        private ObservableCollection<string> PrevDirectories;
+        private ObservableCollection<string> directories;
+        public ObservableCollection<string> Directories
+        {
+            get { return directories; }
+            set { directories = value; OnPropertyChanged(); }
+        }
+
+        private string selectedDirectory;
+        public string SelectedDirectory
+        {
+            get { return selectedDirectory; }
+            set { selectedDirectory = value; OnPropertyChanged(); }
+        }
+
         private NewFileNameGenerator newFileNameGenerator;
         private string Text;
 
         public Window CurrentWindow { get; set; }
         public Grid? GridTarget { get; set; }
+
+        private Project CurrentProject;
+        string[] ProjectDirectories;
+
+        private string displayDest;
+        public string DisplayDest
+        {
+            get { return displayDest; }
+            set { displayDest = value; OnPropertyChanged(); }
+        }
+
+        private string inputDest;
+        public string InputDest
+        {
+            get { return inputDest; }
+            set { inputDest = value; OnPropertyChanged(); }
+        }
+
+        string CurrentSelectedItem;
+        private string FinalDest;
 
         public RelayCommand<Button> CloseWindow => new RelayCommand<Button>(execute => CloseNewFileProcessWindow());
         public RelayCommand<Grid> LoadedGrid => new RelayCommand<Grid>(OnGridLoaded);
@@ -58,6 +97,9 @@ namespace UDSH.ViewModel
         public RelayCommand<string> SelectDataType => new RelayCommand<string>(SelectData);
         public RelayCommand<Button> NewFileCreation => new RelayCommand<Button>(execute => CreateNewFile(), canExecute => CanCreateFile);
         public RelayCommand<Button> FileNameChanged => new RelayCommand<Button>(execute => UpdateCreationStatus());
+
+        public RelayCommand<Button> NextPage => new RelayCommand<Button>(execute => EnterNextPage());
+        public RelayCommand<Button> PrevPage => new RelayCommand<Button>(execute => GoPrevPage());
 
         public NewFileCreationWindowViewModel(IUserDataServices userDataServices)
         {
@@ -68,6 +110,33 @@ namespace UDSH.ViewModel
 
             newFileNameGenerator = new NewFileNameGenerator();
             Text = newFileNameGenerator.Generate(Language.English, MediaType.Music);
+
+            PrevStack = new Stack<ObservableCollection<string>>();
+            CurrentDirectoriesStack = new Stack<string>();
+
+            PrevDirectories = new ObservableCollection<string>();
+            Directories = new ObservableCollection<string>();
+            InputDest = string.Empty;
+
+            CurrentProject = _userDataServices.ActiveProject;
+            DisplayDest = CurrentProject.ProjectName + '/';
+            FinalDest = CurrentProject.ProjectDirectory + '\\';
+            ProjectDirectories = Directory.GetDirectories(CurrentProject.ProjectDirectory);
+            InitializeDirectories();
+
+            // TODO: Change Files Opacity. Use Converter for display text and enter a fixed text for the input text
+        }
+
+        private void InitializeDirectories()
+        {
+            foreach (var directory in ProjectDirectories)
+            {
+                string[] TextSplit = directory.Split('\\');
+                int StartIndex = Array.IndexOf(TextSplit, CurrentProject.ProjectName);
+                Directories.Add(TextSplit[StartIndex+1]);
+            }
+
+            Directories = new ObservableCollection<string>(Directories.OrderBy(name => name, StringComparer.Ordinal));
         }
 
         private void OnGridLoaded(Grid grid)
@@ -171,6 +240,61 @@ namespace UDSH.ViewModel
                 CanCreateFile = false;
             else
                 CanCreateFile = true;
+        }
+
+        private void EnterNextPage()
+        {
+            PrevDirectories = new ObservableCollection<string>(Directories);
+            PrevStack.Push(PrevDirectories);
+
+            CurrentSelectedItem = SelectedDirectory;
+            CurrentDirectoriesStack.Push(CurrentSelectedItem);
+
+            FinalDest += CurrentSelectedItem + '\\';
+            DisplayDest += CurrentSelectedItem + '/';
+            string[] CurrentDirectories = Array.Empty<string>();
+
+            foreach (var directory in ProjectDirectories)
+            {
+                if(directory.Contains(CurrentSelectedItem))
+                {
+                    CurrentDirectories = Directory.GetDirectories(directory);
+                }
+            }
+
+            Directories.Clear();
+            foreach (var directory in CurrentDirectories)
+            {
+                string[] TextSplit = directory.Split('\\');
+                int StartIndex = Array.IndexOf(TextSplit, CurrentSelectedItem);
+                Directories.Add(TextSplit[StartIndex + 1]);
+            }
+
+            Directories = new ObservableCollection<string>(Directories.OrderBy(name => name, StringComparer.Ordinal));
+        }
+
+        private void GoPrevPage()
+        {
+            if (CurrentDirectoriesStack.Count > 0)
+            {
+                string RemovedDir = CurrentDirectoriesStack.Pop();
+                int RemoveIndex = FinalDest.IndexOf(RemovedDir);
+                if (RemoveIndex != -1)
+                    FinalDest = FinalDest.Substring(0, RemoveIndex);
+
+                RemoveIndex = DisplayDest.IndexOf(RemovedDir);
+                if (RemoveIndex != -1)
+                    DisplayDest = DisplayDest.Substring(0, RemoveIndex);
+            }
+
+            if (PrevStack.Count > 0)
+                Directories = PrevStack.Pop();
+
+            /*Directories.Clear();
+            foreach (var directory in PrevDirectories)
+            {
+                Directories.Add(directory);
+            }*/
         }
     }
 }

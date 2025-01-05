@@ -43,6 +43,8 @@
     <None Remove="Resource\CurrentFiles.png" />
     <None Remove="Resource\Data\NewFileHighlightedTitle.json" />
     <None Remove="Resource\DeleteFile.png" />
+    <None Remove="Resource\DirectoryFolderHighlight.png" />
+    <None Remove="Resource\DirectoryFolderNormal.png" />
     <None Remove="Resource\Dropdown.png" />
     <None Remove="Resource\Egyptflag.png" />
     <None Remove="Resource\emojitest.png" />
@@ -59,6 +61,7 @@
     <None Remove="Resource\HorusEyeBlack.png" />
     <None Remove="Resource\HorusEyeOrange.png" />
     <None Remove="Resource\LeftArrow.png" />
+    <None Remove="Resource\LeftArrowGray.png" />
     <None Remove="Resource\Localization.png" />
     <None Remove="Resource\Log.png" />
     <None Remove="Resource\Logo.png" />
@@ -69,6 +72,7 @@
     <None Remove="Resource\MKC_Large.png" />
     <None Remove="Resource\MKM_Large.png" />
     <None Remove="Resource\More Details.png" />
+    <None Remove="Resource\MoveControlNormal.png" />
     <None Remove="Resource\NewFile.png" />
     <None Remove="Resource\Normal.png" />
     <None Remove="Resource\Olive.png" />
@@ -112,6 +116,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resource\DirectoryFolderHighlight.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Fonts\Lora\Lora-Bold.ttf" />
     <Resource Include="Fonts\Lora\Lora-BoldItalic.ttf" />
     <Resource Include="Fonts\Lora\Lora-Italic.ttf" />
@@ -139,6 +147,7 @@
     <Resource Include="Resource\BackgroundIcon.png" />
     <Resource Include="Resource\Bird.png" />
     <Resource Include="Resource\BN_Large.png" />
+    <Resource Include="Resource\DirectoryFolderNormal.png" />
     <Resource Include="Resource\Egyptflag.png" />
     <Resource Include="Resource\emojitest.png" />
     <Resource Include="Resource\FlagTest.png" />
@@ -154,12 +163,14 @@
     <Resource Include="Resource\HorusEyeBlack.png" />
     <Resource Include="Resource\HorusEyeOrange.png" />
     <Resource Include="Resource\LeftArrow.png" />
+    <Resource Include="Resource\LeftArrowGray.png" />
     <Resource Include="Resource\Localization.png" />
     <Resource Include="Resource\LogoLarge.png" />
     <Resource Include="Resource\Man.png" />
     <Resource Include="Resource\MKC_Large.png" />
     <Resource Include="Resource\MKM_Large.png" />
     <Resource Include="Resource\More Details.png" />
+    <Resource Include="Resource\MoveControlNormal.png" />
     <Resource Include="Resource\Olive.png" />
     <Resource Include="Resource\OpenFileMKB.png" />
     <Resource Include="Resource\OpenFileMKBSelected.png" />
