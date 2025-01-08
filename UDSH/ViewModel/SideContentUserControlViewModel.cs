@@ -42,6 +42,7 @@ namespace UDSH.ViewModel
         #region Side Content Properties
         private readonly IUserDataServices _userDataServices;
         public ObservableCollection<Node> Root {  get; set; }
+        public ObservableCollection<Node> RootSearch { get; set; }
 
         private double CurrentAnimationNumber = 0.0f;
         private double ShowOpacityTarget = 0.55f;
@@ -135,6 +136,7 @@ namespace UDSH.ViewModel
         private Dictionary<int, List<Structure>> structureDic = new Dictionary<int, List<Structure>>();
 
         private Node root;
+        private Node SearchRoot;
         private Node SelectedNode;
         #endregion
 
@@ -165,6 +167,7 @@ namespace UDSH.ViewModel
             Project project = _userDataServices.ActiveProject;
 
             Root = new ObservableCollection<Node>();
+            RootSearch = new ObservableCollection<Node>();
 
             if (project != null)
                 BuildStructure();
@@ -291,13 +294,15 @@ namespace UDSH.ViewModel
                 }
             }
 
-            // Sorting
+            // Sorting and adding to the Root TreeView
             SortNodes(root);
-
             foreach (var subNodes  in root.SubNodes)
             {
                 Root.Add(subNodes);
             }
+
+            // Building the Root Search TreeView 
+            BuildSearchTree(root);
         }
 
         private void SortNodes(Node root)
@@ -307,6 +312,17 @@ namespace UDSH.ViewModel
             foreach (var subNode in root.SubNodes)
             {
                 SortNodes(subNode);
+            }
+        }
+
+        private void BuildSearchTree(Node root)
+        {
+            if (root.NodeType == DataType.File)
+                RootSearch.Add(root);
+
+            foreach(var subNode in root.SubNodes)
+            {
+                BuildSearchTree(subNode);
             }
         }
 
@@ -498,12 +514,33 @@ namespace UDSH.ViewModel
         /// Update Search Text when typing.
         /// </summary>
         /// <param name="textBox"></param>
-        private void OnSearchBoxTextChanged(TextBox textBox)
+        private async void OnSearchBoxTextChanged(TextBox textBox)
         {
             if(textBox != null)
             {
                 SearchText = textBox.Text;
+                
+                // UI is lagging, so only calculate text when stopping typing
+                await Task.Delay(500);
+
+                List<Node> nodes = new List<Node>(RootSearch);
+                //nodes = nodes.OrderBy(node => SearchCalculations(node)).ToList();
+                nodes = nodes.OrderBy(node => IsMatch(node, SearchText) ? 0 : 1).ThenBy(node => SearchCalculations(node)).ToList();
+
+                RootSearch.Clear();
+                foreach (Node node in nodes)
+                {
+                    RootSearch.Add(node);
+                }
             }
+        }
+
+        private bool IsMatch(Node node, string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return true;
+
+            return node.Name.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         /// <summary>
@@ -554,6 +591,35 @@ namespace UDSH.ViewModel
             {
                 _userDataServices.AddFileToHeader(SelectedNode.NodeFile);
             }
+        }
+
+        private int SearchCalculations(Node node)
+        {
+            int SearchLength = SearchText.Length;
+            int NodesLength = node.Name.Length;
+            var Matrix = new int[SearchLength + 1, NodesLength + 1];
+
+            if (NodesLength == 0)
+                return SearchLength;
+            else if (SearchLength == 0)
+                return NodesLength;
+
+            for (int i = 0; i <= SearchLength; ++i)
+                Matrix[i, 0] = i;
+            for (int j = 0; j <= NodesLength; ++j)
+                Matrix[0, j] = j;
+
+            for (int i = 1; i <= SearchLength; ++i)
+            {
+                for (int j = 1; j <= NodesLength; ++j)
+                {
+                    //int cost = (SearchText[i - 1] == node.Name[j - 1]) ? 0 : 1;
+                    int cost = (string.Compare(SearchText[i - 1].ToString(), node.Name[j - 1].ToString(), StringComparison.OrdinalIgnoreCase) == 0) ? 0 : 1;
+                    Matrix[i, j] = Math.Min(Math.Min(Matrix[i - 1, j] + 1, Matrix[i, j - 1] + 1), Matrix[i - 1, j - 1] + cost);
+                }
+            }
+
+            return Matrix[SearchLength, NodesLength];
         }
     }
 }

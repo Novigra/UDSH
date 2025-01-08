@@ -65,9 +65,9 @@ namespace UDSH.Services
                 AddNewProjectTitle?.Invoke(this, NewProjectName);
         }
 
-        public async Task CreateNewFileAsync(string NewFileName, string FileType)
+        public async Task CreateNewFileAsync(string NewFileName, string FileType, string ProjectDirectory)
         {
-            await Task.Run(() => session.CreateNewFile(NewFileName, FileType));
+            await Task.Run(() => session.CreateNewFile(NewFileName, FileType, ProjectDirectory));
 
             if (CurrentFile != null)
             {

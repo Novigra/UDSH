@@ -6,8 +6,9 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UDSH.View"
+        xmlns:MVVM="clr-namespace:UDSH.MVVM"
         mc:Ignorable="d"
-        Title="NewFileCreationWindow" Height="550" Width="1000" WindowStyle="None" Background="Transparent" AllowsTransparency="True" WindowStartupLocation="CenterOwner">
+        Title="NewFileCreationWindow" Height="550" Width="1000" WindowStyle="None" Background="Transparent" AllowsTransparency="True" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
 
     <!-- Using border corners doesn't work, so I had to use Clipping -->
     <Window.Clip>
@@ -37,6 +38,34 @@
             <RowDefinition Height=".8*"/>
             <RowDefinition Height=".2*"/>
         </Grid.RowDefinitions>
+
+        <Grid Grid.RowSpan="4" Background="#00151515" Panel.ZIndex="1">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CanShowDirectory}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                        To="#4C151515" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                        To="#00151515" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
 
         <!-- Background -->
         <Rectangle Grid.RowSpan="4" Fill="{StaticResource NewFileProcessBackgroundSCB}"/>
@@ -140,9 +169,10 @@
                 </Style>
             </Grid.Style>
         </Grid>
-        
 
-        <Grid Grid.Row="1" Margin="0,-13,0,13"> <!-- Don't forget to put row back to 1 -->
+
+        <Grid Grid.Row="1" Margin="0,-13,0,13">
+            <!-- Don't forget to put row back to 1 -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="Name" FontSize="40" Style="{StaticResource DefaultText}"/>
                 <Border HorizontalAlignment="Stretch" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
@@ -155,7 +185,8 @@
                             <TextBlock x:Name="HighlightText" Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="20" FontWeight="SemiBold" Focusable="False">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/> <!-- Should be collapsed!!! -->
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <!-- Should be collapsed!!! -->
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding NewFileName}" Value="">
                                                 <Setter Property="Visibility" Value="Visible"/>
@@ -280,7 +311,7 @@
                     <TextBlock Grid.Row="0" Text="Classic Script Format" Style="{StaticResource DefaultText}" HorizontalAlignment="Center"/>
                     <Image Grid.Row="1" Source="/Resource/MKC_Large.png" Margin="10,5,10,10"/>
                     <TextBlock Grid.Row="2" Text="A Linear Story Formatted Like A Screenplay." Style="{StaticResource DefaultText}" Margin="20,0,20,0" TextAlignment="Center" TextWrapping="Wrap" HorizontalAlignment="Center"/>
-                    
+
                     <!-- Shortcut layout -->
                     <Border Grid.Row="3" Panel.ZIndex="2" CornerRadius="15" Margin="0,20,0,0" Background="#A4A4A4">
                         <Grid>
@@ -334,7 +365,7 @@
                                 <TranslateTransform X="0" Y="0"/>
                             </Setter.Value>
                         </Setter>
-                        
+
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding CurrentDatatype}" Value="{StaticResource CSFDataType}">
                                 <DataTrigger.EnterActions>
@@ -600,13 +631,42 @@
                 </Style>
             </Grid.Resources>
         </Grid>
-        
+
         <!-- Folder Directory -->
+        <Image Panel.ZIndex="2" x:Name="FolderHighlight" Source="/Resource/DirectoryFolderOpen.png" Width="42" Height="42" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,5,0,0" Opacity="0" IsHitTestVisible="False">
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CanShowDirectory}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1.0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
         <Grid Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,5,0,0">
-            <Button Width="40" Height="40" Click="Button_Click">
-                <Popup x:Name="DirectoryPopup" VerticalOffset="30" HorizontalOffset="-30" StaysOpen="False" AllowsTransparency="True" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Button}}" PopupAnimation="Fade">
-                    <!-- {StaticResource NewFileProcessBackgroundSCB}-->
-                    <Border Background="{StaticResource NewFileProcessBackgroundSCB}" Width="600" Height="400" CornerRadius="15">
+            <Button Width="40" Height="40" Command="{Binding OpenDirectoryButton}">
+                <Popup x:Name="DirectoryPopup" VerticalOffset="-400" HorizontalOffset="100" StaysOpen="True" IsOpen="{Binding CanShowDirectory}" AllowsTransparency="True" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Button}}" PopupAnimation="Fade">
+                    <Border Background="{StaticResource NewFileProcessBackgroundSCB}" Width="700" Height="330" CornerRadius="15" RenderTransformOrigin="0.5,0.5">
+                        <Border.RenderTransform>
+                            <TranslateTransform x:Name="DirectoryBorderTranslate" X="0.0" Y="0.0"/>
+                        </Border.RenderTransform>
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="50"/>
@@ -615,16 +675,45 @@
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0">
                                 <Image Source="/Resource/HorusEyeBlack.png" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
-                                <Border Background="#CBCBCB" Width="40" Height="40" CornerRadius="5" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0">
-                                    <Image Source="/Resource/MoveControlNormal.png" Margin="5"/>
+                                <!--
+                                <Border x:Name="CaptureBorder" MouseLeftButtonDown="Border_MouseLeftButtonDown" MouseMove="CaptureBorder_MouseMove" MouseLeftButtonUp="Border_MouseLeftButtonUp" Background="#CBCBCB" Width="40" Height="40" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" CornerRadius="5" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0">
+                                    <Grid>
+                                        <Image Source="/Resource/MoveControlNormal.png" Margin="5"/>
+                                        <Image x:Name="MoveImage" Source="/Resource/MoveControlHover.png" Margin="5" Opacity="0"/>
+                                    </Grid>
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Trigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                                To="#393E46" Duration="0:0:0.2"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.EnterActions>
+                                                    <Trigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                                To="#CBCBCB" Duration="0:0:0.2"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.ExitActions>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
                                 </Border>
+                                -->
                             </Grid>
 
-                            <Border Grid.Row="1" Background="#A5A5A5" BorderThickness="5" BorderBrush="#A5A5A5" CornerRadius="15" Width="500" HorizontalAlignment="Center">
+                            <Border Grid.Row="1" Background="#A5A5A5" BorderThickness="5" BorderBrush="#A5A5A5" CornerRadius="15" Width="600" HorizontalAlignment="Center">
                                 <Grid>
-                                    <TextBlock Text="Project Directory" Style="{StaticResource DefaultText}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0"/>
+                                    <TextBlock Text="Project Directory" Style="{StaticResource DefaultText}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,8,0,0"/>
                                     <StackPanel Orientation="Vertical">
-                                        <Button Width="50" Height="50" HorizontalAlignment="Left" Command="{Binding PrevPage}">
+                                        <Button Width="50" Height="50" HorizontalAlignment="Left" Command="{Binding PrevPage}" PreviewMouseLeftButtonDown="SetModalWindowActivation">
                                             <Button.Style>
                                                 <Style TargetType="Button">
                                                     <Setter Property="Background" Value="#5E5E5E"/>
@@ -668,8 +757,8 @@
                                                 </Style>
                                             </Button.Style>
                                         </Button>
-                                        <ListView Style="{StaticResource NewFileDirectoryLayout}" ItemContainerStyle="{StaticResource NewFileDirectoryListItem}" Height="200" SelectionMode="Single"
-                                                  ItemsSource="{Binding Directories}" SelectedItem="{Binding SelectedDirectory}">
+                                        <ListView Style="{StaticResource NewFileDirectoryLayout}" ItemContainerStyle="{StaticResource NewFileDirectoryListItem}" Height="130" SelectionMode="Single"
+                                                  ItemsSource="{Binding Directories}" SelectedItem="{Binding SelectedDirectory}" PreviewMouseLeftButtonDown="SetModalWindowActivation">
                                             <i:Interaction.Triggers>
                                                 <i:EventTrigger EventName="MouseDoubleClick">
                                                     <i:InvokeCommandAction Command="{Binding NextPage}"/>
@@ -680,33 +769,225 @@
                                 </Grid>
                             </Border>
 
-                            <Grid Grid.Row="2">
-                                <Border Background="#FFFFFF" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="400" Height="40" Margin="10,0,0,0">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="/Resource/DirectoryFolderNormal.png" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0,0,0" IsHitTestVisible="False"/>
-                                        <Rectangle Fill="#A5A5A5" VerticalAlignment="Center" Width="3" Height="30" RadiusX="2" RadiusY="2" Margin="7,0,0,0"/>
-                                        <TextBlock Style="{StaticResource DefaultText}" Text="{Binding DisplayDest}" FontSize="18" VerticalAlignment="Center" Margin="7,0,0,0"/>
-                                        <Border Background="#393E46" VerticalAlignment="Center" CornerRadius="5">
+                            <Grid Grid.Row="2" VerticalAlignment="Top" Margin="0,15,0,0">
+                                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Border Background="#FFFFFF" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="500" Height="40" Margin="10,0,0,0">
                                             <Grid>
-                                                <TextBlock Background="Transparent" Text="Add New Directory(ies)" FontWeight="DemiBold" FontSize="18" Foreground="#DBAD2F" MinWidth="10">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding InputDest}" Value="">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
+                                                <Popup Panel.ZIndex="2" x:Name="DirectoryMessageWarning" VerticalOffset="10" HorizontalOffset="0" StaysOpen="True" IsOpen="{Binding CanShowWarningMessage}" AllowsTransparency="True" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Border}}" PopupAnimation="Fade">
+                                                    <Grid RenderTransformOrigin="0.5,0.5">
+                                                        <Border Width="{Binding ElementName=WarningMessage, Path=ActualWidth}" Height="30" Background="#FF4242" CornerRadius="5">
+                                                            <TextBlock x:Name="WarningMessage" Style="{StaticResource DefaultText}" FontSize="15" Foreground="#FFFFFF" Margin="5,5,0,0"/>
+                                                        </Border>
+                                                        <Path Fill="#FF4242" StrokeThickness="0">
+                                                            <Path.Data>
+                                                                <PathGeometry>
+                                                                    <PathFigure StartPoint="40,40">
+                                                                        <LineSegment Point="40,50"/>
+                                                                        <LineSegment Point="50,40"/>
+                                                                        <LineSegment Point="40,40"/>
+                                                                    </PathFigure>
+                                                                </PathGeometry>
+                                                            </Path.Data>
+                                                        </Path>
+                                                    </Grid>
+                                                </Popup>
+                                                <Button Panel.ZIndex="1" HorizontalAlignment="Left" Width="40" IsEnabled="{Binding IsLeftScrollButtonActive}" Command="{Binding ScrollLeft}" CommandParameter="{Binding ElementName=DirectoryNameScrollViewer}">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="{x:Type Button}">
+                                                                        <Border CornerRadius="7,0,0,7">
+                                                                            <Border.Background>
+                                                                                <LinearGradientBrush StartPoint="0.0,0.5" EndPoint="1,0.5">
+                                                                                    <GradientStop Color="#A5A5A5"/>
+                                                                                    <GradientStop Color="#33A5A5A5" Offset="1"/>
+                                                                                </LinearGradientBrush>
+                                                                            </Border.Background>
+
+                                                                            <Image x:Name="LeftArrow" Source="/Resource/LeftArrow.png" Margin="5" RenderTransformOrigin="0.5,0.5">
+                                                                                <Image.RenderTransform>
+                                                                                    <TranslateTransform X="0" Y="0"/>
+                                                                                </Image.RenderTransform>
+                                                                            </Image>
+
+                                                                            <VisualStateManager.VisualStateGroups>
+                                                                                <VisualStateGroup x:Name="CommonStates">
+                                                                                    <VisualState x:Name="Normal">
+                                                                                        <Storyboard>
+                                                                                            <DoubleAnimation Storyboard.TargetName="LeftArrow" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="0.0" Duration="0:0:0.2"/>
+                                                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1.0" Duration="0:0:0.2"/>
+                                                                                        </Storyboard>
+                                                                                    </VisualState>
+                                                                                    <VisualState x:Name="MouseOver">
+                                                                                        <Storyboard>
+                                                                                            <DoubleAnimation Storyboard.TargetName="LeftArrow" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="-3.0" Duration="0:0:0.2"/>
+                                                                                        </Storyboard>
+                                                                                    </VisualState>
+                                                                                    <VisualState x:Name="Pressed">
+                                                                                        <Storyboard>
+                                                                                            <DoubleAnimation Storyboard.TargetName="LeftArrow" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="-3.0" Duration="0:0:0.2"/>
+                                                                                        </Storyboard>
+                                                                                    </VisualState>
+                                                                                    <VisualState x:Name="Disabled">
+                                                                                        <Storyboard>
+                                                                                            <DoubleAnimation Storyboard.TargetName="LeftArrow" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="0.0" Duration="0:0:0.2"/>
+                                                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:0.2"/>
+                                                                                        </Storyboard>
+                                                                                    </VisualState>
+                                                                                </VisualStateGroup>
+                                                                            </VisualStateManager.VisualStateGroups>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
                                                         </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                                <TextBox Background="Transparent" BorderThickness="0" Text="{Binding InputDest, UpdateSourceTrigger=PropertyChanged}" FontWeight="DemiBold" FontSize="18" Foreground="#DBAD2F" MinWidth="10"/>
+                                                    </Button.Style>
+                                                </Button>
+                                                <Button Panel.ZIndex="1" HorizontalAlignment="Right" Width="40" IsEnabled="{Binding IsRightScrollButtonActive}" Command="{Binding ScrollRight}" CommandParameter="{Binding ElementName=DirectoryNameScrollViewer}">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="{x:Type Button}">
+                                                                        <Border CornerRadius="0,7,7,0">
+                                                                            <Border.Background>
+                                                                                <LinearGradientBrush StartPoint="1.0,0.5" EndPoint="0.0,0.5">
+                                                                                    <GradientStop Color="#A5A5A5"/>
+                                                                                    <GradientStop Color="#33A5A5A5" Offset="1"/>
+                                                                                </LinearGradientBrush>
+                                                                            </Border.Background>
+
+                                                                            <Image x:Name="RightArrow" Source="/Resource/RightArrow.png" Margin="5" RenderTransformOrigin="0.5,0.5">
+                                                                                <Image.RenderTransform>
+                                                                                    <TranslateTransform X="0" Y="0"/>
+                                                                                </Image.RenderTransform>
+                                                                            </Image>
+
+                                                                            <VisualStateManager.VisualStateGroups>
+                                                                                <VisualStateGroup x:Name="CommonStates">
+                                                                                    <VisualState x:Name="Normal">
+                                                                                        <Storyboard>
+                                                                                            <DoubleAnimation Storyboard.TargetName="RightArrow" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="0.0" Duration="0:0:0.2"/>
+                                                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1.0" Duration="0:0:0.2"/>
+                                                                                        </Storyboard>
+                                                                                    </VisualState>
+                                                                                    <VisualState x:Name="MouseOver">
+                                                                                        <Storyboard>
+                                                                                            <DoubleAnimation Storyboard.TargetName="RightArrow" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="3.0" Duration="0:0:0.2"/>
+                                                                                        </Storyboard>
+                                                                                    </VisualState>
+                                                                                    <VisualState x:Name="Pressed">
+                                                                                        <Storyboard>
+                                                                                            <DoubleAnimation Storyboard.TargetName="RightArrow" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="3.0" Duration="0:0:0.2"/>
+                                                                                        </Storyboard>
+                                                                                    </VisualState>
+                                                                                    <VisualState x:Name="Disabled">
+                                                                                        <Storyboard>
+                                                                                            <DoubleAnimation Storyboard.TargetName="RightArrow" Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" To="0.0" Duration="0:0:0.2"/>
+                                                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:0.2"/>
+                                                                                        </Storyboard>
+                                                                                    </VisualState>
+                                                                                </VisualStateGroup>
+                                                                            </VisualStateManager.VisualStateGroups>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                                <MVVM:CustomScrollViewer x:Name="DirectoryNameScrollViewer" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Image Source="/Resource/DirectoryFolderNormal.png" Width="30" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="8,0,0,0" IsHitTestVisible="False"/>
+                                                        <Rectangle Fill="#A5A5A5" VerticalAlignment="Center" Width="3" Height="30" RadiusX="2" RadiusY="2" Margin="7,0,0,0"/>
+                                                        <TextBlock Style="{StaticResource DefaultText}" Text="{Binding DisplayDest}" FontSize="18" VerticalAlignment="Center" Margin="7,0,0,0"/>
+                                                        <Border Background="#393E46" VerticalAlignment="Center" CornerRadius="5" Margin="0,0,20,0">
+                                                            <Grid>
+                                                                <TextBlock Background="Transparent" Text="Add New Directory(ies)" FontWeight="DemiBold" FontSize="18" Foreground="#DBAD2F" MinWidth="10">
+                                                                    <TextBlock.Style>
+                                                                        <Style TargetType="TextBlock">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding InputDest}" Value="">
+                                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBlock.Style>
+                                                                </TextBlock>
+                                                                <TextBox Background="Transparent" BorderThickness="0" Text="{Binding InputDest, UpdateSourceTrigger=PropertyChanged}" FontWeight="DemiBold" FontSize="18" Foreground="#DBAD2F" MinWidth="10" PreviewMouseLeftButtonDown="SetModalWindowActivation">
+                                                                    <i:Interaction.Triggers>
+                                                                        <i:EventTrigger EventName="TextChanged">
+                                                                            <i:InvokeCommandAction Command="{Binding DirectoryTextChanged}"/>
+                                                                        </i:EventTrigger>
+                                                                    </i:Interaction.Triggers>
+                                                                </TextBox>
+                                                            </Grid>
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="ScrollChanged">
+                                                            <i:InvokeCommandAction Command="{Binding DirectoryScrollChanged}" CommandParameter="{Binding ElementName=DirectoryNameScrollViewer}"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </MVVM:CustomScrollViewer>
                                             </Grid>
+
+
                                         </Border>
+
+                                        <Button Margin="10,0,0,0" Height="38" Width="120" Command="{Binding ConfirmButton}" IsEnabled="{Binding IsDirectoryButtonButtonActive}" PreviewMouseLeftButtonDown="SetModalWindowActivation">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Background" Value="#FFFFFF"/>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                                <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                                                                    <TextBlock Style="{StaticResource DefaultText}" Text="Confirm" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                                                                    <VisualStateManager.VisualStateGroups>
+                                                                        <VisualStateGroup x:Name="CommonStates">
+                                                                            <VisualState x:Name="Normal">
+                                                                                <Storyboard>
+                                                                                    <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="#FFFFFF" Duration="0:0:0.2"/>
+                                                                                </Storyboard>
+                                                                            </VisualState>
+                                                                            <VisualState x:Name="MouseOver">
+                                                                                <Storyboard>
+                                                                                    <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="{StaticResource MainHoveredControlButtonColor}" Duration="0:0:0.2"/>
+                                                                                </Storyboard>
+                                                                            </VisualState>
+                                                                            <VisualState x:Name="Pressed">
+                                                                                <Storyboard>
+                                                                                    <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="{StaticResource MainPressedButtonColor}" Duration="0:0:0.2"/>
+                                                                                </Storyboard>
+                                                                            </VisualState>
+                                                                            <VisualState x:Name="Disabled">
+                                                                                <Storyboard>
+                                                                                    <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="#A5A5A5" Duration="0:0:0.2"/>
+                                                                                </Storyboard>
+                                                                            </VisualState>
+                                                                        </VisualStateGroup>
+                                                                    </VisualStateManager.VisualStateGroups>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
                                     </StackPanel>
-                                </Border>
+
+                                    <TextBlock HorizontalAlignment="Center" Style="{StaticResource DefaultText}" Text="Use “/” To Add Multiple Directories Or Right-Click Inside Project Directory" Foreground="#6A6A6A" FontSize="12" Margin="0,5,0,0"/>
+                                </StackPanel>
+
+
                             </Grid>
-                            
+
                             <!--
                             <Border Background="#FFFFFF" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="400" Height="40" Margin="10,0,0,0">
                                 <StackPanel Orientation="Horizontal">
@@ -717,11 +998,20 @@
                                     </ComboBox>
                                 </StackPanel>
                             </Border>
-                            -->                        
+                            -->
                         </Grid>
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseEnter">
+                                <i:InvokeCommandAction Command="{Binding MouseEnterDirectoryBorder}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeave">
+                                <i:InvokeCommandAction Command="{Binding MouseLeaveDirectoryBorder}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </Border>
                 </Popup>
-                
+
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="Background" Value="Transparent"/>
@@ -759,7 +1049,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-            
+
         </Grid>
 
         <i:Interaction.Triggers>

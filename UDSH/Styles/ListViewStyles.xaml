@@ -397,6 +397,111 @@
     </Style>
 
 
+    <!-- SideContentDirectoryListView -->
+    <Style TargetType="ListView" x:Key="SideContentDirectoryLayout">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListView">
+                    <Border Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True" Padding="4" CornerRadius="1">
+                        <MVVM:CustomScrollViewer x:Name="OpenFilesListScrollviewer"
+                                             HorizontalScrollBarVisibility="Auto" 
+                                             VerticalScrollBarVisibility="Auto"
+                                             PanningMode="Both" 
+                                             Padding="{TemplateBinding Padding}" 
+                                             BorderThickness="0"
+                                             Style="{StaticResource SideContentScrollViewer}">
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </MVVM:CustomScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ListViewItem" x:Key="SideContentDirectoryListItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border Height="40" BorderThickness="0" Margin="0,0,0,0" Width="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=25}" Background="{TemplateBinding Background}" CornerRadius="5">
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Image Source="{Binding NodeImage}" Width="33" Height="33" Margin="0,-3,0,3"/>
+                            <TextBlock Style="{StaticResource DefaultText}" Text="{Binding Name}" Margin="-10,0,0,0"/>
+                        </StackPanel>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="FolderName" Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)" To="#6A6A6A" Duration="0:0:0.2"/>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="#FFFFFF" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="FolderName" Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)" To="#6A6A6A" Duration="0:0:0.2"/>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="#BFBFBF" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="FolderName" Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)" To="#DBAD2F" Duration="0:0:0.2"/>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="#393E46" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+
+                    <!--
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Trigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="FolderName" Storyboard.TargetProperty="Opacity"
+                                             To="1.0"
+                                             Duration="0:0:0.1"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+
+                        <Trigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation Storyboard.TargetName="FolderName" Storyboard.TargetProperty="Opacity"
+                                             To="0.0"
+                                             Duration="0:0:0.1"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.ExitActions>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+                -->
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
 
     <!-- CSF - Content Layout -->
     <Style TargetType="ListView" x:Key="CSFContentLayout">

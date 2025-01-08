@@ -23,7 +23,7 @@ namespace UDSH.Services
 
         Task CreateNewProjectAsync(string NewProjectName, string ProjectVersion, bool IsSecured, string Password);
 
-        Task CreateNewFileAsync(string NewFileName, string FileType);
+        Task CreateNewFileAsync(string NewFileName, string FileType, string ProjectDirectory);
         void AddFileToHeader(FileSystem file);
     }
 }

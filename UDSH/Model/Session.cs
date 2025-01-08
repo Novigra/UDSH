@@ -138,14 +138,14 @@ namespace UDSH.Model
 
         }
 
-        public void CreateNewFile(string NewFileName, string FileType)
+        public void CreateNewFile(string NewFileName, string FileType, string ProjectDirectory)
         {
             CurrentFile = new FileSystem()
             {
                 FileName = NewFileName,
                 FileType = FileType,
                 FileAuthor = User.DisplayName,
-                FileDirectory = Path.Combine(CurrentProject.ProjectDirectory, NewFileName + "." + FileType),
+                FileDirectory = Path.Combine(ProjectDirectory, NewFileName + "." + FileType),
                 FileVersion = CurrentProject.ProjectVersion,
                 IsLastOpenedFile = true,
                 FileCreationDate = DateTime.Now,
@@ -159,6 +159,8 @@ namespace UDSH.Model
                 string JsonUpdate = JsonSerializer.Serialize(User, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(UserFileDirectory, JsonUpdate);
 
+                string[] directory = CurrentFile.FileDirectory.Split(NewFileName+"."+FileType);
+                Directory.CreateDirectory(directory[0]);
                 FileStream fileStream = File.Create(CurrentFile.FileDirectory);
                 fileStream.Close();
             }

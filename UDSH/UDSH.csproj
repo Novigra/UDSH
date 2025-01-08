@@ -45,6 +45,7 @@
     <None Remove="Resource\DeleteFile.png" />
     <None Remove="Resource\DirectoryFolderHighlight.png" />
     <None Remove="Resource\DirectoryFolderNormal.png" />
+    <None Remove="Resource\DirectoryFolderOpen.png" />
     <None Remove="Resource\Dropdown.png" />
     <None Remove="Resource\Egyptflag.png" />
     <None Remove="Resource\emojitest.png" />
@@ -72,6 +73,7 @@
     <None Remove="Resource\MKC_Large.png" />
     <None Remove="Resource\MKM_Large.png" />
     <None Remove="Resource\More Details.png" />
+    <None Remove="Resource\MoveControlHover.png" />
     <None Remove="Resource\MoveControlNormal.png" />
     <None Remove="Resource\NewFile.png" />
     <None Remove="Resource\Normal.png" />
@@ -148,6 +150,7 @@
     <Resource Include="Resource\Bird.png" />
     <Resource Include="Resource\BN_Large.png" />
     <Resource Include="Resource\DirectoryFolderNormal.png" />
+    <Resource Include="Resource\DirectoryFolderOpen.png" />
     <Resource Include="Resource\Egyptflag.png" />
     <Resource Include="Resource\emojitest.png" />
     <Resource Include="Resource\FlagTest.png" />
@@ -170,6 +173,7 @@
     <Resource Include="Resource\MKC_Large.png" />
     <Resource Include="Resource\MKM_Large.png" />
     <Resource Include="Resource\More Details.png" />
+    <Resource Include="Resource\MoveControlHover.png" />
     <Resource Include="Resource\MoveControlNormal.png" />
     <Resource Include="Resource\Olive.png" />
     <Resource Include="Resource\OpenFileMKB.png" />

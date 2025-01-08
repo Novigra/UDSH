@@ -15,7 +15,7 @@
     <UserControl.Resources>
         <Conv:HeightConverter x:Key="HeightConverter"/>
     </UserControl.Resources>
-    
+
     <Grid FocusManager.IsFocusScope="True">
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -169,7 +169,7 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                
+
                                 <!-- Search Text -->
                                 <TextBox x:Name="UserSearchBox" Background="{StaticResource MainBlankSCB}" FontSize="18" FontWeight="Bold" Width="{Binding TextBoxWidth}"
                                          Text="{Binding SearchText}" Panel.ZIndex="1" Focusable="{Binding CanSearchBoxTextBeFocusable}" BorderThickness="0" FocusVisualStyle="{x:Null}">
@@ -249,27 +249,53 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                    <TreeView x:Name="SideContentTreeView" ItemsSource="{Binding Root}" Margin="5,5,5,0"
-                              Height="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Converter={StaticResource HeightConverter}, ConverterParameter=110}">
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate DataType="{x:Type VM:Node}" ItemsSource="{Binding SubNodes}">
-                                <StackPanel Orientation="Horizontal" Margin="5">
-                                    <Image Source="{Binding NodeImage}" Width="33" Height="33" Margin="0,-3,0,3"/>
-                                    <TextBlock Style="{StaticResource DefaultText}" Text="{Binding Name}" Margin="-10,0,0,0"/>
-                                </StackPanel>
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
 
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectedItemChanged">
-                                <i:InvokeCommandAction Command="{Binding TreeViewSelectionChanged}" PassEventArgsToCommand="True"/>
-                            </i:EventTrigger>
+                    <Grid>
+                        <TreeView x:Name="SideContentTreeView" ItemsSource="{Binding Root}" Margin="5,5,5,0" Style="{StaticResource SideContentTreeView}"
+                                  Height="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Converter={StaticResource HeightConverter}, ConverterParameter=110}">
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type VM:Node}" ItemsSource="{Binding SubNodes}">
+                                    <StackPanel Orientation="Horizontal" Margin="5">
+                                        <Image Source="{Binding NodeImage}" Width="33" Height="33" Margin="0,-3,0,3"/>
+                                        <TextBlock Style="{StaticResource DefaultText}" Text="{Binding Name}" Margin="-10,0,0,0"/>
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
 
-                            <i:EventTrigger EventName="MouseDoubleClick">
-                                <i:InvokeCommandAction Command="{Binding TreeViewMouseDoubleClick}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </TreeView>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectedItemChanged">
+                                    <i:InvokeCommandAction Command="{Binding TreeViewSelectionChanged}" PassEventArgsToCommand="True"/>
+                                </i:EventTrigger>
+
+                                <i:EventTrigger EventName="MouseDoubleClick">
+                                    <i:InvokeCommandAction Command="{Binding TreeViewMouseDoubleClick}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TreeView>
+
+                        <!-- For Searchbar -->
+                        <TreeView x:Name="SideContentTreeViewFILES" ItemsSource="{Binding RootSearch}" Margin="5,5,5,0" Style="{StaticResource SideContentSearchTreeView}" ItemContainerStyle="{StaticResource SideContentSearchTreeViewItem}"
+                                  Height="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Converter={StaticResource HeightConverter}, ConverterParameter=110}">
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate DataType="{x:Type VM:Node}" ItemsSource="{Binding SubNodes}">
+                                    <StackPanel Orientation="Horizontal" Margin="5">
+                                        <Image Source="{Binding NodeImage}" Width="33" Height="33" Margin="0,-3,0,3"/>
+                                        <TextBlock Style="{StaticResource DefaultText}" Text="{Binding Name}" Margin="-10,0,0,0"/>
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectedItemChanged">
+                                    <i:InvokeCommandAction Command="{Binding TreeViewSelectionChanged}" PassEventArgsToCommand="True"/>
+                                </i:EventTrigger>
+
+                                <i:EventTrigger EventName="MouseDoubleClick">
+                                    <i:InvokeCommandAction Command="{Binding TreeViewMouseDoubleClick}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TreeView>
+                    </Grid>
                 </StackPanel>
             </Grid>
         </Expander>
@@ -281,7 +307,7 @@
 </UserControl>
 
 <!-- Collection of methods. don't discard them, may need them later -->
-    
+
 <!-- Key Action
     <i:Interaction.Triggers>
     <i:EventTrigger EventName="Keyboard.KeyDown">
@@ -289,13 +315,13 @@
     </i:EventTrigger>
     </i:Interaction.Triggers>
 -->
-    
+
 <!-- Key Action (Better approach). Need focus to be able to record the input from user.
     <Border.InputBindings>
     <KeyBinding Modifiers="Ctrl" Key="LeftCtrl" Command="{Binding BorderModificationControl}"/>
     </Border.InputBindings>
 -->
-    
+
 <!-- Old. Keep them though :)
     <Rectangle x:Name="EnableBorderCollision" Panel.ZIndex="0" Grid.RowSpan="3" Fill="Green" Focusable="True">
     <i:Interaction.Triggers>

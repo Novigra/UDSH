@@ -90,6 +90,54 @@ namespace UDSH.ViewModel
 
         string CurrentSelectedItem;
         private string FinalDest;
+        private string FinalProjectDirectory;
+
+        private bool isLeftScrollButtonActive;
+        public bool IsLeftScrollButtonActive
+        {
+            get { return isLeftScrollButtonActive; }
+            set { isLeftScrollButtonActive = value; OnPropertyChanged(); }
+        }
+
+        private bool isRightScrollButtonActive;
+        public bool IsRightScrollButtonActive
+        {
+            get { return isRightScrollButtonActive; }
+            set { isRightScrollButtonActive = value; OnPropertyChanged(); }
+        }
+
+        private bool isDirectoryButtonButtonActive;
+        public bool IsDirectoryButtonButtonActive
+        {
+            get { return isDirectoryButtonButtonActive; }
+            set { isDirectoryButtonButtonActive = value; OnPropertyChanged(); }
+        }
+
+        // we will check after each input so performance is crucial
+        private HashSet<char> InvalidCharacters = new HashSet<char>(@"\:*?""<>|");
+        private string InvalidDirectory = "//";
+        public TextBlock textBlock;
+
+        private bool canShowWarningMessage;
+        public bool CanShowWarningMessage
+        {
+            get { return canShowWarningMessage; }
+            set { canShowWarningMessage = value; OnPropertyChanged(); }
+        }
+
+        private bool canShowDirectory;
+        public bool CanShowDirectory
+        {
+            get { return canShowDirectory; }
+            set { canShowDirectory = value; OnPropertyChanged(); }
+        }
+
+        private bool directorystayOpen;
+        public bool DirectorystayOpen
+        {
+            get { return directorystayOpen; }
+            set { directorystayOpen = value; OnPropertyChanged(); }
+        }
 
         public RelayCommand<Button> CloseWindow => new RelayCommand<Button>(execute => CloseNewFileProcessWindow());
         public RelayCommand<Grid> LoadedGrid => new RelayCommand<Grid>(OnGridLoaded);
@@ -101,12 +149,25 @@ namespace UDSH.ViewModel
         public RelayCommand<Button> NextPage => new RelayCommand<Button>(execute => EnterNextPage());
         public RelayCommand<Button> PrevPage => new RelayCommand<Button>(execute => GoPrevPage());
 
+        public RelayCommand<CustomScrollViewer> ScrollRight => new RelayCommand<CustomScrollViewer>(ScrollDirectoryRight);
+        public RelayCommand<CustomScrollViewer> ScrollLeft => new RelayCommand<CustomScrollViewer>(ScrollDirectoryLeft);
+        public RelayCommand<CustomScrollViewer> DirectoryScrollChanged => new RelayCommand<CustomScrollViewer>(UpdateScrollVisuals);
+
+        public RelayCommand<object> DirectoryTextChanged => new RelayCommand<object>(execute => CheckTextInputStatus());
+
+        public RelayCommand<object> OpenDirectoryButton => new RelayCommand<object>(execute => OpenDirectory());
+        public RelayCommand<object> MouseEnterDirectoryBorder => new RelayCommand<object>(execute => ChangeDirectoryPopupStatus());
+        public RelayCommand<object> MouseLeaveDirectoryBorder => new RelayCommand<object>(execute => ChangeDirectoryPopupStatus());
+
+        public RelayCommand<object> ConfirmButton => new RelayCommand<object>(execute => UpdateFinalDirectory());
+
         public NewFileCreationWindowViewModel(IUserDataServices userDataServices)
         {
             _userDataServices = userDataServices;
             IsItemSelected = false;
             CanCreateFile = false;
             NewFileName = string.Empty;
+            FinalProjectDirectory = string.Empty;
 
             newFileNameGenerator = new NewFileNameGenerator();
             Text = newFileNameGenerator.Generate(Language.English, MediaType.Music);
@@ -124,6 +185,14 @@ namespace UDSH.ViewModel
             ProjectDirectories = Directory.GetDirectories(CurrentProject.ProjectDirectory);
             InitializeDirectories();
 
+            IsDirectoryButtonButtonActive = true;
+            CanShowWarningMessage = false;
+
+            IsLeftScrollButtonActive = false;
+            IsRightScrollButtonActive = false;
+
+            CanShowDirectory = false;
+            DirectorystayOpen = false;
             // TODO: Change Files Opacity. Use Converter for display text and enter a fixed text for the input text
         }
 
@@ -216,20 +285,20 @@ namespace UDSH.ViewModel
         {
             /*
              * When creating what do we care about?
-             * - File name
-             * - File type
-             * - save file
-             * - close creation window
-             * - start type window
-             * - add it to header list of files
-             * - add it to the sidebar
+             * - File name [x]
+             * - File type [x]
+             * - save file [x]
+             * - close creation window [x]
+             * - start type window [x]
+             * - add it to header list of files [x]
+             * - add it to the sidebar [x]
              * - add it to the localization
              * - add it to the content folder
              * - later on can't use the same file name.
              * 
              */
 
-            _userDataServices.CreateNewFileAsync(NewFileName, CurrentDatatype);
+            _userDataServices.CreateNewFileAsync(NewFileName, CurrentDatatype, FinalProjectDirectory);
             CloseNewFileProcessWindow();
             Debug.WriteLine("Create A New File");
         }
@@ -289,12 +358,70 @@ namespace UDSH.ViewModel
 
             if (PrevStack.Count > 0)
                 Directories = PrevStack.Pop();
+        }
 
-            /*Directories.Clear();
-            foreach (var directory in PrevDirectories)
+        private void ScrollDirectoryRight(CustomScrollViewer scrollViewer)
+        {
+            scrollViewer.SmoothScrollToHorizontalOffset(scrollViewer, scrollViewer.HorizontalOffset + 300, 0.5);
+        }
+
+        private void ScrollDirectoryLeft(CustomScrollViewer scrollViewer)
+        {
+            scrollViewer.SmoothScrollToHorizontalOffset(scrollViewer, scrollViewer.HorizontalOffset - 300, 0.5);
+        }
+
+        private void UpdateScrollVisuals(CustomScrollViewer scrollViewer)
+        {
+            if (scrollViewer.HorizontalOffset == 0)
+                IsLeftScrollButtonActive = false;
+            else
+                IsLeftScrollButtonActive = true;
+
+            if (scrollViewer.HorizontalOffset == scrollViewer.ScrollableWidth)
+                IsRightScrollButtonActive = false;
+            else
+                IsRightScrollButtonActive = true;
+        }
+
+        private void CheckTextInputStatus()
+        {
+            if (InputDest.Any(c => InvalidCharacters.Contains(c)) == true)
             {
-                Directories.Add(directory);
-            }*/
+                CanShowWarningMessage = true;
+                textBlock.Text = "You can’t use these characters: \\:*?\"<>|\t";
+            }
+            else if (InputDest.Contains(InvalidDirectory) == true)
+            {
+                CanShowWarningMessage = true;
+                textBlock.Text = "You can’t enter an empty directory. Remove \"//\"\t";
+            }
+            else
+                CanShowWarningMessage = false;
+
+            IsDirectoryButtonButtonActive = !CanShowWarningMessage;
+        }
+
+        private void OpenDirectory()
+        {
+            CanShowDirectory = !CanShowDirectory;
+        }
+
+        private void ChangeDirectoryPopupStatus()
+        {
+            DirectorystayOpen = !DirectorystayOpen;
+        }
+
+        private void UpdateFinalDirectory()
+        {
+            string[] directories = InputDest.Split('/');
+            foreach (string directory in directories)
+            {
+                FinalDest += directory + "\\";
+            }
+
+            // Remove whitespaces
+            FinalProjectDirectory = string.Join("\\", FinalDest.Split("\\").Select(seq => seq.Trim()).Where(seq => !string.IsNullOrEmpty(seq)));
+            CanShowDirectory = false;
         }
     }
 }
