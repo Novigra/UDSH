@@ -48,6 +48,7 @@ namespace UDSH.ViewModel
             set { textBlockTarget = value; OnPropertyChanged(); }
         }
 
+        private Stack<string[]> Temp = new Stack<string[]>();
         private Stack<ObservableCollection<string>> PrevStack;
         private Stack<string> CurrentDirectoriesStack;
         private ObservableCollection<string> PrevDirectories;
@@ -183,6 +184,7 @@ namespace UDSH.ViewModel
             DisplayDest = CurrentProject.ProjectName + '/';
             FinalDest = CurrentProject.ProjectDirectory + '\\';
             ProjectDirectories = Directory.GetDirectories(CurrentProject.ProjectDirectory);
+            
             InitializeDirectories();
 
             IsDirectoryButtonButtonActive = true;
@@ -330,6 +332,11 @@ namespace UDSH.ViewModel
                     CurrentDirectories = Directory.GetDirectories(directory);
                 }
             }
+            if(CurrentDirectories.Length > 0)
+            {
+                ProjectDirectories = CurrentDirectories;
+            }
+            
 
             Directories.Clear();
             foreach (var directory in CurrentDirectories)
@@ -349,7 +356,10 @@ namespace UDSH.ViewModel
                 string RemovedDir = CurrentDirectoriesStack.Pop();
                 int RemoveIndex = FinalDest.IndexOf(RemovedDir);
                 if (RemoveIndex != -1)
+                {
                     FinalDest = FinalDest.Substring(0, RemoveIndex);
+                    ProjectDirectories = Directory.GetDirectories(FinalDest);
+                }
 
                 RemoveIndex = DisplayDest.IndexOf(RemovedDir);
                 if (RemoveIndex != -1)

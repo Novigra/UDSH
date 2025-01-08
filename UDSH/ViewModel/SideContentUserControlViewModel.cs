@@ -132,6 +132,13 @@ namespace UDSH.ViewModel
             set { textBoxWidth = value; OnPropertyChanged(); }
         }
 
+        private bool canChooseFromSearch;
+        public bool CanChooseFromSearch
+        {
+            get { return canChooseFromSearch; }
+            set { canChooseFromSearch = value; OnPropertyChanged(); }
+        }
+
         private bool CanStartCounting;
         private Dictionary<int, List<Structure>> structureDic = new Dictionary<int, List<Structure>>();
 
@@ -165,6 +172,8 @@ namespace UDSH.ViewModel
             _userDataServices = userDataServices;
             _userDataServices.AddNewFileToContent += _userDataServices_AddNewFileToContent;
             Project project = _userDataServices.ActiveProject;
+
+            CanChooseFromSearch = false;
 
             Root = new ObservableCollection<Node>();
             RootSearch = new ObservableCollection<Node>();
@@ -234,6 +243,8 @@ namespace UDSH.ViewModel
             {
                 Root.Add(subNodes);
             }
+
+            BuildSearchTree(root);
         }
 
         private void BuildStructure()
@@ -519,7 +530,11 @@ namespace UDSH.ViewModel
             if(textBox != null)
             {
                 SearchText = textBox.Text;
-                
+                if (!string.IsNullOrEmpty(SearchText))
+                    CanChooseFromSearch = true;
+                else
+                    CanChooseFromSearch = false;
+
                 // UI is lagging, so only calculate text when stopping typing
                 await Task.Delay(500);
 
