@@ -41,6 +41,8 @@ namespace UDSH.View
             IsButtonAction = false;
             CanResize = false;
             IsDragAction = false;
+
+            MyPop.MouseDown += (s, e) => e.Handled = true;
         }
 
         private void OnUserControlLoaded(object sender, RoutedEventArgs e)

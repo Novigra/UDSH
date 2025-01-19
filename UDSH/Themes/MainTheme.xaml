@@ -139,4 +139,10 @@
     <Color x:Key="MainNoteBackgroundColor">#393E46</Color>
     <Color x:Key="MainNoteBorderColor">#4C76BA</Color>
     
+    <!-- Content Window -->
+    <LinearGradientBrush x:Key="MainContentWindowBackgroundSCB" StartPoint="0.5, 0" EndPoint="0.5, 1">
+        <GradientStop Color="#EEEEEE" Offset="0"/>
+        <GradientStop Color="#DADADA" Offset="1"/>
+    </LinearGradientBrush>
+
 </ResourceDictionary>

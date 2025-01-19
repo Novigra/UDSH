@@ -33,6 +33,8 @@ namespace UDSH.MVVM
 
         public static readonly DependencyProperty ScrollViewerLoadedCommandProperty = DependencyProperty.RegisterAttached("ScrollViewerLoadedCommand", typeof(ICommand), typeof(ParagraphMouseClickBehavior),
                 new PropertyMetadata(null, OnScrollViewerLoadedCommandChanged));
+        public static readonly DependencyProperty ScrollBarLoadedCommandProperty = DependencyProperty.RegisterAttached("ScrollBarLoadedCommand", typeof(ICommand), typeof(ParagraphMouseClickBehavior),
+                new PropertyMetadata(null, OnScrollBarLoadedCommandChanged));
         #endregion
 
         #region L_Mouse Down
@@ -317,6 +319,40 @@ namespace UDSH.MVVM
                     Command.Execute(scrollViewer);
             }
 
+        }
+        #endregion
+
+        #region Scroll Bar Loaded
+        public static void SetScrollBarLoadedCommand(DependencyObject Dep, ICommand Command)
+        {
+            Dep.SetValue(ScrollBarLoadedCommandProperty, Command);
+        }
+
+        public static ICommand GetScrollBarLoadedCommand(DependencyObject Dep)
+        {
+            return (ICommand)Dep.GetValue(ScrollBarLoadedCommandProperty);
+        }
+
+        private static void OnScrollBarLoadedCommandChanged(DependencyObject Dep, DependencyPropertyChangedEventArgs Event)
+        {
+            if (Dep is ScrollBar scrollBar)
+            {
+                scrollBar.Loaded -= RecordScrollBarLoad;
+
+                if (Event.NewValue is ICommand)
+                    scrollBar.Loaded += RecordScrollBarLoad;
+            }
+        }
+
+        private static void RecordScrollBarLoad(object sender, RoutedEventArgs e)
+        {
+            if (sender is ScrollBar scrollBar)
+            {
+                Debug.WriteLine($"ScrollBar Name: {scrollBar.Name}");
+                ICommand Command = GetScrollBarLoadedCommand(scrollBar);
+                if (Command != null && Command.CanExecute(scrollBar))
+                    Command.Execute(scrollBar);
+            }
         }
         #endregion
     }

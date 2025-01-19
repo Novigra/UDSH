@@ -625,7 +625,11 @@ namespace UDSH.ViewModel
 
         private void OpenContentFolder()
         {
-            MessageBox.Show("Opening Content Folder...");
+            IsPenToolButtonClicked = false;
+            CanClosePopup = false;
+
+            ContentWindow contentWindow = new ContentWindow(new ContentWindowViewModel(_headerServices.UserDataServices));
+            contentWindow.Show();
         }
 
         private void CreateNewProject()

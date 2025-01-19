@@ -10,9 +10,9 @@
         <ScrollViewer Style="{StaticResource OpenFilesScrollViewer}" HorizontalScrollBarVisibility="Visible" Loaded="ScrollViewer_Loaded"/>
         <Border Width="300" Height="300" BorderThickness="0">
             <Border.Background>
-                <LinearGradientBrush StartPoint="0.0,0.5" EndPoint="1,0.5">
-                    <GradientStop Color="#A5A5A5"/>
-                    <GradientStop Color="#33A5A5A5" Offset="1"/>
+                <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
+                    <GradientStop Color="#DBDBDB"/>
+                    <GradientStop Color="#00DBDBDB" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
         </Border>

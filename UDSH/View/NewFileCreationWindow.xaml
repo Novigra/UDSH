@@ -45,6 +45,7 @@
                     <Setter Property="IsHitTestVisible" Value="False"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding CanShowDirectory}" Value="True">
+                            <Setter Property="IsHitTestVisible" Value="True"/>
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
@@ -171,22 +172,21 @@
         </Grid>
 
 
-        <Grid Grid.Row="1" Margin="0,-13,0,13">
+        <Grid Panel.ZIndex="1" Grid.Row="1" Margin="0,-13,0,13">
             <!-- Don't forget to put row back to 1 -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="Name" FontSize="40" Style="{StaticResource DefaultText}"/>
                 <Border HorizontalAlignment="Stretch" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
                         CornerRadius="4" Margin="15,8,0,0" Height="40" FocusVisualStyle="{x:Null}">
-                    <!-- Searchbar Details -->
+                    <!-- Text Details -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" FocusVisualStyle="{x:Null}">
                         <!-- Text Container -->
                         <Grid Margin="4,0,4,0" VerticalAlignment="Center">
-                            <!-- Search Highlight -->
+                            <!-- Text Highlight -->
                             <TextBlock x:Name="HighlightText" Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="20" FontWeight="SemiBold" Focusable="False">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Visibility" Value="Collapsed"/>
-                                        <!-- Should be collapsed!!! -->
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding NewFileName}" Value="">
                                                 <Setter Property="Visibility" Value="Visible"/>
@@ -202,7 +202,7 @@
                                 </i:Interaction.Triggers>
                             </TextBlock>
 
-                            <!-- Search Text -->
+                            <!-- File Text -->
                             <TextBox x:Name="UserSearchBox" Background="{StaticResource MainBlankSCB}" FontSize="20" FontWeight="Bold" Width="400"
                                      Text="{Binding NewFileName, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
                                 <i:Interaction.Triggers>
@@ -217,6 +217,38 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
+
+            <Border HorizontalAlignment="Left" Margin="355,0,0,0" Opacity="0" Width="{Binding ElementName=FileWarningMessage, Path=ActualWidth}" Height="30" Background="#FF4242" CornerRadius="5" RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform>
+                    <TranslateTransform Y="30"/>
+                </Border.RenderTransform>
+                <TextBlock x:Name="FileWarningMessage" Text="{Binding FileWarningMessage}" Style="{StaticResource DefaultText}" FontSize="15" Foreground="#FFFFFF" Margin="5,5,0,0"/>
+
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CanShowFileWarningMessage}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1.0" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)" To="43" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)" To="30" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
 
             <Grid.Style>
                 <Style TargetType="Grid">
@@ -660,7 +692,7 @@
                 </Style>
             </Image.Style>
         </Image>
-        <Grid Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,5,0,0">
+        <Grid Panel.ZIndex="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,5,0,0">
             <Button Width="40" Height="40" Command="{Binding OpenDirectoryButton}">
                 <Popup x:Name="DirectoryPopup" VerticalOffset="-400" HorizontalOffset="100" StaysOpen="True" IsOpen="{Binding CanShowDirectory}" AllowsTransparency="True" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Button}}" PopupAnimation="Fade">
                     <Border Background="{StaticResource NewFileProcessBackgroundSCB}" Width="700" Height="330" CornerRadius="15" RenderTransformOrigin="0.5,0.5">

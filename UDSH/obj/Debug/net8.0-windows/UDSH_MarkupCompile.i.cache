@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 D:\Projects\UDSH\UDSH\App.xaml
-30-2022499500
+311715011926
 
-53785186386
+591894501997
 201-1721006074
-MainWindow.xaml;Styles\BorderStyles.xaml;Styles\ButtonStyles.xaml;Styles\CheckboxStyles.xaml;Styles\ComboBoxStyles.xaml;Styles\ImageStyles.xaml;Styles\ListViewStyles.xaml;Styles\RectangleStyles.xaml;Styles\ScrollBarStyles.xaml;Styles\ScrollViewerStyles.xaml;Styles\TextBlockStyles.xaml;Styles\TextStyles.xaml;Styles\TreeViewStyles.xaml;Themes\MainTheme.xaml;View\CSFUserControl.xaml;View\DefaultUserControl.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;View\ImageEditorWindow.xaml;View\MKUserControl.xaml;View\NewFileCreationWindow.xaml;View\NewProjectCreationWindow.xaml;View\NewUserStartupWindow.xaml;View\NoteUserControl.xaml;View\SideContentUserControl.xaml;View\TestGround\TestWindow.xaml;View\WelcomeLastUserControl.xaml;View\WelcomeNameUserControl.xaml;View\WelcomeProfilePictureUserControl.xaml;View\WelcomeUserControl.xaml;
+MainWindow.xaml;Styles\BorderStyles.xaml;Styles\ButtonStyles.xaml;Styles\CheckboxStyles.xaml;Styles\ComboBoxStyles.xaml;Styles\ImageStyles.xaml;Styles\ListViewStyles.xaml;Styles\RectangleStyles.xaml;Styles\ScrollBarStyles.xaml;Styles\ScrollViewerStyles.xaml;Styles\TextBlockStyles.xaml;Styles\TextStyles.xaml;Styles\TreeViewStyles.xaml;Themes\MainTheme.xaml;View\ContentWindow.xaml;View\CSFUserControl.xaml;View\DefaultUserControl.xaml;View\FooterUserControl.xaml;View\HeaderUserControl.xaml;View\ImageEditorWindow.xaml;View\MKUserControl.xaml;View\NewFileCreationWindow.xaml;View\NewProjectCreationWindow.xaml;View\NewUserStartupWindow.xaml;View\NoteUserControl.xaml;View\SideContentUserControl.xaml;View\TestGround\TestWindow.xaml;View\WelcomeLastUserControl.xaml;View\WelcomeNameUserControl.xaml;View\WelcomeProfilePictureUserControl.xaml;View\WelcomeUserControl.xaml;
 
 True
 

@@ -501,6 +501,141 @@
         </Setter>
     </Style>
 
+    <!-- ContentDirectoryListView -->
+    <Style TargetType="GridViewColumnHeader" x:Key="Content_GridViewColumnHeader">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#000000"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="DemiBold"/>
+        <Setter Property="BorderThickness" Value="0,0,0,3"/>
+        <Setter Property="BorderBrush" Value="#C5C5C5"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GridViewColumnHeader">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter Margin="5,0,0,3" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <Border x:Name="LinearBorder" HorizontalAlignment="Right" Margin="0,0,2,3" Width="20">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="1,0.5" EndPoint="0,0.5">
+                                    <GradientStop Color="#EAEAEA"/>
+                                    <GradientStop Color="#33EAEAEA" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+
+                        <Thumb x:Name="PART_HeaderGripper" Width="4" HorizontalAlignment="Right" Background="Transparent" Cursor="SizeWE" Margin="0,0,-1,0"
+                               Visibility="Visible" BorderThickness="0" Opacity="0"/>
+
+                        <Rectangle x:Name="GripperVisuals" IsHitTestVisible="False" Width="3" HorizontalAlignment="Right" Fill="#C5C5C5" Margin="0,0,-1,0" Visibility="Visible"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasContent" Value="False">
+                            <Setter TargetName="GripperVisuals" Property="Opacity" Value="0"/>
+                            <Setter TargetName="LinearBorder" Property="Opacity" Value="0"/>
+                            <Setter TargetName="PART_HeaderGripper" Property="Opacity" Value="0"/>
+                            <Setter TargetName="PART_HeaderGripper" Property="IsHitTestVisible" Value="False"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ListView" x:Key="ContentDirectoryLayout">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListView">
+                    <Grid>
+                        <MVVM:CustomScrollViewer x:Name="OuterContentScrollviewer"
+                                                 HorizontalScrollBarVisibility="Hidden" 
+                                                 VerticalScrollBarVisibility="Disabled"
+                                                 PanningMode="Both" 
+                                                 Padding="{TemplateBinding Padding}" 
+                                                 BorderThickness="0"
+                                                 Style="{StaticResource ContentScrollViewer}">
+                            <Grid Background="Transparent" SnapsToDevicePixels="True">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0">
+                                    <GridViewHeaderRowPresenter Columns="{Binding View.Columns, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" AllowsColumnReorder="False"/>
+                                </Grid>
+                            </Grid>
+                        </MVVM:CustomScrollViewer>
+
+                        <MVVM:CustomScrollViewer Style="{StaticResource TestContentScrollViewer}" Margin="0,37,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="{TemplateBinding Padding}">
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"  Opacity="1" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                        </MVVM:CustomScrollViewer>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Resources>
+            <Style TargetType="GridViewColumnHeader" BasedOn="{StaticResource Content_GridViewColumnHeader}"/>
+        </Style.Resources>
+    </Style>
+
+    <Style TargetType="ListViewItem" x:Key="ContentDirectoryListItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <!-- Works but need modifications Width="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=30}" -->
+                    <Border Height="40" BorderThickness="0" Margin="0,0,0,0" HorizontalAlignment="Left" Background="{TemplateBinding Background}" CornerRadius="5">
+                        <GridViewRowPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="Transparent" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="#A7A7A7" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="#393E46" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
 
     <!-- CSF - Content Layout -->

@@ -33,6 +33,8 @@
     <None Remove="Fonts\Lora\Lora-SemiBold.ttf" />
     <None Remove="Fonts\Lora\Lora-SemiBoldItalic.ttf" />
     <None Remove="Resource\Add.png" />
+    <None Remove="Resource\AddFile.png" />
+    <None Remove="Resource\AToZ.png" />
     <None Remove="Resource\BackgroundIcon.png" />
     <None Remove="Resource\Bird.png" />
     <None Remove="Resource\BN_Large.png" />
@@ -49,6 +51,8 @@
     <None Remove="Resource\Dropdown.png" />
     <None Remove="Resource\Egyptflag.png" />
     <None Remove="Resource\emojitest.png" />
+    <None Remove="Resource\FileType.png" />
+    <None Remove="Resource\Filter.png" />
     <None Remove="Resource\FlagTest.png" />
     <None Remove="Resource\FolderContent.png" />
     <None Remove="Resource\FolderDeleteContent.png" />
@@ -69,6 +73,7 @@
     <None Remove="Resource\LogoLarge.png" />
     <None Remove="Resource\Man.png" />
     <None Remove="Resource\Max.png" />
+    <None Remove="Resource\Medium.png" />
     <None Remove="Resource\Minimize.png" />
     <None Remove="Resource\MKC_Large.png" />
     <None Remove="Resource\MKM_Large.png" />
@@ -76,6 +81,7 @@
     <None Remove="Resource\MoveControlHover.png" />
     <None Remove="Resource\MoveControlNormal.png" />
     <None Remove="Resource\NewFile.png" />
+    <None Remove="Resource\None.png" />
     <None Remove="Resource\Normal.png" />
     <None Remove="Resource\Olive.png" />
     <None Remove="Resource\OpenedFilesDropdown.png" />
@@ -99,9 +105,12 @@
     <None Remove="Resource\SidebarMKC.png" />
     <None Remove="Resource\SidebarMKM.png" />
     <None Remove="Resource\SideContent.png" />
+    <None Remove="Resource\Small.png" />
     <None Remove="Resource\SmileEmoji.png" />
+    <None Remove="Resource\Sort.png" />
     <None Remove="Resource\StartWritingIcon.png" />
     <None Remove="Resource\StoryHeader.png" />
+    <None Remove="Resource\View.png" />
     <None Remove="Resource\White\AddBN-White.png" />
     <None Remove="Resource\White\AddNote-White.png" />
     <None Remove="Resource\White\AlignLeft.png" />
@@ -115,9 +124,12 @@
     <None Remove="Resource\White\SaveFile-White.png" />
     <None Remove="Resource\White\Strikethrough.png" />
     <None Remove="Resource\White\Underline.png" />
+    <None Remove="Resource\ZToA.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resource\AddFile.png" />
+    <Resource Include="Resource\AToZ.png" />
     <Resource Include="Resource\DirectoryFolderHighlight.png" />
   </ItemGroup>
 
@@ -153,6 +165,8 @@
     <Resource Include="Resource\DirectoryFolderOpen.png" />
     <Resource Include="Resource\Egyptflag.png" />
     <Resource Include="Resource\emojitest.png" />
+    <Resource Include="Resource\FileType.png" />
+    <Resource Include="Resource\Filter.png" />
     <Resource Include="Resource\FlagTest.png" />
     <Resource Include="Resource\FolderContent.png" />
     <Resource Include="Resource\FolderDeleteContent.png" />
@@ -170,11 +184,13 @@
     <Resource Include="Resource\Localization.png" />
     <Resource Include="Resource\LogoLarge.png" />
     <Resource Include="Resource\Man.png" />
+    <Resource Include="Resource\Medium.png" />
     <Resource Include="Resource\MKC_Large.png" />
     <Resource Include="Resource\MKM_Large.png" />
     <Resource Include="Resource\More Details.png" />
     <Resource Include="Resource\MoveControlHover.png" />
     <Resource Include="Resource\MoveControlNormal.png" />
+    <Resource Include="Resource\None.png" />
     <Resource Include="Resource\Olive.png" />
     <Resource Include="Resource\OpenFileMKB.png" />
     <Resource Include="Resource\OpenFileMKBSelected.png" />
@@ -192,9 +208,12 @@
     <Resource Include="Resource\SidebarMKC.png" />
     <Resource Include="Resource\SidebarMKM.png" />
     <Resource Include="Resource\SideContent.png" />
+    <Resource Include="Resource\Small.png" />
     <Resource Include="Resource\SmileEmoji.png" />
+    <Resource Include="Resource\Sort.png" />
     <Resource Include="Resource\StartWritingIcon.png" />
     <Resource Include="Resource\StoryHeader.png" />
+    <Resource Include="Resource\View.png" />
     <Resource Include="Resource\White\AddBN-White.png" />
     <Resource Include="Resource\White\AddNote-White.png" />
     <Resource Include="Resource\White\AlignLeft.png" />
@@ -229,6 +248,7 @@
     <Resource Include="Resource\White\SaveFile-White.png" />
     <Resource Include="Resource\White\Strikethrough.png" />
     <Resource Include="Resource\White\Underline.png" />
+    <Resource Include="Resource\ZToA.png" />
   </ItemGroup>
 
 </Project>

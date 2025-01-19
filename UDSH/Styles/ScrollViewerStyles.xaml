@@ -1,6 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:UDSH.MVVM">
+                    xmlns:local="clr-namespace:UDSH.MVVM"
+                    xmlns:Conv="clr-namespace:UDSH.Converters">
+    
+    <Conv:HeightConverter x:Key="WidthConverter"/>
     
     <Style TargetType="{x:Type ScrollViewer}" x:Key="PageScrollViewer">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -180,6 +183,193 @@
                                ViewportSize="{TemplateBinding ViewportWidth}"
                                Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Style="{StaticResource TreeviewSideContentScrollBar}" Margin="0,-5,0,0"/>
 
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ScrollViewer}" x:Key="ContentScrollViewer">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="local:ParagraphMouseClickBehavior.ScrollViewerLoadedCommand" Value="{Binding ContentScrollViewerLoaded}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <ScrollContentPresenter Name="PART_ScrollContentPresenter"
+                                                Grid.Row="0" 
+                                                Grid.Column="0" 
+                                                CanContentScroll="{TemplateBinding CanContentScroll}" 
+                                                Content="{TemplateBinding Content}" 
+                                                Margin="0"/>
+
+                        <ScrollBar Name="PART_VerticalScrollBar"
+                                   Grid.Row="0" 
+                                   Grid.Column="1"
+                                   Orientation="Vertical"
+                                   Value="{TemplateBinding VerticalOffset}"
+                                   Maximum="{TemplateBinding ScrollableHeight}"
+                                   ViewportSize="{TemplateBinding ViewportHeight}"
+                                   Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" 
+                                   Style="{StaticResource TreeviewSideContentScrollBar}"/>
+
+                        <ScrollBar Name="PART_HorizontalScrollBar"
+                                   Grid.Row="1" 
+                                   Grid.Column="0"
+                                   Orientation="Horizontal"
+                                   Value="{TemplateBinding HorizontalOffset}"
+                                   Maximum="{TemplateBinding ScrollableWidth}"
+                                   ViewportSize="{TemplateBinding ViewportWidth}"
+                                   Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" 
+                                   Style="{StaticResource TreeviewSideContentScrollBar}" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ScrollViewer}" x:Key="HiddenContentScrollViewer">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="local:ParagraphMouseClickBehavior.ScrollViewerLoadedCommand" Value="{Binding HiddenContentScrollViewerLoaded}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <ScrollContentPresenter Name="PART_ScrollContentPresenter"
+                                            Grid.Row="0" 
+                                            Grid.Column="0" 
+                                            CanContentScroll="{TemplateBinding CanContentScroll}" 
+                                            Content="{TemplateBinding Content}" 
+                                            Margin="0"/>
+
+                        <ScrollBar Name="PART_VerticalScrollBar"
+                               Grid.Row="0" 
+                               Grid.Column="1"
+                               Orientation="Vertical"
+                               Value="{TemplateBinding VerticalOffset}"
+                               Maximum="{TemplateBinding ScrollableHeight}"
+                               ViewportSize="{TemplateBinding ViewportHeight}"
+                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}">
+                            <ScrollBar.Style>
+                                <Style TargetType="ScrollBar" BasedOn="{StaticResource TreeviewSideContentScrollBar}">
+                                    <Setter Property="local:ParagraphMouseClickBehavior.ScrollBarLoadedCommand" Value="{Binding VerticalScrollBarLoaded}"/>
+                                </Style>
+                            </ScrollBar.Style>
+                        </ScrollBar>
+
+                        <ScrollBar Name="PART_HorizontalScrollBar"
+                               Grid.Row="1" 
+                               Grid.Column="0"
+                               Orientation="Horizontal"
+                               Value="{TemplateBinding HorizontalOffset}"
+                               Maximum="{TemplateBinding ScrollableWidth}"
+                               ViewportSize="{TemplateBinding ViewportWidth}"
+                               Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+                               Style="{StaticResource TreeviewSideContentScrollBar}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ScrollViewer}" x:Key="TestContentScrollViewer">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="local:ParagraphMouseClickBehavior.ScrollViewerLoadedCommand" Value="{Binding VerticalContentScrollViewerLoaded}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <ScrollContentPresenter Name="PART_ScrollContentPresenter"
+                                        Grid.Row="0" 
+                                        Grid.Column="0" 
+                                        CanContentScroll="{TemplateBinding CanContentScroll}" 
+                                        Content="{TemplateBinding Content}" 
+                                        Margin="0"/>
+
+                        <Border IsHitTestVisible="False" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="30" 
+                                Width="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=9}">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
+                                    <GradientStop Color="#DBDBDB"/>
+                                    <GradientStop Color="#00DBDBDB" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ReachedContentBottom}" Value="True">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                            <DataTrigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.ExitActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+
+                        <ScrollBar Name="PART_VerticalScrollBar"
+                           Grid.Row="0" 
+                           Grid.Column="1"
+                           Orientation="Vertical"
+                           Value="{TemplateBinding VerticalOffset}"
+                           Maximum="{TemplateBinding ScrollableHeight}"
+                           ViewportSize="{TemplateBinding ViewportHeight}"
+                           Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                           Style="{StaticResource TreeviewSideContentScrollBar}"/>
+
+                        <ScrollBar Name="PART_HorizontalScrollBar"
+                           Grid.Row="1" 
+                           Grid.Column="0"
+                           Orientation="Horizontal"
+                           Value="{TemplateBinding HorizontalOffset}"
+                           Maximum="{TemplateBinding ScrollableWidth}"
+                           ViewportSize="{TemplateBinding ViewportWidth}"
+                           Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+                           Style="{StaticResource TreeviewSideContentScrollBar}"/>
+
+                        
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

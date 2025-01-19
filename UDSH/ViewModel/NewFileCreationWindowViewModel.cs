@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -116,6 +117,7 @@ namespace UDSH.ViewModel
 
         // we will check after each input so performance is crucial
         private HashSet<char> InvalidCharacters = new HashSet<char>(@"\:*?""<>|");
+        private HashSet<char> InvalidCharactersFile = new HashSet<char>(@"/\:*?""<>|");
         private string InvalidDirectory = "//";
         public TextBlock textBlock;
 
@@ -124,6 +126,20 @@ namespace UDSH.ViewModel
         {
             get { return canShowWarningMessage; }
             set { canShowWarningMessage = value; OnPropertyChanged(); }
+        }
+
+        private bool canShowFileWarningMessage;
+        public bool CanShowFileWarningMessage
+        {
+            get { return canShowFileWarningMessage; }
+            set { canShowFileWarningMessage = value; OnPropertyChanged(); }
+        }
+
+        private string fileWarningMessage;
+        public string FileWarningMessage
+        {
+            get { return fileWarningMessage; }
+            set { fileWarningMessage = value; OnPropertyChanged(); }
         }
 
         private bool canShowDirectory;
@@ -168,7 +184,6 @@ namespace UDSH.ViewModel
             IsItemSelected = false;
             CanCreateFile = false;
             NewFileName = string.Empty;
-            FinalProjectDirectory = string.Empty;
 
             newFileNameGenerator = new NewFileNameGenerator();
             Text = newFileNameGenerator.Generate(Language.English, MediaType.Music);
@@ -183,12 +198,14 @@ namespace UDSH.ViewModel
             CurrentProject = _userDataServices.ActiveProject;
             DisplayDest = CurrentProject.ProjectName + '/';
             FinalDest = CurrentProject.ProjectDirectory + '\\';
+            FinalProjectDirectory = CurrentProject.ProjectDirectory + '\\';
             ProjectDirectories = Directory.GetDirectories(CurrentProject.ProjectDirectory);
             
             InitializeDirectories();
 
             IsDirectoryButtonButtonActive = true;
             CanShowWarningMessage = false;
+            CanShowFileWarningMessage = false;
 
             IsLeftScrollButtonActive = false;
             IsRightScrollButtonActive = false;
@@ -281,6 +298,8 @@ namespace UDSH.ViewModel
         {
             IsItemSelected = true;
             CurrentDatatype = dataType;
+
+            DoesSameFileTypeExist();
         }
 
         private void CreateNewFile()
@@ -307,10 +326,42 @@ namespace UDSH.ViewModel
 
         private void UpdateCreationStatus()
         {
-            if(string.IsNullOrEmpty(NewFileName))
+            DoesSameFileTypeExist();
+        }
+
+        private void DoesSameFileTypeExist()
+        {
+            if (!FinalProjectDirectory.EndsWith("\\"))
+                FinalProjectDirectory += "\\";
+
+            string fileDirectory = FinalProjectDirectory + NewFileName + "." + CurrentDatatype;
+
+            if (File.Exists(fileDirectory))
+            {
                 CanCreateFile = false;
+
+                CanShowFileWarningMessage = true;
+                FileWarningMessage = "A file with the same name and file type already exists.   ";
+            }
+            else if (NewFileName.Any(c => InvalidCharactersFile.Contains(c)) == true)
+            {
+                CanCreateFile = false;
+
+                CanShowFileWarningMessage = true;
+                FileWarningMessage = "You can’t use these characters: /\\:*?\"<>|   ";
+            }
+            else if (string.IsNullOrEmpty(NewFileName))
+            {
+                CanCreateFile = false;
+
+                CanShowFileWarningMessage = false;
+            }
             else
+            {
                 CanCreateFile = true;
+
+                CanShowFileWarningMessage = false;
+            }
         }
 
         private void EnterNextPage()
