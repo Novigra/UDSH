@@ -169,5 +169,18 @@ namespace UDSH.Model
                 Debug.WriteLine("ERROR::FAILED UPDATING JSON FILE");
             }
         }
+
+        public void UpdateFileDetails()
+        {
+            try
+            {
+                string JsonUpdate = JsonSerializer.Serialize(User, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(UserFileDirectory, JsonUpdate);
+            }
+            catch
+            {
+                Debug.WriteLine("ERROR::FAILED UPDATING JSON FILE");
+            }
+        }
     }
 }

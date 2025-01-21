@@ -20,7 +20,10 @@ namespace UDSH.View
         private ColumnDefinition FirstColumn;
         private double MinWidth = 200;
         private double LastWidthBeforeResize = 0;
-        private double NewWidth = 0;
+        private double WindowedWidth = 0;
+        private double FullScreenWidth = 0;
+        private bool WindowedWidthChanged = false;
+        private bool FullScreenWidthChanged = false;
         public ContentWindow(ContentWindowViewModel viewModel)
         {
             InitializeComponent();
@@ -39,11 +42,14 @@ namespace UDSH.View
 
         private void ContentWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Debug.WriteLine($"New Width = {NewWidth} and GridWidth = {GridContent.ActualWidth}");
-            if (NewWidth > GridContent.ActualWidth)
+            if (WindowState == WindowState.Normal)
             {
-                NewWidth = GridContent.ActualWidth - 200;
-                FirstColumn.Width = new GridLength(NewWidth);
+                if (WindowedWidth > GridContent.ActualWidth)
+                {
+                    WindowedWidth = GridContent.ActualWidth - 200;
+                    FirstColumn.Width = new GridLength(WindowedWidth);
+                    NavBorder.Margin = new Thickness(WindowedWidth + 50, 0, 0, 0);
+                }
             }
         }
 
@@ -51,11 +57,18 @@ namespace UDSH.View
         {
             if (WindowState == WindowState.Normal && FirstColumn != null)
             {
-                FirstColumn.Width = new GridLength(LastWidthBeforeResize);
+                if (WindowedWidthChanged == false)
+                    WindowedWidth = 200;
+                FirstColumn.Width = new GridLength(WindowedWidth);
+                NavBorder.Margin = new Thickness(WindowedWidth + 50, 0, 0, 0);
             }
-
-            if (WindowState == WindowState.Maximized)
-                LastWidthBeforeResize = NewWidth;
+            else if (WindowState == WindowState.Maximized && FirstColumn != null)
+            {
+                if (FullScreenWidthChanged == false)
+                    FullScreenWidth = 200;
+                FirstColumn.Width = new GridLength(FullScreenWidth);
+                NavBorder.Margin = new Thickness(FullScreenWidth + 50, 0, 0, 0);
+            }
         }
 
         private void ViewModel_MousePressed(object? sender, bool e)
@@ -170,19 +183,44 @@ namespace UDSH.View
 
         private void GridSplitter_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
         {
-            FirstColumn = ListGrid.ColumnDefinitions[0];
-            NewWidth = FirstColumn.ActualWidth + e.HorizontalChange;
+            if (WindowState == WindowState.Maximized)
+            {
+                FirstColumn = ListGrid.ColumnDefinitions[0];
+                FullScreenWidth = FirstColumn.ActualWidth + e.HorizontalChange;
 
-            double NewWidthTarget = GridContent.ActualWidth - MinWidth;
-            double StopWidthTarget = NewWidthTarget - 1.0;
-            Debug.WriteLine(NewWidthTarget);
+                double NewWidthTarget = GridContent.ActualWidth - MinWidth;
+                double StopWidthTarget = NewWidthTarget - 1.0;
+                Debug.WriteLine(NewWidthTarget);
 
-            if (NewWidth < FirstColumn.MinWidth)
-                NewWidth = FirstColumn.MinWidth;
-            else if (NewWidth > NewWidthTarget)
-                NewWidth = StopWidthTarget;
+                if (FullScreenWidth < FirstColumn.MinWidth)
+                    FullScreenWidth = FirstColumn.MinWidth;
+                else if (FullScreenWidth > NewWidthTarget)
+                    FullScreenWidth = StopWidthTarget;
 
-            FirstColumn.Width = new GridLength(NewWidth);
+                FirstColumn.Width = new GridLength(FullScreenWidth);
+                NavBorder.Margin = new Thickness(FullScreenWidth + 50, 0, 0, 0);
+
+                FullScreenWidthChanged = true;
+            }
+            else if (WindowState == WindowState.Normal)
+            {
+                FirstColumn = ListGrid.ColumnDefinitions[0];
+                WindowedWidth = FirstColumn.ActualWidth + e.HorizontalChange;
+
+                double NewWidthTarget = GridContent.ActualWidth - MinWidth;
+                double StopWidthTarget = NewWidthTarget - 1.0;
+                Debug.WriteLine(NewWidthTarget);
+
+                if (WindowedWidth < FirstColumn.MinWidth)
+                    WindowedWidth = FirstColumn.MinWidth;
+                else if (WindowedWidth > NewWidthTarget)
+                    WindowedWidth = StopWidthTarget;
+
+                FirstColumn.Width = new GridLength(WindowedWidth);
+                NavBorder.Margin = new Thickness(WindowedWidth + 50, 0, 0, 0);
+
+                WindowedWidthChanged = true;
+            }
         }
     }
 }

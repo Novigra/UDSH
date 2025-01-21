@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -91,6 +92,20 @@ namespace UDSH.ViewModel
             set { currentFiles = value; OnPropertyChanged(); }
         }
 
+        private ContentFileStructure selectedItem;
+        public ContentFileStructure SelectedItem
+        {
+            get => selectedItem;
+            set { selectedItem = value; OnPropertyChanged(); }
+        }
+
+        private ObservableCollection<ContentFileStructure> selectedItems;
+        public ObservableCollection<ContentFileStructure> SelectedItems
+        {
+            get => selectedItems;
+            set { selectedItems = value; OnPropertyChanged(); }
+        }
+
         private int selectedSortIndex;
         public int SelectedSortIndex
         {
@@ -179,9 +194,57 @@ namespace UDSH.ViewModel
             }
         }
 
-        public ObservableCollection<Node> Root { get; set; }
+        private bool isContentLoading;
+        public bool IsContentLoading
+        {
+            get { return isContentLoading; }
+            set { isContentLoading = value; OnPropertyChanged(); }
+        }
+
+        private bool isContentRenameProcess;
+        public bool IsContentRenameProcess
+        {
+            get { return isContentRenameProcess; }
+            set { isContentRenameProcess = value; OnPropertyChanged(); }
+        }
+
+        private bool isContentCanceledProcess;
+        public bool IsContentCanceledProcess
+        {
+            get { return isContentCanceledProcess; }
+            set { isContentCanceledProcess = value; OnPropertyChanged(); }
+        }
+
         private Node root;
+        public Node Root
+        {
+            get => root;
+            set { root = value; OnPropertyChanged(); }
+        }
+        //private Node root;
         private Node SelectedNode;
+
+
+        private bool isNormalState;
+        public bool IsNormalState
+        {
+            get => isNormalState;
+            set { isNormalState = value; OnPropertyChanged(); }
+        }
+
+        private bool openRenameTextBox;
+        public bool OpenRenameTextBox
+        {
+            get => openRenameTextBox;
+            set { openRenameTextBox = value; OnPropertyChanged(); }
+        }
+
+        private string renameNewName;
+        public string RenameNewName
+        {
+            get => renameNewName;
+            set { renameNewName = value; OnPropertyChanged(); }
+        }
 
         public RelayCommand<MouseButtonEventArgs> DirectoryHitCollisionLMB => new RelayCommand<MouseButtonEventArgs>(RecordMouseDown);
         public RelayCommand<MouseButtonEventArgs> DirectoryHitCollisionLMBUp => new RelayCommand<MouseButtonEventArgs>(StopMouseDownRecord);
@@ -207,9 +270,17 @@ namespace UDSH.ViewModel
         public RelayCommand<RoutedPropertyChangedEventArgs<object>> TreeViewSelectionChanged => new RelayCommand<RoutedPropertyChangedEventArgs<object>>(TreeSelectionChanged);
         public RelayCommand<object> TreeViewMouseDoubleClick => new RelayCommand<object>(execute => OpenFile());
 
+        public RelayCommand<SelectionChangedEventArgs> ListSelectionChanged => new RelayCommand<SelectionChangedEventArgs>(ItemSelectionChanged);
+
+        public RelayCommand<object> RenameItem => new RelayCommand<object>(execute => RenameSelectedItem(), canExecute => CanRenameSelectedItem());
+        public RelayCommand<object> ConfirmRename => new RelayCommand<object>(execute => ConfirmRenameProcess(), canExecute => OpenRenameTextBox);
+        public RelayCommand<object> CancelRename => new RelayCommand<object>(execute => StopRenameProcess(), canExecute => OpenRenameTextBox);
+
         public ContentWindowViewModel(IUserDataServices userDataServices)
         {
             _userDataServices = userDataServices;
+
+            SelectedItems = new ObservableCollection<ContentFileStructure>();
 
             Timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.205) };
             Timer.Tick += Timer_Tick;
@@ -235,25 +306,45 @@ namespace UDSH.ViewModel
             ColWidth4 = 70;
             ColWidth5 = 200;
 
+            IsContentLoading = false;
+            IsContentRenameProcess = false;
+            IsContentCanceledProcess = false;
+
             SearchText = string.Empty;
             SelectedSortIndex = (int)ContentSort.FoldersFirst_Ascending;
 
-            Project project = userDataServices.ActiveProject;
-            if (project != null)
+            IsNormalState = true;
+            OpenRenameTextBox = false;
+            RenameNewName = string.Empty;
+
+            LoadData();
+        }
+
+        private async void LoadData()
+        {
+            IsContentLoading = true;
+            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
             {
-                FileStructure structure = new FileStructure();
-
-                CurrentFiles = new ObservableCollection<ContentFileStructure>();
-                CurrentFiles = structure.CreateCurrentLevelList(project, (ContentSort)SelectedSortIndex);
-
-                Root = new ObservableCollection<Node>();
-                root = structure.ContentBuildSideTree(project);
-
-                foreach (var subNodes in root.SubNodes)
+                Project project = _userDataServices.ActiveProject;
+                if (project != null)
                 {
-                    Root.Add(subNodes);
+                    FileStructure structure = new FileStructure();
+
+                    CurrentFiles = new ObservableCollection<ContentFileStructure>();
+                    CurrentFiles = structure.CreateCurrentLevelList(project, (ContentSort)SelectedSortIndex);
+
+                    Root = new Node();
+                    Root = structure.ContentBuildSideTree(project);
+
+                    //root = structure.ContentBuildSideTree(project);
+                    /*foreach (var subNodes in root.SubNodes)
+                    {
+                        Root.Add(subNodes);
+                    }*/
                 }
-            }
+            }));
+
+            IsContentLoading = false;
         }
 
         private void RecordMouseDown(MouseButtonEventArgs e)
@@ -379,7 +470,7 @@ namespace UDSH.ViewModel
                 CollapseResizeButtonState = "Visible";
                 CollapseResetButtonState = "Collapsed";
 
-                GridContentMargin = new Thickness(10, 0, 10, 0);
+                GridContentMargin = new Thickness(10, 0, 10, 10);
                 WindowChromeMargin = new Thickness(10, 10, 10, 0);
             }
         }
@@ -438,11 +529,95 @@ namespace UDSH.ViewModel
 
         private void OpenFile()
         {
-            // TODO: Add folder transition. Don't forget to animate grid splitter
+            // TODO: Add folder transition.
             if (SelectedNode.NodeType == DataType.File)
             {
                 _userDataServices.AddFileToHeader(SelectedNode.NodeFile);
             }
+        }
+
+        private void ItemSelectionChanged(SelectionChangedEventArgs e)
+        {
+            if(SelectedItems.Count > 0)
+            {
+                if (SelectedItems[0] != SelectedItem)
+                {
+                    SelectedItems.Clear();
+                    SelectedItems.Add(SelectedItem); // First selection isn't added in Added Items
+                }
+
+                if (SelectedItems[0] == SelectedItem && e.AddedItems.Count == 0)
+                {
+                    SelectedItems.Clear();
+                    SelectedItems.Add(SelectedItem);
+                }
+            }
+            
+            foreach (var AddedItem in e.AddedItems)
+            {
+                if (!SelectedItems.Contains(AddedItem))
+                    SelectedItems.Add((ContentFileStructure)AddedItem);
+            }
+        }
+
+        private void RenameSelectedItem()
+        {
+            Debug.WriteLine($"Rename: {SelectedItem.Name}");
+
+            OpenRenameTextBox = true;
+            IsNormalState = false;
+            IsContentRenameProcess = true;
+        }
+
+        private bool CanRenameSelectedItem()
+        {
+            if (SelectedItems.Count > 1)
+                return false;
+            else
+                return true;
+        }
+
+        private async void ConfirmRenameProcess()
+        {
+            IsContentLoading = true;
+            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+            {
+                string OldDirectory = string.Empty;
+                if (SelectedItem.File == null)
+                    OldDirectory = SelectedItem.Directory;
+                else
+                    OldDirectory = SelectedItem.File.FileDirectory;
+
+                FileStructure fileStructure = new FileStructure();
+                fileStructure.RenameFile(SelectedItem, RenameNewName);
+                CurrentFiles = new ObservableCollection<ContentFileStructure>(CurrentFiles);
+
+                fileStructure.UpdateTreeItemName(Root, _userDataServices.ActiveProject, SelectedItem, OldDirectory);
+                Node Temp = Root;
+                Root = new Node();
+                Root = Temp;
+
+                _userDataServices.UpdateFileDetailsAsync();
+
+                OpenRenameTextBox = false;
+                RenameNewName = string.Empty;
+
+                IsNormalState = true;
+                IsContentRenameProcess = false;
+            }));
+
+            IsContentLoading = false;
+        }
+
+        private void StopRenameProcess()
+        {
+            OpenRenameTextBox = false;
+            RenameNewName = string.Empty;
+
+            IsNormalState = true;
+            IsContentRenameProcess = false;
+            IsContentCanceledProcess = true;
+            IsContentCanceledProcess = false;
         }
     }
 }

@@ -157,5 +157,68 @@ namespace UDSH.Model
                 SortNodes(subNode);
             }
         }
+
+        public void UpdateTreeItemName(Node root, Project project, ContentFileStructure SelectedItem, string OldDirectory)
+        {
+            string[] TextSplit = OldDirectory.Split('\\');
+            int index = Array.IndexOf(TextSplit, project.ProjectName);
+            Node CurrentNode = root;
+            Node ParentNode = root;
+
+            for (int i = index + 1; i < TextSplit.Length; ++i)
+            {
+                /*Node? NextNode = CurrentNode.SubNodes.FirstOrDefault(node => node.Name.Contains(TextSplit[i]));
+                if (NextNode == null)
+                    break;*/
+                Node? NextNode = null;
+
+                foreach (var node in CurrentNode.SubNodes)
+                {
+                    if (node.Name.Equals(TextSplit[i]))
+                    {
+                        NextNode = node;
+                        break;
+                    }
+                }
+
+                if (NextNode == null)
+                    break;
+
+                ParentNode = CurrentNode;
+                CurrentNode = NextNode;
+            }
+
+            
+            CurrentNode.NodeDirectory = SelectedItem.Directory;
+            if (SelectedItem.File != null)
+            {
+                CurrentNode.Name = SelectedItem.Name + "." + SelectedItem.File.FileType;
+                CurrentNode.NodeFile = SelectedItem.File;
+            }
+
+            ParentNode.SubNodes = new ObservableCollection<Node>(ParentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.Ordinal));
+        }
+
+        public void RenameFile(ContentFileStructure ContentFile, string FileNewName)
+        {
+            FileSystem file = new FileSystem();
+            file = ContentFile.File;
+
+            if (file != null)
+            {
+                string NewFileDirectory = file.FileDirectory.Replace(file.FileName, FileNewName);
+                File.Move(file.FileDirectory, NewFileDirectory);
+                File.SetLastWriteTime(NewFileDirectory, DateTime.Now);
+
+                file.FileName = FileNewName;
+                file.FileDirectory = NewFileDirectory;
+                file.FileLastModificationDate = DateTime.Now;
+
+                ContentFile.File = file;
+
+                ContentFile.Name = FileNewName;
+                ContentFile.LastDateModification = file.FileLastModificationDate;
+            }
+        }
     }
 }

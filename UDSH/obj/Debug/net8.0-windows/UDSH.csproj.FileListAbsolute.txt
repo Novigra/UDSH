@@ -74,3 +74,4 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\TestGround\TestWindow.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\TreeViewStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\ContentWindow.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\ContentWindow.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\ContextMenuStyles.baml

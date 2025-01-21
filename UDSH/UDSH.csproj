@@ -42,6 +42,7 @@
     <None Remove="Resource\Close.png" />
     <None Remove="Resource\CloseNoteIcon.png" />
     <None Remove="Resource\CloseSelected.png" />
+    <None Remove="Resource\ContentState.png" />
     <None Remove="Resource\CurrentFiles.png" />
     <None Remove="Resource\Data\NewFileHighlightedTitle.json" />
     <None Remove="Resource\DeleteFile.png" />
@@ -62,11 +63,15 @@
     <None Remove="Resource\FolderSaveContentAs.png" />
     <None Remove="Resource\FolderSidebar.png" />
     <None Remove="Resource\FolderSwitchContent.png" />
+    <None Remove="Resource\HandHandle.png" />
+    <None Remove="Resource\HandHandleHighlight.png" />
     <None Remove="Resource\HorusEye.png" />
     <None Remove="Resource\HorusEyeBlack.png" />
+    <None Remove="Resource\HorusEyeDarkGrey.png" />
     <None Remove="Resource\HorusEyeOrange.png" />
     <None Remove="Resource\LeftArrow.png" />
     <None Remove="Resource\LeftArrowGray.png" />
+    <None Remove="Resource\LeftArrowOrange.png" />
     <None Remove="Resource\Localization.png" />
     <None Remove="Resource\Log.png" />
     <None Remove="Resource\Logo.png" />
@@ -96,7 +101,9 @@
     <None Remove="Resource\Pin.png" />
     <None Remove="Resource\Placeholder.png" />
     <None Remove="Resource\ProfilePicture.png" />
+    <None Remove="Resource\RenameState.png" />
     <None Remove="Resource\RightArrow.png" />
+    <None Remove="Resource\RightArrowOrange.png" />
     <None Remove="Resource\SaveAllFiles.png" />
     <None Remove="Resource\SaveFile.png" />
     <None Remove="Resource\Search.png" />
@@ -130,6 +137,7 @@
   <ItemGroup>
     <Resource Include="Resource\AddFile.png" />
     <Resource Include="Resource\AToZ.png" />
+    <Resource Include="Resource\ContentState.png" />
     <Resource Include="Resource\DirectoryFolderHighlight.png" />
   </ItemGroup>
 
@@ -176,11 +184,15 @@
     <Resource Include="Resource\FolderSaveContentAs.png" />
     <Resource Include="Resource\FolderSidebar.png" />
     <Resource Include="Resource\FolderSwitchContent.png" />
+    <Resource Include="Resource\HandHandle.png" />
+    <Resource Include="Resource\HandHandleHighlight.png" />
     <Resource Include="Resource\HorusEye.png" />
     <Resource Include="Resource\HorusEyeBlack.png" />
+    <Resource Include="Resource\HorusEyeDarkGrey.png" />
     <Resource Include="Resource\HorusEyeOrange.png" />
     <Resource Include="Resource\LeftArrow.png" />
     <Resource Include="Resource\LeftArrowGray.png" />
+    <Resource Include="Resource\LeftArrowOrange.png" />
     <Resource Include="Resource\Localization.png" />
     <Resource Include="Resource\LogoLarge.png" />
     <Resource Include="Resource\Man.png" />
@@ -201,7 +213,9 @@
     <Resource Include="Resource\palestineflag.png" />
     <Resource Include="Resource\Pin.png" />
     <Resource Include="Resource\Placeholder.png" />
+    <Resource Include="Resource\RenameState.png" />
     <Resource Include="Resource\RightArrow.png" />
+    <Resource Include="Resource\RightArrowOrange.png" />
     <Resource Include="Resource\SaveAllFiles.png" />
     <Resource Include="Resource\Search.png" />
     <Resource Include="Resource\SidebarMKB.png" />
