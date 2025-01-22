@@ -41,7 +41,13 @@ namespace UDSH.ViewModel
     {
         #region Side Content Properties
         private readonly IUserDataServices _userDataServices;
-        public ObservableCollection<Node> Root {  get; set; }
+        
+        private Node root;
+        public Node Root
+        {
+            get => root;
+            set { root = value; OnPropertyChanged(); }
+        }
         public ObservableCollection<Node> RootSearch { get; set; }
 
         private double CurrentAnimationNumber = 0.0f;
@@ -142,7 +148,7 @@ namespace UDSH.ViewModel
         private bool CanStartCounting;
         private Dictionary<int, List<Structure>> structureDic = new Dictionary<int, List<Structure>>();
 
-        private Node root;
+        //private Node root;
         private Node SearchRoot;
         private Node SelectedNode;
         #endregion
@@ -171,169 +177,52 @@ namespace UDSH.ViewModel
         {
             _userDataServices = userDataServices;
             _userDataServices.AddNewFileToContent += _userDataServices_AddNewFileToContent;
-            Project project = _userDataServices.ActiveProject;
-
+            
             CanChooseFromSearch = false;
-
-            Root = new ObservableCollection<Node>();
             RootSearch = new ObservableCollection<Node>();
+            BuildStructure();
 
-            if (project != null)
-                BuildStructure();
+            _userDataServices.FileDetailsUpdated += _userDataServices_FileDetailsUpdated;
+        }
+
+        private async void _userDataServices_FileDetailsUpdated(object? sender, FileDetailsUpdatedEventArgs e)
+        {
+            await Task.Run(() =>
+            {
+                FileStructure fileStructure = new FileStructure();
+                fileStructure.UpdateTreeItemName(Root, _userDataServices.ActiveProject, e.FileStructure, e.OldDirectory);
+            });
+
+            await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                Node temp = Root;
+                Root = new Node();
+                Root = temp;
+            });
         }
 
         private void _userDataServices_AddNewFileToContent(object? sender, FileSystem e)
         {
-            Project project = _userDataServices.ActiveProject;
-            string[] TextSplit = e.FileDirectory.Split('\\');
-
-            int index = Array.IndexOf(TextSplit, project.ProjectName);
-
-            if (root == null)
-                root = new Node { Name = project.ProjectName, NodeType = DataType.Folder };
-
-            Node CurrentNode = root;
-            for (int i = index + 1; i < TextSplit.Length; ++i)
-            {
-                string CurrentFileNodeDirectory = e.FileDirectory;
-                BitmapImage CurrentImage;
-                DataType CurrentType;
-                bool IsFile = false;
-                if (TextSplit[i].Contains(".mkm"))
-                {
-                    IsFile = true;
-                    CurrentType = DataType.File;
-                    CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKM.png"));
-                }
-                else if (TextSplit[i].Contains(".mkc"))
-                {
-                    IsFile = true;
-                    CurrentType = DataType.File;
-                    CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKC.png"));
-                }
-                else if (TextSplit[i].Contains(".mkb"))
-                {
-                    IsFile = true;
-                    CurrentType = DataType.File;
-                    CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKB.png"));
-                }
-                else
-                {
-                    CurrentFileNodeDirectory = string.Empty;
-                    CurrentType = DataType.Folder;
-                    CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderSidebar.png"));
-                }
-
-                // Avoid replicas
-                var matchingNodes = CurrentNode.SubNodes.Where(n => n.Name == TextSplit[i]).ToList();
-                Node? subNode = matchingNodes.Count > 0 ? matchingNodes[0] : null;
-
-                if (subNode == null)
-                {
-                    subNode = new Node { Name = TextSplit[i], NodeImage = CurrentImage, NodeType = CurrentType, NodeDirectory = CurrentFileNodeDirectory, NodeFile = (IsFile == true) ? e : null };
-                    CurrentNode.SubNodes.Add(subNode);
-                }
-
-                CurrentNode = subNode;
-            }
-
-            SortNodes(root);
-            Root.Clear();
-            foreach (var subNodes in root.SubNodes)
-            {
-                Root.Add(subNodes);
-            }
-
-            BuildSearchTree(root);
+            FileStructure fileStructure = new FileStructure();
+            Node AddedNode = fileStructure.AddNewFile(_userDataServices.ActiveProject, Root, e);
+            RootSearch.Add(AddedNode);
         }
 
-        private void BuildStructure()
+        private async void BuildStructure()
         {
             Project project = _userDataServices.ActiveProject;
-            root = new Node { Name = project.ProjectName, NodeType = DataType.Folder };
-            //string[] files = Directory.GetFiles(project.ProjectDirectory, "*", SearchOption.AllDirectories);
-            foreach (var file in project.Files)
+
+            if (project != null)
             {
-                string[] TextSplit = file.FileDirectory.Split('\\');
-
-                // Start at the project root as the user could be storing the app files deep inside.
-                int index = Array.IndexOf(TextSplit, project.ProjectName);
-
-                Node CurrentNode = root;
-                for(int i = index + 1;  i < TextSplit.Length; ++i)
+                await System.Windows.Application.Current.Dispatcher.InvokeAsync((Action)(delegate
                 {
-                    string CurrentFileNodeDirectory = file.FileDirectory;
-                    BitmapImage CurrentImage;
-                    DataType CurrentType;
-                    bool IsFile = false;
-                    if (TextSplit[i].Contains(".mkm"))
-                    {
-                        IsFile = true;
-                        CurrentType = DataType.File;
-                        CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKM.png"));
-                    }
-                    else if (TextSplit[i].Contains(".mkc"))
-                    {
-                        IsFile = true;
-                        CurrentType = DataType.File;
-                        CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKC.png"));
-                    }
-                    else if (TextSplit[i].Contains(".mkb"))
-                    {
-                        IsFile = true;
-                        CurrentType = DataType.File;
-                        CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/SidebarMKB.png"));
-                    }
-                    else
-                    {
-                        CurrentFileNodeDirectory = string.Empty;
-                        CurrentType = DataType.Folder;
-                        CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderSidebar.png"));
-                    }
+                    FileStructure fileStructure = new FileStructure();
+                    Node root = fileStructure.BuildSideContentTree(project);
+                    Root = new Node();
+                    Root = root;
 
-                    // Avoid replicas
-                    var matchingNodes = CurrentNode.SubNodes.Where(n => n.Name == TextSplit[i]).ToList();
-                    Node? subNode = matchingNodes.Count > 0 ? matchingNodes[0] : null;
-
-                    if (subNode == null)
-                    {
-                        subNode = new Node{ Name = TextSplit[i], NodeImage = CurrentImage, NodeType = CurrentType, NodeDirectory = CurrentFileNodeDirectory, NodeFile = (IsFile == true) ? file : null };
-                        CurrentNode.SubNodes.Add(subNode);
-                    }
-
-                    CurrentNode = subNode;
-                }
-            }
-
-            // Sorting and adding to the Root TreeView
-            SortNodes(root);
-            foreach (var subNodes  in root.SubNodes)
-            {
-                Root.Add(subNodes);
-            }
-
-            // Building the Root Search TreeView 
-            BuildSearchTree(root);
-        }
-
-        private void SortNodes(Node root)
-        {
-            root.SubNodes = new ObservableCollection<Node>(root.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.Ordinal));
-
-            foreach (var subNode in root.SubNodes)
-            {
-                SortNodes(subNode);
-            }
-        }
-
-        private void BuildSearchTree(Node root)
-        {
-            if (root.NodeType == DataType.File)
-                RootSearch.Add(root);
-
-            foreach(var subNode in root.SubNodes)
-            {
-                BuildSearchTree(subNode);
+                    fileStructure.BuildSearchTree(Root, RootSearch);
+                }));
             }
         }
 
@@ -413,7 +302,6 @@ namespace UDSH.ViewModel
             {
                 MessageBox.Show("e is empty");
             }
-            
         }
 
         /// <summary>

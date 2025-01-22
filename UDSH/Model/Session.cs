@@ -146,6 +146,7 @@ namespace UDSH.Model
                 FileType = FileType,
                 FileAuthor = User.DisplayName,
                 FileDirectory = Path.Combine(ProjectDirectory, NewFileName + "." + FileType),
+                FileSize = "0.00 KB",
                 FileVersion = CurrentProject.ProjectVersion,
                 IsLastOpenedFile = true,
                 FileCreationDate = DateTime.Now,

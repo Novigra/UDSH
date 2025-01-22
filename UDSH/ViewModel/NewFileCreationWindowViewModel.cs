@@ -356,7 +356,7 @@ namespace UDSH.ViewModel
 
                 CanShowFileWarningMessage = false;
             }
-            else
+            else if (IsItemSelected == true)
             {
                 CanCreateFile = true;
 
@@ -475,13 +475,14 @@ namespace UDSH.ViewModel
         private void UpdateFinalDirectory()
         {
             string[] directories = InputDest.Split('/');
+            string Result = FinalDest;
             foreach (string directory in directories)
             {
-                FinalDest += directory + "\\";
+                Result += directory + "\\";
             }
 
             // Remove whitespaces
-            FinalProjectDirectory = string.Join("\\", FinalDest.Split("\\").Select(seq => seq.Trim()).Where(seq => !string.IsNullOrEmpty(seq)));
+            FinalProjectDirectory = string.Join("\\", Result.Split("\\").Select(seq => seq.Trim()).Where(seq => !string.IsNullOrEmpty(seq)));
             CanShowDirectory = false;
         }
     }

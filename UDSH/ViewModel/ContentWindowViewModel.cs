@@ -28,6 +28,20 @@ namespace UDSH.ViewModel
         public event EventHandler<bool> MouseEnterCollision;
         public Window AssociatedWindow {  get; private set; }
 
+        private string projectName;
+        public string ProjectName
+        {
+            get => projectName;
+            set { projectName = value; OnPropertyChanged(); }
+        }
+
+        private string currentDirectory;
+        public string CurrentDirectory
+        {
+            get => currentDirectory;
+            set { currentDirectory = value; OnPropertyChanged(); }
+        }
+
         private bool canRegisterDragMode;
         public bool CanRegisterDragMode
         {
@@ -285,6 +299,17 @@ namespace UDSH.ViewModel
             Timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.205) };
             Timer.Tick += Timer_Tick;
 
+            if (_userDataServices.ActiveProject != null)
+            {
+                ProjectName = _userDataServices.ActiveProject.ProjectName + "/";
+            }
+            else
+            {
+                ProjectName = string.Empty;
+            }
+
+            CurrentDirectory = string.Empty;
+
             TimerCompleted = false;
             CanRegisterDragMode = true;
             CanRegisterMouseOver = true;
@@ -300,7 +325,7 @@ namespace UDSH.ViewModel
 
             ReachedContentBottom = false;
 
-            ColWidth1 = 110;
+            ColWidth1 = 220;
             ColWidth2 = 223;
             ColWidth3 = 70;
             ColWidth4 = 70;
@@ -318,6 +343,8 @@ namespace UDSH.ViewModel
             RenameNewName = string.Empty;
 
             LoadData();
+
+            _userDataServices.AddNewFileToContent += _userDataServices_AddNewFileToContent;
         }
 
         private async void LoadData()
@@ -345,6 +372,21 @@ namespace UDSH.ViewModel
             }));
 
             IsContentLoading = false;
+        }
+
+        private void _userDataServices_AddNewFileToContent(object? sender, FileSystem e)
+        {
+            FileStructure fileStructure = new FileStructure();
+            Node AddedNode = fileStructure.AddNewFile(_userDataServices.ActiveProject, Root, e, true);
+
+            string ReadableDirectory = CurrentDirectory.Replace("/", "\\") + "\\";
+            string[] TextSplit = e.FileDirectory.Split(e.FileName);
+            string FileHeadDirectory = TextSplit[0];
+
+            if (FileHeadDirectory.Equals(ReadableDirectory))
+            {
+                // TODO: Add file, OR FOLDER ot the list. try search the directory, instead of comparing directories
+            }
         }
 
         private void RecordMouseDown(MouseButtonEventArgs e)
@@ -579,8 +621,37 @@ namespace UDSH.ViewModel
 
         private async void ConfirmRenameProcess()
         {
+            IsContentRenameProcess = false;
             IsContentLoading = true;
-            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+
+            OpenRenameTextBox = false;
+
+            string OldDirectory = string.Empty;
+            if (SelectedItem.File == null)
+                OldDirectory = SelectedItem.Directory;
+            else
+                OldDirectory = SelectedItem.File.FileDirectory;
+
+            await Task.Run(() =>
+            {
+                FileStructure fileStructure = new FileStructure();
+                fileStructure.RenameItem(SelectedItem, RenameNewName);
+
+                fileStructure.UpdateTreeItemName(Root, _userDataServices.ActiveProject, SelectedItem, OldDirectory);
+            });
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                CurrentFiles = new ObservableCollection<ContentFileStructure>(CurrentFiles);
+
+                Node temp = Root;
+                Root = new Node();
+                Root = temp;
+
+                _userDataServices.UpdateFileDetailsAsync(SelectedItem, OldDirectory);
+            });
+
+            /*await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
             {
                 string OldDirectory = string.Empty;
                 if (SelectedItem.File == null)
@@ -598,14 +669,11 @@ namespace UDSH.ViewModel
                 Root = Temp;
 
                 _userDataServices.UpdateFileDetailsAsync();
+            }));*/
 
-                OpenRenameTextBox = false;
-                RenameNewName = string.Empty;
+            RenameNewName = string.Empty;
 
-                IsNormalState = true;
-                IsContentRenameProcess = false;
-            }));
-
+            IsNormalState = true;
             IsContentLoading = false;
         }
 

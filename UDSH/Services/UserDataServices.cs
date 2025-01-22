@@ -9,7 +9,7 @@ namespace UDSH.Services
         public event EventHandler<string> AddNewProjectTitle;
         public event EventHandler<FileSystem> AddNewFile;
         public event EventHandler<FileSystem> AddNewFileToContent;
-        public event EventHandler FileDetailsUpdated;
+        public event EventHandler<FileDetailsUpdatedEventArgs> FileDetailsUpdated;
         //public event EventHandler<FileSystem> AddFileFromContent;
 
         public string DisplayName
@@ -77,10 +77,10 @@ namespace UDSH.Services
             }
         }
 
-        public async Task UpdateFileDetailsAsync()
+        public async Task UpdateFileDetailsAsync(ContentFileStructure SelectedItem, string OldDirectory)
         {
             await Task.Run(() => session.UpdateFileDetails());
-            FileDetailsUpdated?.Invoke(this, EventArgs.Empty);
+            FileDetailsUpdated?.Invoke(this, new FileDetailsUpdatedEventArgs(SelectedItem, OldDirectory));
         }
 
         public void AddFileToHeader(FileSystem file)
