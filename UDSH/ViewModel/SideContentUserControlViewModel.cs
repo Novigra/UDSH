@@ -490,7 +490,7 @@ namespace UDSH.ViewModel
 
         private void OpenFile()
         {
-            if (SelectedNode.NodeType == DataType.File)
+            if (SelectedNode != null && SelectedNode.NodeType == DataType.File)
             {
                 _userDataServices.AddFileToHeader(SelectedNode.NodeFile);
             }

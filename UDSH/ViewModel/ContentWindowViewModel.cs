@@ -15,6 +15,7 @@ namespace UDSH.ViewModel
 {
     public class ContentWindowViewModel : ViewModelBase
     {
+        #region Properties
         private readonly IUserDataServices _userDataServices;
 
         private DispatcherTimer Timer;
@@ -26,6 +27,9 @@ namespace UDSH.ViewModel
         public event EventHandler WindowDragEnd;
         public event EventHandler<bool> MousePressed;
         public event EventHandler<bool> MouseEnterCollision;
+        public event EventHandler<bool> DirectoryWarningMessage;
+        public event EventHandler WrongDirectoryNotification;
+        public event EventHandler PageChanged;
         public Window AssociatedWindow {  get; private set; }
 
         private string projectName;
@@ -34,6 +38,9 @@ namespace UDSH.ViewModel
             get => projectName;
             set { projectName = value; OnPropertyChanged(); }
         }
+
+        private string BaseDirectory;
+        private string CurrentDirectoryBeforeEdit;
 
         private string currentDirectory;
         public string CurrentDirectory
@@ -260,9 +267,50 @@ namespace UDSH.ViewModel
             set { renameNewName = value; OnPropertyChanged(); }
         }
 
+        private ObservableCollection<ContentFileStructure> DefaultDirectory;
+        private Stack<string> CurrentDirectoryStack;
+        private Stack<ObservableCollection<ContentFileStructure>> MemoryDirectoriesStack;
+
+        private Stack<ObservableCollection<ContentFileStructure>> ReturnPageStack;
+        private Stack<string> ReturnDirectoryStack;
+
+
+        private HashSet<char> InvalidCharactersFile = new HashSet<char>(@"\:*?""<>|");
+        private string InvalidDirectory = "//";
+
+        private bool DirectoryUpdated;
+        private bool canGoToDirectory;
+        public bool CanGoToDirectory
+        {
+            get => canGoToDirectory;
+            set { canGoToDirectory = value; OnPropertyChanged(); }
+        }
+
+        private bool showWarningMessage;
+        public bool ShowWarningMessage
+        {
+            get => showWarningMessage;
+            set { showWarningMessage = value; OnPropertyChanged(); }
+        }
+
+        private string directoryWrongInputMessage;
+        public string DirectoryWrongInputMessage
+        {
+            get => directoryWrongInputMessage;
+            set { directoryWrongInputMessage = value; OnPropertyChanged(); }
+        }
+
+        private Border FocusTarget;
+        #endregion
+
+        #region Commands
+        public RelayCommand<Border> StatusBorderLoaded => new RelayCommand<Border>(AssignFocusBorder);
+
         public RelayCommand<MouseButtonEventArgs> DirectoryHitCollisionLMB => new RelayCommand<MouseButtonEventArgs>(RecordMouseDown);
         public RelayCommand<MouseButtonEventArgs> DirectoryHitCollisionLMBUp => new RelayCommand<MouseButtonEventArgs>(StopMouseDownRecord);
         public RelayCommand<TextBox> DirectoryTextBoxLoaded => new RelayCommand<TextBox>(AssignDirectoryRef);
+        public RelayCommand<object> DirectoryTextBoxTextChanged => new RelayCommand<object>(execute => UpdateTextBoxStatus());
+        public RelayCommand<KeyEventArgs> PressedEnter => new RelayCommand<KeyEventArgs>(execute => GoToDirectory(), canExecute => CanExecuteGoToDirectory());
 
         public RelayCommand<object> DirectoryHitCollisionMouseEnter => new RelayCommand<object>(execute => UpdateDirectoryBorder());
         public RelayCommand<object> DirectoryHitCollisionMouseLeave => new RelayCommand<object>(execute => ResetDirectoryBorder());
@@ -285,10 +333,17 @@ namespace UDSH.ViewModel
         public RelayCommand<object> TreeViewMouseDoubleClick => new RelayCommand<object>(execute => OpenFile());
 
         public RelayCommand<SelectionChangedEventArgs> ListSelectionChanged => new RelayCommand<SelectionChangedEventArgs>(ItemSelectionChanged);
+        public RelayCommand<object> ListViewMouseDoubleClick => new RelayCommand<object>(execute => ExecuteItem(), canExecute => CanExecuteSelectedItem());
 
         public RelayCommand<object> RenameItem => new RelayCommand<object>(execute => RenameSelectedItem(), canExecute => CanRenameSelectedItem());
         public RelayCommand<object> ConfirmRename => new RelayCommand<object>(execute => ConfirmRenameProcess(), canExecute => OpenRenameTextBox);
         public RelayCommand<object> CancelRename => new RelayCommand<object>(execute => StopRenameProcess(), canExecute => OpenRenameTextBox);
+
+        public RelayCommand<object> BackButton => new RelayCommand<object>(execute => GoBack());
+        public RelayCommand<object> ReturnButton => new RelayCommand<object>(execute => GoForward());
+
+        public RelayCommand<object> SortSelectionChanged => new RelayCommand<object>(execute => UpdateSorting());
+        #endregion
 
         public ContentWindowViewModel(IUserDataServices userDataServices)
         {
@@ -341,10 +396,28 @@ namespace UDSH.ViewModel
             IsNormalState = true;
             OpenRenameTextBox = false;
             RenameNewName = string.Empty;
+            CurrentDirectoryBeforeEdit = string.Empty;
 
             LoadData();
 
             _userDataServices.AddNewFileToContent += _userDataServices_AddNewFileToContent;
+
+            if (_userDataServices.ActiveProject != null)
+                BaseDirectory = _userDataServices.ActiveProject.ProjectDirectory + "\\";
+            else
+                BaseDirectory = string.Empty;
+
+            DefaultDirectory = new ObservableCollection<ContentFileStructure>();
+            CurrentDirectoryStack = new Stack<string>();
+            MemoryDirectoriesStack = new Stack<ObservableCollection<ContentFileStructure>>();
+
+            ReturnPageStack = new Stack<ObservableCollection<ContentFileStructure>>();
+            ReturnDirectoryStack = new Stack<string>();
+
+            DirectoryUpdated = false;
+            CanGoToDirectory = true;
+            ShowWarningMessage = false;
+            DirectoryWrongInputMessage = "You Can’t Add Empty Directories Or Use \\ : * ? \" < > |";
         }
 
         private async void LoadData()
@@ -355,38 +428,47 @@ namespace UDSH.ViewModel
                 Project project = _userDataServices.ActiveProject;
                 if (project != null)
                 {
+                    CurrentDirectoryStack.Push(CurrentDirectory);
+
                     FileStructure structure = new FileStructure();
 
+                    string SubDirectory = CurrentDirectory;
+                    string ReadableDirectory = BaseDirectory + SubDirectory.Replace("/", "\\");
+
+                    if (!ReadableDirectory.EndsWith('\\'))
+                        ReadableDirectory += "\\";
+
                     CurrentFiles = new ObservableCollection<ContentFileStructure>();
-                    CurrentFiles = structure.CreateCurrentLevelList(project, (ContentSort)SelectedSortIndex);
+                    CurrentFiles = structure.CreateCurrentLevelList(project, ReadableDirectory, (ContentSort)SelectedSortIndex);
+
+                    DefaultDirectory = CurrentFiles;
+                    MemoryDirectoriesStack.Push(CurrentFiles);
 
                     Root = new Node();
                     Root = structure.ContentBuildSideTree(project);
-
-                    //root = structure.ContentBuildSideTree(project);
-                    /*foreach (var subNodes in root.SubNodes)
-                    {
-                        Root.Add(subNodes);
-                    }*/
                 }
             }));
 
             IsContentLoading = false;
         }
 
-        private void _userDataServices_AddNewFileToContent(object? sender, FileSystem e)
+        private async void _userDataServices_AddNewFileToContent(object? sender, FileSystem e)
         {
-            FileStructure fileStructure = new FileStructure();
-            Node AddedNode = fileStructure.AddNewFile(_userDataServices.ActiveProject, Root, e, true);
-
-            string ReadableDirectory = CurrentDirectory.Replace("/", "\\") + "\\";
-            string[] TextSplit = e.FileDirectory.Split(e.FileName);
-            string FileHeadDirectory = TextSplit[0];
-
-            if (FileHeadDirectory.Equals(ReadableDirectory))
+            IsContentLoading = true;
+            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
             {
-                // TODO: Add file, OR FOLDER ot the list. try search the directory, instead of comparing directories
-            }
+                FileStructure fileStructure = new FileStructure();
+                Node AddedNode = fileStructure.AddNewFile(_userDataServices.ActiveProject, Root, e, true);
+
+                string ReadableDirectory = BaseDirectory + CurrentDirectory.Replace("/", "\\");
+                if (!ReadableDirectory.EndsWith('\\'))
+                    ReadableDirectory += "\\";
+
+                ObservableCollection<ContentFileStructure> UpdatedList = fileStructure.UpdateCurrentLevelList(CurrentFiles, _userDataServices.ActiveProject, e, ReadableDirectory, (ContentSort)SelectedSortIndex);
+                CurrentFiles = UpdatedList;
+            }));
+
+            IsContentLoading = false;
         }
 
         private void RecordMouseDown(MouseButtonEventArgs e)
@@ -404,6 +486,8 @@ namespace UDSH.ViewModel
 
             if(InitialMousePosition == CurrentMousePosition)
             {
+                CurrentDirectoryBeforeEdit = CurrentDirectory;
+
                 textBox.Focus();
                 textBox.LostFocus += TextBox_LostFocus;
                 CanRegisterDragMode = false;
@@ -443,6 +527,10 @@ namespace UDSH.ViewModel
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
+            if(DirectoryUpdated == false)
+                CurrentDirectory = CurrentDirectoryBeforeEdit;
+
+            DirectoryUpdated = false;
             CanRegisterDragMode = true;
             MousePressed.Invoke(this, CanRegisterDragMode);
         }
@@ -450,6 +538,79 @@ namespace UDSH.ViewModel
         private void AssignDirectoryRef(TextBox textBox)
         {
             this.textBox = textBox;
+        }
+
+        private void UpdateTextBoxStatus()
+        {
+            if (CurrentDirectory.Any(c => InvalidCharactersFile.Contains(c)) == true || CurrentDirectory.Contains(InvalidDirectory) == true || CurrentDirectory.Equals("/"))
+            {
+                ShowWarningMessage = true;
+                CanGoToDirectory = false;
+                DirectoryWarningMessage.Invoke(this, ShowWarningMessage);
+            }
+            else
+            {
+                ShowWarningMessage = false;
+                CanGoToDirectory = true;
+                DirectoryWarningMessage.Invoke(this, ShowWarningMessage);
+            }
+        }
+
+        private async void GoToDirectory()
+        {
+            string SubDirectory = CurrentDirectory;
+            string Reset = CurrentDirectory;
+            string ReadableDirectory = BaseDirectory + SubDirectory.Replace("/", "\\");
+
+            if (!ReadableDirectory.EndsWith('\\'))
+                ReadableDirectory += "\\";
+
+            if (Directory.Exists(ReadableDirectory))
+            {
+                IsContentLoading = true;
+                await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+                {
+                    if (!CurrentDirectory.EndsWith('/'))
+                        CurrentDirectory += "/";
+
+                    Project project = _userDataServices.ActiveProject;
+                    if (project != null)
+                    {
+                        FileStructure structure = new FileStructure();
+
+                        if (CurrentFiles != DefaultDirectory)
+                            CurrentDirectoryStack.Push(CurrentDirectoryBeforeEdit);
+
+                        if (CurrentFiles != DefaultDirectory)
+                            MemoryDirectoriesStack.Push(CurrentFiles);
+                        CurrentFiles = structure.CreateCurrentLevelList(project, ReadableDirectory, (ContentSort)SelectedSortIndex);
+
+                        ReturnPageStack.Clear();
+                        ReturnDirectoryStack.Clear();
+                    }
+
+                    DirectoryUpdated = true;
+                    FocusTarget.Focus();
+                }));
+
+                if (!Reset.EndsWith('/') && !string.IsNullOrEmpty(Reset))
+                    Reset += "/";
+                CurrentDirectory = Reset;
+                IsContentLoading = false;
+            }
+            else
+                WrongDirectoryNotification.Invoke(this, EventArgs.Empty);
+        }
+
+        private bool CanExecuteGoToDirectory()
+        {
+            if (CurrentDirectory.Equals(CurrentDirectoryBeforeEdit))
+                return false;
+
+            if (CanGoToDirectory == true)
+                return true;
+            else
+                return false;
         }
 
         private void UpdateDirectoryBorder()
@@ -571,8 +732,7 @@ namespace UDSH.ViewModel
 
         private void OpenFile()
         {
-            // TODO: Add folder transition.
-            if (SelectedNode.NodeType == DataType.File)
+            if (SelectedNode != null && SelectedNode.NodeType == DataType.File)
             {
                 _userDataServices.AddFileToHeader(SelectedNode.NodeFile);
             }
@@ -602,6 +762,55 @@ namespace UDSH.ViewModel
             }
         }
 
+        private async void ExecuteItem()
+        {
+            if (SelectedItem.File != null)
+            {
+                _userDataServices.AddFileToHeader(SelectedItem.File);
+            }
+            else
+            {
+                IsContentLoading = true;
+                await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+                {
+                    Project project = _userDataServices.ActiveProject;
+                    if (project != null)
+                    {
+                        FileStructure structure = new FileStructure();
+
+                        if (CurrentFiles != DefaultDirectory)
+                            CurrentDirectoryStack.Push(CurrentDirectory);
+                        CurrentDirectory += SelectedItem.Name + "/";
+
+                        string SubDirectory = CurrentDirectory;
+                        string ReadableDirectory = BaseDirectory + SubDirectory.Replace("/", "\\");
+
+                        if (!ReadableDirectory.EndsWith('\\'))
+                            ReadableDirectory += "\\";
+
+                        if (CurrentFiles != DefaultDirectory)
+                            MemoryDirectoriesStack.Push(CurrentFiles);
+                        CurrentFiles = structure.CreateCurrentLevelList(project, ReadableDirectory, (ContentSort)SelectedSortIndex);
+
+                        ReturnPageStack.Clear();
+                        ReturnDirectoryStack.Clear();
+
+                        PageChanged.Invoke(this, EventArgs.Empty);
+                    }
+                }));
+
+                IsContentLoading = false;
+            }
+        }
+
+        private bool CanExecuteSelectedItem()
+        {
+            if (SelectedItems.Count > 1)
+                return false;
+            else
+                return true;
+        }
+
         private void RenameSelectedItem()
         {
             Debug.WriteLine($"Rename: {SelectedItem.Name}");
@@ -613,6 +822,9 @@ namespace UDSH.ViewModel
 
         private bool CanRenameSelectedItem()
         {
+            if (SelectedItem == null)
+                return false;
+
             if (SelectedItems.Count > 1)
                 return false;
             else
@@ -651,26 +863,6 @@ namespace UDSH.ViewModel
                 _userDataServices.UpdateFileDetailsAsync(SelectedItem, OldDirectory);
             });
 
-            /*await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
-            {
-                string OldDirectory = string.Empty;
-                if (SelectedItem.File == null)
-                    OldDirectory = SelectedItem.Directory;
-                else
-                    OldDirectory = SelectedItem.File.FileDirectory;
-
-                FileStructure fileStructure = new FileStructure();
-                fileStructure.RenameFile(SelectedItem, RenameNewName);
-                CurrentFiles = new ObservableCollection<ContentFileStructure>(CurrentFiles);
-
-                fileStructure.UpdateTreeItemName(Root, _userDataServices.ActiveProject, SelectedItem, OldDirectory);
-                Node Temp = Root;
-                Root = new Node();
-                Root = Temp;
-
-                _userDataServices.UpdateFileDetailsAsync();
-            }));*/
-
             RenameNewName = string.Empty;
 
             IsNormalState = true;
@@ -686,6 +878,56 @@ namespace UDSH.ViewModel
             IsContentRenameProcess = false;
             IsContentCanceledProcess = true;
             IsContentCanceledProcess = false;
+        }
+
+        private async void GoBack()
+        {
+            IsContentLoading = true;
+            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+            {
+                if (CurrentFiles != DefaultDirectory)
+                {
+                    ReturnPageStack.Push(CurrentFiles);
+                    ReturnDirectoryStack.Push(CurrentDirectory);
+
+                    CurrentFiles = MemoryDirectoriesStack.Pop();
+                    CurrentDirectory = CurrentDirectoryStack.Pop();
+
+                    if (MemoryDirectoriesStack.Count == 0)
+                        MemoryDirectoriesStack.Push(DefaultDirectory);
+                    if (CurrentDirectoryStack.Count == 0)
+                        CurrentDirectoryStack.Push("");
+                }
+
+                PageChanged.Invoke(this, EventArgs.Empty);
+            }));
+
+            IsContentLoading = false;
+        }
+
+        private void GoForward()
+        {
+            if (ReturnPageStack.Count > 0)
+            {
+                MemoryDirectoriesStack.Push(CurrentFiles);
+                CurrentDirectoryStack.Push(CurrentDirectory);
+
+                CurrentFiles = ReturnPageStack.Pop();
+                CurrentDirectory = ReturnDirectoryStack.Pop();
+
+                PageChanged.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void AssignFocusBorder(Border border)
+        {
+            FocusTarget = border;
+        }
+
+        private void UpdateSorting()
+        {
+            FileStructure fileStructure = new FileStructure();
+            CurrentFiles = fileStructure.SortListItems(CurrentFiles, (ContentSort)SelectedSortIndex);
         }
     }
 }

@@ -23,9 +23,9 @@
 
         <Border x:Name="NavBorder" Grid.Row="0" Background="#C5C5C5" Height="40" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="4" Margin="250,0,0,0">
             <StackPanel Orientation="Horizontal">
-                <Button Style="{StaticResource ContentBackButton}" IsEnabled="{Binding IsNormalState}"/>
+                <Button Style="{StaticResource ContentBackButton}" Command="{Binding BackButton}" IsEnabled="{Binding IsNormalState}"/>
                 <Image Source="/Resource/HorusEyeDarkGrey.png" Margin="15,3,15,3"/>
-                <Button Style="{StaticResource ContentNextButton}" IsEnabled="{Binding IsNormalState}"/>
+                <Button Style="{StaticResource ContentNextButton}" Command="{Binding ReturnButton}" IsEnabled="{Binding IsNormalState}"/>
             </StackPanel>
         </Border>
         
@@ -115,6 +115,12 @@
                         <TextBlock Style="{StaticResource DefaultText}" Text="(Z-A) Folders First" FontSize="16" Margin="5,0,0,0"/>
                     </StackPanel>
                 </ComboBoxItem>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding SortSelectionChanged}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </ComboBox>
             <ComboBox Style="{StaticResource ViewComboBox}" Margin="0,0,20,0" IsEnabled="{Binding IsNormalState}">
                 <ComboBoxItem>
@@ -612,6 +618,10 @@
                             <i:EventTrigger EventName="SelectionChanged">
                                 <i:InvokeCommandAction Command="{Binding ListSelectionChanged}" PassEventArgsToCommand="True"/>
                             </i:EventTrigger>
+
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction Command="{Binding ListViewMouseDoubleClick}"/>
+                            </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ListView>
                 </Grid>
@@ -619,7 +629,7 @@
         </Grid>
 
         <Grid Grid.Row="2">
-            <Border Background="#383838" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5">
+            <Border x:Name="StatusBox" Background="#383838" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5" Focusable="True" FocusVisualStyle="{x:Null}">
                 <Image Source="/Resource/ContentState.png" Width="100" Margin="15">
                     <Image.Style>
                         <Style TargetType="Image">
@@ -647,6 +657,12 @@
                         </Style>
                     </Image.Style>
                 </Image>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding StatusBorderLoaded}" CommandParameter="{Binding ElementName=StatusBox}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </Border>
 
             <!-- start 130... End 833 -->
@@ -677,7 +693,7 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
-                    
+
                     <!-- start 30... End 500 -->
                     <Border Background="#DEDEDE" Width="30" CornerRadius="4" Margin="10,-5,0,-5">
                         <Grid>
@@ -824,6 +840,62 @@
                     </Style>
                 </Border.Style>
             </Border>
+
+            <Border Background="#F83030" Height="60" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5">
+                <Grid>
+                    <TextBlock Text="{Binding DirectoryWrongInputMessage}" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="#FFFFFF">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+                                <Setter Property="Opacity" Value="0"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ShowWarningMessage}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:1.2" Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Opacity" Value="0"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ShowWarningMessage}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.3" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="Width" To="510" BeginTime="0:0:0.6" Duration="0:0:0.6"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.8" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="Width" To="130" BeginTime="0:0:0.2" Duration="0:0:0.6"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
         </Grid>
     </Grid>
 
@@ -914,9 +986,16 @@
                                                     </Style>
                                                 </TextBox.Style>
 
+                                                <TextBox.InputBindings>
+                                                    <KeyBinding Key="Enter" Command="{Binding PressedEnter}"/>
+                                                </TextBox.InputBindings>
+
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="Loaded">
                                                         <i:InvokeCommandAction Command="{Binding DirectoryTextBoxLoaded}" CommandParameter="{Binding ElementName=DirectoryTextBox}"/>
+                                                    </i:EventTrigger>
+                                                    <i:EventTrigger EventName="TextChanged">
+                                                        <i:InvokeCommandAction Command="{Binding DirectoryTextBoxTextChanged}"/>
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
                                             </TextBox>

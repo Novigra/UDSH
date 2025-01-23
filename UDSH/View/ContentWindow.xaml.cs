@@ -35,9 +35,34 @@ namespace UDSH.View
             this.viewModel.WindowDragEnd += ResetDragModeAnimation;
             this.viewModel.MousePressed += ViewModel_MousePressed;
             this.viewModel.MouseEnterCollision += ViewModel_MouseEnterCollision;
+            this.viewModel.DirectoryWarningMessage += ViewModel_DirectoryWarningMessage;
+            this.viewModel.WrongDirectoryNotification += ViewModel_WrongDirectoryNotification;
+            this.viewModel.PageChanged += ViewModel_PageChanged;
 
             StateChanged += ContentWindow_StateChanged;
             SizeChanged += ContentWindow_SizeChanged;
+        }
+
+        private void ViewModel_PageChanged(object? sender, EventArgs e)
+        {
+            BorderContainer.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C5C5C5"));
+        }
+
+        private void ViewModel_WrongDirectoryNotification(object? sender, EventArgs e)
+        {
+            ColorTargetAnimation("#F83030", BorderContainer, true);
+        }
+
+        private void ViewModel_DirectoryWarningMessage(object? sender, bool e)
+        {
+            if (e == true)
+            {
+                ColorTargetAnimation("#F83030", BorderContainer);
+            }
+            else
+            {
+                ColorTargetAnimation("#FFFFFF", BorderContainer);
+            }
         }
 
         private void ContentWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -95,18 +120,32 @@ namespace UDSH.View
             }
         }
 
-        private void ColorTargetAnimation(string ColorHexCode, DependencyObject Target)
+        private void ColorTargetAnimation(string ColorHexCode, DependencyObject Target, bool CanReverse = false)
         {
             Storyboard storyboard = new Storyboard();
             ColorAnimation colorAnimation = new ColorAnimation
             {
                 To = (Color)ColorConverter.ConvertFromString(ColorHexCode),
-                Duration = TimeSpan.FromSeconds(0.2)
+                Duration = TimeSpan.FromSeconds(0.2),
             };
 
             Storyboard.SetTarget(colorAnimation, Target);
             Storyboard.SetTargetProperty(colorAnimation, new PropertyPath("(Control.Background).(SolidColorBrush.Color)"));
             storyboard.Children.Add(colorAnimation);
+
+            if (CanReverse == true)
+            {
+                ColorAnimation colorToOriginal = new ColorAnimation
+                {
+                    To = (Color)ColorConverter.ConvertFromString("#FFFFFF"),
+                    Duration = TimeSpan.FromSeconds(0.2),
+                    BeginTime = TimeSpan.FromSeconds(0.5),
+                };
+
+                Storyboard.SetTarget(colorToOriginal, Target);
+                Storyboard.SetTargetProperty(colorToOriginal, new PropertyPath("(Control.Background).(SolidColorBrush.Color)"));
+                storyboard.Children.Add(colorToOriginal);
+            }
 
             storyboard.Begin();
         }

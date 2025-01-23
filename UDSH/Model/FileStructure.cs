@@ -20,11 +20,11 @@ namespace UDSH.Model
         /// <param name="project"></param>
         /// <param name="sort"></param>
         /// <returns></returns>
-        public ObservableCollection<ContentFileStructure> CreateCurrentLevelList(Project project, ContentSort sort)
+        public ObservableCollection<ContentFileStructure> CreateCurrentLevelList(Project project, string currentDirectory, ContentSort sort)
         {
             ObservableCollection<ContentFileStructure> contentFileStructures = new ObservableCollection<ContentFileStructure>();
-            string[] Directories = Directory.GetDirectories(project.ProjectDirectory);
-            string[] Files = Directory.GetFiles(project.ProjectDirectory);
+            string[] Directories = Directory.GetDirectories(currentDirectory);
+            string[] Files = Directory.GetFiles(currentDirectory);
 
             foreach (var directory in Directories)
             {
@@ -75,16 +75,107 @@ namespace UDSH.Model
             }
 
             ObservableCollection<ContentFileStructure> SortedStructure = new ObservableCollection<ContentFileStructure>();
+            SortedStructure = SortListItems(contentFileStructures, sort);
+
+            return SortedStructure;
+        }
+
+        public ObservableCollection<ContentFileStructure> UpdateCurrentLevelList(ObservableCollection<ContentFileStructure> currentFiles, Project project, FileSystem AddedFile, string CurrentDirectory, ContentSort sort)
+        {
+            string[] TextSplit = AddedFile.FileDirectory.Split(CurrentDirectory);
+            if (TextSplit[1].Contains('\\'))
+            {
+                string[] PathSplit = TextSplit[1].Split('\\');
+                string FolderName = PathSplit[0];
+                bool CanProceed = true;
+
+                foreach (var item in currentFiles)
+                {
+                    if (item.Name.Equals(FolderName))
+                    {
+                        CanProceed = false;
+                        break;
+                    }
+                }
+
+                if (CanProceed == true)
+                {
+                    string directory = Path.Combine(CurrentDirectory, FolderName);
+
+                    DirectoryInfo DirectoryInfo = new DirectoryInfo(directory);
+                    var DirectorySize = Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories).AsParallel().Select(file => new FileInfo(file).Length).Sum();
+                    double Size = DirectorySize / 1024.0;
+                    int index = 0;
+                    while (Size >= 1024 && index < Sizes.Length - 1)
+                    {
+                        Size /= 1024;
+                        index++;
+                    }
+                    string FinalSize = Size.ToString("F") + " " + Sizes[index];
+
+                    currentFiles.Add(new ContentFileStructure
+                    {
+                        Name = DirectoryInfo.Name,
+                        LastDateModification = DirectoryInfo.LastWriteTime,
+                        Type = "Folder",
+                        Size = FinalSize,
+                        Author = project.ProjectAuthor,
+                        Directory = directory,
+                        Image = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png")),
+                        File = null
+                    });
+
+                    return SortListItems(currentFiles, sort);
+                }
+                else
+                {
+                    return currentFiles;
+                }
+            }
+            else
+            {
+                string FileName = TextSplit[1];
+                string file = Path.Combine(CurrentDirectory, FileName);
+
+                foreach (var savedFile in project.Files)
+                {
+                    if (file.Equals(savedFile.FileDirectory))
+                    {
+                        currentFiles.Add(new ContentFileStructure
+                        {
+                            Name = savedFile.FileName,
+                            LastDateModification = savedFile.FileLastModificationDate,
+                            Type = savedFile.FileType.ToUpper(),
+                            Size = savedFile.FileSize,
+                            Author = savedFile.FileAuthor,
+                            Directory = string.Empty,
+                            Image = new BitmapImage(new Uri("pack://application:,,,/Resource/FileType.png")),
+                            File = savedFile
+                        });
+                        break;
+                    }
+                }
+
+                return SortListItems(currentFiles, sort);
+            }
+        }
+
+        public ObservableCollection<ContentFileStructure> SortListItems(ObservableCollection<ContentFileStructure> currentFiles, ContentSort sort)
+        {
+            ObservableCollection<ContentFileStructure> SortedStructure = new ObservableCollection<ContentFileStructure>();
             switch (sort)
             {
                 case ContentSort.FilesFirst_Ascending:
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("Folder")).ThenBy(n => n.Name, StringComparer.Ordinal));
                     break;
                 case ContentSort.FilesFirst_Descending:
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("Folder")).ThenByDescending(n => n.Name, StringComparer.Ordinal));
                     break;
                 case ContentSort.FoldersFirst_Ascending:
-                    SortedStructure = new ObservableCollection<ContentFileStructure>(contentFileStructures.OrderBy(item => item.Type.Contains("MK")).ThenBy(n => n.Name, StringComparer.Ordinal));
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("MK")).ThenBy(n => n.Name, StringComparer.Ordinal));
                     break;
                 case ContentSort.FoldersFirst_Descending:
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("MK")).ThenByDescending(n => n.Name, StringComparer.Ordinal));
                     break;
                 default:
                     break;
