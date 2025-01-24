@@ -106,6 +106,8 @@ namespace UDSH.ViewModel
             set { searchText = value; OnPropertyChanged(); }
         }
 
+        private ObservableCollection<ContentFileStructure> DefaultCurrentFiles;
+
         private ObservableCollection<ContentFileStructure> currentFiles;
         public ObservableCollection<ContentFileStructure> CurrentFiles
         {
@@ -127,11 +129,25 @@ namespace UDSH.ViewModel
             set { selectedItems = value; OnPropertyChanged(); }
         }
 
+        private int selectedAddIndex;
+        public int SelectedAddIndex
+        {
+            get => selectedAddIndex;
+            set { selectedAddIndex = value; OnPropertyChanged(); }
+        }
+
         private int selectedSortIndex;
         public int SelectedSortIndex
         {
             get => selectedSortIndex;
             set { selectedSortIndex = value; OnPropertyChanged(); }
+        }
+
+        private int selectedFilterIndex;
+        public int SelectedFilterIndex
+        {
+            get => selectedFilterIndex;
+            set { selectedFilterIndex = value; OnPropertyChanged(); }
         }
 
         private CustomScrollViewer OuterScrollViewer;
@@ -260,6 +276,13 @@ namespace UDSH.ViewModel
             set { openRenameTextBox = value; OnPropertyChanged(); }
         }
 
+        private bool openNameTextBox;
+        public bool OpenNameTextBox
+        {
+            get => openNameTextBox;
+            set { openNameTextBox = value; OnPropertyChanged(); }
+        }
+
         private string renameNewName;
         public string RenameNewName
         {
@@ -342,6 +365,8 @@ namespace UDSH.ViewModel
         public RelayCommand<object> BackButton => new RelayCommand<object>(execute => GoBack());
         public RelayCommand<object> ReturnButton => new RelayCommand<object>(execute => GoForward());
 
+        public RelayCommand<object> AddSelectionChanged => new RelayCommand<object>(execute => UpdateAdd());
+        public RelayCommand<object> FilterSelectionChanged => new RelayCommand<object>(execute => UpdateFilter());
         public RelayCommand<object> SortSelectionChanged => new RelayCommand<object>(execute => UpdateSorting());
         #endregion
 
@@ -391,10 +416,14 @@ namespace UDSH.ViewModel
             IsContentCanceledProcess = false;
 
             SearchText = string.Empty;
+
+            SelectedAddIndex = -1;
             SelectedSortIndex = (int)ContentSort.FoldersFirst_Ascending;
+            SelectedFilterIndex = (int)ContentFilter.None;
 
             IsNormalState = true;
             OpenRenameTextBox = false;
+            OpenNameTextBox = false;
             RenameNewName = string.Empty;
             CurrentDirectoryBeforeEdit = string.Empty;
 
@@ -418,6 +447,8 @@ namespace UDSH.ViewModel
             CanGoToDirectory = true;
             ShowWarningMessage = false;
             DirectoryWrongInputMessage = "You Can’t Add Empty Directories Or Use \\ : * ? \" < > |";
+
+            DefaultCurrentFiles = new ObservableCollection<ContentFileStructure>();
         }
 
         private async void LoadData()
@@ -446,6 +477,8 @@ namespace UDSH.ViewModel
 
                     Root = new Node();
                     Root = structure.ContentBuildSideTree(project);
+
+                    UpdateDefaultList();
                 }
             }));
 
@@ -466,6 +499,7 @@ namespace UDSH.ViewModel
 
                 ObservableCollection<ContentFileStructure> UpdatedList = fileStructure.UpdateCurrentLevelList(CurrentFiles, _userDataServices.ActiveProject, e, ReadableDirectory, (ContentSort)SelectedSortIndex);
                 CurrentFiles = UpdatedList;
+                UpdateDefaultList();
             }));
 
             IsContentLoading = false;
@@ -567,7 +601,10 @@ namespace UDSH.ViewModel
 
             if (Directory.Exists(ReadableDirectory))
             {
+                SelectedFilterIndex = 0;
+                CurrentFiles = DefaultCurrentFiles;
                 IsContentLoading = true;
+
                 await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
                 {
                     if (!CurrentDirectory.EndsWith('/'))
@@ -597,6 +634,8 @@ namespace UDSH.ViewModel
                     Reset += "/";
                 CurrentDirectory = Reset;
                 IsContentLoading = false;
+
+                DefaultCurrentFiles = CurrentFiles;
             }
             else
                 WrongDirectoryNotification.Invoke(this, EventArgs.Empty);
@@ -796,6 +835,8 @@ namespace UDSH.ViewModel
                         ReturnDirectoryStack.Clear();
 
                         PageChanged.Invoke(this, EventArgs.Empty);
+
+                        DefaultCurrentFiles = CurrentFiles;
                     }
                 }));
 
@@ -867,6 +908,8 @@ namespace UDSH.ViewModel
 
             IsNormalState = true;
             IsContentLoading = false;
+
+            UpdateDefaultList();
         }
 
         private void StopRenameProcess()
@@ -887,6 +930,8 @@ namespace UDSH.ViewModel
             {
                 if (CurrentFiles != DefaultDirectory)
                 {
+                    CurrentFiles = DefaultCurrentFiles;
+
                     ReturnPageStack.Push(CurrentFiles);
                     ReturnDirectoryStack.Push(CurrentDirectory);
 
@@ -900,6 +945,10 @@ namespace UDSH.ViewModel
                 }
 
                 PageChanged.Invoke(this, EventArgs.Empty);
+
+                // Reset Filter
+                SelectedFilterIndex = 0;
+                DefaultCurrentFiles = CurrentFiles;
             }));
 
             IsContentLoading = false;
@@ -909,6 +958,8 @@ namespace UDSH.ViewModel
         {
             if (ReturnPageStack.Count > 0)
             {
+                CurrentFiles = DefaultCurrentFiles;
+
                 MemoryDirectoriesStack.Push(CurrentFiles);
                 CurrentDirectoryStack.Push(CurrentDirectory);
 
@@ -916,12 +967,44 @@ namespace UDSH.ViewModel
                 CurrentDirectory = ReturnDirectoryStack.Pop();
 
                 PageChanged.Invoke(this, EventArgs.Empty);
+
+                // Reset Filter
+                SelectedFilterIndex = 0;
+                DefaultCurrentFiles = CurrentFiles;
             }
         }
 
         private void AssignFocusBorder(Border border)
         {
             FocusTarget = border;
+        }
+
+        private async void UpdateFilter()
+        {
+            IsContentLoading = true;
+            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+            {
+                FileStructure fileStructure = new FileStructure();
+                ObservableCollection<ContentFileStructure> FilteredFiles = fileStructure.FilterListItems(DefaultCurrentFiles, (ContentFilter)SelectedFilterIndex);
+                if (FilteredFiles.Count > 0)
+                    CurrentFiles = FilteredFiles;
+                else
+                    CurrentFiles = DefaultCurrentFiles;
+            }));
+
+            IsContentLoading = false;
+        }
+
+        private void UpdateAdd()
+        {
+            //MessageBox.Show($"{(ContentAdd)SelectedAddIndex}");
+            OpenNameTextBox = true;
+        }
+
+        private void UpdateDefaultList()
+        {
+            if ((ContentFilter)SelectedFilterIndex == ContentFilter.None)
+                DefaultCurrentFiles = CurrentFiles;
         }
 
         private void UpdateSorting()

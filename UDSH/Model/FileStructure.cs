@@ -184,6 +184,38 @@ namespace UDSH.Model
             return SortedStructure;
         }
 
+        public ObservableCollection<ContentFileStructure> FilterListItems(ObservableCollection<ContentFileStructure> currentFiles, ContentFilter filter)
+        {
+            switch (filter)
+            {
+                case ContentFilter.None:
+                    return new ObservableCollection<ContentFileStructure>();
+                case ContentFilter.MKB:
+                    return ConstructFilteredList(currentFiles, "mkb");
+                case ContentFilter.MKC:
+                    return ConstructFilteredList(currentFiles, "mkc");
+                case ContentFilter.MKM:
+                    return ConstructFilteredList(currentFiles, "mkm");
+                default:
+                    return new ObservableCollection<ContentFileStructure>();
+            }
+        }
+
+        private ObservableCollection<ContentFileStructure> ConstructFilteredList(ObservableCollection<ContentFileStructure> currentFiles, string type)
+        {
+            ObservableCollection<ContentFileStructure> FilteredStructure = new ObservableCollection<ContentFileStructure>();
+
+            foreach(var file in currentFiles)
+            {
+                if (file.File != null)
+                {
+                    if (file.File.FileType.Equals(type))
+                        FilteredStructure.Add(file);
+                }
+            }
+            return FilteredStructure;
+        }
+
         /// <summary>
         /// Build Content Tree, Sorted.
         /// </summary>
