@@ -63,8 +63,10 @@
     <None Remove="Resource\FolderSaveContentAs.png" />
     <None Remove="Resource\FolderSidebar.png" />
     <None Remove="Resource\FolderSwitchContent.png" />
+    <None Remove="Resource\Folder_Large.png" />
     <None Remove="Resource\HandHandle.png" />
     <None Remove="Resource\HandHandleHighlight.png" />
+    <None Remove="Resource\HighlightFolder_Large.png" />
     <None Remove="Resource\HorusEye.png" />
     <None Remove="Resource\HorusEyeBlack.png" />
     <None Remove="Resource\HorusEyeDarkGrey.png" />
@@ -184,8 +186,10 @@
     <Resource Include="Resource\FolderSaveContentAs.png" />
     <Resource Include="Resource\FolderSidebar.png" />
     <Resource Include="Resource\FolderSwitchContent.png" />
+    <Resource Include="Resource\Folder_Large.png" />
     <Resource Include="Resource\HandHandle.png" />
     <Resource Include="Resource\HandHandleHighlight.png" />
+    <Resource Include="Resource\HighlightFolder_Large.png" />
     <Resource Include="Resource\HorusEye.png" />
     <Resource Include="Resource\HorusEyeBlack.png" />
     <Resource Include="Resource\HorusEyeDarkGrey.png" />

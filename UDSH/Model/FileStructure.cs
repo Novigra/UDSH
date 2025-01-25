@@ -48,6 +48,8 @@ namespace UDSH.Model
                     Author = project.ProjectAuthor,
                     Directory = directory,
                     Image = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png")),
+                    LargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/Folder_Large.png")),
+                    HighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightFolder_Large.png")),
                     File = null
                 });
             }
@@ -56,6 +58,7 @@ namespace UDSH.Model
             {
                 foreach (var savedFile in project.Files)
                 {
+                    // TODO: switch cases for images
                     if(file.Equals(savedFile.FileDirectory))
                     {
                         contentFileStructures.Add(new ContentFileStructure
@@ -158,6 +161,77 @@ namespace UDSH.Model
 
                 return SortListItems(currentFiles, sort);
             }
+        }
+
+        public ObservableCollection<ContentFileStructure> CreateFolder(ObservableCollection<ContentFileStructure> CurrentFiles, Project project, string directory, ContentSort sort)
+        {
+            DirectoryInfo DirectoryInfo = new DirectoryInfo(directory);
+            DirectoryInfo.Create();
+
+            CurrentFiles.Add(new ContentFileStructure
+            {
+                Name = DirectoryInfo.Name,
+                LastDateModification = DirectoryInfo.LastWriteTime,
+                Type = "Folder",
+                Size = "0.00 KB",
+                Author = project.ProjectAuthor,
+                Directory = directory,
+                Image = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png")),
+                File = null
+            });
+
+            ObservableCollection<ContentFileStructure> SortedStructure = new ObservableCollection<ContentFileStructure>();
+            SortedStructure = SortListItems(CurrentFiles, sort);
+
+            return SortedStructure;
+        }
+
+        public void AddEmptyFolderTreeItemName(Node root, Project project, string directory)
+        {
+            string[] TextSplit = directory.Split('\\');
+            int index = Array.IndexOf(TextSplit, project.ProjectName);
+            string ItemName = string.Empty;
+
+            if (!string.IsNullOrEmpty(TextSplit.Last()))
+                ItemName = TextSplit.Last();
+            else
+                ItemName = TextSplit[TextSplit.Length - 2];
+
+            Node CurrentNode = root;
+
+            for (int i = index + 1; i < TextSplit.Length; ++i)
+            {
+                Node? NextNode = null;
+
+                foreach (var node in CurrentNode.SubNodes)
+                {
+                    if (node.NodeType == DataType.File)
+                        break;
+
+                    if (node.Name.Equals(TextSplit[i]))
+                    {
+                        NextNode = node;
+                        break;
+                    }
+                }
+
+                if (NextNode == null)
+                    break;
+
+                CurrentNode = NextNode;
+            }
+
+            CurrentNode.SubNodes.Add(new Node
+            {
+                Name = ItemName,
+                NodeImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png")),
+                NodeType = DataType.Folder,
+                NodeDirectory = directory,
+                NodeFile = null,
+                SubNodes = new ObservableCollection<Node>()
+            });
+
+            CurrentNode.SubNodes = new ObservableCollection<Node>(CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.Ordinal));
         }
 
         public ObservableCollection<ContentFileStructure> SortListItems(ObservableCollection<ContentFileStructure> currentFiles, ContentSort sort)
@@ -453,9 +527,6 @@ namespace UDSH.Model
 
             for (int i = index + 1; i < TextSplit.Length; ++i)
             {
-                /*Node? NextNode = CurrentNode.SubNodes.FirstOrDefault(node => node.Name.Contains(TextSplit[i]));
-                if (NextNode == null)
-                    break;*/
                 Node? NextNode = null;
 
                 foreach (var node in CurrentNode.SubNodes)

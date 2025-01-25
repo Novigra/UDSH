@@ -290,6 +290,13 @@ namespace UDSH.ViewModel
             set { renameNewName = value; OnPropertyChanged(); }
         }
 
+        private string itemNewName;
+        public string ItemNewName
+        {
+            get => itemNewName;
+            set { itemNewName = value; OnPropertyChanged(); }
+        }
+
         private ObservableCollection<ContentFileStructure> DefaultDirectory;
         private Stack<string> CurrentDirectoryStack;
         private Stack<ObservableCollection<ContentFileStructure>> MemoryDirectoriesStack;
@@ -368,6 +375,9 @@ namespace UDSH.ViewModel
         public RelayCommand<object> AddSelectionChanged => new RelayCommand<object>(execute => UpdateAdd());
         public RelayCommand<object> FilterSelectionChanged => new RelayCommand<object>(execute => UpdateFilter());
         public RelayCommand<object> SortSelectionChanged => new RelayCommand<object>(execute => UpdateSorting());
+
+        public RelayCommand<object> ConfirmNewItemName => new RelayCommand<object>(execute => ConfirmNewItemNameProcess(), canExecute => OpenNameTextBox);
+        public RelayCommand<object> CancelNewItemName => new RelayCommand<object>(execute => CancelNewItemNameProcess(), canExecute => OpenNameTextBox);
         #endregion
 
         public ContentWindowViewModel(IUserDataServices userDataServices)
@@ -425,6 +435,7 @@ namespace UDSH.ViewModel
             OpenRenameTextBox = false;
             OpenNameTextBox = false;
             RenameNewName = string.Empty;
+            ItemNewName = string.Empty;
             CurrentDirectoryBeforeEdit = string.Empty;
 
             LoadData();
@@ -478,6 +489,21 @@ namespace UDSH.ViewModel
                     Root = new Node();
                     Root = structure.ContentBuildSideTree(project);
 
+                    string[] directories = Directory.GetDirectories(_userDataServices.ActiveProject.ProjectDirectory, "*", SearchOption.AllDirectories);
+                    List<string> EmptyDirectories = new List<string>();
+                    foreach (string directory in directories)
+                    {
+                        if (!Directory.EnumerateFileSystemEntries(directory).Any())
+                            EmptyDirectories.Add(directory);
+                    }
+
+                    foreach (string directory in EmptyDirectories)
+                        structure.AddEmptyFolderTreeItemName(Root, project, directory);
+
+                    Node temp = Root;
+                    Root = new Node();
+                    Root = temp;
+
                     UpdateDefaultList();
                 }
             }));
@@ -493,7 +519,8 @@ namespace UDSH.ViewModel
                 FileStructure fileStructure = new FileStructure();
                 Node AddedNode = fileStructure.AddNewFile(_userDataServices.ActiveProject, Root, e, true);
 
-                string ReadableDirectory = BaseDirectory + CurrentDirectory.Replace("/", "\\");
+                string SubDirectory = CurrentDirectory;
+                string ReadableDirectory = BaseDirectory + SubDirectory.Replace("/", "\\");
                 if (!ReadableDirectory.EndsWith('\\'))
                     ReadableDirectory += "\\";
 
@@ -998,7 +1025,13 @@ namespace UDSH.ViewModel
         private void UpdateAdd()
         {
             //MessageBox.Show($"{(ContentAdd)SelectedAddIndex}");
-            OpenNameTextBox = true;
+
+            if (SelectedAddIndex != -1)
+            {
+                OpenNameTextBox = true;
+                IsNormalState = false;
+                IsContentRenameProcess = true;
+            }
         }
 
         private void UpdateDefaultList()
@@ -1011,6 +1044,82 @@ namespace UDSH.ViewModel
         {
             FileStructure fileStructure = new FileStructure();
             CurrentFiles = fileStructure.SortListItems(CurrentFiles, (ContentSort)SelectedSortIndex);
+        }
+
+        private void ConfirmNewItemNameProcess()
+        {
+            switch ((ContentAdd)SelectedAddIndex)
+            {
+                case ContentAdd.Folder:
+                    AddItem("Folder");
+                    break;
+                case ContentAdd.MKB:
+                    AddItem("mkb");
+                    break;
+                case ContentAdd.MKC:
+                    AddItem("mkc");
+                    break;
+                case ContentAdd.MKM:
+                    AddItem("mkm");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private async void AddItem(string type)
+        {
+            IsContentRenameProcess = false;
+            IsContentLoading = true;
+
+            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+            {
+                string SubDirectory = CurrentDirectory;
+                string ReadableDirectory = BaseDirectory + SubDirectory.Replace("/", "\\");
+                if (!ReadableDirectory.EndsWith('\\'))
+                    ReadableDirectory += "\\";
+
+                if (type.Equals("Folder"))
+                {
+                    ReadableDirectory += ItemNewName + "\\";
+                    FileStructure fileStructure = new FileStructure();
+                    CurrentFiles = fileStructure.CreateFolder(CurrentFiles, _userDataServices.ActiveProject, ReadableDirectory, (ContentSort)SelectedSortIndex);
+                    fileStructure.AddEmptyFolderTreeItemName(Root, _userDataServices.ActiveProject, ReadableDirectory);
+
+                    Node temp = Root;
+                    Root = new Node();
+                    Root = temp;
+                }
+                else
+                    _userDataServices.CreateNewFileAsync(ItemNewName, type, ReadableDirectory);
+            }));
+            ResetNewItemNameBox(true);
+        }
+
+        private void CancelNewItemNameProcess()
+        {
+            ResetNewItemNameBox();
+        }
+
+        private void ResetNewItemNameBox(bool IsConfirmProcess = false)
+        {
+            OpenNameTextBox = false;
+            ItemNewName = string.Empty;
+
+            IsNormalState = true;
+
+            if (IsConfirmProcess == true)
+            {
+                IsContentLoading = false;
+            }
+            else
+            {
+                IsContentRenameProcess = false;
+                IsContentCanceledProcess = true;
+                IsContentCanceledProcess = false;
+            }
+
+            SelectedAddIndex = -1;
         }
     }
 }

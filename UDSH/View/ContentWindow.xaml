@@ -410,7 +410,7 @@
                     </Border>
                 </Grid>
                 <Grid Grid.Row="1">
-                    <ListView IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout}" ItemContainerStyle="{StaticResource ContentDirectoryListItem}">
+                    <ListView Opacity="0" IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout}" ItemContainerStyle="{StaticResource ContentDirectoryListItem}">
                         <ListView.View>
                             <GridView ColumnHeaderContainerStyle="{StaticResource Content_GridViewColumnHeader}">
                                 <GridViewColumn Header="Name" Width="{Binding ColWidth1, Mode=TwoWay}">
@@ -611,6 +611,30 @@
                             </GridView>
                         </ListView.View>
 
+                        <ListView.ContextMenu>
+                            <ContextMenu Style="{StaticResource ContentItemProperties}">
+                                <MenuItem Header="Delete"/>
+                                <MenuItem Header="Delete Permanently" Foreground="#F83030"/>
+                                <MenuItem Header="Rename" Command="{Binding RenameItem}"/>
+                                <MenuItem Header="Properties"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding ListSelectionChanged}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction Command="{Binding ListViewMouseDoubleClick}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ListView>
+
+
+                    <ListView IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout_LargeIcons}" ItemContainerStyle="{StaticResource ContentDirectoryListViewItem_LargeIcons}">
+                        
+                        
                         <ListView.ContextMenu>
                             <ContextMenu Style="{StaticResource ContentItemProperties}">
                                 <MenuItem Header="Delete"/>
@@ -953,7 +977,7 @@
                     <!-- start 30... End 500 -->
                     <Border Background="#DEDEDE" Width="30" CornerRadius="4" Margin="10,-5,0,-5">
                         <Grid>
-                            <TextBox Text="{Binding RenameNewName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding OpenNameTextBox}" Margin="5,0,0,0">
+                            <TextBox Text="{Binding ItemNewName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding OpenNameTextBox}" Margin="5,0,0,0">
                                 <TextBox.Style>
                                     <Style TargetType="TextBox">
                                         <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -978,12 +1002,12 @@
 
                                 </TextBox.Style>
                             </TextBox>
-                            <TextBlock IsHitTestVisible="False" Text="Enter New Name..." Foreground="#666666" FontSize="18" VerticalAlignment="Center" Margin="9,0,0,0">
+                            <TextBlock IsHitTestVisible="False" Text="Enter Name..." Foreground="#666666" FontSize="18" VerticalAlignment="Center" Margin="9,0,0,0">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
                                         <Setter Property="Visibility" Value="Collapsed"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding RenameNewName}" Value="">
+                                            <DataTrigger Binding="{Binding ItemNewName}" Value="">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -1018,12 +1042,12 @@
                             </Style>
                         </Border.Style>
                     </Border>
-                    <Button Width="100" Margin="20,-5,0,-5" Command="{Binding ConfirmRename}">
+                    <Button Width="100" Margin="20,-5,0,-5" Command="{Binding ConfirmNewItemName}">
                         <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource RenameItemConfirmButton}">
+                            <Style TargetType="Button" BasedOn="{StaticResource NameItemConfirmButton}">
                                 <Setter Property="Opacity" Value="0"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding OpenRenameTextBox}" Value="True">
+                                    <DataTrigger Binding="{Binding OpenNameTextBox}" Value="True">
                                         <DataTrigger.EnterActions>
                                             <BeginStoryboard>
                                                 <Storyboard>
@@ -1043,12 +1067,12 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button Width="100" Margin="10,-5,10,-5" Command="{Binding CancelRename}">
+                    <Button Width="100" Margin="10,-5,10,-5" Command="{Binding CancelNewItemName}">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource RenameItemCancelButton}">
                                 <Setter Property="Opacity" Value="0"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding OpenRenameTextBox}" Value="True">
+                                    <DataTrigger Binding="{Binding OpenNameTextBox}" Value="True">
                                         <DataTrigger.EnterActions>
                                             <BeginStoryboard>
                                                 <Storyboard>
@@ -1154,7 +1178,7 @@
                                                                                     <Storyboard>
                                                                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border"
                                                                           Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                                                                            <EasingColorKeyFrame KeyTime="0" Value="{StaticResource DisabledControlLightColor}"/>
+                                                                                            <EasingColorKeyFrame KeyTime="0" Value="#C5C5C5"/>
                                                                                         </ColorAnimationUsingKeyFrames>
                                                                                     </Storyboard>
                                                                                 </VisualState>
@@ -1162,7 +1186,7 @@
                                                                                     <Storyboard>
                                                                                         <ColorAnimationUsingKeyFrames Storyboard.TargetName="Border"
                                                                           Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
-                                                                                            <EasingColorKeyFrame KeyTime="0" Value="{StaticResource DisabledControlDarkColor}"/>
+                                                                                            <EasingColorKeyFrame KeyTime="0" Value="#C5C5C5"/>
                                                                                         </ColorAnimationUsingKeyFrames>
                                                                                     </Storyboard>
                                                                                 </VisualState>
