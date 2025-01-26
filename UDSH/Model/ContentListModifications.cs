@@ -23,4 +23,10 @@
         MKC,
         MKM
     }
+
+    public enum ContentView
+    {
+        LargeIcons,
+        Details
+    }
 }

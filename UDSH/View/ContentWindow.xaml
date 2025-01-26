@@ -128,19 +128,25 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </ComboBox>
-            <ComboBox Style="{StaticResource ViewComboBox}" Margin="0,0,20,0" IsEnabled="{Binding IsNormalState}">
+            <ComboBox Style="{StaticResource ViewComboBox}" Margin="0,0,20,0" SelectedIndex="{Binding SelectedViewIndex}" IsEnabled="{Binding IsNormalState}">
                 <ComboBoxItem>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Resource/Medium.png" Width="15" Height="15"/>
-                        <TextBlock Style="{StaticResource DefaultText}" Text="Medium Icons" FontSize="16" Margin="5,0,0,0"/>
+                        <TextBlock Style="{StaticResource DefaultText}" Text="Large Icons" FontSize="16" Margin="5,0,0,0"/>
                     </StackPanel>
                 </ComboBoxItem>
                 <ComboBoxItem>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Resource/Small.png" Width="15" Height="15"/>
-                        <TextBlock Style="{StaticResource DefaultText}" Text="Small Icons" FontSize="16" Margin="5,0,0,0"/>
+                        <TextBlock Style="{StaticResource DefaultText}" Text="Details" FontSize="16" Margin="5,0,0,0"/>
                     </StackPanel>
                 </ComboBoxItem>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding ViewSelectionChanged}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </ComboBox>
             <Border HorizontalAlignment="Stretch" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
                     CornerRadius="4" Height="40" Width="40" FocusVisualStyle="{x:Null}" IsEnabled="{Binding IsNormalState}">
@@ -410,7 +416,7 @@
                     </Border>
                 </Grid>
                 <Grid Grid.Row="1">
-                    <ListView Opacity="0" IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout}" ItemContainerStyle="{StaticResource ContentDirectoryListItem}">
+                    <ListView Opacity="{Binding DetailsListViewOpacity}" IsHitTestVisible="{Binding DetailsListViewHitTest}" IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout}" ItemContainerStyle="{StaticResource ContentDirectoryListItem}">
                         <ListView.View>
                             <GridView ColumnHeaderContainerStyle="{StaticResource Content_GridViewColumnHeader}">
                                 <GridViewColumn Header="Name" Width="{Binding ColWidth1, Mode=TwoWay}">
@@ -460,8 +466,8 @@
                                                             <Style.Triggers>
                                                                 <MultiDataTrigger>
                                                                     <MultiDataTrigger.Conditions>
-                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="True" />
-                                                                        <Condition Binding="{Binding DataContext.OpenRenameTextBox, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True" />
+                                                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="True"/>
+                                                                        <Condition Binding="{Binding DataContext.OpenRenameTextBox, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True"/>
                                                                     </MultiDataTrigger.Conditions>
                                                                     <MultiDataTrigger.EnterActions>
                                                                         <BeginStoryboard>
@@ -613,8 +619,7 @@
 
                         <ListView.ContextMenu>
                             <ContextMenu Style="{StaticResource ContentItemProperties}">
-                                <MenuItem Header="Delete"/>
-                                <MenuItem Header="Delete Permanently" Foreground="#F83030"/>
+                                <MenuItem Header="Delete Permanently" Foreground="#F83030" Command="{Binding DeleteItem}"/>
                                 <MenuItem Header="Rename" Command="{Binding RenameItem}"/>
                                 <MenuItem Header="Properties"/>
                             </ContextMenu>
@@ -632,13 +637,10 @@
                     </ListView>
 
 
-                    <ListView IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout_LargeIcons}" ItemContainerStyle="{StaticResource ContentDirectoryListViewItem_LargeIcons}">
-                        
-                        
+                    <ListView Opacity="{Binding LargeListViewOpacity}" IsHitTestVisible="{Binding LargeListViewHitTest}" IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout_LargeIcons}" ItemContainerStyle="{StaticResource ContentDirectoryListViewItem_LargeIcons}">
                         <ListView.ContextMenu>
                             <ContextMenu Style="{StaticResource ContentItemProperties}">
-                                <MenuItem Header="Delete"/>
-                                <MenuItem Header="Delete Permanently" Foreground="#F83030"/>
+                                <MenuItem Header="Delete Permanently" Foreground="#F83030" Command="{Binding DeleteItem}"/>
                                 <MenuItem Header="Rename" Command="{Binding RenameItem}"/>
                                 <MenuItem Header="Properties"/>
                             </ContextMenu>
@@ -685,6 +687,23 @@
                                 </DataTrigger>
 
                                 <DataTrigger Binding="{Binding OpenNameTextBox}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:1" Duration="0:0:0.3"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding IsContentDeleteProcess}" Value="True">
                                     <DataTrigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
@@ -1104,6 +1123,118 @@
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.3" Duration="0:0:0.3"/>
                                             <DoubleAnimation Storyboard.TargetProperty="Width" To="833" BeginTime="0:0:0.6" Duration="0:0:0.6"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.8" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="Width" To="130" BeginTime="0:0:0.2" Duration="0:0:0.6"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+            
+            <!-- Delete Box -->
+            <Border Background="#393E46" Height="60" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <StackPanel Orientation="Horizontal" Loaded="StackPanel_Loaded">
+                        <TextBlock Style="{StaticResource DefaultText}" Text="Do You Want Item(s) " Foreground="#DBAD2F"/>
+                        <TextBlock Style="{StaticResource DefaultText}" Text="Deleted" Foreground="#F83030"/>
+                        <TextBlock Style="{StaticResource DefaultText}" Text="?" Foreground="#DBAD2F"/>
+
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Opacity" Value="0"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsContentDeleteProcess}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:1.2" Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                    </StackPanel>
+
+                    <Button Width="100" Margin="20,-5,0,-5" Command="{Binding ConfirmDelete}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource DeleteConfirmButton}">
+                                <Setter Property="Opacity" Value="0"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsContentDeleteProcess}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:2.3" Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Width="100" Margin="10,-5,10,-5" Command="{Binding CancelDelete}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource DeleteCancelButton}">
+                                <Setter Property="Opacity" Value="0"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsContentDeleteProcess}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:2.5" Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Opacity" Value="0"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsContentDeleteProcess}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.3" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="Width" To="525" BeginTime="0:0:0.6" Duration="0:0:0.6"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>

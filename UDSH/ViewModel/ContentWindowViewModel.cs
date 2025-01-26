@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using UDSH.Model;
 using UDSH.MVVM;
 using UDSH.Services;
+using UDSH.View;
 
 namespace UDSH.ViewModel
 {
@@ -148,6 +149,13 @@ namespace UDSH.ViewModel
         {
             get => selectedFilterIndex;
             set { selectedFilterIndex = value; OnPropertyChanged(); }
+        }
+
+        private int selectedViewIndex;
+        public int SelectedViewIndex
+        {
+            get => selectedViewIndex;
+            set { selectedViewIndex = value; OnPropertyChanged(); }
         }
 
         private CustomScrollViewer OuterScrollViewer;
@@ -330,6 +338,41 @@ namespace UDSH.ViewModel
             set { directoryWrongInputMessage = value; OnPropertyChanged(); }
         }
 
+        private double largeListViewOpacity;
+        public double LargeListViewOpacity
+        {
+            get => largeListViewOpacity;
+            set { largeListViewOpacity = value; OnPropertyChanged(); }
+        }
+
+        private bool largeListViewHitTest;
+        public bool LargeListViewHitTest
+        {
+            get => largeListViewHitTest;
+            set { largeListViewHitTest = value; OnPropertyChanged(); }
+        }
+
+        private double detailsListViewOpacity;
+        public double DetailsListViewOpacity
+        {
+            get => detailsListViewOpacity;
+            set { detailsListViewOpacity = value; OnPropertyChanged(); }
+        }
+
+        private bool detailsListViewHitTest;
+        public bool DetailsListViewHitTest
+        {
+            get => detailsListViewHitTest;
+            set { detailsListViewHitTest = value; OnPropertyChanged(); }
+        }
+
+        private bool isContentDeleteProcess;
+        public bool IsContentDeleteProcess
+        {
+            get => isContentDeleteProcess;
+            set { isContentDeleteProcess = value; OnPropertyChanged(); }
+        }
+
         private Border FocusTarget;
         #endregion
 
@@ -365,6 +408,11 @@ namespace UDSH.ViewModel
         public RelayCommand<SelectionChangedEventArgs> ListSelectionChanged => new RelayCommand<SelectionChangedEventArgs>(ItemSelectionChanged);
         public RelayCommand<object> ListViewMouseDoubleClick => new RelayCommand<object>(execute => ExecuteItem(), canExecute => CanExecuteSelectedItem());
 
+        public RelayCommand<object> DeleteItem => new RelayCommand<object>(execute => DeleteSelectedItem(), canExecute => CanRenameSelectedItem());
+        public RelayCommand<object> ConfirmDelete => new RelayCommand<object>(execute => ConfirmDeleteProcess(), canExecute => IsContentDeleteProcess);
+        public RelayCommand<object> CancelDelete => new RelayCommand<object>(execute => StopDeleteProcess(), canExecute => IsContentDeleteProcess);
+
+
         public RelayCommand<object> RenameItem => new RelayCommand<object>(execute => RenameSelectedItem(), canExecute => CanRenameSelectedItem());
         public RelayCommand<object> ConfirmRename => new RelayCommand<object>(execute => ConfirmRenameProcess(), canExecute => OpenRenameTextBox);
         public RelayCommand<object> CancelRename => new RelayCommand<object>(execute => StopRenameProcess(), canExecute => OpenRenameTextBox);
@@ -375,6 +423,7 @@ namespace UDSH.ViewModel
         public RelayCommand<object> AddSelectionChanged => new RelayCommand<object>(execute => UpdateAdd());
         public RelayCommand<object> FilterSelectionChanged => new RelayCommand<object>(execute => UpdateFilter());
         public RelayCommand<object> SortSelectionChanged => new RelayCommand<object>(execute => UpdateSorting());
+        public RelayCommand<object> ViewSelectionChanged => new RelayCommand<object>(execute => UpdateView());
 
         public RelayCommand<object> ConfirmNewItemName => new RelayCommand<object>(execute => ConfirmNewItemNameProcess(), canExecute => OpenNameTextBox);
         public RelayCommand<object> CancelNewItemName => new RelayCommand<object>(execute => CancelNewItemNameProcess(), canExecute => OpenNameTextBox);
@@ -423,6 +472,7 @@ namespace UDSH.ViewModel
 
             IsContentLoading = false;
             IsContentRenameProcess = false;
+            IsContentDeleteProcess = false;
             IsContentCanceledProcess = false;
 
             SearchText = string.Empty;
@@ -430,6 +480,12 @@ namespace UDSH.ViewModel
             SelectedAddIndex = -1;
             SelectedSortIndex = (int)ContentSort.FoldersFirst_Ascending;
             SelectedFilterIndex = (int)ContentFilter.None;
+            SelectedViewIndex = (int)ContentView.LargeIcons;
+
+            LargeListViewOpacity = 1.0;
+            LargeListViewHitTest = true;
+            DetailsListViewOpacity = 0.0;
+            DetailsListViewHitTest = false;
 
             IsNormalState = true;
             OpenRenameTextBox = false;
@@ -793,6 +849,7 @@ namespace UDSH.ViewModel
             if (e.NewValue is Node node)
             {
                 SelectedNode = node;
+                Debug.WriteLine($"{SelectedNode.NodeDirectory}");
             }
         }
 
@@ -877,6 +934,50 @@ namespace UDSH.ViewModel
                 return false;
             else
                 return true;
+        }
+
+        private void DeleteSelectedItem()
+        {
+            IsContentDeleteProcess = true;
+            IsNormalState = false;
+        }
+
+        private async void ConfirmDeleteProcess()
+        {
+            ReturnDirectoryStack.Clear();
+            ReturnPageStack.Clear();
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                FileStructure fileStructure = new FileStructure();
+
+                string Directory = string.Empty;
+                string[] Directories = Array.Empty<string>();
+                ContentFileStructure TempSelectedItem = SelectedItem;
+
+                if (SelectedItem.File != null)
+                    Directory = SelectedItem.File.FileDirectory;
+                else
+                {
+                    Directory = SelectedItem.Directory;
+                    Directories = System.IO.Directory.GetFiles(Directory, "*", SearchOption.AllDirectories);
+                }
+
+                fileStructure.UpdateTreeAfterDeletion(Root, Directory);
+
+                Node temp = Root;
+                Root = new Node();
+                Root = temp;
+
+                fileStructure.DeleteItem(CurrentFiles, _userDataServices.ActiveProject, SelectedItem);
+                _userDataServices.FileDeletedAsync(Directory, Directories, TempSelectedItem.Type);
+            });
+        }
+
+        private void StopDeleteProcess()
+        {
+            IsContentDeleteProcess = false;
+            IsNormalState = true;
         }
 
         private void RenameSelectedItem()
@@ -1044,6 +1145,29 @@ namespace UDSH.ViewModel
         {
             FileStructure fileStructure = new FileStructure();
             CurrentFiles = fileStructure.SortListItems(CurrentFiles, (ContentSort)SelectedSortIndex);
+        }
+
+        private void UpdateView()
+        {
+            switch ((ContentView)SelectedViewIndex)
+            {
+                case ContentView.LargeIcons:
+                    LargeListViewHitTest = true;
+                    LargeListViewOpacity = 1.0;
+
+                    DetailsListViewHitTest = false;
+                    DetailsListViewOpacity = 0.0;
+                    break;
+                case ContentView.Details:
+                    DetailsListViewHitTest = true;
+                    DetailsListViewOpacity = 1.0;
+
+                    LargeListViewHitTest = false;
+                    LargeListViewOpacity = 0.0;
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void ConfirmNewItemNameProcess()

@@ -15,7 +15,7 @@ namespace UDSH.Model
         public string Directory { get; set; } // Directory for (FOLDERS). Files directory is available in (FileSystem - File)
         public BitmapImage Image { get; set; }
         public BitmapImage LargeNormalImage { get; set; }
-        public BitmapImage HighlightImage { get; set; }
+        public BitmapImage LargeHighlightImage { get; set; }
         public FileSystem File { get; set; } // For quick access and modification
     }
 }

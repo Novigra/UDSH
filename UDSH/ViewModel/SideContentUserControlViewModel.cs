@@ -183,6 +183,14 @@ namespace UDSH.ViewModel
             BuildStructure();
 
             _userDataServices.FileDetailsUpdated += _userDataServices_FileDetailsUpdated;
+            _userDataServices.ItemDeletedSideContent += _userDataServices_ItemDeleted;
+        }
+
+        private void _userDataServices_ItemDeleted(object? sender, string directory)
+        {
+            FileStructure fileStructure = new FileStructure();
+            fileStructure.UpdateTreeAfterDeletion(Root, directory);
+            fileStructure.RemoveEmptyFolderNodes(Root);
         }
 
         private async void _userDataServices_FileDetailsUpdated(object? sender, FileDetailsUpdatedEventArgs e)

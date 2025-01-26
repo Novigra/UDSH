@@ -1056,6 +1056,38 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="Button" x:Key="DeleteConfirmButton">
+        <Setter Property="Background" Value="#DBAD2F"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="IsEnabled" Value="True"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                        <TextBlock Style="{StaticResource DefaultText}" Text="Confirm" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="DeleteCancelButton">
+        <Setter Property="Background" Value="#F83030"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="IsEnabled" Value="True"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                        <TextBlock Style="{StaticResource DefaultText}" Text="Cancel" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Testing Ground -->
     <Style TargetType="Button" x:Key="ButtonInterp">
         <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>

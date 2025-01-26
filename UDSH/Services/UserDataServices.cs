@@ -10,6 +10,8 @@ namespace UDSH.Services
         public event EventHandler<FileSystem> AddNewFile;
         public event EventHandler<FileSystem> AddNewFileToContent;
         public event EventHandler<FileDetailsUpdatedEventArgs> FileDetailsUpdated;
+        public event EventHandler<DirectoriesEventArgs> ItemDeleted;
+        public event EventHandler<string> ItemDeletedSideContent;
         //public event EventHandler<FileSystem> AddFileFromContent;
 
         public string DisplayName
@@ -87,6 +89,17 @@ namespace UDSH.Services
         {
             if (file != null)
                 AddNewFile?.Invoke(this, file);
+        }
+
+        public async Task FileDeletedAsync(string directory, string[] directories, string type)
+        {
+            await Task.Run(() => session.UpdateFileDetails());
+
+            if (directory != null)
+            {
+                ItemDeletedSideContent.Invoke(this, directory);
+                ItemDeleted.Invoke(this, new DirectoriesEventArgs(directory, directories, type));
+            }
         }
     }
 }

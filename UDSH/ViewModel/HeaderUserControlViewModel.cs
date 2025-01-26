@@ -439,6 +439,44 @@ namespace UDSH.ViewModel
             IsOpenFilesListPopupOpen = false;
 
             //TestScroll();
+
+            _headerServices.UserDataServices.ItemDeleted += UserDataServices_ItemDeleted;
+        }
+
+        private void UserDataServices_ItemDeleted(object? sender, DirectoriesEventArgs e)
+        {
+            string directory = e.directory;
+
+            if (e.type.Equals("Folder"))
+            {
+                if (!directory.EndsWith("\\"))
+                    directory += "\\";
+            }
+            
+            string FileName = Path.GetFileNameWithoutExtension(directory);
+
+            if (!string.IsNullOrEmpty(FileName))
+            {
+                foreach (var OpenFile in OpenFiles)
+                {
+                    if (OpenFile.FileName.Equals(FileName))
+                        OpenFiles.Remove(OpenFile);
+                }
+            }
+            else
+            {
+                foreach (var FileDirectory in e.directories)
+                {
+                    FileName = Path.GetFileNameWithoutExtension(FileDirectory);
+                    foreach (var OpenFile in OpenFiles.ToList())
+                    {
+                        if (OpenFile.FileName.Equals(FileName))
+                            OpenFiles.Remove(OpenFile);
+                    }
+                }
+
+                Debug.WriteLine("I'm Here");
+            }
         }
 
         private void TestScroll()

@@ -67,6 +67,9 @@
     <None Remove="Resource\HandHandle.png" />
     <None Remove="Resource\HandHandleHighlight.png" />
     <None Remove="Resource\HighlightFolder_Large.png" />
+    <None Remove="Resource\HighlightMKB_Large.png" />
+    <None Remove="Resource\HighlightMKC_Large.png" />
+    <None Remove="Resource\HighlightMKM_Large.png" />
     <None Remove="Resource\HorusEye.png" />
     <None Remove="Resource\HorusEyeBlack.png" />
     <None Remove="Resource\HorusEyeDarkGrey.png" />
@@ -190,6 +193,9 @@
     <Resource Include="Resource\HandHandle.png" />
     <Resource Include="Resource\HandHandleHighlight.png" />
     <Resource Include="Resource\HighlightFolder_Large.png" />
+    <Resource Include="Resource\HighlightMKB_Large.png" />
+    <Resource Include="Resource\HighlightMKC_Large.png" />
+    <Resource Include="Resource\HighlightMKM_Large.png" />
     <Resource Include="Resource\HorusEye.png" />
     <Resource Include="Resource\HorusEyeBlack.png" />
     <Resource Include="Resource\HorusEyeDarkGrey.png" />

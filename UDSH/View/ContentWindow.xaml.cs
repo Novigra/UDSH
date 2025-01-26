@@ -261,5 +261,10 @@ namespace UDSH.View
                 WindowedWidthChanged = true;
             }
         }
+
+        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

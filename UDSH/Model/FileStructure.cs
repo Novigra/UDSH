@@ -49,7 +49,7 @@ namespace UDSH.Model
                     Directory = directory,
                     Image = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png")),
                     LargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/Folder_Large.png")),
-                    HighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightFolder_Large.png")),
+                    LargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightFolder_Large.png")),
                     File = null
                 });
             }
@@ -58,7 +58,26 @@ namespace UDSH.Model
             {
                 foreach (var savedFile in project.Files)
                 {
-                    // TODO: switch cases for images
+                    BitmapImage BitmapLargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/Placeholder.png"));
+                    BitmapImage BitmapLargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/Placeholder.png"));
+                    switch (savedFile.FileType)
+                    {
+                        case "mkb":
+                            BitmapLargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/BN_Large.png"));
+                            BitmapLargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightMKB_Large.png"));
+                            break;
+                        case "mkc":
+                            BitmapLargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/MKC_Large.png"));
+                            BitmapLargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightMKC_Large.png"));
+                            break;
+                        case "mkm":
+                            BitmapLargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/MKM_Large.png"));
+                            BitmapLargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightMKM_Large.png"));
+                            break;
+                        default:
+                            break;
+                    }
+
                     if(file.Equals(savedFile.FileDirectory))
                     {
                         contentFileStructures.Add(new ContentFileStructure
@@ -70,6 +89,8 @@ namespace UDSH.Model
                             Author = savedFile.FileAuthor,
                             Directory = string.Empty,
                             Image = new BitmapImage(new Uri("pack://application:,,,/Resource/FileType.png")),
+                            LargeNormalImage = BitmapLargeNormalImage,
+                            LargeHighlightImage = BitmapLargeHighlightImage,
                             File = savedFile
                         });
                         break;
@@ -125,6 +146,8 @@ namespace UDSH.Model
                         Author = project.ProjectAuthor,
                         Directory = directory,
                         Image = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png")),
+                        LargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/Folder_Large.png")),
+                        LargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightFolder_Large.png")),
                         File = null
                     });
 
@@ -142,6 +165,26 @@ namespace UDSH.Model
 
                 foreach (var savedFile in project.Files)
                 {
+                    BitmapImage BitmapLargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/Placeholder.png"));
+                    BitmapImage BitmapLargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/Placeholder.png"));
+                    switch (savedFile.FileType)
+                    {
+                        case "mkb":
+                            BitmapLargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/BN_Large.png"));
+                            BitmapLargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightMKB_Large.png"));
+                            break;
+                        case "mkc":
+                            BitmapLargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/MKC_Large.png"));
+                            BitmapLargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightMKC_Large.png"));
+                            break;
+                        case "mkm":
+                            BitmapLargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/MKM_Large.png"));
+                            BitmapLargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightMKM_Large.png"));
+                            break;
+                        default:
+                            break;
+                    }
+
                     if (file.Equals(savedFile.FileDirectory))
                     {
                         currentFiles.Add(new ContentFileStructure
@@ -153,6 +196,8 @@ namespace UDSH.Model
                             Author = savedFile.FileAuthor,
                             Directory = string.Empty,
                             Image = new BitmapImage(new Uri("pack://application:,,,/Resource/FileType.png")),
+                            LargeNormalImage = BitmapLargeNormalImage,
+                            LargeHighlightImage = BitmapLargeHighlightImage,
                             File = savedFile
                         });
                         break;
@@ -177,6 +222,8 @@ namespace UDSH.Model
                 Author = project.ProjectAuthor,
                 Directory = directory,
                 Image = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png")),
+                LargeNormalImage = new BitmapImage(new Uri("pack://application:,,,/Resource/Folder_Large.png")),
+                LargeHighlightImage = new BitmapImage(new Uri("pack://application:,,,/Resource/HighlightFolder_Large.png")),
                 File = null
             });
 
@@ -298,6 +345,8 @@ namespace UDSH.Model
         public Node ContentBuildSideTree(Project project)
         {
             Node root = new Node { Name = project.ProjectName, NodeType = DataType.Folder };
+            string DirectoryBuildUp = project.ProjectDirectory + "\\";
+
             foreach (var file in project.Files)
             {
                 string[] TextSplit = file.FileDirectory.Split('\\');
@@ -320,7 +369,7 @@ namespace UDSH.Model
                     }
                     else
                     {
-                        CurrentFileNodeDirectory = string.Empty;
+                        CurrentFileNodeDirectory = DirectoryBuildUp + TextSplit[i] + "\\";
                         CurrentType = DataType.Folder;
                         CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png"));
                     }
@@ -348,6 +397,7 @@ namespace UDSH.Model
         public Node BuildSideContentTree(Project project)
         {
             Node root = new Node { Name = project.ProjectName, NodeType = DataType.Folder };
+            string DirectoryBuildUp = project.ProjectDirectory + "\\";
 
             foreach (var file in project.Files)
             {
@@ -383,7 +433,7 @@ namespace UDSH.Model
                     }
                     else
                     {
-                        CurrentFileNodeDirectory = string.Empty;
+                        CurrentFileNodeDirectory = DirectoryBuildUp + TextSplit[i] + "\\";
                         CurrentType = DataType.Folder;
                         CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderSidebar.png"));
                     }
@@ -421,6 +471,7 @@ namespace UDSH.Model
         public Node AddNewFile(Project project, Node Root, FileSystem file, bool IsContentWindow = false)
         {
             string[] TextSplit = file.FileDirectory.Split('\\');
+            string DirectoryBuildUp = project.ProjectDirectory + "\\";
 
             int index = Array.IndexOf(TextSplit, project.ProjectName);
 
@@ -448,7 +499,7 @@ namespace UDSH.Model
                         }
                         else
                         {
-                            CurrentFileNodeDirectory = string.Empty;
+                            CurrentFileNodeDirectory = DirectoryBuildUp + TextSplit[i] + "\\";
                             CurrentType = DataType.Folder;
                             CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png"));
                         }
@@ -475,7 +526,7 @@ namespace UDSH.Model
                         }
                         else
                         {
-                            CurrentFileNodeDirectory = string.Empty;
+                            CurrentFileNodeDirectory = DirectoryBuildUp + TextSplit[i] + "\\";
                             CurrentType = DataType.Folder;
                             CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderSidebar.png"));
                         }
@@ -571,7 +622,8 @@ namespace UDSH.Model
             while (StackNode.Count > 0)
             {
                 Node CurrentNode = StackNode.Pop();
-                if (CurrentNode.NodeType == DataType.File)
+
+                /*if (CurrentNode.NodeType == DataType.File)
                 {
                     string[] DirectorySplit = CurrentNode.NodeFile.FileDirectory.Split('\\');
                     string OldDirectoryName = DirectorySplit[DirectorySplit.Length - 2];
@@ -580,7 +632,20 @@ namespace UDSH.Model
 
                     CurrentNode.NodeDirectory = NewFileDirectory;
                     CurrentNode.NodeFile.FileDirectory = NewFileDirectory;
-                }
+                }*/
+
+                string[] DirectorySplit = CurrentNode.NodeFile.FileDirectory.Split('\\');
+                string OldDirectoryName = string.Empty;
+
+                if (!string.IsNullOrEmpty(DirectorySplit[DirectorySplit.Length - 1]))
+                    OldDirectoryName = DirectorySplit[DirectorySplit.Length - 2];
+                else
+                    OldDirectoryName = DirectorySplit[DirectorySplit.Length - 3];
+
+                string NewFileDirectory = CurrentNode.NodeFile.FileDirectory.Replace(OldDirectoryName, DirectoryName);
+
+                CurrentNode.NodeDirectory = NewFileDirectory;
+                CurrentNode.NodeFile.FileDirectory = NewFileDirectory;
 
                 if (CurrentNode.SubNodes != null && CurrentNode.SubNodes.Count > 0)
                 {
@@ -597,6 +662,7 @@ namespace UDSH.Model
 
             if (file != null)
             {
+                // TODO: Update Logic
                 string NewFileDirectory = file.FileDirectory.Replace(file.FileName, ItemNewName);
                 File.Move(file.FileDirectory, NewFileDirectory);
                 File.SetLastWriteTime(NewFileDirectory, DateTime.Now);
@@ -612,13 +678,131 @@ namespace UDSH.Model
             }
             else
             {
-                string NewFolderDirectory = ContentItem.Directory.Replace(ContentItem.Name, ItemNewName);
+                string[] TextSplit = ContentItem.Directory.Split("\\");
+                if (!string.IsNullOrEmpty(TextSplit.Last()))
+                {
+                    TextSplit[TextSplit.Length - 1] = ItemNewName;
+                }
+                else
+                {
+                    TextSplit[TextSplit.Length - 2] = ItemNewName;
+                }
+
+                string NewFolderDirectory = string.Empty;
+                foreach (string text in TextSplit)
+                {
+                    NewFolderDirectory += text + "\\";
+                }
+
+                //string NewFolderDirectory = ContentItem.Directory.Replace(ContentItem.Name, ItemNewName);
                 Directory.Move(ContentItem.Directory, NewFolderDirectory);
                 Directory.SetLastWriteTime(NewFolderDirectory, DateTime.Now);
 
                 ContentItem.Name = ItemNewName;
                 ContentItem.Directory = NewFolderDirectory;
                 ContentItem.LastDateModification = DateTime.Now;
+            }
+        }
+
+        public void DeleteItem(ObservableCollection<ContentFileStructure> CurrentFiles, Project project, ContentFileStructure SelectedItem)
+        {
+            if (SelectedItem.File != null)
+            {
+                string FileDirectory = SelectedItem.File.FileDirectory;
+                
+                foreach (var file in project.Files)
+                {
+                    if (file == SelectedItem.File)
+                    {
+                        project.Files.Remove(file);
+                        break;
+                    } 
+                }
+
+                foreach (var contentItem in CurrentFiles)
+                {
+                    if (contentItem == SelectedItem)
+                    {
+                        CurrentFiles.Remove(contentItem);
+                        break;
+                    }
+                }
+
+                File.Delete(FileDirectory);
+            }
+            else
+            {
+                List<string> Directories = Directory.EnumerateFiles(SelectedItem.Directory, "*", SearchOption.AllDirectories).ToList();
+
+                foreach (var directory in Directories)
+                {
+                    foreach (var file in project.Files.ToList())
+                    {
+                        if (file.FileDirectory.Equals(directory))
+                        {
+                            project.Files.Remove(file);
+                        }
+                    }
+                }
+
+                foreach (var contentItem in CurrentFiles)
+                {
+                    if (contentItem == SelectedItem)
+                    {
+                        CurrentFiles.Remove(contentItem);
+                        break;
+                    }
+                }
+
+                Directory.Delete(SelectedItem.Directory, true);
+            }
+        }
+
+        public void UpdateTreeAfterDeletion(Node Root, string Directory)
+        {
+            Stack<Node> StackNode = new Stack<Node>();
+            StackNode.Push(Root);
+
+            while (StackNode.Count > 0)
+            {
+                Node CurrentNode = StackNode.Pop();
+                foreach (var Node in CurrentNode.SubNodes.ToList())
+                {
+                    if (Node.NodeDirectory.Contains(Directory))
+                    {
+                        CurrentNode.SubNodes.Remove(Node);
+                    }
+                }
+
+                if (CurrentNode.SubNodes != null && CurrentNode.SubNodes.Count > 0)
+                {
+                    foreach (Node Node in CurrentNode.SubNodes)
+                        StackNode.Push(Node);
+                }
+            }
+        }
+
+        public void RemoveEmptyFolderNodes(Node Root)
+        {
+            Stack<Node> StackNode = new Stack<Node>();
+            StackNode.Push(Root);
+
+            while (StackNode.Count > 0)
+            {
+                Node CurrentNode = StackNode.Pop();
+                foreach (var Node in CurrentNode.SubNodes.ToList())
+                {
+                    if (Node.NodeType == DataType.Folder && Node.SubNodes.Count == 0)
+                    {
+                        CurrentNode.SubNodes.Remove(Node);
+                    }
+                }
+
+                if (CurrentNode.SubNodes != null && CurrentNode.SubNodes.Count > 0)
+                {
+                    foreach (Node Node in CurrentNode.SubNodes)
+                        StackNode.Push(Node);
+                }
             }
         }
     }

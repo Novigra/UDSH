@@ -18,6 +18,9 @@
     <Compile Update="View\DefaultUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\DeletionProcessWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\FooterUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -111,6 +114,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\CSFUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\DeletionProcessWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\FooterUserControl.xaml">
