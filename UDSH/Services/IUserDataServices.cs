@@ -27,7 +27,7 @@ namespace UDSH.Services
         Task CreateNewProjectAsync(string NewProjectName, string ProjectVersion, bool IsSecured, string Password);
 
         Task CreateNewFileAsync(string NewFileName, string FileType, string ProjectDirectory);
-        Task UpdateFileDetailsAsync(ContentFileStructure SelectedItem, string OldDirectory);
+        Task UpdateFileDetailsAsync(ContentFileStructure SelectedItem, string OldDirectory, int CurrentLevel);
         Task FileDeletedAsync(string directory, string[] directories, string type);
 
         void AddFileToHeader(FileSystem file);

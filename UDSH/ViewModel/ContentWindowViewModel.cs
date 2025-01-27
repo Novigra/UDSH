@@ -373,6 +373,8 @@ namespace UDSH.ViewModel
             set { isContentDeleteProcess = value; OnPropertyChanged(); }
         }
 
+        private int CurrentLevel;
+
         private Border FocusTarget;
         #endregion
 
@@ -516,6 +518,7 @@ namespace UDSH.ViewModel
             DirectoryWrongInputMessage = "You Can’t Add Empty Directories Or Use \\ : * ? \" < > |";
 
             DefaultCurrentFiles = new ObservableCollection<ContentFileStructure>();
+            CurrentLevel = 0;
         }
 
         private async void LoadData()
@@ -1009,7 +1012,15 @@ namespace UDSH.ViewModel
 
             string OldDirectory = string.Empty;
             if (SelectedItem.File == null)
+            {
                 OldDirectory = SelectedItem.Directory;
+
+                string[] TextSplit = OldDirectory.Split("\\");
+                if (!string.IsNullOrEmpty(TextSplit.Last()))
+                    CurrentLevel = TextSplit.Length - 1;
+                else
+                    CurrentLevel = TextSplit.Length - 2;
+            }
             else
                 OldDirectory = SelectedItem.File.FileDirectory;
 
@@ -1018,7 +1029,7 @@ namespace UDSH.ViewModel
                 FileStructure fileStructure = new FileStructure();
                 fileStructure.RenameItem(SelectedItem, RenameNewName);
 
-                fileStructure.UpdateTreeItemName(Root, _userDataServices.ActiveProject, SelectedItem, OldDirectory);
+                fileStructure.UpdateTreeItemName(Root, _userDataServices.ActiveProject, SelectedItem, OldDirectory, CurrentLevel);
             });
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -1029,7 +1040,7 @@ namespace UDSH.ViewModel
                 Root = new Node();
                 Root = temp;
 
-                _userDataServices.UpdateFileDetailsAsync(SelectedItem, OldDirectory);
+                _userDataServices.UpdateFileDetailsAsync(SelectedItem, OldDirectory, CurrentLevel);
             });
 
             RenameNewName = string.Empty;

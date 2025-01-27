@@ -345,11 +345,11 @@ namespace UDSH.Model
         public Node ContentBuildSideTree(Project project)
         {
             Node root = new Node { Name = project.ProjectName, NodeType = DataType.Folder };
-            string DirectoryBuildUp = project.ProjectDirectory + "\\";
 
             foreach (var file in project.Files)
             {
                 string[] TextSplit = file.FileDirectory.Split('\\');
+                string DirectoryBuildUp = project.ProjectDirectory + "\\";
 
                 // Start at the project root as the user could be storing the app files deep inside.
                 int index = Array.IndexOf(TextSplit, project.ProjectName);
@@ -370,6 +370,7 @@ namespace UDSH.Model
                     else
                     {
                         CurrentFileNodeDirectory = DirectoryBuildUp + TextSplit[i] + "\\";
+                        DirectoryBuildUp = CurrentFileNodeDirectory;
                         CurrentType = DataType.Folder;
                         CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png"));
                     }
@@ -397,11 +398,11 @@ namespace UDSH.Model
         public Node BuildSideContentTree(Project project)
         {
             Node root = new Node { Name = project.ProjectName, NodeType = DataType.Folder };
-            string DirectoryBuildUp = project.ProjectDirectory + "\\";
 
             foreach (var file in project.Files)
             {
                 string[] TextSplit = file.FileDirectory.Split('\\');
+                string DirectoryBuildUp = project.ProjectDirectory + "\\";
 
                 // Start at the project root as the user could be storing the app files deep inside.
                 int index = Array.IndexOf(TextSplit, project.ProjectName);
@@ -434,6 +435,7 @@ namespace UDSH.Model
                     else
                     {
                         CurrentFileNodeDirectory = DirectoryBuildUp + TextSplit[i] + "\\";
+                        DirectoryBuildUp = CurrentFileNodeDirectory;
                         CurrentType = DataType.Folder;
                         CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderSidebar.png"));
                     }
@@ -500,6 +502,7 @@ namespace UDSH.Model
                         else
                         {
                             CurrentFileNodeDirectory = DirectoryBuildUp + TextSplit[i] + "\\";
+                            DirectoryBuildUp = CurrentFileNodeDirectory;
                             CurrentType = DataType.Folder;
                             CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png"));
                         }
@@ -527,6 +530,7 @@ namespace UDSH.Model
                         else
                         {
                             CurrentFileNodeDirectory = DirectoryBuildUp + TextSplit[i] + "\\";
+                            DirectoryBuildUp = CurrentFileNodeDirectory;
                             CurrentType = DataType.Folder;
                             CurrentImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderSidebar.png"));
                         }
@@ -569,7 +573,7 @@ namespace UDSH.Model
             }
         }
 
-        public void UpdateTreeItemName(Node root, Project project, ContentFileStructure SelectedItem, string OldDirectory)
+        public void UpdateTreeItemName(Node root, Project project, ContentFileStructure SelectedItem, string OldDirectory, int CurrentLevel)
         {
             string[] TextSplit = OldDirectory.Split('\\');
             int index = Array.IndexOf(TextSplit, project.ProjectName);
@@ -597,55 +601,76 @@ namespace UDSH.Model
             }
 
             
-            CurrentNode.NodeDirectory = SelectedItem.Directory;
             if (SelectedItem.File != null)
             {
+                CurrentNode.NodeDirectory = SelectedItem.File.FileDirectory;
+
                 CurrentNode.Name = SelectedItem.Name + "." + SelectedItem.File.FileType;
                 CurrentNode.NodeFile = SelectedItem.File;
             }
             else
             {
+                CurrentNode.NodeDirectory = SelectedItem.Directory;
+
                 CurrentNode.Name = SelectedItem.Name;
-                UpdateFileNodesDirectory(CurrentNode, SelectedItem);
+                UpdateFileNodesDirectory(CurrentNode, SelectedItem, CurrentLevel);
             }
 
             ParentNode.SubNodes = new ObservableCollection<Node>(ParentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.Ordinal));
         }
 
-        private void UpdateFileNodesDirectory(Node CurrentRoot, ContentFileStructure SelectedItem)
+        private void UpdateFileNodesDirectory(Node CurrentRoot, ContentFileStructure SelectedItem, int CurrentLevel)
         {
             Stack<Node> StackNode = new Stack<Node>();
             StackNode.Push(CurrentRoot);
 
             string DirectoryName = SelectedItem.Name;
+            bool SkipNodeToggle = true;
 
             while (StackNode.Count > 0)
             {
                 Node CurrentNode = StackNode.Pop();
 
-                /*if (CurrentNode.NodeType == DataType.File)
+                if (SkipNodeToggle == true)
                 {
-                    string[] DirectorySplit = CurrentNode.NodeFile.FileDirectory.Split('\\');
-                    string OldDirectoryName = DirectorySplit[DirectorySplit.Length - 2];
-
-                    string NewFileDirectory = CurrentNode.NodeFile.FileDirectory.Replace(OldDirectoryName, DirectoryName);
-
-                    CurrentNode.NodeDirectory = NewFileDirectory;
-                    CurrentNode.NodeFile.FileDirectory = NewFileDirectory;
-                }*/
-
-                string[] DirectorySplit = CurrentNode.NodeFile.FileDirectory.Split('\\');
-                string OldDirectoryName = string.Empty;
-
-                if (!string.IsNullOrEmpty(DirectorySplit[DirectorySplit.Length - 1]))
-                    OldDirectoryName = DirectorySplit[DirectorySplit.Length - 2];
+                    SkipNodeToggle = false;
+                }
                 else
-                    OldDirectoryName = DirectorySplit[DirectorySplit.Length - 3];
+                {
+                    if (CurrentNode.NodeType == DataType.File)
+                    {
+                        string[] DirectorySplit = CurrentNode.NodeFile.FileDirectory.Split('\\');
+                        DirectorySplit[CurrentLevel] = DirectoryName;
 
-                string NewFileDirectory = CurrentNode.NodeFile.FileDirectory.Replace(OldDirectoryName, DirectoryName);
+                        string NewFileDirectory = string.Empty;
 
-                CurrentNode.NodeDirectory = NewFileDirectory;
-                CurrentNode.NodeFile.FileDirectory = NewFileDirectory;
+                        for (int i = 0; i < DirectorySplit.Length; ++i)
+                        {
+                            if (i == DirectorySplit.Length - 1)
+                                NewFileDirectory += DirectorySplit[i];
+                            else
+                                NewFileDirectory += DirectorySplit[i] + "\\";
+                        }
+
+                        CurrentNode.NodeDirectory = NewFileDirectory;
+                        CurrentNode.NodeFile.FileDirectory = NewFileDirectory;
+                    }
+                    else if (CurrentNode.NodeType == DataType.Folder)
+                    {
+                        string[] DirectorySplit = CurrentNode.NodeDirectory.Split('\\');
+                        DirectorySplit[CurrentLevel] = DirectoryName;
+
+                        string NewFileDirectory = string.Empty;
+
+                        foreach (var text in DirectorySplit)
+                        {
+                            if (!string.IsNullOrEmpty(text))
+                                NewFileDirectory += text + "\\";
+                        }
+
+                        CurrentNode.NodeDirectory = NewFileDirectory;
+                    }
+                }
 
                 if (CurrentNode.SubNodes != null && CurrentNode.SubNodes.Count > 0)
                 {

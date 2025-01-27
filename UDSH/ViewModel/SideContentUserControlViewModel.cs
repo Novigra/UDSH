@@ -198,7 +198,7 @@ namespace UDSH.ViewModel
             await Task.Run(() =>
             {
                 FileStructure fileStructure = new FileStructure();
-                fileStructure.UpdateTreeItemName(Root, _userDataServices.ActiveProject, e.FileStructure, e.OldDirectory);
+                fileStructure.UpdateTreeItemName(Root, _userDataServices.ActiveProject, e.FileStructure, e.OldDirectory, e.CurrentLevel);
             });
 
             await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
@@ -493,6 +493,7 @@ namespace UDSH.ViewModel
             if (e.NewValue is Node node)
             {
                 SelectedNode = node;
+                Debug.WriteLine($"{SelectedNode.NodeDirectory}");
             }
         }
 

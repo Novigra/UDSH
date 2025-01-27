@@ -79,10 +79,10 @@ namespace UDSH.Services
             }
         }
 
-        public async Task UpdateFileDetailsAsync(ContentFileStructure SelectedItem, string OldDirectory)
+        public async Task UpdateFileDetailsAsync(ContentFileStructure SelectedItem, string OldDirectory, int CurrentLevel)
         {
             await Task.Run(() => session.UpdateFileDetails());
-            FileDetailsUpdated?.Invoke(this, new FileDetailsUpdatedEventArgs(SelectedItem, OldDirectory));
+            FileDetailsUpdated?.Invoke(this, new FileDetailsUpdatedEventArgs(SelectedItem, OldDirectory, CurrentLevel));
         }
 
         public void AddFileToHeader(FileSystem file)
