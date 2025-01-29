@@ -266,5 +266,17 @@ namespace UDSH.View
         {
 
         }
+
+        private void ListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is ListView listview)
+                viewModel.LargeListView = listview;
+        }
+
+        private void ListView_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            if (sender is ListView listview)
+                viewModel.DetailsListView = listview;
+        }
     }
 }

@@ -894,7 +894,7 @@
     <Style TargetType="Button" x:Key="RenameItemConfirmButton">
         <Setter Property="Background" Value="#DBAD2F"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="IsEnabled" Value="True"/>
+        <Setter Property="IsEnabled" Value="{Binding IsRenameItemConfirmButtonEnabled}"/>
 
         <Setter Property="Template">
             <Setter.Value>
@@ -996,7 +996,7 @@
     <Style TargetType="Button" x:Key="NameItemConfirmButton">
         <Setter Property="Background" Value="#DBAD2F"/>
         <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="IsEnabled" Value="True"/>
+        <Setter Property="IsEnabled" Value="{Binding IsNameItemConfirmButtonEnabled}"/>
 
         <Setter Property="Template">
             <Setter.Value>

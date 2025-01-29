@@ -294,7 +294,12 @@ namespace UDSH.ViewModel
             set { mainWindow = value; }
         }
 
-        public ObservableCollection<FileSystem> OpenFiles { get; set; }
+        private ObservableCollection<FileSystem> openFiles;
+        public ObservableCollection<FileSystem> OpenFiles
+        {
+            get => openFiles;
+            set { openFiles = value; OnPropertyChanged(); }
+        }
 
         private FileSystem PrevSelectedFile;
         private FileSystem selectedFile;
@@ -441,6 +446,17 @@ namespace UDSH.ViewModel
             //TestScroll();
 
             _headerServices.UserDataServices.ItemDeleted += UserDataServices_ItemDeleted;
+            _headerServices.UserDataServices.FileDetailsUpdated += UserDataServices_FileDetailsUpdated;
+        }
+
+        private void UserDataServices_FileDetailsUpdated(object? sender, FileDetailsUpdatedEventArgs e)
+        {
+            ObservableCollection<FileSystem> Temp = new ObservableCollection<FileSystem>(OpenFiles);
+            FileSystem TempSelected = SelectedFile;
+            OpenFiles.Clear();
+
+            OpenFiles = Temp;
+            SelectedFile = TempSelected;
         }
 
         private void UserDataServices_ItemDeleted(object? sender, DirectoriesEventArgs e)
@@ -499,7 +515,7 @@ namespace UDSH.ViewModel
 
         private void UserDataServices_AddNewFile(object? sender, Model.FileSystem e)
         {
-            var file = OpenFiles.FirstOrDefault(f => f.FileName == e.FileName);
+            var file = OpenFiles.FirstOrDefault(f => f.FileID == e.FileID);
 
             if(file != null)
             {

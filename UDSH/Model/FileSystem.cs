@@ -6,6 +6,7 @@ namespace UDSH.Model
 {
     public class FileSystem
     {
+        public string FileID { get; set; }
         public string FileName { get; set; }
         public string FileType { get; set; }
         public string FileAuthor { get; set; }

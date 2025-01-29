@@ -8,6 +8,7 @@ FD:\Projects\UDSH\UDSH\Styles\TextStyles.xaml;;
 FD:\Projects\UDSH\UDSH\View\ContentWindow.xaml;;
 FD:\Projects\UDSH\UDSH\View\CSFUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\DefaultUserControl.xaml;;
+FD:\Projects\UDSH\UDSH\View\DeletionProcessWindow.xaml;;
 FD:\Projects\UDSH\UDSH\View\FooterUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\HeaderUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\ImageEditorWindow.xaml;;
@@ -22,5 +23,4 @@ FD:\Projects\UDSH\UDSH\View\WelcomeLastUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\WelcomeNameUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\WelcomeProfilePictureUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\WelcomeUserControl.xaml;;
-FD:\Projects\UDSH\UDSH\View\DeletionProcessWindow.xaml;;
 

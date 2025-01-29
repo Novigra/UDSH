@@ -416,7 +416,7 @@
                     </Border>
                 </Grid>
                 <Grid Grid.Row="1">
-                    <ListView Opacity="{Binding DetailsListViewOpacity}" IsHitTestVisible="{Binding DetailsListViewHitTest}" IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout}" ItemContainerStyle="{StaticResource ContentDirectoryListItem}">
+                    <ListView Opacity="{Binding DetailsListViewOpacity}" AllowDrop="True" Loaded="ListView_Loaded_1" IsHitTestVisible="{Binding DetailsListViewHitTest}" IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout}" ItemContainerStyle="{StaticResource ContentDirectoryListItem}">
                         <ListView.View>
                             <GridView ColumnHeaderContainerStyle="{StaticResource Content_GridViewColumnHeader}">
                                 <GridViewColumn Header="Name" Width="{Binding ColWidth1, Mode=TwoWay}">
@@ -633,11 +633,23 @@
                             <i:EventTrigger EventName="MouseDoubleClick">
                                 <i:InvokeCommandAction Command="{Binding ListViewMouseDoubleClick}"/>
                             </i:EventTrigger>
+
+                            <i:EventTrigger EventName="MouseMove">
+                                <i:InvokeCommandAction Command="{Binding ListMouseMove}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="DragOver">
+                                <i:InvokeCommandAction Command="{Binding ListDragOver}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding ListDrop}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ListView>
 
 
-                    <ListView Opacity="{Binding LargeListViewOpacity}" IsHitTestVisible="{Binding LargeListViewHitTest}" IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout_LargeIcons}" ItemContainerStyle="{StaticResource ContentDirectoryListViewItem_LargeIcons}">
+                    <ListView Opacity="{Binding LargeListViewOpacity}" AllowDrop="True" Loaded="ListView_Loaded" IsHitTestVisible="{Binding LargeListViewHitTest}" IsEnabled="{Binding IsNormalState}" ItemsSource="{Binding CurrentFiles}" SelectedItem="{Binding SelectedItem}" Style="{StaticResource ContentDirectoryLayout_LargeIcons}" ItemContainerStyle="{StaticResource ContentDirectoryListViewItem_LargeIcons}">
                         <ListView.ContextMenu>
                             <ContextMenu Style="{StaticResource ContentItemProperties}">
                                 <MenuItem Header="Delete Permanently" Foreground="#F83030" Command="{Binding DeleteItem}"/>
@@ -654,6 +666,18 @@
                             <i:EventTrigger EventName="MouseDoubleClick">
                                 <i:InvokeCommandAction Command="{Binding ListViewMouseDoubleClick}"/>
                             </i:EventTrigger>
+
+                            <i:EventTrigger EventName="MouseMove">
+                                <i:InvokeCommandAction Command="{Binding ListMouseMove}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="DragOver">
+                                <i:InvokeCommandAction Command="{Binding ListDragOver}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding ListDrop}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ListView>
                 </Grid>
@@ -661,7 +685,7 @@
         </Grid>
 
         <Grid Grid.Row="2">
-            <Border x:Name="StatusBox" Background="#383838" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5" Focusable="True" FocusVisualStyle="{x:Null}">
+            <Border x:Name="StatusBox" Background="#383838" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5" Focusable="True" FocusVisualStyle="{x:Null}" Panel.ZIndex="0">
                 <Image Source="/Resource/ContentState.png" Width="100" Margin="15">
                     <Image.Style>
                         <Style TargetType="Image">
@@ -732,7 +756,7 @@
             </Border>
 
             <!-- Rename Box  start 130... End 833 -->
-            <Border Background="#393E46" Height="60" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5">
+            <Border Background="#393E46" Height="60" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5" Panel.ZIndex="1">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
                     <TextBlock Text="Rename" Foreground="#DBAD2F">
                         <TextBlock.Style>
@@ -764,6 +788,13 @@
                     <Border Background="#DEDEDE" Width="30" CornerRadius="4" Margin="10,-5,0,-5">
                         <Grid>
                             <TextBox Text="{Binding RenameNewName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding OpenRenameTextBox}" Margin="5,0,0,0">
+
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding NameTextBoxChanged}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+
                                 <TextBox.Style>
                                     <Style TargetType="TextBox">
                                         <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -908,7 +939,7 @@
             </Border>
 
             <!-- Warning Message -->
-            <Border Background="#F83030" Height="60" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5">
+            <Border Background="#F83030" Height="60" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5" Panel.ZIndex="1">
                 <Grid>
                     <TextBlock Text="{Binding DirectoryWrongInputMessage}" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="#FFFFFF">
                         <TextBlock.Style>
@@ -965,7 +996,7 @@
             </Border>
 
             <!-- Name Box -->
-            <Border Background="#393E46" Height="60" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5">
+            <Border Background="#393E46" Height="60" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5" Panel.ZIndex="1">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
                     <TextBlock Text="Name" Foreground="#DBAD2F">
                         <TextBlock.Style>
@@ -997,6 +1028,12 @@
                     <Border Background="#DEDEDE" Width="30" CornerRadius="4" Margin="10,-5,0,-5">
                         <Grid>
                             <TextBox Text="{Binding ItemNewName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding OpenNameTextBox}" Margin="5,0,0,0">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="TextChanged">
+                                        <i:InvokeCommandAction Command="{Binding NameTextBoxChanged}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                
                                 <TextBox.Style>
                                     <Style TargetType="TextBox">
                                         <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -1141,7 +1178,7 @@
             </Border>
             
             <!-- Delete Box -->
-            <Border Background="#393E46" Height="60" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5">
+            <Border Background="#393E46" Height="60" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,5,0,5" Panel.ZIndex="1">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,0">
                     <StackPanel Orientation="Horizontal" Loaded="StackPanel_Loaded">
                         <TextBlock Style="{StaticResource DefaultText}" Text="Do You Want Item(s) " Foreground="#DBAD2F"/>
@@ -1243,6 +1280,43 @@
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.8" Duration="0:0:0.3"/>
                                             <DoubleAnimation Storyboard.TargetProperty="Width" To="130" BeginTime="0:0:0.2" Duration="0:0:0.6"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+
+            <Border x:Name="NameWarningMessage" Background="#F83030" HorizontalAlignment="Left" VerticalAlignment="Center" CornerRadius="5" Margin="20,-100,0,0" Focusable="True" FocusVisualStyle="{x:Null}" Panel.ZIndex="0">
+                <TextBlock Text="{Binding NameInputMessage}" VerticalAlignment="Center" Margin="5" Foreground="#FFFFFF"/>
+
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Opacity" Value="0"/>
+                        <Setter Property="RenderTransform">
+                            <Setter.Value>
+                                <TranslateTransform X="0" Y="30"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ShowNameInputWarningMessage}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)" To="0" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)" To="30" Duration="0:0:0.3"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.ExitActions>

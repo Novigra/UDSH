@@ -312,8 +312,8 @@ namespace UDSH.ViewModel
         private Stack<ObservableCollection<ContentFileStructure>> ReturnPageStack;
         private Stack<string> ReturnDirectoryStack;
 
-
-        private HashSet<char> InvalidCharactersFile = new HashSet<char>(@"\:*?""<>|");
+        private HashSet<char> InvalidCharactersFile = new HashSet<char>(@"/\:*?""<>|");
+        private HashSet<char> InvalidCharactersDirectory = new HashSet<char>(@"\:*?""<>|");
         private string InvalidDirectory = "//";
 
         private bool DirectoryUpdated;
@@ -373,9 +373,40 @@ namespace UDSH.ViewModel
             set { isContentDeleteProcess = value; OnPropertyChanged(); }
         }
 
+        private string nameInputMessage;
+        public string NameInputMessage
+        {
+            get => nameInputMessage;
+            set { nameInputMessage = value; OnPropertyChanged(); }
+        }
+
+        private bool showNameInputWarningMessage;
+        public bool ShowNameInputWarningMessage
+        {
+            get => showNameInputWarningMessage;
+            set { showNameInputWarningMessage = value; OnPropertyChanged(); }
+        }
+
+        private bool isRenameItemConfirmButtonEnabled;
+        public bool IsRenameItemConfirmButtonEnabled
+        {
+            get => isRenameItemConfirmButtonEnabled;
+            set { isRenameItemConfirmButtonEnabled = value; OnPropertyChanged(); }
+        }
+
+        private bool isNameItemConfirmButtonEnabled;
+        public bool IsNameItemConfirmButtonEnabled
+        {
+            get => isNameItemConfirmButtonEnabled;
+            set { isNameItemConfirmButtonEnabled = value; OnPropertyChanged(); }
+        }
+
         private int CurrentLevel;
 
         private Border FocusTarget;
+
+        public ListView LargeListView { get; set; }
+        public ListView DetailsListView { get; set; }
         #endregion
 
         #region Commands
@@ -415,6 +446,7 @@ namespace UDSH.ViewModel
         public RelayCommand<object> CancelDelete => new RelayCommand<object>(execute => StopDeleteProcess(), canExecute => IsContentDeleteProcess);
 
 
+        public RelayCommand<object> NameTextBoxChanged => new RelayCommand<object>(execute => NameChanged());
         public RelayCommand<object> RenameItem => new RelayCommand<object>(execute => RenameSelectedItem(), canExecute => CanRenameSelectedItem());
         public RelayCommand<object> ConfirmRename => new RelayCommand<object>(execute => ConfirmRenameProcess(), canExecute => OpenRenameTextBox);
         public RelayCommand<object> CancelRename => new RelayCommand<object>(execute => StopRenameProcess(), canExecute => OpenRenameTextBox);
@@ -429,6 +461,10 @@ namespace UDSH.ViewModel
 
         public RelayCommand<object> ConfirmNewItemName => new RelayCommand<object>(execute => ConfirmNewItemNameProcess(), canExecute => OpenNameTextBox);
         public RelayCommand<object> CancelNewItemName => new RelayCommand<object>(execute => CancelNewItemNameProcess(), canExecute => OpenNameTextBox);
+
+        public RelayCommand<MouseEventArgs> ListMouseMove => new RelayCommand<MouseEventArgs>(ListMouseMoveProcess);
+        public RelayCommand<DragEventArgs> ListDragOver => new RelayCommand<DragEventArgs>(ListDragOverProcess);
+        public RelayCommand<DragEventArgs> ListDrop => new RelayCommand<DragEventArgs>(ListDropProcess);
         #endregion
 
         public ContentWindowViewModel(IUserDataServices userDataServices)
@@ -515,10 +551,63 @@ namespace UDSH.ViewModel
             DirectoryUpdated = false;
             CanGoToDirectory = true;
             ShowWarningMessage = false;
+
             DirectoryWrongInputMessage = "You Can’t Add Empty Directories Or Use \\ : * ? \" < > |";
+            ShowNameInputWarningMessage = false;
 
             DefaultCurrentFiles = new ObservableCollection<ContentFileStructure>();
             CurrentLevel = 0;
+
+            IsRenameItemConfirmButtonEnabled = true;
+            IsNameItemConfirmButtonEnabled = true;
+        }
+
+        private void ListMouseMoveProcess(MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && ((FrameworkElement)e.OriginalSource).DataContext is ContentFileStructure)
+            {
+                if (SelectedItem != null)
+                {
+                    if (LargeListViewHitTest == true)
+                        DragDrop.DoDragDrop(LargeListView, SelectedItem, DragDropEffects.Move);
+                    else
+                        DragDrop.DoDragDrop(DetailsListView, SelectedItem, DragDropEffects.Move);
+                }
+            }
+        }
+
+        private void ListDragOverProcess(DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Move;
+            e.Handled = true;
+        }
+
+        private void ListDropProcess(DragEventArgs e)
+        {
+            var sourceItem = e.Data.GetData(typeof(ContentFileStructure)) as ContentFileStructure;
+            ListView CurrentListView;
+
+            if (LargeListViewHitTest == true)
+                CurrentListView = LargeListView;
+            else
+                CurrentListView = DetailsListView;
+
+            var position = e.GetPosition(CurrentListView);
+            var targetItem = CurrentListView.Items.OfType<ContentFileStructure>().FirstOrDefault(c => CurrentListView.ItemContainerGenerator.ContainerFromItem(c) is ListViewItem container &&
+                        container.TransformToVisual(CurrentListView)
+                        .TransformBounds(new Rect(0, 0, container.ActualWidth, container.ActualHeight))
+                        .Contains(position));
+
+            if (sourceItem != null && targetItem != null && sourceItem != targetItem)
+            {
+                // TODO: Update File Directory
+                /*
+                 * - if file exists with similar name, add _1 at the end of the file(of course do iterations)
+                 * - Update file's directory
+                 * - Update file in side tree, and content tree
+                 * - Update header, as the file name could change
+                 */
+            }
         }
 
         private async void LoadData()
@@ -662,7 +751,7 @@ namespace UDSH.ViewModel
 
         private void UpdateTextBoxStatus()
         {
-            if (CurrentDirectory.Any(c => InvalidCharactersFile.Contains(c)) == true || CurrentDirectory.Contains(InvalidDirectory) == true || CurrentDirectory.Equals("/"))
+            if (CurrentDirectory.Any(c => InvalidCharactersDirectory.Contains(c)) == true || CurrentDirectory.Contains(InvalidDirectory) == true || CurrentDirectory.Equals("/"))
             {
                 ShowWarningMessage = true;
                 CanGoToDirectory = false;
@@ -950,6 +1039,10 @@ namespace UDSH.ViewModel
             ReturnDirectoryStack.Clear();
             ReturnPageStack.Clear();
 
+            IsContentDeleteProcess = false;
+            IsNormalState = true;
+            IsContentLoading = true;
+
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 FileStructure fileStructure = new FileStructure();
@@ -975,12 +1068,56 @@ namespace UDSH.ViewModel
                 fileStructure.DeleteItem(CurrentFiles, _userDataServices.ActiveProject, SelectedItem);
                 _userDataServices.FileDeletedAsync(Directory, Directories, TempSelectedItem.Type);
             });
+
+            IsContentLoading = false;
         }
 
         private void StopDeleteProcess()
         {
             IsContentDeleteProcess = false;
             IsNormalState = true;
+            ShowNameInputWarningMessage = false;
+        }
+
+        private void NameChanged()
+        {
+            if (RenameNewName.Any(c => InvalidCharactersFile.Contains(c)) == true || ItemNewName.Any(c => InvalidCharactersFile.Contains(c)) == true)
+            {
+                NameInputMessage = "You Can’t Enter / \\ : * ? \" < > | ";
+                ShowNameInputWarningMessage = true;
+
+                IsRenameItemConfirmButtonEnabled = false;
+                IsNameItemConfirmButtonEnabled = false;
+            }
+            else
+            {
+                if (SelectedAddIndex == -1)
+                    IsRenameItemConfirmButtonEnabled = true;
+                else
+                    IsNameItemConfirmButtonEnabled = true;
+
+                ShowNameInputWarningMessage = false;
+            }
+
+            foreach (var item in CurrentFiles)
+            {
+                if (string.Equals(item.Name, RenameNewName, StringComparison.OrdinalIgnoreCase) && string.Equals(SelectedItem.Type, item.Type, StringComparison.OrdinalIgnoreCase))
+                {
+                    NameInputMessage = "An Item With That Name Already Exists ";
+                    ShowNameInputWarningMessage = true;
+
+                    IsRenameItemConfirmButtonEnabled = false;
+                    IsNameItemConfirmButtonEnabled = false;
+                }
+                else if (string.Equals(item.Name, ItemNewName, StringComparison.OrdinalIgnoreCase) && string.Equals(item.Type, Enum.GetName(typeof(ContentAdd), SelectedAddIndex), StringComparison.OrdinalIgnoreCase))
+                {
+                    NameInputMessage = "An Item With That Name Already Exists ";
+                    ShowNameInputWarningMessage = true;
+
+                    IsRenameItemConfirmButtonEnabled = false;
+                    IsNameItemConfirmButtonEnabled = false;
+                }
+            }
         }
 
         private void RenameSelectedItem()
@@ -1034,7 +1171,8 @@ namespace UDSH.ViewModel
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                CurrentFiles = new ObservableCollection<ContentFileStructure>(CurrentFiles);
+                FileStructure fileStructure = new FileStructure();
+                CurrentFiles = fileStructure.SortListItems(CurrentFiles, (ContentSort)SelectedSortIndex);
 
                 Node temp = Root;
                 Root = new Node();
@@ -1060,6 +1198,8 @@ namespace UDSH.ViewModel
             IsContentRenameProcess = false;
             IsContentCanceledProcess = true;
             IsContentCanceledProcess = false;
+
+            ShowNameInputWarningMessage = false;
         }
 
         private async void GoBack()

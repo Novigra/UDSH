@@ -105,8 +105,10 @@ namespace UDSH.Model
 
         public void CreateNewProject(string NewProjectName, string ProjectVersion, bool IsSecured, string Password)
         {
+            Guid ProjectGuid = Guid.NewGuid();
             Project project = new Project()
             {
+                ProjectID = ProjectGuid.ToString(),
                 ProjectName = NewProjectName,
                 ProjectAuthor = User.DisplayName,
                 ProjectVersion = ProjectVersion,
@@ -140,8 +142,10 @@ namespace UDSH.Model
 
         public void CreateNewFile(string NewFileName, string FileType, string ProjectDirectory)
         {
+            Guid FileGuid = Guid.NewGuid();
             CurrentFile = new FileSystem()
             {
+                FileID = FileGuid.ToString(),
                 FileName = NewFileName,
                 FileType = FileType,
                 FileAuthor = User.DisplayName,

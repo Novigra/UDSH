@@ -65,8 +65,10 @@ namespace UDSH.View
         {
             Debug.WriteLine("###### SESSION STARTED ######");
 
+            Guid UserGuid = Guid.NewGuid();
             User user = new User()
             {
+                UserID = UserGuid.ToString(),
                 DisplayName = UserDisplayName,
                 IsProfilePictureSet = UserSetProfilePicture,
                 IsCustomIconSet = UserSetCustomIcon,

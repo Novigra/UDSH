@@ -278,7 +278,7 @@ namespace UDSH.Model
                 SubNodes = new ObservableCollection<Node>()
             });
 
-            CurrentNode.SubNodes = new ObservableCollection<Node>(CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.Ordinal));
+            CurrentNode.SubNodes = new ObservableCollection<Node>(CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase));
         }
 
         public ObservableCollection<ContentFileStructure> SortListItems(ObservableCollection<ContentFileStructure> currentFiles, ContentSort sort)
@@ -287,16 +287,16 @@ namespace UDSH.Model
             switch (sort)
             {
                 case ContentSort.FilesFirst_Ascending:
-                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("Folder")).ThenBy(n => n.Name, StringComparer.Ordinal));
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("Folder")).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase));
                     break;
                 case ContentSort.FilesFirst_Descending:
-                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("Folder")).ThenByDescending(n => n.Name, StringComparer.Ordinal));
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("Folder")).ThenByDescending(n => n.Name, StringComparer.OrdinalIgnoreCase));
                     break;
                 case ContentSort.FoldersFirst_Ascending:
-                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("MK")).ThenBy(n => n.Name, StringComparer.Ordinal));
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("MK")).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase));
                     break;
                 case ContentSort.FoldersFirst_Descending:
-                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("MK")).ThenByDescending(n => n.Name, StringComparer.Ordinal));
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("MK")).ThenByDescending(n => n.Name, StringComparer.OrdinalIgnoreCase));
                     break;
                 default:
                     break;
@@ -546,7 +546,7 @@ namespace UDSH.Model
                     subNode = new Node { Name = TextSplit[i], NodeImage = CurrentImage, NodeType = CurrentType, NodeDirectory = CurrentFileNodeDirectory, NodeFile = (IsFile == true) ? file : null };
                     CurrentNode.SubNodes.Add(subNode);
 
-                    var sortedNodes = CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.Ordinal).ToList();
+                    var sortedNodes = CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase).ToList();
                     CurrentNode.SubNodes.Clear();
                     foreach (var node in sortedNodes)
                     {
@@ -565,7 +565,7 @@ namespace UDSH.Model
 
         private void SortNodes(Node root)
         {
-            root.SubNodes = new ObservableCollection<Node>(root.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.Ordinal));
+            root.SubNodes = new ObservableCollection<Node>(root.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase));
 
             foreach (var subNode in root.SubNodes)
             {
@@ -616,7 +616,7 @@ namespace UDSH.Model
                 UpdateFileNodesDirectory(CurrentNode, SelectedItem, CurrentLevel);
             }
 
-            ParentNode.SubNodes = new ObservableCollection<Node>(ParentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.Ordinal));
+            ParentNode.SubNodes = new ObservableCollection<Node>(ParentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase));
         }
 
         private void UpdateFileNodesDirectory(Node CurrentRoot, ContentFileStructure SelectedItem, int CurrentLevel)
@@ -687,8 +687,17 @@ namespace UDSH.Model
 
             if (file != null)
             {
-                // TODO: Update Logic
-                string NewFileDirectory = file.FileDirectory.Replace(file.FileName, ItemNewName);
+                string[] DirectorySplit = file.FileDirectory.Split("\\");
+                DirectorySplit[DirectorySplit.Length - 1] = ItemNewName + "." + file.FileType;
+                string NewFileDirectory = string.Empty;
+                for (int i = 0; i < DirectorySplit.Length; ++i)
+                {
+                    if (i == DirectorySplit.Length - 1)
+                        NewFileDirectory += DirectorySplit[i];
+                    else
+                        NewFileDirectory += DirectorySplit[i] + "\\";
+                }
+
                 File.Move(file.FileDirectory, NewFileDirectory);
                 File.SetLastWriteTime(NewFileDirectory, DateTime.Now);
 
@@ -719,7 +728,6 @@ namespace UDSH.Model
                     NewFolderDirectory += text + "\\";
                 }
 
-                //string NewFolderDirectory = ContentItem.Directory.Replace(ContentItem.Name, ItemNewName);
                 Directory.Move(ContentItem.Directory, NewFolderDirectory);
                 Directory.SetLastWriteTime(NewFolderDirectory, DateTime.Now);
 
