@@ -10,7 +10,6 @@ using System.Windows.Media.Imaging;
 using UDSH.Model;
 using UDSH.MVVM;
 using UDSH.Services;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace UDSH.ViewModel
 {
@@ -184,6 +183,18 @@ namespace UDSH.ViewModel
 
             _userDataServices.FileDetailsUpdated += _userDataServices_FileDetailsUpdated;
             _userDataServices.ItemDeletedSideContent += _userDataServices_ItemDeleted;
+            _userDataServices.DataDragActionUpdate += _userDataServices_DataDragActionUpdate;
+        }
+
+        private async void _userDataServices_DataDragActionUpdate(object? sender, DataDragActionUpdateEventArgs e)
+        {
+            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+            {
+                FileStructure fileStructure = new FileStructure();
+                Node temp = fileStructure.UpdateTreeAfterMovingItems(Root, e.SelectedItems, e.TargetItem, e.CurrentDirectory);
+                Root = new Node();
+                Root = temp;
+            }));
         }
 
         private void _userDataServices_ItemDeleted(object? sender, string directory)

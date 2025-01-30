@@ -608,7 +608,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ListViewItem">
                     <!-- Works but need modifications Width="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=30}" -->
-                    <Border Height="40" BorderThickness="0" Margin="0,0,0,0" HorizontalAlignment="Left" Background="{TemplateBinding Background}" CornerRadius="5">
+                    <Border Height="40" BorderThickness="0" Margin="0,0,0,3" HorizontalAlignment="Left" Background="{TemplateBinding Background}" CornerRadius="5">
                         <GridViewRowPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
                         <VisualStateManager.VisualStateGroups>
@@ -675,6 +675,8 @@
     <Style TargetType="ListViewItem" x:Key="ContentDirectoryListViewItem_LargeIcons">
         <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Focusable" Value="True"/>
+        <!--<Setter Property="MVVM:ListViewCommand.ListViewItemMouseLeaveCommand" Value="{Binding DataContext.ListViewItemMouseLeave, RelativeSource={RelativeSource AncestorType=ListView}}"/>-->
 
         <Setter Property="Template">
             <Setter.Value>

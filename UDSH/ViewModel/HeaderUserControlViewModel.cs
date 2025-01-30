@@ -447,6 +447,17 @@ namespace UDSH.ViewModel
 
             _headerServices.UserDataServices.ItemDeleted += UserDataServices_ItemDeleted;
             _headerServices.UserDataServices.FileDetailsUpdated += UserDataServices_FileDetailsUpdated;
+            _headerServices.UserDataServices.DataDragActionUpdate += UserDataServices_DataDragActionUpdate;
+        }
+
+        private void UserDataServices_DataDragActionUpdate(object? sender, DataDragActionUpdateEventArgs e)
+        {
+            ObservableCollection<FileSystem> Temp = new ObservableCollection<FileSystem>(OpenFiles);
+            FileSystem TempSelected = SelectedFile;
+            OpenFiles.Clear();
+
+            OpenFiles = Temp;
+            SelectedFile = TempSelected;
         }
 
         private void UserDataServices_FileDetailsUpdated(object? sender, FileDetailsUpdatedEventArgs e)

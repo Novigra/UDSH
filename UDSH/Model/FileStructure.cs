@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Media.Imaging;
@@ -278,7 +279,7 @@ namespace UDSH.Model
                 SubNodes = new ObservableCollection<Node>()
             });
 
-            CurrentNode.SubNodes = new ObservableCollection<Node>(CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase));
+            CurrentNode.SubNodes = new ObservableCollection<Node>(CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, new SortComparer()));
         }
 
         public ObservableCollection<ContentFileStructure> SortListItems(ObservableCollection<ContentFileStructure> currentFiles, ContentSort sort)
@@ -287,16 +288,16 @@ namespace UDSH.Model
             switch (sort)
             {
                 case ContentSort.FilesFirst_Ascending:
-                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("Folder")).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase));
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("Folder")).ThenBy(n => n.Name, new SortComparer()));
                     break;
                 case ContentSort.FilesFirst_Descending:
-                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("Folder")).ThenByDescending(n => n.Name, StringComparer.OrdinalIgnoreCase));
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("Folder")).ThenByDescending(n => n.Name, new SortComparer()));
                     break;
                 case ContentSort.FoldersFirst_Ascending:
-                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("MK")).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase));
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("MK")).ThenBy(n => n.Name, new SortComparer()));
                     break;
                 case ContentSort.FoldersFirst_Descending:
-                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("MK")).ThenByDescending(n => n.Name, StringComparer.OrdinalIgnoreCase));
+                    SortedStructure = new ObservableCollection<ContentFileStructure>(currentFiles.OrderBy(item => item.Type.Contains("MK")).ThenByDescending(n => n.Name, new SortComparer()));
                     break;
                 default:
                     break;
@@ -546,7 +547,7 @@ namespace UDSH.Model
                     subNode = new Node { Name = TextSplit[i], NodeImage = CurrentImage, NodeType = CurrentType, NodeDirectory = CurrentFileNodeDirectory, NodeFile = (IsFile == true) ? file : null };
                     CurrentNode.SubNodes.Add(subNode);
 
-                    var sortedNodes = CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase).ToList();
+                    var sortedNodes = CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, new SortComparer()).ToList();
                     CurrentNode.SubNodes.Clear();
                     foreach (var node in sortedNodes)
                     {
@@ -565,7 +566,7 @@ namespace UDSH.Model
 
         private void SortNodes(Node root)
         {
-            root.SubNodes = new ObservableCollection<Node>(root.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase));
+            root.SubNodes = new ObservableCollection<Node>(root.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, new SortComparer()));
 
             foreach (var subNode in root.SubNodes)
             {
@@ -616,7 +617,7 @@ namespace UDSH.Model
                 UpdateFileNodesDirectory(CurrentNode, SelectedItem, CurrentLevel);
             }
 
-            ParentNode.SubNodes = new ObservableCollection<Node>(ParentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase));
+            ParentNode.SubNodes = new ObservableCollection<Node>(ParentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, new SortComparer()));
         }
 
         private void UpdateFileNodesDirectory(Node CurrentRoot, ContentFileStructure SelectedItem, int CurrentLevel)
@@ -829,6 +830,282 @@ namespace UDSH.Model
                     {
                         CurrentNode.SubNodes.Remove(Node);
                     }
+                }
+
+                if (CurrentNode.SubNodes != null && CurrentNode.SubNodes.Count > 0)
+                {
+                    foreach (Node Node in CurrentNode.SubNodes)
+                        StackNode.Push(Node);
+                }
+            }
+        }
+
+        public void MoveItemsTo(ObservableCollection<ContentFileStructure> CurrentFiles, List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, Project project)
+        {
+            string newFilesDirectory = TargetItem.Directory;
+            if (!newFilesDirectory.EndsWith("\\"))
+                newFilesDirectory += "\\";
+            
+            foreach (var item in SelectedItems)
+            {
+                if (item.File != null)
+                {
+                    string OldDirectory = item.File.FileDirectory;
+
+                    string directory = newFilesDirectory + item.Name + "." + item.File.FileType;
+                    int index = 0;
+                    bool newInstance = false;
+                    string fileNewName = string.Empty;
+                    while(File.Exists(directory))
+                    {
+                        index++;
+                        fileNewName = item.Name + "_" + index;
+                        directory = newFilesDirectory + fileNewName + "." + item.File.FileType;
+                        newInstance = true;
+                    }
+
+                    item.File.FileDirectory = directory;
+                    if (newInstance == true)
+                    {
+                        item.File.FileName = fileNewName;
+                        /*Guid FileGuid = Guid.NewGuid();
+                        item.File.FileID = FileGuid.ToString();*/
+                    }
+
+                    File.Move(OldDirectory, item.File.FileDirectory);
+                    File.SetLastWriteTime(item.File.FileDirectory, DateTime.Now);
+                }
+                else
+                {
+                    string OldDirectory = item.Directory;
+
+                    item.Directory = newFilesDirectory + item.Name + "\\";
+                    if (!Directory.Exists(item.Directory))
+                    {
+                        Directory.Move(OldDirectory, item.Directory);
+                        Directory.SetLastWriteTime(item.Directory, DateTime.Now);
+                    }
+                    else
+                    {
+                        string[] Files = Directory.GetFiles(OldDirectory);
+                        // TODO: use Get Directories and move the items while there are directories keep adding
+
+
+                        foreach (string file in Files)
+                        {
+                            string fileName = Path.GetFileName(file);
+                            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+                            string filetype = Path.GetExtension(file);
+
+                            string targetFileDirectory = item.Directory + fileName;
+                            int index = 0;
+
+                            while (File.Exists(targetFileDirectory))
+                            {
+                                index++;
+                                fileName = fileNameWithoutExtension + "_" + index;
+                                targetFileDirectory = newFilesDirectory + item.Name + "\\" + fileName + filetype;
+                            }
+
+                            foreach (var savedFile in project.Files)
+                            {
+                                if (file.Equals(savedFile.FileDirectory))
+                                {
+                                    savedFile.FileName = fileName;
+                                    savedFile.FileDirectory = targetFileDirectory;
+                                }
+                            }
+
+                            File.Move(file, targetFileDirectory);
+                            File.SetLastWriteTime(targetFileDirectory, DateTime.Now);
+                        }
+                    }
+
+                    //Directory.Delete(OldDirectory);
+                }
+            }
+
+            foreach (var SelectedItem in SelectedItems)
+            {
+                foreach (var Item in CurrentFiles.ToList())
+                {
+                    if (SelectedItem == Item)
+                        CurrentFiles.Remove(Item);
+                }
+            }
+        }
+
+        public Node UpdateTreeAfterMovingItems(Node Root, List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, string CurrentDirectory)
+        {
+            Queue<string> DirectoryQueue = new Queue<string>();
+
+            string[] DirectorySplit = CurrentDirectory.Split('/');
+            foreach (var Directory in DirectorySplit)
+            {
+                if (!string.IsNullOrEmpty(Directory))
+                    DirectoryQueue.Enqueue(Directory);
+            }
+
+            Node CurrentNode = Root;
+
+            while (DirectoryQueue.Count > 0)
+            {
+                string directory = DirectoryQueue.Dequeue();
+
+                foreach (var subNode in CurrentNode.SubNodes)
+                {
+                    if (subNode.Name == directory && subNode.NodeType == DataType.Folder)
+                    {
+                        CurrentNode = subNode;
+                        break;
+                    }
+                }
+            }
+
+            Node TargetNode = null;
+            Stack<Node> StackNodes = new Stack<Node>();
+            Stack<Node> StackNodesFolders = new Stack<Node>();
+
+            foreach (var SelecteItem in SelectedItems)
+            {
+                foreach(var subNode in CurrentNode.SubNodes.ToList())
+                {
+                    string fileSubNode = Path.GetFileNameWithoutExtension(subNode.NodeDirectory);
+                    if (SelecteItem.Name == subNode.Name && SelecteItem.Type == "Folder" && subNode.NodeType == DataType.Folder)
+                    {
+                        StackNodes.Push(subNode);
+                        StackNodesFolders.Push(subNode);
+
+                        CurrentNode.SubNodes.Remove(subNode);
+                    }
+                    else if (SelecteItem.Name == fileSubNode && SelecteItem.Type.Contains("MK") && subNode.NodeType == DataType.File)
+                    {
+                        subNode.Name = subNode.NodeFile.FileName + "." + subNode.NodeFile.FileType;
+                        subNode.NodeDirectory = subNode.NodeFile.FileDirectory;
+
+                        StackNodes.Push(subNode);
+                        StackNodesFolders.Push(subNode);
+
+                        CurrentNode.SubNodes.Remove(subNode);
+                    }
+
+                    if (TargetItem.Name == subNode.Name && TargetItem.Type == "Folder" && subNode.NodeType == DataType.Folder)
+                    {
+                        TargetNode = subNode;
+                    }
+                }
+            }
+
+            if (TargetNode != null)
+            {
+                while (StackNodes.Count > 0)
+                {
+                    var node = StackNodes.Pop();
+
+                    if (!TargetNode.SubNodes.Contains(node))
+                        TargetNode.SubNodes.Add(node);
+                }
+
+                TargetNode.SubNodes = new ObservableCollection<Node>(TargetNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, new SortComparer()));
+
+                UpdateSubDirectoriesAfterDragMoveAction(StackNodesFolders, TargetNode);
+
+                RemoveDuplicate(TargetNode);
+            }
+
+            return Root;
+        }
+
+        private void RemoveDuplicate(Node TargetNode)
+        {
+            Stack<Node> StackNodes = new Stack<Node>();
+
+            Node Temp = TargetNode;
+
+            foreach(var node in TargetNode.SubNodes)
+            {
+                foreach (var otherNode in Temp.SubNodes)
+                {
+                    if (node != otherNode && string.Equals(node.Name, otherNode.Name, StringComparison.OrdinalIgnoreCase) && node.NodeType == otherNode.NodeType)
+                    {
+                        StackNodes.Push(node);
+                    }
+                }
+            }
+
+            if (StackNodes.Count == 0)
+                return;
+
+            Node node1 = StackNodes.Pop();
+            Node node2 = StackNodes.Pop();
+
+            foreach (var node in node2.SubNodes)
+            {
+                node1.SubNodes.Add(node);
+            }
+
+            TargetNode.SubNodes.Remove(node2);
+
+            foreach (var node in node1.SubNodes)
+            {
+                if (node.NodeType == DataType.File && node.Name != node.NodeFile.FileName)
+                {
+                    string[] textBlock = node.NodeFile.FileDirectory.Split(node.Name);
+                    node.Name = node.NodeFile.FileName;
+                    node.NodeDirectory = textBlock[0] + node.Name + "." + node.NodeFile.FileType;
+                    node.NodeFile.FileDirectory = node.NodeDirectory;
+                }
+            }
+
+            node1.SubNodes = new ObservableCollection<Node>(node1.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, new SortComparer()));
+
+            
+        }
+
+        private void UpdateSubDirectoriesAfterDragMoveAction(Stack<Node> StackNode, Node TargetNode)
+        {
+            string[] TargetDirectoryBlocks = TargetNode.NodeDirectory.Split("\\");
+            while (StackNode.Count > 0)
+            {
+                Node CurrentNode = StackNode.Pop();
+                List<string> CurrentNodeDirectoryBlocks = new List<string>();
+                string[] NodeDirectory = CurrentNode.NodeDirectory.Split("\\");
+                
+                foreach(var targetDirectory in TargetDirectoryBlocks)
+                {
+                    if(!string.IsNullOrEmpty(targetDirectory))
+                        CurrentNodeDirectoryBlocks.Add(targetDirectory);
+                }
+
+                foreach(var currentDirectory in NodeDirectory)
+                {
+                    if (!CurrentNodeDirectoryBlocks.Contains(currentDirectory) && !string.IsNullOrEmpty(currentDirectory))
+                        CurrentNodeDirectoryBlocks.Add(currentDirectory);
+                }
+
+                string NewDirectory = string.Empty;
+
+                if (CurrentNode.NodeType == DataType.File)
+                {
+                    for (int i = 0; i < CurrentNodeDirectoryBlocks.Count; ++i)
+                    {
+                        if (i == CurrentNodeDirectoryBlocks.Count - 1)
+                            NewDirectory += CurrentNodeDirectoryBlocks[i];
+                        else
+                            NewDirectory += CurrentNodeDirectoryBlocks[i] + "\\";
+                    }
+
+                    CurrentNode.NodeDirectory = NewDirectory;
+                    CurrentNode.NodeFile.FileDirectory = NewDirectory;
+                }
+                else
+                {
+                    for (int i = 0; i < CurrentNodeDirectoryBlocks.Count; ++i)
+                    {
+                        NewDirectory += CurrentNodeDirectoryBlocks[i] + "\\";
+                    }
+
+                    CurrentNode.NodeDirectory = NewDirectory;
                 }
 
                 if (CurrentNode.SubNodes != null && CurrentNode.SubNodes.Count > 0)

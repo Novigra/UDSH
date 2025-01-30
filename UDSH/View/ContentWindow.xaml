@@ -634,6 +634,14 @@
                                 <i:InvokeCommandAction Command="{Binding ListViewMouseDoubleClick}"/>
                             </i:EventTrigger>
 
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding ListViewPrevMoustLeftButtonDown}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding ListViewPrevMoustLeftButtonUp}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+
                             <i:EventTrigger EventName="MouseMove">
                                 <i:InvokeCommandAction Command="{Binding ListMouseMove}" PassEventArgsToCommand="True"/>
                             </i:EventTrigger>
@@ -665,6 +673,14 @@
 
                             <i:EventTrigger EventName="MouseDoubleClick">
                                 <i:InvokeCommandAction Command="{Binding ListViewMouseDoubleClick}"/>
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding ListViewPrevMoustLeftButtonDown}" PassEventArgsToCommand="True"/>
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding ListViewPrevMoustLeftButtonUp}" PassEventArgsToCommand="True"/>
                             </i:EventTrigger>
 
                             <i:EventTrigger EventName="MouseMove">

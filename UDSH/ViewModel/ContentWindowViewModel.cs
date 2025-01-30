@@ -407,6 +407,9 @@ namespace UDSH.ViewModel
 
         public ListView LargeListView { get; set; }
         public ListView DetailsListView { get; set; }
+
+        private bool CanRecordMouseMovement;
+        bool IsMousePressed;
         #endregion
 
         #region Commands
@@ -462,6 +465,8 @@ namespace UDSH.ViewModel
         public RelayCommand<object> ConfirmNewItemName => new RelayCommand<object>(execute => ConfirmNewItemNameProcess(), canExecute => OpenNameTextBox);
         public RelayCommand<object> CancelNewItemName => new RelayCommand<object>(execute => CancelNewItemNameProcess(), canExecute => OpenNameTextBox);
 
+        public RelayCommand<MouseButtonEventArgs> ListViewPrevMoustLeftButtonDown => new RelayCommand<MouseButtonEventArgs>(PrevMLBD_ListView);
+        public RelayCommand<MouseButtonEventArgs> ListViewPrevMoustLeftButtonUp => new RelayCommand<MouseButtonEventArgs>(PrevMLBU_ListView);
         public RelayCommand<MouseEventArgs> ListMouseMove => new RelayCommand<MouseEventArgs>(ListMouseMoveProcess);
         public RelayCommand<DragEventArgs> ListDragOver => new RelayCommand<DragEventArgs>(ListDragOverProcess);
         public RelayCommand<DragEventArgs> ListDrop => new RelayCommand<DragEventArgs>(ListDropProcess);
@@ -560,54 +565,9 @@ namespace UDSH.ViewModel
 
             IsRenameItemConfirmButtonEnabled = true;
             IsNameItemConfirmButtonEnabled = true;
-        }
 
-        private void ListMouseMoveProcess(MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed && ((FrameworkElement)e.OriginalSource).DataContext is ContentFileStructure)
-            {
-                if (SelectedItem != null)
-                {
-                    if (LargeListViewHitTest == true)
-                        DragDrop.DoDragDrop(LargeListView, SelectedItem, DragDropEffects.Move);
-                    else
-                        DragDrop.DoDragDrop(DetailsListView, SelectedItem, DragDropEffects.Move);
-                }
-            }
-        }
-
-        private void ListDragOverProcess(DragEventArgs e)
-        {
-            e.Effects = DragDropEffects.Move;
-            e.Handled = true;
-        }
-
-        private void ListDropProcess(DragEventArgs e)
-        {
-            var sourceItem = e.Data.GetData(typeof(ContentFileStructure)) as ContentFileStructure;
-            ListView CurrentListView;
-
-            if (LargeListViewHitTest == true)
-                CurrentListView = LargeListView;
-            else
-                CurrentListView = DetailsListView;
-
-            var position = e.GetPosition(CurrentListView);
-            var targetItem = CurrentListView.Items.OfType<ContentFileStructure>().FirstOrDefault(c => CurrentListView.ItemContainerGenerator.ContainerFromItem(c) is ListViewItem container &&
-                        container.TransformToVisual(CurrentListView)
-                        .TransformBounds(new Rect(0, 0, container.ActualWidth, container.ActualHeight))
-                        .Contains(position));
-
-            if (sourceItem != null && targetItem != null && sourceItem != targetItem)
-            {
-                // TODO: Update File Directory
-                /*
-                 * - if file exists with similar name, add _1 at the end of the file(of course do iterations)
-                 * - Update file's directory
-                 * - Update file in side tree, and content tree
-                 * - Update header, as the file name could change
-                 */
-            }
+            CanRecordMouseMovement = false;
+            IsMousePressed = false;
         }
 
         private async void LoadData()
@@ -979,44 +939,47 @@ namespace UDSH.ViewModel
 
         private async void ExecuteItem()
         {
-            if (SelectedItem.File != null)
+            if (SelectedItem != null)
             {
-                _userDataServices.AddFileToHeader(SelectedItem.File);
-            }
-            else
-            {
-                IsContentLoading = true;
-                await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+                if (SelectedItem.File != null)
                 {
-                    Project project = _userDataServices.ActiveProject;
-                    if (project != null)
+                    _userDataServices.AddFileToHeader(SelectedItem.File);
+                }
+                else
+                {
+                    IsContentLoading = true;
+                    await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
                     {
-                        FileStructure structure = new FileStructure();
+                        Project project = _userDataServices.ActiveProject;
+                        if (project != null)
+                        {
+                            FileStructure structure = new FileStructure();
 
-                        if (CurrentFiles != DefaultDirectory)
-                            CurrentDirectoryStack.Push(CurrentDirectory);
-                        CurrentDirectory += SelectedItem.Name + "/";
+                            if (CurrentFiles != DefaultDirectory)
+                                CurrentDirectoryStack.Push(CurrentDirectory);
+                            CurrentDirectory += SelectedItem.Name + "/";
 
-                        string SubDirectory = CurrentDirectory;
-                        string ReadableDirectory = BaseDirectory + SubDirectory.Replace("/", "\\");
+                            string SubDirectory = CurrentDirectory;
+                            string ReadableDirectory = BaseDirectory + SubDirectory.Replace("/", "\\");
 
-                        if (!ReadableDirectory.EndsWith('\\'))
-                            ReadableDirectory += "\\";
+                            if (!ReadableDirectory.EndsWith('\\'))
+                                ReadableDirectory += "\\";
 
-                        if (CurrentFiles != DefaultDirectory)
-                            MemoryDirectoriesStack.Push(CurrentFiles);
-                        CurrentFiles = structure.CreateCurrentLevelList(project, ReadableDirectory, (ContentSort)SelectedSortIndex);
+                            if (CurrentFiles != DefaultDirectory)
+                                MemoryDirectoriesStack.Push(CurrentFiles);
+                            CurrentFiles = structure.CreateCurrentLevelList(project, ReadableDirectory, (ContentSort)SelectedSortIndex);
 
-                        ReturnPageStack.Clear();
-                        ReturnDirectoryStack.Clear();
+                            ReturnPageStack.Clear();
+                            ReturnDirectoryStack.Clear();
 
-                        PageChanged.Invoke(this, EventArgs.Empty);
+                            PageChanged.Invoke(this, EventArgs.Empty);
 
-                        DefaultCurrentFiles = CurrentFiles;
-                    }
-                }));
+                            DefaultCurrentFiles = CurrentFiles;
+                        }
+                    }));
 
-                IsContentLoading = false;
+                    IsContentLoading = false;
+                }
             }
         }
 
@@ -1395,6 +1358,143 @@ namespace UDSH.ViewModel
             }
 
             SelectedAddIndex = -1;
+        }
+
+        private void PrevMLBD_ListView(MouseButtonEventArgs e)
+        {
+            IsMousePressed = true;
+
+            var hit = VisualTreeHelper.HitTest(LargeListView, e.GetPosition(LargeListView))?.VisualHit;
+
+            if (detailsListViewHitTest == true)
+                hit = VisualTreeHelper.HitTest(DetailsListView, e.GetPosition(DetailsListView))?.VisualHit;
+
+            var listViewItem = FindParent<ListViewItem>(hit);
+            if (listViewItem != null)
+                listViewItem.MouseLeave += ListViewItem_MouseLeave;
+        }
+
+        private void ListViewItem_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (IsMousePressed == true)
+            {
+                CanRecordMouseMovement = true;
+            }
+        }
+
+        private void PrevMLBU_ListView(MouseButtonEventArgs e)
+        {
+            IsMousePressed = false;
+            CanRecordMouseMovement = false;
+        }
+
+        private void ListMouseMoveProcess(MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed && CanRecordMouseMovement == true && SelectedItems != null && SelectedItems.Count > 0)
+            {
+                var data = new DataObject("MultiContentItems", SelectedItems.Cast<ContentFileStructure>().ToList());
+                DragDrop.DoDragDrop(LargeListView, data, DragDropEffects.Move);
+            }
+        }
+
+        private void ListDragOverProcess(DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Move;
+            e.Handled = true;
+        }
+
+        private void ListDropProcess(DragEventArgs e)
+        {
+            var SourceItems = e.Data.GetData("MultiContentItems") as List<ContentFileStructure>;
+            var TargetListView = FindParent<ListView>((DependencyObject)e.OriginalSource);
+
+            if (SourceItems == null || TargetListView == null)
+                return;
+
+            var Position = e.GetPosition(TargetListView);
+            var TargetItem = GetItemAtPosition(TargetListView, Position);
+            bool CanMoveItems = true;
+
+            foreach (var item in SourceItems)
+            {
+                if (item == null)
+                    return;
+            }
+
+            if (SourceItems.Count > 0 && TargetItem != null)
+            {
+                foreach (var item in SourceItems)
+                {
+                    Debug.WriteLine($"Source: {item.Name}");
+
+                    if (item == TargetItem)
+                    {
+                        CanMoveItems = false;
+                        break;
+                    }
+
+
+                    // TODO: Update File Directory
+                    /*
+                     * - if file exists with similar name, add _1 at the end of the file(of course do iterations)
+                     * - Update file's directory
+                     * - Update file in side tree, and content tree
+                     * - Update header, as the file name could change
+                     * - Update UserData
+                     */
+                }
+
+                if (CanMoveItems == true)
+                {
+                    UpdateContentAfterMoving(SourceItems, TargetItem);
+                }
+                else
+                {
+                    MessageBox.Show("You Can't Move item(s) in a selected item", "Warning", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                CanRecordMouseMovement = false;
+            }
+        }
+
+        private async void UpdateContentAfterMoving(List<ContentFileStructure> SourceItems, ContentFileStructure TargetItem)
+        {
+            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+            {
+                FileStructure fileStructure = new FileStructure();
+                fileStructure.MoveItemsTo(CurrentFiles, SourceItems, TargetItem, _userDataServices.ActiveProject);
+                Node temp = fileStructure.UpdateTreeAfterMovingItems(Root, SourceItems, TargetItem, CurrentDirectory);
+                Root = new Node();
+                Root = temp;
+
+                Debug.WriteLine($"Target: {TargetItem.Name}");
+
+                _userDataServices.DataDetailsDragActionUpdateAsync(SourceItems, TargetItem, CurrentDirectory);
+            }));
+        }
+
+        private ContentFileStructure GetItemAtPosition(ListView listView, Point position)
+        {
+            foreach (var item in listView.Items)
+            {
+                var container = listView.ItemContainerGenerator.ContainerFromItem(item) as ListViewItem;
+                if (container == null) continue;
+
+                var bounds = container.TransformToVisual(listView).TransformBounds(new Rect(0, 0, container.ActualWidth, container.ActualHeight));
+
+                if (bounds.Contains(position))
+                {
+                    return item as ContentFileStructure;
+                }
+            }
+            return null;
+        }
+
+        private static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            while (child != null && !(child is T))
+                child = VisualTreeHelper.GetParent(child);
+            return child as T;
         }
     }
 }

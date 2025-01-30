@@ -12,6 +12,7 @@ namespace UDSH.Services
         public event EventHandler<FileDetailsUpdatedEventArgs> FileDetailsUpdated;
         public event EventHandler<DirectoriesEventArgs> ItemDeleted;
         public event EventHandler<string> ItemDeletedSideContent;
+        public event EventHandler<DataDragActionUpdateEventArgs> DataDragActionUpdate;
         //public event EventHandler<FileSystem> AddFileFromContent;
 
         public string DisplayName
@@ -100,6 +101,13 @@ namespace UDSH.Services
                 ItemDeletedSideContent.Invoke(this, directory);
                 ItemDeleted.Invoke(this, new DirectoriesEventArgs(directory, directories, type));
             }
+        }
+
+        public async Task DataDetailsDragActionUpdateAsync(List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, string CurrentDirectory)
+        {
+            await Task.Run(() => session.UpdateFileDetails());
+
+            DataDragActionUpdate.Invoke(this, new DataDragActionUpdateEventArgs(SelectedItems, TargetItem, CurrentDirectory));
         }
     }
 }

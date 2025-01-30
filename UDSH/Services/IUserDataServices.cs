@@ -19,6 +19,7 @@ namespace UDSH.Services
         event EventHandler<FileDetailsUpdatedEventArgs> FileDetailsUpdated;
         event EventHandler<DirectoriesEventArgs> ItemDeleted;
         event EventHandler<string> ItemDeletedSideContent;
+        event EventHandler<DataDragActionUpdateEventArgs> DataDragActionUpdate;
         //event EventHandler<FileSystem> AddFileFromContent;
 
         Task LoadUserDataAsync();
@@ -29,6 +30,7 @@ namespace UDSH.Services
         Task CreateNewFileAsync(string NewFileName, string FileType, string ProjectDirectory);
         Task UpdateFileDetailsAsync(ContentFileStructure SelectedItem, string OldDirectory, int CurrentLevel);
         Task FileDeletedAsync(string directory, string[] directories, string type);
+        Task DataDetailsDragActionUpdateAsync(List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, string CurrentDirectory);
 
         void AddFileToHeader(FileSystem file);
     }
