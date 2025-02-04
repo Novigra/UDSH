@@ -1462,7 +1462,7 @@ namespace UDSH.ViewModel
             await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
             {
                 FileStructure fileStructure = new FileStructure();
-                fileStructure.MoveItemsTo(CurrentFiles, SourceItems, TargetItem, _userDataServices.ActiveProject);
+                fileStructure.MoveItemsTo(CurrentFiles, SourceItems, TargetItem, _userDataServices.ActiveProject, Root);
                 Node temp = fileStructure.UpdateTreeAfterMovingItems(Root, SourceItems, TargetItem, CurrentDirectory);
                 Root = new Node();
                 Root = temp;

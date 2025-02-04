@@ -848,7 +848,7 @@ namespace UDSH.Model
             }
         }
 
-        public void MoveItemsTo(ObservableCollection<ContentFileStructure> CurrentFiles, List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, Project project)
+        public void MoveItemsTo(ObservableCollection<ContentFileStructure> CurrentFiles, List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, Project project, Node Root)
         {
             string newFilesDirectory = TargetItem.Directory;
             if (!newFilesDirectory.EndsWith("\\"))
@@ -876,9 +876,8 @@ namespace UDSH.Model
                     if (newInstance == true)
                     {
                         item.File.FileName = fileNewName;
-                        /*Guid FileGuid = Guid.NewGuid();
-                        item.File.FileID = FileGuid.ToString();*/
                     }
+                    AddItemToTreeAfterDragAction(Root, item.File.FileName, item.File.FileDirectory, item.File);
 
                     File.Move(OldDirectory, item.File.FileDirectory);
                     File.SetLastWriteTime(item.File.FileDirectory, DateTime.Now);
@@ -888,6 +887,10 @@ namespace UDSH.Model
                     string OldDirectory = item.Directory;
 
                     item.Directory = newFilesDirectory + item.Name + "\\";
+
+                    // TODO: when moving directory that doesn't exist, it may have files and folders inside it. maybe remove if condition?
+                    // Test moving individual files to see if the new function works.
+                    // For empty folders, we use those if conditions?
                     if (!Directory.Exists(item.Directory))
                     {
                         Directory.Move(OldDirectory, item.Directory);
@@ -896,14 +899,12 @@ namespace UDSH.Model
                     else
                     {
                         string[] Directories = Directory.GetDirectories(OldDirectory, "*", SearchOption.AllDirectories);
-                        //string SubDirectory = string.Empty;
 
                         Queue<string> DirectoriesQueue = new Queue<string>();
                         DirectoriesQueue.Enqueue(OldDirectory);
 
                         foreach (var dir in Directories)
                             DirectoriesQueue.Enqueue(dir);
-                        // TODO: use Get Directories and move the items while there are directories keep adding
 
                         while (DirectoriesQueue.Count > 0)
                         {
@@ -919,6 +920,10 @@ namespace UDSH.Model
                                 if (!string.IsNullOrEmpty(CurrentDirectorySplit[i]))
                                     fileDirectoryInTarget += CurrentDirectorySplit[i] + "\\";
                             }
+
+                            fileDirectoryInTarget = GetExactPathName(fileDirectoryInTarget);
+                            if (!fileDirectoryInTarget.EndsWith("\\"))
+                                fileDirectoryInTarget += "\\";
 
                             if (!Directory.Exists(fileDirectoryInTarget))
                             {
@@ -952,6 +957,8 @@ namespace UDSH.Model
                                         {
                                             savedFile.FileName = fileName;
                                             savedFile.FileDirectory = targetFileDirectory;
+
+                                            AddItemToTreeAfterDragAction(Root, savedFile.FileName, savedFile.FileDirectory, savedFile);
                                         }
                                     }
 
@@ -983,6 +990,119 @@ namespace UDSH.Model
                     if (SelectedItem == Item)
                         CurrentFiles.Remove(Item);
                 }
+            }
+        }
+
+        private void AddItemToTreeAfterDragAction(Node Root, string ItemName, string ItemDirectory, FileSystem file = null)
+        {
+            Node CurrentNode = Root;
+            Queue<string> directoryBlocks = new Queue<string>();
+            string[] directorySplit = ItemDirectory.Split("\\");
+            int index = Array.IndexOf(directorySplit, Root.Name);
+            for (int i = index + 1; i < directorySplit.Length; ++i)
+            {
+                if (!string.IsNullOrEmpty(directorySplit[i]))
+                    directoryBlocks.Enqueue(directorySplit[i]);
+            }
+
+            // Reach last available sub-node
+            while (directoryBlocks.Count > 0)
+            {
+                string CurrentBlock = directoryBlocks.Dequeue();
+                Node? Next = null;
+                foreach (var node in CurrentNode.SubNodes)
+                {
+                    if (node.Name.Equals(CurrentBlock))
+                    {
+                        Next = node;
+                        index++;
+                        break;
+                    }
+                }
+
+                if (Next == null)
+                {
+                    directoryBlocks.Enqueue(CurrentBlock);
+                    break;
+                }
+
+                CurrentNode = Next;
+            }
+
+            string Name = directoryBlocks.Dequeue();
+            DataType dataType = DataType.Folder;
+            bool IsFile = false;
+            BitmapImage bitmapImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png"));
+            string directoryBuildUp = string.Empty;
+
+            for (int i = 0; i <= index; ++i)
+            {
+                if (i == index)
+                    directoryBuildUp += directorySplit[i] + "\\" + Name;
+                else
+                    directoryBuildUp += directorySplit[i] + "\\";
+            }
+            index++;
+
+            if (Name.EndsWith(".mkb") || Name.EndsWith(".mkc") || Name.EndsWith(".mkm"))
+            {
+                dataType = DataType.File;
+                IsFile = true;
+                bitmapImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FileType.png"));
+            }
+            else
+            {
+                directoryBuildUp += "\\";
+            }
+
+            Node newNode = new Node
+            {
+                Name = Name,
+                NodeImage = bitmapImage,
+                NodeType = dataType,
+                NodeDirectory = directoryBuildUp,
+                NodeFile = (IsFile == true) ? file : null,
+                SubNodes = new ObservableCollection<Node>()
+            };
+
+            CurrentNode.SubNodes.Add(newNode);
+            CurrentNode.SubNodes = new ObservableCollection<Node>(CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, new SortComparer()));
+            CurrentNode = newNode;
+
+            while (directoryBlocks.Count > 0)
+            {
+                Name = directoryBlocks.Dequeue();
+                dataType = DataType.Folder;
+                IsFile = false;
+                bitmapImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FolderContent.png"));
+
+                directoryBuildUp += directorySplit[index];
+                index++;
+
+                if (Name.EndsWith(".mkb") || Name.EndsWith(".mkc") || Name.EndsWith(".mkm"))
+                {
+                    dataType = DataType.File;
+                    IsFile = true;
+                    bitmapImage = new BitmapImage(new Uri("pack://application:,,,/Resource/FileType.png"));
+                }
+                else
+                {
+                    directoryBuildUp += "\\";
+                }
+
+                Node NextNewNode = new Node
+                {
+                    Name= Name,
+                    NodeImage = bitmapImage,
+                    NodeType = dataType,
+                    NodeDirectory = directoryBuildUp,
+                    NodeFile = (IsFile == true) ? file : null,
+                    SubNodes = new ObservableCollection<Node>()
+                };
+
+                CurrentNode.SubNodes.Add(NextNewNode);
+                CurrentNode.SubNodes = new ObservableCollection<Node>(CurrentNode.SubNodes.OrderBy(d => d.NodeType == DataType.File).ThenBy(n => n.Name, new SortComparer()));
+                CurrentNode = NextNewNode;
             }
         }
 
@@ -1061,11 +1181,95 @@ namespace UDSH.Model
 
                 UpdateSubDirectoriesAfterDragMoveAction(StackNodesFolders, TargetNode);
 
-                RemoveDuplicate(TargetNode);
+                //RemoveDuplicate(TargetNode);
+                RemoveDuplicate_Updated(TargetNode);
             }
 
             return Root;
         }
+
+        private void RemoveDuplicate_Updated(Node TargetNode)
+        {
+            Stack<Node> DuplicateNodes = new Stack<Node>();
+            Stack<Node> Nodes = new Stack<Node>();
+            Nodes.Push(TargetNode);
+
+            while (Nodes.Count > 0)
+            {
+                Node CurrentNode = Nodes.Pop();
+                Node Temp = CurrentNode;
+                Stack<Node> OriginalNodes = new Stack<Node>(); // Node that already exist in the target node sub-nodes
+                Stack<Node> EditNodes = new Stack<Node>();
+
+                // Get the duplicates in target node
+                foreach (var node in CurrentNode.SubNodes)
+                {
+                    foreach (var otherNode in Temp.SubNodes)
+                    {
+                        if (node != otherNode && string.Equals(node.Name, otherNode.Name, StringComparison.OrdinalIgnoreCase) && node.NodeType == otherNode.NodeType)
+                        {
+                            DuplicateNodes.Push(node);
+                        }
+                    }
+                }
+
+                // Update the duplicates directory
+                while (DuplicateNodes.Count > 0)
+                {
+                    Node CurrentSubNode = DuplicateNodes.Pop();
+                    string ActualDirectory = GetExactPathName(CurrentSubNode.NodeDirectory);
+
+                    if (!CurrentSubNode.NodeDirectory.EndsWith("\\"))
+                        CurrentSubNode.NodeDirectory += "\\";
+
+                    if (!ActualDirectory.EndsWith("\\"))
+                        ActualDirectory += "\\";
+
+                    if (ActualDirectory.Equals(CurrentSubNode.NodeDirectory))
+                    {
+                        OriginalNodes.Push(CurrentSubNode);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Do");
+                        //CurrentSubNode.NodeDirectory = ActualDirectory;
+
+                        CurrentNode.SubNodes.Remove(CurrentSubNode);
+                        EditNodes.Push(CurrentSubNode);
+                    }
+                }
+
+                while (EditNodes.Count > 0)
+                {
+                    Node AddEditSubNodes = EditNodes.Pop();
+                    /*foreach (var node in AddEditSubNodes.SubNodes)
+                        OriginalNode.SubNodes.Add(node);*/
+                }
+
+                if (CurrentNode.SubNodes != null && CurrentNode.SubNodes.Count > 0)
+                {
+                    foreach (Node node in CurrentNode.SubNodes)
+                    {
+                        if (node.NodeType == DataType.Folder)
+                            Nodes.Push(node);
+                    }
+                }
+            }
+        }
+
+        private static string GetExactPathName(string pathName)
+        {
+            if (!(File.Exists(pathName) || Directory.Exists(pathName)))
+                return pathName;
+
+            var directoryInfo = new DirectoryInfo(pathName);
+
+            if (directoryInfo.Parent != null)
+                return Path.Combine(GetExactPathName(directoryInfo.Parent.FullName), directoryInfo.Parent.GetFileSystemInfos(directoryInfo.Name)[0].Name);
+            else
+                return directoryInfo.Name.ToUpper();
+        }
+
 
         // It really got messy, so rewrite the function.
         // TODO: get the two duplicates, delete both of them, then rebuild the node by reading the directory. Use directory as the last updated directory.
@@ -1210,11 +1414,17 @@ namespace UDSH.Model
                     for (int i = 0; i < CurrentNodeDirectoryBlocks.Count; ++i)
                     {
                         if (i == CurrentNodeDirectoryBlocks.Count - 1)
+                        {
+                            NewDirectory = GetExactPathName(NewDirectory);
+                            if(!NewDirectory.EndsWith("\\"))
+                                NewDirectory += "\\";
                             NewDirectory += CurrentNodeDirectoryBlocks[i];
+                        }
                         else
                             NewDirectory += CurrentNodeDirectoryBlocks[i] + "\\";
                     }
 
+                    //string ActualDirectory = GetExactPathName(NewDirectory);
                     CurrentNode.NodeDirectory = NewDirectory;
                     CurrentNode.NodeFile.FileDirectory = NewDirectory;
                 }
@@ -1225,6 +1435,7 @@ namespace UDSH.Model
                         NewDirectory += CurrentNodeDirectoryBlocks[i] + "\\";
                     }
 
+                    //string ActualDirectory = GetExactPathName(NewDirectory);
                     CurrentNode.NodeDirectory = NewDirectory;
                 }
 
