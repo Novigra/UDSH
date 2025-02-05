@@ -1432,25 +1432,16 @@ namespace UDSH.ViewModel
                         CanMoveItems = false;
                         break;
                     }
-
-
-                    // TODO: Update File Directory
-                    /*
-                     * - if file exists with similar name, add _1 at the end of the file(of course do iterations)
-                     * - Update file's directory
-                     * - Update file in side tree, and content tree
-                     * - Update header, as the file name could change
-                     * - Update UserData
-                     */
                 }
 
-                if (CanMoveItems == true)
+                if (CanMoveItems == true && TargetItem.Type.Equals("Folder"))
                 {
                     UpdateContentAfterMoving(SourceItems, TargetItem);
                 }
                 else
                 {
-                    MessageBox.Show("You Can't Move item(s) in a selected item", "Warning", MessageBoxButton.OK, MessageBoxImage.Error);
+                    if (TargetItem.Type.Equals("Folder"))
+                        MessageBox.Show("You Can't Move item(s) in a selected item", "Warning", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
                 CanRecordMouseMovement = false;
@@ -1461,15 +1452,16 @@ namespace UDSH.ViewModel
         {
             await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
             {
+                Queue<FileSystem> EditFileNodes = new Queue<FileSystem>();
                 FileStructure fileStructure = new FileStructure();
-                fileStructure.MoveItemsTo(CurrentFiles, SourceItems, TargetItem, _userDataServices.ActiveProject, Root);
+                fileStructure.MoveItemsTo(CurrentFiles, SourceItems, TargetItem, _userDataServices.ActiveProject, Root, EditFileNodes);
                 Node temp = fileStructure.UpdateTreeAfterMovingItems(Root, SourceItems, TargetItem, CurrentDirectory);
                 Root = new Node();
                 Root = temp;
 
                 Debug.WriteLine($"Target: {TargetItem.Name}");
 
-                _userDataServices.DataDetailsDragActionUpdateAsync(SourceItems, TargetItem, CurrentDirectory);
+                _userDataServices.DataDetailsDragActionUpdateAsync(SourceItems, TargetItem, CurrentDirectory, EditFileNodes);
             }));
         }
 

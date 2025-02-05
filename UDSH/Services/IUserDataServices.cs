@@ -30,7 +30,7 @@ namespace UDSH.Services
         Task CreateNewFileAsync(string NewFileName, string FileType, string ProjectDirectory);
         Task UpdateFileDetailsAsync(ContentFileStructure SelectedItem, string OldDirectory, int CurrentLevel);
         Task FileDeletedAsync(string directory, string[] directories, string type);
-        Task DataDetailsDragActionUpdateAsync(List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, string CurrentDirectory);
+        Task DataDetailsDragActionUpdateAsync(List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, string CurrentDirectory, Queue<FileSystem> EditFiles);
 
         void AddFileToHeader(FileSystem file);
     }

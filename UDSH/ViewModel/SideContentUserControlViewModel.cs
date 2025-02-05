@@ -191,9 +191,17 @@ namespace UDSH.ViewModel
             await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
             {
                 FileStructure fileStructure = new FileStructure();
+
                 Node temp = fileStructure.UpdateTreeAfterMovingItems(Root, e.SelectedItems, e.TargetItem, e.CurrentDirectory);
                 Root = new Node();
                 Root = temp;
+
+                while (e.EditFiles.Count > 0)
+                {
+                    FileSystem file = e.EditFiles.Dequeue();
+                    fileStructure.AddNewFile(_userDataServices.ActiveProject, Root, file);
+                    fileStructure.UpdateSearchTreeAfterDragAction(RootSearch, file);
+                }
             }));
         }
 

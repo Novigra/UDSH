@@ -103,11 +103,11 @@ namespace UDSH.Services
             }
         }
 
-        public async Task DataDetailsDragActionUpdateAsync(List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, string CurrentDirectory)
+        public async Task DataDetailsDragActionUpdateAsync(List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, string CurrentDirectory, Queue<FileSystem> EditFiles)
         {
             await Task.Run(() => session.UpdateFileDetails());
 
-            DataDragActionUpdate.Invoke(this, new DataDragActionUpdateEventArgs(SelectedItems, TargetItem, CurrentDirectory));
+            DataDragActionUpdate.Invoke(this, new DataDragActionUpdateEventArgs(SelectedItems, TargetItem, CurrentDirectory, EditFiles));
         }
     }
 }
