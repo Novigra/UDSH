@@ -2,7 +2,9 @@
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Text;
 using System.Text.Json;
+using System.Xml;
 
 namespace UDSH.Model
 {
@@ -168,6 +170,12 @@ namespace UDSH.Model
                 Directory.CreateDirectory(directory[0]);
                 FileStream fileStream = File.Create(CurrentFile.FileDirectory);
                 fileStream.Close();
+
+                using (XmlWriter xmlWriter = XmlWriter.Create(CurrentFile.FileDirectory, new XmlWriterSettings { Indent = true, Encoding = Encoding.UTF8 }))
+                {
+                    FileManager fileManager = new FileManager();
+                    fileManager.InitializeNewFileData(xmlWriter, CurrentFile);
+                }
             }
             catch
             {

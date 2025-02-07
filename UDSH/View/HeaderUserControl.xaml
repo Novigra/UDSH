@@ -132,7 +132,7 @@
             <Grid Grid.Column="0">
                 <Button Name="PenTool" Panel.ZIndex="0" Margin="5" Command="{Binding PenToolLeftMouseButtonDown}">
                     <StackPanel Orientation="Horizontal"> <!-- remove it, if we know mouse location? -->
-                        <Popup x:Name="MyPop" IsOpen="{Binding CanClosePopup}" StaysOpen="False" AllowsTransparency="True" Placement="Mouse" PopupAnimation="Fade" VerticalOffset="5">
+                        <Popup x:Name="MyPop" IsOpen="{Binding CanClosePopup}" StaysOpen="False" AllowsTransparency="True" Placement="Relative" PopupAnimation="Fade" VerticalOffset="25">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Closed">
                                     <i:InvokeCommandAction Command="{Binding PenToolPopupClosed}"/>
@@ -152,7 +152,7 @@
                                         <!-- Project Content -->
                                         <StackPanel Orientation="Horizontal" Margin="5,5,0,0">
                                             <!-- Don't forget to bind the textblock to the project name -->
-                                            <TextBlock Text="Monster" FontSize="12" FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding ProjectTitleSection}" FontSize="12" FontWeight="Medium"/>
                                             <Rectangle Fill="{StaticResource SideContentTitleBarSCB}" Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="240" Height="3" RenderTransformOrigin="0.5,0.5">
                                                 <Rectangle.RenderTransform>
                                                     <TransformGroup>
@@ -245,7 +245,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                             <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="MyHouseWad.mkc" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="{Binding SaveFileText}" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                             <Button Grid.ColumnSpan="4" Command="{Binding SaveFile}" IsEnabled="{Binding CanEnablePenToolButton}"/>
                                             <Button Grid.Column="3" Style="{StaticResource QADots}" Command="{Binding QSaveFile}" CommandParameter="1"/>
                                             <Border Grid.Column="3" Style="{StaticResource QABorder}"/>
@@ -385,7 +385,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/DeleteFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                             <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Delete" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="MyHouseWad.mkc" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="{Binding DeleteFileText}" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                             <Button Grid.ColumnSpan="4" Command="{Binding DeleteFile}" IsEnabled="{Binding CanEnablePenToolButton}"/>
                                             <Button Grid.Column="3" Style="{StaticResource QADots}" Command="{Binding QDeleteFile}" CommandParameter="3"/>
                                             <Border Grid.Column="3" Style="{StaticResource QABorder}"/>
@@ -1106,6 +1106,11 @@
                 <ListView Grid.Column="1" Name="PagesList" Margin="5,0,0,0" HorizontalAlignment="Left" ItemsSource="{Binding OpenFiles}"
                           SelectedItem="{Binding SelectedFile}" Style="{StaticResource OpenedPagesLayout}" ItemContainerStyle="{StaticResource OpenedPages}">
 
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding OpenFilesSelectionChanged}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </ListView>
 
                 <Button Grid.Column="1" Style="{StaticResource OpenFilesButtonRight}" HorizontalAlignment="Right" Width="50" Command="{Binding ScrollRight}"/>

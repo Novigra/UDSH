@@ -46,6 +46,7 @@ namespace UDSH.Services
         public bool IsProfilePictureSet { get => session.User.IsProfilePictureSet; }
 
         public bool IsIconSet { get => session.User.IsCustomIconSet; }
+        public FileSystem CurrentSelectedFile { get; set; }
 
         public UserDataServices(Session session)
         {

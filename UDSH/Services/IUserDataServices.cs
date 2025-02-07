@@ -11,6 +11,7 @@ namespace UDSH.Services
         int NumberOfProjects { get; }
         bool IsProfilePictureSet { get; }
         bool IsIconSet { get; }
+        FileSystem CurrentSelectedFile { get; set; }
 
         event EventHandler<string> DisplayNameChanged;
         event EventHandler<string> AddNewProjectTitle;

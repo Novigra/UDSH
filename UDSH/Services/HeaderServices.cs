@@ -17,6 +17,7 @@ namespace UDSH.Services
         public async Task OnFileSelectionChanged(FileSystem file)
         {
             FileStructureSelectionChanged?.Invoke(this, file);
+            UserDataServices.CurrentSelectedFile = file;
 
             await Task.CompletedTask;
         }

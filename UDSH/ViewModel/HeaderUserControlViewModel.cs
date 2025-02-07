@@ -342,6 +342,27 @@ namespace UDSH.ViewModel
             get => isOpenFilesListPopupOpen;
             set { isOpenFilesListPopupOpen = value; OnPropertyChanged(); }
         }
+
+        private string saveFileText;
+        public string SaveFileText
+        {
+            get => saveFileText;
+            set { saveFileText = value; OnPropertyChanged(); }
+        }
+
+        private string deleteFileText;
+        public string DeleteFileText
+        {
+            get => deleteFileText;
+            set { deleteFileText = value; OnPropertyChanged(); }
+        }
+
+        private string projectTitleSection;
+        public string ProjectTitleSection
+        {
+            get => projectTitleSection;
+            set { projectTitleSection = value; OnPropertyChanged(); }
+        }
         #endregion
 
         #region Commands
@@ -377,6 +398,8 @@ namespace UDSH.ViewModel
         public RelayCommand<object> ScrollLeft => new RelayCommand<object>(execute => ScrollToLeft());
         public RelayCommand<CustomScrollViewer> HorizontalScrollViewerLoaded => new RelayCommand<CustomScrollViewer>(AssignScrollViewer);
         public RelayCommand<CustomScrollViewer> VerticalOpenFilesListScrollViewerLoaded => new RelayCommand<CustomScrollViewer>(AssignVerticalScrollViewer);
+
+        public RelayCommand<object> OpenFilesSelectionChanged => new RelayCommand<object>(execute => PageSelectionChanged());
         #endregion
 
         public HeaderUserControlViewModel(IHeaderServices headerServices)
@@ -442,6 +465,14 @@ namespace UDSH.ViewModel
 
             CanOpenFilesList = false;
             IsOpenFilesListPopupOpen = false;
+
+            SaveFileText = string.Empty;
+            DeleteFileText = string.Empty;
+            
+            if (_headerServices.UserDataServices.ActiveProject != null)
+                ProjectTitleSection = _headerServices.UserDataServices.ActiveProject.ProjectName;
+            else
+                ProjectTitleSection = string.Empty;
 
             //TestScroll();
 
@@ -897,6 +928,20 @@ namespace UDSH.ViewModel
                 CanOpenFilesList = false;
             else
                 CanOpenFilesList = true;
+        }
+
+        private void PageSelectionChanged()
+        {
+            if (SelectedFile != null)
+            {
+                SaveFileText = SelectedFile.FileName + "." + SelectedFile.FileType;
+                DeleteFileText = SaveFileText;
+            }
+            else
+            {
+                SaveFileText = string.Empty;
+                DeleteFileText = string.Empty;
+            }
         }
 
         /*

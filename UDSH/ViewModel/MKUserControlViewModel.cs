@@ -1,12 +1,14 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using UDSH.Model;
 using UDSH.MVVM;
 using UDSH.Services;
 using UDSH.View;
@@ -16,7 +18,9 @@ namespace UDSH.ViewModel
     enum TextType
     {
         Normal,
-        Header,
+        Header1,
+        Header2,
+        Header3,
         List
     }
     enum ListNavigation
@@ -136,7 +140,7 @@ namespace UDSH.ViewModel
         public RelayCommand<MouseEventArgs> NoteButtonMouseMove => new RelayCommand<MouseEventArgs>(RecordNoteButtonMouseMovement);
         public RelayCommand<MouseButtonEventArgs> StopAddingNoteProcess => new RelayCommand<MouseButtonEventArgs>(StopRecordingNoteButtonMouseMovement);
 
-        public RelayCommand<Grid> SideContentGridLoaded => new RelayCommand<Grid>(AddSideContentControl);
+        public RelayCommand<object> SaveButton => new RelayCommand<object>(execute => SaveContent());
         #endregion
 
         public MKUserControlViewModel(IWorkspaceServices workspaceServices) //MKUserControl control
@@ -475,21 +479,21 @@ namespace UDSH.ViewModel
             if(textRange.Text.Equals("#"))
             {
                 Debug.WriteLine($"Play # Markdown...");
-                SpaceMarkdown_Header(textRange, HeaderOneFontSize, TextType.Header);
+                SpaceMarkdown_Header(textRange, HeaderOneFontSize, TextType.Header1);
 
                 return true;
             }
             else if(textRange.Text.Equals("##"))
             {
                 Debug.WriteLine($"Play ## Markdown...");
-                SpaceMarkdown_Header(textRange, HeaderTwoFontSize, TextType.Header);
+                SpaceMarkdown_Header(textRange, HeaderTwoFontSize, TextType.Header2);
 
                 return true;
             }
             else if(textRange.Text.Equals("###"))
             {
                 Debug.WriteLine($"Play ### Markdown...");
-                SpaceMarkdown_Header(textRange, HeaderThreeFontSize, TextType.Header);
+                SpaceMarkdown_Header(textRange, HeaderThreeFontSize, TextType.Header3);
 
                 return true;
             }
@@ -578,7 +582,7 @@ namespace UDSH.ViewModel
             LastPickedParagraph = MKRichTextBox.CaretPosition.Paragraph;
             TextRange textRange = new TextRange(LastPickedParagraph.ContentStart, LastPickedParagraph.ContentEnd);
 
-            if (LastPickedParagraph.Tag.Equals(TextType.Header) && textRange.IsEmpty)
+            if ((LastPickedParagraph.Tag.Equals(TextType.Header1) || LastPickedParagraph.Tag.Equals(TextType.Header2) || LastPickedParagraph.Tag.Equals(TextType.Header3)) && textRange.IsEmpty)
             {
                 ResetTextStyle();
                 return true;
@@ -747,10 +751,27 @@ namespace UDSH.ViewModel
             }
         }
 
-        private void AddSideContentControl(Grid grid)
+        private void SaveContent()
         {
-            /*SideContentUserControl sideContentUserControl = new SideContentUserControl(new SideContentUserControlViewModel(_workspaceServices.UserDataServices));
-            grid.Children.Add(sideContentUserControl);*/
+            FileSystem file = _workspaceServices.UserDataServices.CurrentSelectedFile;
+            FileManager fileManager = new FileManager();
+            //fileManager.SaveXamlPackage(MKRichTextBox, file.FileDirectory);
+            BlockCollection Blocks = MKRichTextBox.Document.Blocks;
+            foreach (var block in Blocks)
+            {
+                if (block is Paragraph paragraph)
+                {
+                    foreach(var inline in paragraph.Inlines)
+                    {
+                        if (inline is Run run)
+                        {
+                            Debug.WriteLine($"Text = {run.Text} and Its weight = {run.FontWeight}");
+                        }
+                    }
+                }
+            }
+
+            Debug.WriteLine("Saved!");
         }
     }
 }
