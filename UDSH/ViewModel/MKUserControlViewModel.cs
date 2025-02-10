@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using System.Xml;
 using UDSH.Model;
 using UDSH.MVVM;
 using UDSH.Services;
@@ -165,6 +166,9 @@ namespace UDSH.ViewModel
             HeaderThreeFontSize = 25;
 
             //MKCurrentUserControl = control;
+
+            if (_workspaceServices.UserDataServices.CurrentSelectedFile != null)
+                LoadContent();
         }
 
         #region Rich Text Box Initiation And Starting The First Paragraph
@@ -603,7 +607,10 @@ namespace UDSH.ViewModel
             TextRange textRange = new TextRange(LastPickedParagraph.ContentStart, LastPickedParagraph.ContentEnd);
             Debug.WriteLine($"Current Paragraph: {textRange.Text}");
             if (textRange.Text.Equals(""))
+            {
                 IsListItem = false;
+                LastPickedParagraph.Tag = TextType.Normal;
+            }
             else if (textRange.Text.StartsWith("•"))
             {
                 IsListItem = true;
@@ -751,27 +758,45 @@ namespace UDSH.ViewModel
             }
         }
 
-        private void SaveContent()
+        private async Task SaveContent()
+        {
+            /*
+             * Steps:
+             *  - Write content [x]
+             *  - Update file size [x]
+             *  
+             * Side note:
+             *  - When renaming the file don't forget to write it in the file. (Do we really need file's name in the file?)
+             */
+
+            FileSystem file = _workspaceServices.UserDataServices.CurrentSelectedFile;
+            FileManager fileManager = new FileManager();
+            BlockCollection Blocks = MKRichTextBox.Document.Blocks;
+
+            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+            {
+                using (XmlWriter xmlWriter = XmlWriter.Create(file.FileDirectory, new XmlWriterSettings { Indent = true, Encoding = Encoding.UTF8 }))
+                {
+                    fileManager.UpdateFileData(xmlWriter, file, Blocks);
+                }
+
+                FileStructure fileStructure = new FileStructure();
+                fileStructure.UpdateFileSize(file);
+                _workspaceServices.UserDataServices.SaveUserDataAsync();
+            }));
+
+            Debug.WriteLine("Saved!");
+        }
+
+        private async Task LoadContent()
         {
             FileSystem file = _workspaceServices.UserDataServices.CurrentSelectedFile;
             FileManager fileManager = new FileManager();
-            //fileManager.SaveXamlPackage(MKRichTextBox, file.FileDirectory);
-            BlockCollection Blocks = MKRichTextBox.Document.Blocks;
-            foreach (var block in Blocks)
-            {
-                if (block is Paragraph paragraph)
-                {
-                    foreach(var inline in paragraph.Inlines)
-                    {
-                        if (inline is Run run)
-                        {
-                            Debug.WriteLine($"Text = {run.Text} and Its weight = {run.FontWeight}");
-                        }
-                    }
-                }
-            }
 
-            Debug.WriteLine("Saved!");
+            await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
+            {
+                fileManager.LoadFileDataContent(file);
+            }));
         }
     }
 }

@@ -570,7 +570,7 @@ namespace UDSH.ViewModel
             IsMousePressed = false;
         }
 
-        private async void LoadData()
+        private async Task LoadData()
         {
             IsContentLoading = true;
             await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
@@ -997,7 +997,7 @@ namespace UDSH.ViewModel
             IsNormalState = false;
         }
 
-        private async void ConfirmDeleteProcess()
+        private async Task ConfirmDeleteProcess()
         {
             ReturnDirectoryStack.Clear();
             ReturnPageStack.Clear();
@@ -1103,7 +1103,7 @@ namespace UDSH.ViewModel
                 return true;
         }
 
-        private async void ConfirmRenameProcess()
+        private async Task ConfirmRenameProcess()
         {
             IsContentRenameProcess = false;
             IsContentLoading = true;

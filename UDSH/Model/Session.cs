@@ -100,11 +100,6 @@ namespace UDSH.Model
             }
         }
 
-        public void SaveUserData()
-        {
-
-        }
-
         public void CreateNewProject(string NewProjectName, string ProjectVersion, bool IsSecured, string Password)
         {
             Guid ProjectGuid = Guid.NewGuid();

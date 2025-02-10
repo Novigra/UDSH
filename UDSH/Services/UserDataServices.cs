@@ -60,7 +60,7 @@ namespace UDSH.Services
 
         public async Task SaveUserDataAsync()
         {
-            await Task.Run(() => session.SaveUserData());
+            await Task.Run(() => session.UpdateFileDetails());
         }
 
         public async Task CreateNewProjectAsync(string NewProjectName, string ProjectVersion, bool IsSecured, string Password)
@@ -90,7 +90,10 @@ namespace UDSH.Services
         public void AddFileToHeader(FileSystem file)
         {
             if (file != null)
+            {
+                CurrentSelectedFile = file;
                 AddNewFile?.Invoke(this, file);
+            }
         }
 
         public async Task FileDeletedAsync(string directory, string[] directories, string type)

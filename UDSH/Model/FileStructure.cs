@@ -1218,5 +1218,20 @@ namespace UDSH.Model
 
             return updatedPath;
         }
+
+        public void UpdateFileSize(FileSystem file)
+        {
+            var fileSize = file.FileDirectory.Length;
+            double Size = fileSize / 1024.0;
+            int index = 0;
+            while (Size >= 1024 && index < Sizes.Length - 1)
+            {
+                Size /= 1024;
+                index++;
+            }
+
+            string FinalSize = Size.ToString("F") + " " + Sizes[index];
+            file.FileSize = FinalSize;
+        }
     }
 }
