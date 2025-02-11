@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Xml;
 using System.Xml.Linq;
@@ -31,6 +33,12 @@ namespace UDSH.Model
         private const string FileCreationDateAttribute = "FileCreationDate";
         private const string TextAlignment = "TextAlignment";
         private const string TextType = "TextType";
+
+        // Text Size
+        private const int NormalFontSize = 20;
+        private const int HeaderOneFontSize = 40;
+        private const int HeaderTwoFontSize = 30;
+        private const int HeaderThreeFontSize = 25;
 
         public void InitializeNewFileData(XmlWriter xmlWriter, FileSystem file)
         {
@@ -68,27 +76,59 @@ namespace UDSH.Model
             xmlWriter.WriteEndDocument(); // End File
         }
 
-        public void LoadFileDataContent(FileSystem file)
+        public bool LoadFileDataContent(FileSystem file, RichTextBox RTB)
         {
             XDocument xDocument = XDocument.Load(file.FileDirectory);
             MKMFile mKMFile = new MKMFile();
+            bool ContainData = false;
 
             if (xDocument.Root != null)
             {
+                Paragraph paragraph = new Paragraph();
+                BlockCollection Blocks = RTB.Document.Blocks;
+                Block CurrentBlock = Blocks.FirstBlock;
+                bool FirstLine = true;
+
+                // TODO: Manage Lists
                 XElement? DocElement = xDocument.Root.Element(DocumentElement);
                 foreach (var ParaElement in DocElement.Elements(ParagraphElement))
                 {
-                    ParagraphLine paragraphLine = new ParagraphLine
+                    /*ParagraphLine paragraphLine = new ParagraphLine
                     {
                         TextAlignment = ParaElement.Attribute(TextAlignment).Value,
                         TextType = ParaElement.Attribute(TextType).Value,
                         Content = ParaElement.Elements().ToList()
                     };
-                    mKMFile.Document.ParagraphLines.Add(paragraphLine);
+                    mKMFile.Document.ParagraphLines.Add(paragraphLine);*/
 
-                    // TODO: write to the paragraph in this loop instead of loading in document. (loop through Content)
+                    foreach (var WeightElement in ParaElement.Elements())
+                    {
+                        Run run = new Run();
+
+                        XElement StyleElement = WeightElement.Elements().First();
+                        XElement DecorationElement = StyleElement.Elements().First();
+                        string TextContent = DecorationElement.Value;
+
+                        run.FontWeight = GetFontWeight(WeightElement.Name.ToString());
+                        run.FontStyle = GetFontStyle(StyleElement.Name.ToString());
+                        TextDecorationCollection textDecoration = GetDecorations(DecorationElement.Name.ToString());
+                        if (textDecoration != TextDecorations.Baseline)
+                            run.TextDecorations = textDecoration;
+                        run.FontSize = GetSize(ParaElement.Attribute(TextType).Value);
+                        run.Text = TextContent;
+
+                        paragraph.TextAlignment = GetAlignment(ParaElement.Attribute(TextAlignment).Value);
+                        paragraph.Inlines.Add(run);
+                    }
+
+                    Blocks.Add(paragraph);
+                    paragraph = new Paragraph();
+                    
+                    ContainData = true;
                 }
             }
+
+            return ContainData;
         }
 
         private void WriteMetadata(XmlWriter xmlWriter, MKMFile mKMFile, FileSystem file)
@@ -204,6 +244,79 @@ namespace UDSH.Model
             }
             else
                 return "Normal";
+        }
+
+        private FontWeight GetFontWeight(string WeightValue)
+        {
+            switch (WeightValue)
+            {
+                case "Normal":
+                    return FontWeights.Normal;
+                case "Bold":
+                    return FontWeights.Bold;
+                default:
+                    return FontWeights.Normal;
+            }
+        }
+
+        private FontStyle GetFontStyle(string StyleValue)
+        {
+            switch (StyleValue)
+            {
+                case "Normal":
+                    return FontStyles.Normal;
+                case "Italic":
+                    return FontStyles.Italic;
+                default:
+                    return FontStyles.Normal;
+            }
+        }
+
+        private TextDecorationCollection GetDecorations(string DecorationValue)
+        {
+            switch (DecorationValue)
+            {
+                case "Normal":
+                    return TextDecorations.Baseline;
+                case "Strikethrough":
+                    return TextDecorations.Strikethrough;
+                case "Underline":
+                    return TextDecorations.Underline;
+                default:
+                    return TextDecorations.Baseline;
+            }
+        }
+
+        private TextAlignment GetAlignment(string AlignmentValue)
+        {
+            switch (AlignmentValue)
+            {
+                case "Left":
+                    return System.Windows.TextAlignment.Left;
+                case "Center":
+                    return System.Windows.TextAlignment.Center;
+                case "Right":
+                    return System.Windows.TextAlignment.Right;
+                default:
+                    return System.Windows.TextAlignment.Left;
+            }
+        }
+
+        private int GetSize(string SizeValue)
+        {
+            switch (SizeValue)
+            {
+                case "Normal":
+                    return NormalFontSize;
+                case "Header1":
+                    return HeaderOneFontSize;
+                case "Header2":
+                    return HeaderTwoFontSize;
+                case "Header3":
+                    return HeaderThreeFontSize;
+                default:
+                    return NormalFontSize;
+            }
         }
     }
 }

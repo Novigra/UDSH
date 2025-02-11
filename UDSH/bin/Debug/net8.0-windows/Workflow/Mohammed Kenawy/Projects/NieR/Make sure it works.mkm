@@ -10,11 +10,11 @@
   </Metadata>
   <Document>
     <ParagraphLine TextAlignment="Left" TextType="Header1">
-      <Normal>
-        <Normal>
+      <Bold>
+        <Italic>
           <Normal>Test</Normal>
-        </Normal>
-      </Normal>
+        </Italic>
+      </Bold>
     </ParagraphLine>
     <ParagraphLine TextAlignment="Left" TextType="Normal">
       <Normal>
@@ -23,42 +23,10 @@
         </Normal>
       </Normal>
     </ParagraphLine>
-    <ParagraphLine TextAlignment="Left" TextType="List">
-      <List>
-        <ListItem>
-          <Normal>
-            <Normal>
-              <Normal>Item 1</Normal>
-            </Normal>
-          </Normal>
-        </ListItem>
-        <ListItem>
-          <Normal>
-            <Normal>
-              <Normal>Item 2</Normal>
-            </Normal>
-          </Normal>
-        </ListItem>
-        <ListItem>
-          <Normal>
-            <Normal>
-              <Normal>Item 3</Normal>
-            </Normal>
-          </Normal>
-        </ListItem>
-        <ListItem>
-          <Normal>
-            <Normal>
-              <Normal>Item 4</Normal>
-            </Normal>
-          </Normal>
-        </ListItem>
-      </List>
-    </ParagraphLine>
     <ParagraphLine TextAlignment="Left" TextType="Normal">
       <Normal>
         <Normal>
-          <Normal>nooo</Normal>
+          <Normal>No</Normal>
         </Normal>
       </Normal>
     </ParagraphLine>

@@ -166,9 +166,6 @@ namespace UDSH.ViewModel
             HeaderThreeFontSize = 25;
 
             //MKCurrentUserControl = control;
-
-            if (_workspaceServices.UserDataServices.CurrentSelectedFile != null)
-                LoadContent();
         }
 
         #region Rich Text Box Initiation And Starting The First Paragraph
@@ -177,7 +174,9 @@ namespace UDSH.ViewModel
             if (richTextBox != null)
             {
                 MKRichTextBox = richTextBox;
-                InitiateFirstParagraph();
+
+                if (_workspaceServices.UserDataServices.CurrentSelectedFile != null)
+                    LoadContent();
             }
         }
 
@@ -795,7 +794,9 @@ namespace UDSH.ViewModel
 
             await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
             {
-                fileManager.LoadFileDataContent(file);
+                bool AddedData = fileManager.LoadFileDataContent(file, MKRichTextBox);
+                if (AddedData == false)
+                    InitiateFirstParagraph();
             }));
         }
     }
