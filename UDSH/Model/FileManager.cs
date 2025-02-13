@@ -91,6 +91,9 @@ namespace UDSH.Model
 
                 // TODO: Manage Lists
                 XElement? DocElement = xDocument.Root.Element(DocumentElement);
+                if (DocElement == null)
+                    return ContainData;
+
                 foreach (var ParaElement in DocElement.Elements(ParagraphElement))
                 {
                     /*ParagraphLine paragraphLine = new ParagraphLine
@@ -114,10 +117,13 @@ namespace UDSH.Model
                         TextDecorationCollection textDecoration = GetDecorations(DecorationElement.Name.ToString());
                         if (textDecoration != TextDecorations.Baseline)
                             run.TextDecorations = textDecoration;
+
                         run.FontSize = GetSize(ParaElement.Attribute(TextType).Value);
+                        run.Tag = ParaElement.Attribute(TextType).Value;
                         run.Text = TextContent;
 
                         paragraph.TextAlignment = GetAlignment(ParaElement.Attribute(TextAlignment).Value);
+                        paragraph.Tag = ParaElement.Attribute(TextType).Value;
                         paragraph.Inlines.Add(run);
                     }
 

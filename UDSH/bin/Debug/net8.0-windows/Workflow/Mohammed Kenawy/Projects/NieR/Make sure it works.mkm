@@ -10,11 +10,18 @@
   </Metadata>
   <Document>
     <ParagraphLine TextAlignment="Left" TextType="Header1">
-      <Bold>
-        <Italic>
-          <Normal>Test</Normal>
-        </Italic>
-      </Bold>
+      <Normal>
+        <Normal>
+          <Normal>Bottom's</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Header2">
+      <Normal>
+        <Normal>
+          <Normal>Up</Normal>
+        </Normal>
+      </Normal>
     </ParagraphLine>
     <ParagraphLine TextAlignment="Left" TextType="Normal">
       <Normal>

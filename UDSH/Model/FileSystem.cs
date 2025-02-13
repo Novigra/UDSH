@@ -18,6 +18,15 @@ namespace UDSH.Model
         public DateTime FileLastModificationDate { get; set; }
 
         [JsonIgnore]
+        public bool OpenSaveMessage { get; set; } = false;
+
+        [JsonIgnore]
+        public RichTextBox InitialRichTextBox { get; set; }
+
+        [JsonIgnore]
+        public RichTextBox FinalRichTextBox { get; set; }
+
+        [JsonIgnore]
         public BitmapImage fileImageNormal { get; set; } // Image Icon - Normal(Not Selected Item)
         
         [JsonIgnore]

@@ -860,7 +860,8 @@ namespace UDSH.ViewModel
             FileSystem? file = LVItem.DataContext as FileSystem;
             if (file != null)
             {
-                
+                CheckSaveStatus(file);
+
                 if (file != SelectedFile)
                     OpenFiles.Remove(file);
                 else
@@ -880,7 +881,6 @@ namespace UDSH.ViewModel
 
                     OpenFiles.Remove(file);
                 }
-                    
             }
         }
 
@@ -942,6 +942,19 @@ namespace UDSH.ViewModel
                 SaveFileText = string.Empty;
                 DeleteFileText = string.Empty;
             }
+        }
+
+        private void CheckSaveStatus(FileSystem file)
+        {
+            if (file.OpenSaveMessage == true)
+                MessageBox.Show($"File Name:{file.FileName}");
+
+            /*
+             * TODO:
+             * - if the content changed and the window showed up:
+             *  * if the user pressed OK, then update using mk, then copy mk to init
+             *  * if the user pressed Cancel, then copy init data document to mk
+             */
         }
 
         /*

@@ -106,6 +106,9 @@ namespace UDSH.ViewModel
 
         public MKUserControl MKCurrentUserControl;
         private NoteUserControl TempNoteUserControl;
+
+        private bool FirstLaunch;
+        private FileSystem file;
         #endregion
 
         #region Commands
@@ -159,6 +162,7 @@ namespace UDSH.ViewModel
             IsInsideScrollBarHitCollision = false;
             IsMouseLeftButtonPressed = false;
             CanCreateANewNote = true;
+            FirstLaunch = true;
 
             NormalFontSize = 20;
             HeaderOneFontSize = 40;
@@ -175,7 +179,7 @@ namespace UDSH.ViewModel
             {
                 MKRichTextBox = richTextBox;
 
-                if (_workspaceServices.UserDataServices.CurrentSelectedFile != null)
+                if (_workspaceServices.UserDataServices.CurrentSelectedFile != null && FirstLaunch == true)
                     LoadContent();
             }
         }
@@ -608,6 +612,9 @@ namespace UDSH.ViewModel
             if (textRange.Text.Equals(""))
             {
                 IsListItem = false;
+
+                LastPickedParagraph.Inlines.Clear();
+                LastPickedParagraph.FontSize = NormalFontSize;
                 LastPickedParagraph.Tag = TextType.Normal;
             }
             else if (textRange.Text.StartsWith("•"))
@@ -789,7 +796,7 @@ namespace UDSH.ViewModel
 
         private async Task LoadContent()
         {
-            FileSystem file = _workspaceServices.UserDataServices.CurrentSelectedFile;
+            file = _workspaceServices.UserDataServices.CurrentSelectedFile;
             FileManager fileManager = new FileManager();
 
             await Application.Current.Dispatcher.InvokeAsync((Action)(delegate
@@ -797,7 +804,37 @@ namespace UDSH.ViewModel
                 bool AddedData = fileManager.LoadFileDataContent(file, MKRichTextBox);
                 if (AddedData == false)
                     InitiateFirstParagraph();
+                FirstLaunch = false;
+
+                file.InitialRichTextBox = new RichTextBox();
+                _ = CopyRTBData(MKRichTextBox, file.InitialRichTextBox);
             }));
+        }
+
+        public void ChangeSaveStatus()
+        {
+            if (file != null)
+                file.OpenSaveMessage = true;
+        }
+
+        private async Task CopyRTBData(RichTextBox richTextBox, RichTextBox targetRichTextBox)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                TextRange textRange = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
+                string DocumentData = string.Empty;
+                using (var memoryStream = new MemoryStream())
+                {
+                    textRange.Save(memoryStream, DataFormats.Xaml);
+                    DocumentData = Encoding.UTF8.GetString(memoryStream.ToArray());
+                }
+
+                using (var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(DocumentData)))
+                {
+                    TextRange targetTextRange = new TextRange(targetRichTextBox.Document.ContentStart, targetRichTextBox.Document.ContentEnd);
+                    targetTextRange.Load(memoryStream, DataFormats.Xaml);
+                }
+            });
         }
     }
 }

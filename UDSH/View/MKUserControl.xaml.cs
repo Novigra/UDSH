@@ -100,6 +100,8 @@ namespace UDSH.View
                     Debug.WriteLine("Normal Space will be initiated...");
                     e.Handled = false;
                 }
+
+                viewModel.ChangeSaveStatus();
             }
             else if (e.Key == Key.Back)
             {
@@ -113,14 +115,18 @@ namespace UDSH.View
                 {
                     e.Handled = false;
                 }
-                
+
+                viewModel.ChangeSaveStatus();
             }
             else if(e.Key == Key.Up || e.Key == Key.Down)
             {
                 viewModel.NavigateListItem(e.Key);
                 e.Handled = false;
             }
-                
+            else
+            {
+                viewModel.ChangeSaveStatus();
+            }
         }
 
         private void ScrollViewer_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
