@@ -806,6 +806,7 @@ namespace UDSH.ViewModel
                     InitiateFirstParagraph();
                 FirstLaunch = false;
 
+                file.CurrentRichTextBox = MKRichTextBox;
                 file.InitialRichTextBox = new RichTextBox();
                 _ = CopyRTBData(MKRichTextBox, file.InitialRichTextBox);
             }));

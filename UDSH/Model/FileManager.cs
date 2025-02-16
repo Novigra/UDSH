@@ -168,7 +168,10 @@ namespace UDSH.Model
                 {
                     ParagraphLine paragraphLine = new ParagraphLine();
                     paragraphLine.TextAlignment = paragraph.TextAlignment.ToString();
-                    paragraphLine.TextType = paragraph.Tag.ToString();
+                    if (paragraph.Tag != null)
+                        paragraphLine.TextType = paragraph.Tag.ToString();
+                    else
+                        paragraphLine.TextType = "Normal";
 
                     foreach (var inline in paragraph.Inlines)
                     {

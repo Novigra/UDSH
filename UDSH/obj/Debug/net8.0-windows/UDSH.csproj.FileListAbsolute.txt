@@ -77,3 +77,5 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\ContentWindow.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\Styles\ContextMenuStyles.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\DeletionProcessWindow.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\DeletionProcessWindow.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\PopupWindow.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\PopupWindow.baml

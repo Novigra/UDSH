@@ -3,12 +3,15 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Xml;
 using System.Xml.Linq;
 using UDSH.Model;
 using UDSH.MVVM;
@@ -701,17 +704,34 @@ namespace UDSH.ViewModel
 
         private void SaveCurrentOpenedFile()
         {
-            MessageBox.Show("Saved MyHouseWad.mkc...");
+            IsPenToolButtonClicked = false;
+            CanClosePopup = false;
+
+            if (SelectedFile == null)
+                return;
+
+            _ = SaveContent(SelectedFile);
+            SelectedFile.OpenSaveMessage = false;
         }
 
-        private void SaveAllCurrentFiles()
+        private async void SaveAllCurrentFiles()
         {
-            MessageBox.Show("Saved All Files...");
+            IsPenToolButtonClicked = false;
+            CanClosePopup = false;
+
+            foreach (var file in OpenFiles)
+            {
+                await CopyRTBData(file.CurrentRichTextBox, file.InitialRichTextBox);
+                _ = SaveContent(file);
+                file.OpenSaveMessage = false;
+            }
         }
 
         private void DeleteCurrentFile()
         {
             MessageBox.Show("Deleted MyHouseWad.mkc...");
+
+            // TODO: Delete Header and MK UserControl
         }
 
         private void OpenLocalization()
@@ -944,17 +964,64 @@ namespace UDSH.ViewModel
             }
         }
 
-        private void CheckSaveStatus(FileSystem file)
+        private async void CheckSaveStatus(FileSystem file)
         {
             if (file.OpenSaveMessage == true)
-                MessageBox.Show($"File Name:{file.FileName}");
+            {
+                PopupWindow popupWindow = new PopupWindow(ProcessType.Save, file.FileName+"."+file.FileType);
+                bool? CanSave = popupWindow.ShowDialog();
 
-            /*
-             * TODO:
-             * - if the content changed and the window showed up:
-             *  * if the user pressed OK, then update using mk, then copy mk to init
-             *  * if the user pressed Cancel, then copy init data document to mk
-             */
+                if (CanSave == true)
+                {
+                    _ = CopyRTBData(file.CurrentRichTextBox, file.InitialRichTextBox);
+                    _ = SaveContent(file);
+                }
+                else
+                    _ = CopyRTBData(file.InitialRichTextBox, file.CurrentRichTextBox);
+
+                file.OpenSaveMessage = false;
+            }
+        }
+
+        private async Task CopyRTBData(RichTextBox richTextBox, RichTextBox targetRichTextBox)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                TextRange textRange = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
+                string DocumentData = string.Empty;
+                using (var memoryStream = new MemoryStream())
+                {
+                    textRange.Save(memoryStream, DataFormats.Xaml);
+                    DocumentData = Encoding.UTF8.GetString(memoryStream.ToArray());
+                }
+
+                using (var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(DocumentData)))
+                {
+                    TextRange targetTextRange = new TextRange(targetRichTextBox.Document.ContentStart, targetRichTextBox.Document.ContentEnd);
+                    targetTextRange.Load(memoryStream, DataFormats.Xaml);
+                }
+            });
+        }
+
+        private async Task SaveContent(FileSystem file)
+        {
+            if (file == null)
+                return;
+
+            FileManager fileManager = new FileManager();
+            BlockCollection Blocks = file.CurrentRichTextBox.Document.Blocks;
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                using (XmlWriter xmlWriter = XmlWriter.Create(file.FileDirectory, new XmlWriterSettings { Indent = true, Encoding = Encoding.UTF8 }))
+                {
+                    fileManager.UpdateFileData(xmlWriter, file, Blocks);
+                }
+
+                FileStructure fileStructure = new FileStructure();
+                fileStructure.UpdateFileSize(file);
+                _headerServices.UserDataServices.SaveUserDataAsync();
+            });
         }
 
         /*

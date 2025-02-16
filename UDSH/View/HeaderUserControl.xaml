@@ -245,7 +245,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                             <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="{Binding SaveFileText}" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="{Binding SaveFileText}" TextTrimming="CharacterEllipsis" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                             <Button Grid.ColumnSpan="4" Command="{Binding SaveFile}" IsEnabled="{Binding CanEnablePenToolButton}"/>
                                             <Button Grid.Column="3" Style="{StaticResource QADots}" Command="{Binding QSaveFile}" CommandParameter="1"/>
                                             <Border Grid.Column="3" Style="{StaticResource QABorder}"/>
@@ -314,7 +314,7 @@
                                                 <ColumnDefinition Width="auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/SaveAllFiles.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save All" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Save All Open Files" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                             <Button Grid.ColumnSpan="3" Command="{Binding SaveAllFiles}" IsEnabled="{Binding CanEnablePenToolButton}"/>
                                             <Button Grid.Column="2" Style="{StaticResource QADots}" Command="{Binding QSaveAllFiles}" CommandParameter="2"/>
                                             <Border Grid.Column="2" Style="{StaticResource QABorder}"/>
@@ -385,7 +385,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Image Grid.Column="0" Panel.ZIndex="1" Source="/Resource/DeleteFile.png" Margin="5" Height="20" Width="20" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                             <TextBlock Grid.Column="1" Panel.ZIndex="1" Text="Delete" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
-                                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="{Binding DeleteFileText}" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Panel.ZIndex="1" Text="{Binding DeleteFileText}" TextTrimming="CharacterEllipsis" FontSize="15" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                             <Button Grid.ColumnSpan="4" Command="{Binding DeleteFile}" IsEnabled="{Binding CanEnablePenToolButton}"/>
                                             <Button Grid.Column="3" Style="{StaticResource QADots}" Command="{Binding QDeleteFile}" CommandParameter="3"/>
                                             <Border Grid.Column="3" Style="{StaticResource QABorder}"/>

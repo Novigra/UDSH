@@ -24,16 +24,9 @@ namespace UDSH.View
         public HeaderUserControl(HeaderUserControlViewModel viewModel)
         {
             InitializeComponent();
-            /*PagesList.Items.Add(new Button());
-            PagesList.Items.Add(new Button());
-            PagesList.Items.Add(new Button());*/
 
-            //viewModel = new HeaderUserControlViewModel();
             this.viewModel = viewModel;
             DataContext = viewModel;
-            /*PagesList.Items.Add(new ListViewItem());
-            PagesList.Items.Add(new ListViewItem());
-            PagesList.Items.Add(new ListViewItem());*/
 
             Loaded += OnUserControlLoaded;
             State = WindowResizeState.Normal;

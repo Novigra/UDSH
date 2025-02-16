@@ -45,6 +45,9 @@
     <Compile Update="View\NoteUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\PopupWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\SideContentUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -141,6 +144,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\NoteUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\PopupWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\SideContentUserControl.xaml">

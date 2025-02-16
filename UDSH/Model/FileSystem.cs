@@ -24,7 +24,7 @@ namespace UDSH.Model
         public RichTextBox InitialRichTextBox { get; set; }
 
         [JsonIgnore]
-        public RichTextBox FinalRichTextBox { get; set; }
+        public RichTextBox CurrentRichTextBox { get; set; }
 
         [JsonIgnore]
         public BitmapImage fileImageNormal { get; set; } // Image Icon - Normal(Not Selected Item)
