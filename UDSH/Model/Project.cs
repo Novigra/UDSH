@@ -12,6 +12,8 @@
         public bool IsProjectProtected { get; set; }
         public string ProjectPassword { get; set; }
         public string ProjectDirectory { get; set; }
+        public bool IsConnectedToGameProject { get; set; }
+        public string GameProjectDirectory { get; set; }
         public List<FileSystem> Files { get; set; }
     }
 }

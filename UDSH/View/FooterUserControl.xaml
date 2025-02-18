@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:UDSH.View"
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="1200">
@@ -21,9 +22,10 @@
 
         <!-- GameProject Connection -->
         <Grid Grid.Column="2" Margin="0,0,20,0">
-            <Rectangle Fill="#D9D9D9" Margin="5" Width="190" RadiusX="10" RadiusY="10" HorizontalAlignment="Right">
+            <Rectangle x:Name="ConnectionBackgroundRect" Margin="5" Width="{Binding ConnectionBorderWidth}" RadiusX="10" RadiusY="10" HorizontalAlignment="Right">
                 <Rectangle.Style>
                     <Style TargetType="Rectangle">
+                        <Setter Property="Fill" Value="#D9D9D9"/>
                         <Style.Triggers>
                             <EventTrigger RoutedEvent="UserControl.Loaded">
                                 <BeginStoryboard>
@@ -36,14 +38,37 @@
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
+                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                            To="#393E46" Duration="0:0:0.5"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                                            To="#D9D9D9" Duration="0:0:0.5"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Rectangle.Style>
             </Rectangle>
-            <TextBlock Name="GameProjectConnection" Text="NOT CONNECTED" FontSize="16" Margin="0,0,55,1" VerticalAlignment="Center" HorizontalAlignment="Right">
+            
+            <TextBlock Name="GameProjectConnection" Text="{Binding ConnectionLabel}" FontSize="16" Margin="0,0,55,1" VerticalAlignment="Center" HorizontalAlignment="Right">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+                        <Setter Property="Foreground" Value="#000000"/>
                         <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                <Setter Property="Foreground" Value="#DBAD2F"/>
+                            </DataTrigger>
                             <EventTrigger RoutedEvent="UserControl.Loaded">
                                 <BeginStoryboard>
                                     <Storyboard>
@@ -56,10 +81,132 @@
                 </TextBlock.Style>
             </TextBlock>
             <Image Source="/Resource/Connect.png" HorizontalAlignment="Right" Margin="0,0,13,0"/>
-            <Button Style="{StaticResource TransparentButton}" Command="{Binding ConnectButton}" Width="50" Height="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5.5,0">
-                <Popup x:Name="ConnectPopup" StaysOpen="False" AllowsTransparency="True" Placement="Relative" PopupAnimation="Fade" IsOpen="{Binding IsConnectPopupOpen, UpdateSourceTrigger=PropertyChanged}">
-                    
+            <Image Source="/Resource/ConnectHighlight.png" HorizontalAlignment="Right" Margin="0,0,13,0">
+                <Image.Style>
+                    <Style TargetType="Image">
+                        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                        <Setter Property="IsHitTestVisible" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+            <Button x:Name="ConnectButton" Style="{StaticResource TransparentButton}" Command="{Binding ConnectButton}" Width="50" Height="20" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5.5,0">
+                <Popup x:Name="ConnectPopup" StaysOpen="False" AllowsTransparency="True" Placement="Relative" PlacementTarget="{Binding ElementName=ConnectButton}" VerticalOffset="-74" HorizontalOffset="-135" PopupAnimation="Fade" IsOpen="{Binding IsConnectPopupOpen, UpdateSourceTrigger=PropertyChanged}">
+                    <Border Background="#D9D9D9" BorderBrush="#4D4D4D" BorderThickness="3" CornerRadius="5" >
+                        <StackPanel Orientation="Vertical">
+                            <Button Style="{StaticResource ContextConnectButton}" IsEnabled="{Binding IsConnectionEnabled}" Command="{Binding ConnectProjectButton}">
+                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+                                            <Setter Property="Text" Value="Connect"/>
+                                            <Setter Property="Foreground" Value="#000000"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="Text" Value="Disconnect"/>
+                                                    <Setter Property="Foreground" Value="#F83030"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsConnectionEnabled}" Value="False">
+                                                    <Setter Property="Foreground" Value="#959595"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Button>
+                            <Button Command="{Binding SendButton}">
+                                <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
+                                    <TextBlock Text="Send data to" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsConnectionEnabled}" Value="False">
+                                                        <Setter Property="Foreground" Value="#959595"/>
+                                                    </DataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsConnected}" Value="False"/>
+                                                            <Condition Binding="{Binding IsConnectionEnabled}" Value="True"/>
+                                                        </MultiDataTrigger.Conditions>
+                                                        <MultiDataTrigger.Setters>
+                                                            <Setter Property="Foreground" Value="#959595"/>
+                                                        </MultiDataTrigger.Setters>
+                                                    </MultiDataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding GameProjectName}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsConnectionEnabled}" Value="False">
+                                                        <Setter Property="Foreground" Value="#959595"/>
+                                                    </DataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding IsConnected}" Value="False"/>
+                                                            <Condition Binding="{Binding IsConnectionEnabled}" Value="True"/>
+                                                        </MultiDataTrigger.Conditions>
+                                                        <MultiDataTrigger.Setters>
+                                                            <Setter Property="Foreground" Value="#959595"/>
+                                                        </MultiDataTrigger.Setters>
+                                                    </MultiDataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource ContextConnectButton}">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsConnectionEnabled}" Value="False">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                            
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding IsConnected}" Value="False"/>
+                                                    <Condition Binding="{Binding IsConnectionEnabled}" Value="True"/>
+                                                </MultiDataTrigger.Conditions>
+                                                <MultiDataTrigger.Setters>
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </MultiDataTrigger.Setters>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Border>
                 </Popup>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseEnter">
+                        <i:InvokeCommandAction Command="{Binding ConnectButtonMouseEnter}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="MouseLeave">
+                        <i:InvokeCommandAction Command="{Binding ConnectButtonMouseLeave}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </Button>
         </Grid>
 

@@ -43,6 +43,7 @@
     <None Remove="Resource\CloseNoteIcon.png" />
     <None Remove="Resource\CloseSelected.png" />
     <None Remove="Resource\Connect.png" />
+    <None Remove="Resource\ConnectHighlight.png" />
     <None Remove="Resource\ContentState.png" />
     <None Remove="Resource\CurrentFiles.png" />
     <None Remove="Resource\Data\NewFileHighlightedTitle.json" />
@@ -144,6 +145,7 @@
     <Resource Include="Resource\AddFile.png" />
     <Resource Include="Resource\AToZ.png" />
     <Resource Include="Resource\Connect.png" />
+    <Resource Include="Resource\ConnectHighlight.png" />
     <Resource Include="Resource\ContentState.png" />
     <Resource Include="Resource\DirectoryFolderHighlight.png" />
   </ItemGroup>
