@@ -184,6 +184,14 @@ namespace UDSH.ViewModel
             _userDataServices.FileDetailsUpdated += _userDataServices_FileDetailsUpdated;
             _userDataServices.ItemDeletedSideContent += _userDataServices_ItemDeleted;
             _userDataServices.DataDragActionUpdate += _userDataServices_DataDragActionUpdate;
+            _userDataServices.FileQuickDelete += _userDataServices_FileQuickDelete;
+        }
+
+        private void _userDataServices_FileQuickDelete(object? sender, FileSystem e)
+        {
+            FileStructure fileStructure = new FileStructure();
+            fileStructure.DeleteFileFromTree(e, _userDataServices.ActiveProject, Root);
+            fileStructure.DeleteFileFromSearchTree(e, RootSearch);
         }
 
         private async void _userDataServices_DataDragActionUpdate(object? sender, DataDragActionUpdateEventArgs e)

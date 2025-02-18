@@ -33,6 +33,9 @@ namespace UDSH
             DefaultUserControl defaultUserControl = new DefaultUserControl(userDataServices);
             TestContent.Content = defaultUserControl;
 
+            FooterUserControl footerUserControl = new FooterUserControl(new FooterUserControlViewModel(userDataServices));
+            FooterUserControl.Children.Add(footerUserControl);
+
             Debug.WriteLine($"Screen Width: {System.Windows.SystemParameters.WorkArea.Width}");
 
             header.FileStructureSelectionChanged += Header_FileStructureSelectionChanged;

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace UDSH.View
 {
@@ -17,9 +18,11 @@ namespace UDSH.View
         private const string DeleteSentence = "Do you want to delete";
         private const double AddedWidth = 200.0;
         private Window window;
+        private ProcessType type;
 
         public PopupWindow(ProcessType ProcessType, string ItemName)
         {
+            type = ProcessType;
             InitializeComponent();
 
             window = GetWindow(this);
@@ -58,6 +61,24 @@ namespace UDSH.View
         {
             DialogResult = false;
             Close();
+        }
+
+        private void Title_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBlock textBlock)
+            {
+                switch (type)
+                {
+                    case ProcessType.Save:
+                        textBlock.Text = "Save";
+                        break;
+                    case ProcessType.Delete:
+                        textBlock.Text = "Delete";
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }

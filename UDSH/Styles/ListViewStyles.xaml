@@ -183,7 +183,7 @@
                                     <Image x:Name="ImageNormal" Source="{Binding fileImageNormal}" Panel.ZIndex="0"/>
                                     <Image x:Name="ImageSelected" Source="{Binding fileImageSelected}" Panel.ZIndex="1" Opacity="0"/>
                                 </Grid>
-                                <TextBlock Text="{Binding FileName}" Style="{StaticResource DefaultText}" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3,5,5,5"/>
+                                <TextBlock Text="{Binding FileName}" Style="{StaticResource DefaultText}" TextTrimming="CharacterEllipsis" Width="{Binding RelativeSource={RelativeSource AncestorType=ListView}, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=95}" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="3,5,5,5"/>
                             </StackPanel>
 
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Right">

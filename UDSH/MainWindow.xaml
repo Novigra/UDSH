@@ -21,14 +21,8 @@
         </Grid.RowDefinitions>
 
         <Grid x:Name="HeaderUserControl" Grid.Row="0"/>
-        <!-- <userControls:CSFUserControl Grid.Row="1"/> <ContentControl x:Name="HeaderContentControl" Grid.Row="0"/> -->
-        <!-- <userControls:DefaultUserControl Grid.Row="1"/> -->
-        <!-- <userControls:MKUserControl Grid.Row="1"/> -->
-        <userControls:FooterUserControl Grid.Row="2" Panel.ZIndex="1"/>
-
-        <ContentControl x:Name="TestContent" Grid.Row="1" Panel.ZIndex="0">
-            
-        </ContentControl>
+        <ContentControl x:Name="TestContent" Grid.Row="1" Panel.ZIndex="0"/>
+        <Grid x:Name="FooterUserControl" Grid.Row="2" Panel.ZIndex="1"/>
 
         <Grid x:Name="SideGrid" Grid.Row="1" HorizontalAlignment="Left" Margin="0,40,0,0">
         </Grid>

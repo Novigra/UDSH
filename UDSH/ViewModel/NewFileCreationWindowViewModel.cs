@@ -484,6 +484,8 @@ namespace UDSH.ViewModel
             // Remove whitespaces
             FinalProjectDirectory = string.Join("\\", Result.Split("\\").Select(seq => seq.Trim()).Where(seq => !string.IsNullOrEmpty(seq)));
             CanShowDirectory = false;
+
+            DoesSameFileTypeExist();
         }
     }
 }

@@ -1233,5 +1233,49 @@ namespace UDSH.Model
             string FinalSize = Size.ToString("F") + " " + Sizes[index];
             file.FileSize = FinalSize;
         }
+
+        public void DeleteFileFromContent(FileSystem file, ObservableCollection<ContentFileStructure> CurrentFiles)
+        {
+            foreach (var CurrentFile in CurrentFiles.ToList())
+            {
+                if (file == CurrentFile.File)
+                    CurrentFiles.Remove(CurrentFile);
+            }
+        }
+
+        public void DeleteFileFromTree(FileSystem file, Project project, Node Root)
+        {
+            Node CurrentNode = Root;
+            Node ParentNode = Root;
+            string[] DirectoryBlock = file.FileDirectory.Split("\\");
+            int index = Array.IndexOf(DirectoryBlock, project.ProjectName);
+            
+            while (CurrentNode.NodeFile == null)
+            {
+                index++;
+                foreach (var node in CurrentNode.SubNodes)
+                {
+                    if (node.Name.Equals(DirectoryBlock[index]))
+                    {
+                        ParentNode = CurrentNode;
+                        CurrentNode = node;
+                        break;
+                    }
+                }
+            }
+
+            ParentNode.SubNodes.Remove(CurrentNode);
+        }
+
+        public void DeleteFileFromSearchTree(FileSystem file, ObservableCollection<Node> RootSearch)
+        {
+            foreach (var node in RootSearch.ToList())
+            {
+                if (node.NodeFile == file)
+                {
+                    RootSearch.Remove(node);
+                }
+            }
+        }
     }
 }

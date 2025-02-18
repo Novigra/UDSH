@@ -1088,6 +1088,22 @@
         </Setter>
     </Style>
     
+    <!-- Transparent Button -->
+    <Style TargetType="Button" x:Key="TransparentButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="IsEnabled" Value="True"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}">
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- POPUP Window Buttons -->
     <Style TargetType="Button" x:Key="PopupWindowConfirmButton">
         <Setter Property="Background" Value="#FFFFFF"/>

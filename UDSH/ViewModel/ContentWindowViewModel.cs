@@ -568,6 +568,15 @@ namespace UDSH.ViewModel
 
             CanRecordMouseMovement = false;
             IsMousePressed = false;
+
+            _userDataServices.FileQuickDelete += _userDataServices_FileQuickDelete;
+        }
+
+        private void _userDataServices_FileQuickDelete(object? sender, FileSystem e)
+        {
+            FileStructure fileStructure = new FileStructure();
+            fileStructure.DeleteFileFromContent(e, CurrentFiles);
+            fileStructure.DeleteFileFromTree(e, _userDataServices.ActiveProject, Root);
         }
 
         private async Task LoadData()

@@ -1,4 +1,5 @@
-﻿using UDSH.Model;
+﻿using System.IO;
+using UDSH.Model;
 
 namespace UDSH.Services
 {
@@ -13,7 +14,7 @@ namespace UDSH.Services
         public event EventHandler<DirectoriesEventArgs> ItemDeleted;
         public event EventHandler<string> ItemDeletedSideContent;
         public event EventHandler<DataDragActionUpdateEventArgs> DataDragActionUpdate;
-        //public event EventHandler<FileSystem> AddFileFromContent;
+        public event EventHandler<FileSystem> FileQuickDelete; // Delete Command comes from pen tool or file workplace itself
 
         public string DisplayName
         {
@@ -112,6 +113,20 @@ namespace UDSH.Services
             await Task.Run(() => session.UpdateFileDetails());
 
             DataDragActionUpdate.Invoke(this, new DataDragActionUpdateEventArgs(SelectedItems, TargetItem, CurrentDirectory, EditFiles));
+        }
+
+        public void FileQuickDeleteAction(FileSystem file)
+        {
+            if (file != null)
+            {
+                FileQuickDelete.Invoke(this, file);
+                ActiveProject.Files.Remove(file);
+
+                if (File.Exists(file.FileDirectory))
+                    File.Delete(file.FileDirectory);
+
+                session.UpdateFileDetails();
+            }
         }
     }
 }

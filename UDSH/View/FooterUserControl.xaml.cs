@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Windows.Controls;
+using UDSH.ViewModel;
 
 namespace UDSH.View
 {
@@ -8,12 +9,12 @@ namespace UDSH.View
     /// </summary>
     public partial class FooterUserControl : UserControl
     {
-        public FooterUserControl()
+        public FooterUserControl(FooterUserControlViewModel viewModel)
         {
             InitializeComponent();
 
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            ApplicationVersion.Text = $"{version.Major}.{version.Minor}.{version.Build}";
+            DataContext = viewModel;
+            ConnectPopup.MouseDown += (s, e) => e.Handled = true;
         }
     }
 }

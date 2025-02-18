@@ -145,6 +145,7 @@ namespace UDSH.ViewModel
         public RelayCommand<MouseButtonEventArgs> StopAddingNoteProcess => new RelayCommand<MouseButtonEventArgs>(StopRecordingNoteButtonMouseMovement);
 
         public RelayCommand<object> SaveButton => new RelayCommand<object>(execute => SaveContent());
+        public RelayCommand<object> DeleteButton => new RelayCommand<object>(execute => DeleteFile());
         #endregion
 
         public MKUserControlViewModel(IWorkspaceServices workspaceServices) //MKUserControl control
@@ -789,9 +790,22 @@ namespace UDSH.ViewModel
                 FileStructure fileStructure = new FileStructure();
                 fileStructure.UpdateFileSize(file);
                 _workspaceServices.UserDataServices.SaveUserDataAsync();
+                file.OpenSaveMessage = false;
             }));
 
             Debug.WriteLine("Saved!");
+        }
+
+        private void DeleteFile()
+        {
+            FileSystem file = _workspaceServices.UserDataServices.CurrentSelectedFile;
+            PopupWindow popupWindow = new PopupWindow(ProcessType.Delete, file.FileName + "." + file.FileType);
+            bool? CanDelete = popupWindow.ShowDialog();
+
+            if (CanDelete == true)
+            {
+                _workspaceServices.UserDataServices.FileQuickDeleteAction(file);
+            }
         }
 
         private async Task LoadContent()

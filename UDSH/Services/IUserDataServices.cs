@@ -21,7 +21,7 @@ namespace UDSH.Services
         event EventHandler<DirectoriesEventArgs> ItemDeleted;
         event EventHandler<string> ItemDeletedSideContent;
         event EventHandler<DataDragActionUpdateEventArgs> DataDragActionUpdate;
-        //event EventHandler<FileSystem> AddFileFromContent;
+        event EventHandler<FileSystem> FileQuickDelete;
 
         Task LoadUserDataAsync();
         Task SaveUserDataAsync();
@@ -34,5 +34,6 @@ namespace UDSH.Services
         Task DataDetailsDragActionUpdateAsync(List<ContentFileStructure> SelectedItems, ContentFileStructure TargetItem, string CurrentDirectory, Queue<FileSystem> EditFiles);
 
         void AddFileToHeader(FileSystem file);
+        void FileQuickDeleteAction(FileSystem file);
     }
 }

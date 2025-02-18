@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<File>
+  <Metadata>
+    <FileID>404f7afe-032b-4a90-8220-d7d6354a341a</FileID>
+    <FileName>Test Bullets</FileName>
+    <FileType>mkm</FileType>
+    <FileAuthor>Mohammed Kenawy</FileAuthor>
+    <FileVersion>0.1.0</FileVersion>
+    <FileCreationDate>2/17/2025 12:50:20 PM</FileCreationDate>
+  </Metadata>
+  <Document>
+    <ParagraphLine TextAlignment="Left" TextType="Header1">
+      <Normal>
+        <Normal>
+          <Underline>Test</Underline>
+        </Normal>
+      </Normal>
+      <Normal>
+        <Normal>
+          <Normal> Bullet </Normal>
+        </Normal>
+      </Normal>
+      <Normal>
+        <Normal>
+          <Underline>Zone</Underline>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Normal">
+      <Normal>
+        <Normal>
+          <Normal>okay, let's start</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="List">
+      <List>
+        <ListItem>
+          <Normal>
+            <Normal>
+              <Normal>Item </Normal>
+            </Normal>
+          </Normal>
+          <Bold>
+            <Normal>
+              <Normal>Man</Normal>
+            </Normal>
+          </Bold>
+          <Normal>
+            <Normal>
+              <Normal> 1</Normal>
+            </Normal>
+          </Normal>
+        </ListItem>
+        <ListItem>
+          <Bold>
+            <Normal>
+              <Normal>Ultimate </Normal>
+            </Normal>
+          </Bold>
+          <Normal>
+            <Normal>
+              <Normal></Normal>
+            </Normal>
+          </Normal>
+          <Normal>
+            <Italic>
+              <Normal>Dead </Normal>
+            </Italic>
+          </Normal>
+          <Normal>
+            <Normal>
+              <Normal></Normal>
+            </Normal>
+          </Normal>
+          <Normal>
+            <Normal>
+              <Underline>Man</Underline>
+            </Normal>
+          </Normal>
+        </ListItem>
+        <ListItem>
+          <Normal>
+            <Normal>
+              <Normal>Item 2</Normal>
+            </Normal>
+          </Normal>
+        </ListItem>
+        <ListItem>
+          <Normal>
+            <Normal>
+              <Normal>Item 3</Normal>
+            </Normal>
+          </Normal>
+        </ListItem>
+      </List>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Normal">
+      <Normal>
+        <Normal>
+          <Normal>Hoping New List</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="List">
+      <List>
+        <ListItem>
+          <Normal>
+            <Normal>
+              <Normal>Item Okay?</Normal>
+            </Normal>
+          </Normal>
+        </ListItem>
+        <ListItem>
+          <Bold>
+            <Normal>
+              <Normal>AAAA</Normal>
+            </Normal>
+          </Bold>
+          <Normal>
+            <Normal>
+              <Normal> stop</Normal>
+            </Normal>
+          </Normal>
+        </ListItem>
+        <ListItem>
+          <Normal>
+            <Normal>
+              <Normal>Hmm</Normal>
+            </Normal>
+          </Normal>
+        </ListItem>
+      </List>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Normal">
+      <Normal>
+        <Normal>
+          <Normal>Third List Why not</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="List">
+      <List>
+        <ListItem>
+          <Normal>
+            <Normal>
+              <Normal>I've got </Normal>
+            </Normal>
+          </Normal>
+          <Bold>
+            <Normal>
+              <Normal>YOU</Normal>
+            </Normal>
+          </Bold>
+        </ListItem>
+        <ListItem>
+          <Normal>
+            <Normal>
+              <Normal>Bam</Normal>
+            </Normal>
+          </Normal>
+        </ListItem>
+        <ListItem>
+          <Normal>
+            <Normal>
+              <Normal>Boom</Normal>
+            </Normal>
+          </Normal>
+        </ListItem>
+      </List>
+    </ParagraphLine>
+  </Document>
+</File>

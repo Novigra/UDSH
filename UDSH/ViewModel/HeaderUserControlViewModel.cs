@@ -482,6 +482,12 @@ namespace UDSH.ViewModel
             _headerServices.UserDataServices.ItemDeleted += UserDataServices_ItemDeleted;
             _headerServices.UserDataServices.FileDetailsUpdated += UserDataServices_FileDetailsUpdated;
             _headerServices.UserDataServices.DataDragActionUpdate += UserDataServices_DataDragActionUpdate;
+            _headerServices.UserDataServices.FileQuickDelete += UserDataServices_FileQuickDelete;
+        }
+
+        private void UserDataServices_FileQuickDelete(object? sender, FileSystem e)
+        {
+            RemoveItemFromList(e);
         }
 
         private void UserDataServices_DataDragActionUpdate(object? sender, DataDragActionUpdateEventArgs e)
@@ -729,9 +735,19 @@ namespace UDSH.ViewModel
 
         private void DeleteCurrentFile()
         {
-            MessageBox.Show("Deleted MyHouseWad.mkc...");
+            IsPenToolButtonClicked = false;
+            CanClosePopup = false;
 
-            // TODO: Delete Header and MK UserControl
+            if (SelectedFile == null)
+                return;
+
+            PopupWindow popupWindow = new PopupWindow(ProcessType.Delete, SelectedFile.FileName + "." + SelectedFile.FileType);
+            bool? CanDelete = popupWindow.ShowDialog();
+
+            if (CanDelete == true)
+            {
+                _headerServices.UserDataServices.FileQuickDeleteAction(SelectedFile);
+            }
         }
 
         private void OpenLocalization()
@@ -762,10 +778,6 @@ namespace UDSH.ViewModel
         private void SetQuickAction(string index)
         {
             int CurrentIndex = Int32.Parse(index);
-
-            
-
-            //if(QuickActionDots.)
 
             if (QuickActionsList.Count < 3 && !QuickActionsList.Contains(CurrentIndex))
             {
@@ -882,25 +894,30 @@ namespace UDSH.ViewModel
             {
                 CheckSaveStatus(file);
 
-                if (file != SelectedFile)
-                    OpenFiles.Remove(file);
+                RemoveItemFromList(file);
+            }
+        }
+
+        private void RemoveItemFromList(FileSystem file)
+        {
+            if (file != SelectedFile)
+                OpenFiles.Remove(file);
+            else
+            {
+                int CurrentIndex = OpenFiles.IndexOf(file);
+                if (CurrentIndex == 0)
+                {
+                    if (OpenFiles.Count > 1)
+                    {
+                        SelectedFile = OpenFiles[CurrentIndex + 1];
+                    }
+                }
                 else
                 {
-                    int CurrentIndex = OpenFiles.IndexOf(file);
-                    if (CurrentIndex == 0)
-                    {
-                        if(OpenFiles.Count > 1)
-                        {
-                            SelectedFile = OpenFiles[CurrentIndex + 1];
-                        }
-                    }
-                    else
-                    {
-                        SelectedFile = OpenFiles[CurrentIndex - 1];
-                    }
-
-                    OpenFiles.Remove(file);
+                    SelectedFile = OpenFiles[CurrentIndex - 1];
                 }
+
+                OpenFiles.Remove(file);
             }
         }
 

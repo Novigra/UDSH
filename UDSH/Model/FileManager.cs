@@ -17,12 +17,12 @@ namespace UDSH.Model
     public class FileManager
     {
         // Main Elements
-        private const string RootElement = "File";
-        private const string MetaElement = "Metadata";
-        private const string DocumentElement = "Document";
-        private const string ParagraphElement = "ParagraphLine";
-        private const string ListElement = "List";
-        private const string ListItemElement = "ListItem";
+        private const string RootElementLabel = "File";
+        private const string MetaElementLabel = "Metadata";
+        private const string DocumentElementLabel = "Document";
+        private const string ParagraphElementLabel = "ParagraphLine";
+        private const string ListElementLabel = "List";
+        private const string ListItemElementLabel = "ListItem";
 
         // Attributes
         private const string FileIDAttribute = "FileID";
@@ -47,11 +47,11 @@ namespace UDSH.Model
 
             xmlWriter.WriteStartDocument();
 
-            xmlWriter.WriteStartElement(RootElement);
+            xmlWriter.WriteStartElement(RootElementLabel);
 
             WriteMetadata(xmlWriter, mKMFile, file);
 
-            xmlWriter.WriteStartElement(DocumentElement);
+            xmlWriter.WriteStartElement(DocumentElementLabel);
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteEndElement(); // End Root
@@ -65,7 +65,7 @@ namespace UDSH.Model
 
             xmlWriter.WriteStartDocument();
 
-            xmlWriter.WriteStartElement(RootElement);
+            xmlWriter.WriteStartElement(RootElementLabel);
 
             WriteMetadata(xmlWriter, mKMFile, file);
 
@@ -85,56 +85,86 @@ namespace UDSH.Model
             if (xDocument.Root != null)
             {
                 Paragraph paragraph = new Paragraph();
+                Paragraph LastParagraph = new Paragraph();
                 BlockCollection Blocks = RTB.Document.Blocks;
                 Block CurrentBlock = Blocks.FirstBlock;
                 bool FirstLine = true;
 
                 // TODO: Manage Lists
-                XElement? DocElement = xDocument.Root.Element(DocumentElement);
+                XElement? DocElement = xDocument.Root.Element(DocumentElementLabel);
                 if (DocElement == null)
                     return ContainData;
 
-                foreach (var ParaElement in DocElement.Elements(ParagraphElement))
+                foreach (var ParaElement in DocElement.Elements(ParagraphElementLabel))
                 {
-                    /*ParagraphLine paragraphLine = new ParagraphLine
+                    XElement TopElement = ParaElement.Elements().First();
+                    if(TopElement.Name.ToString().Equals(ListElementLabel))
                     {
-                        TextAlignment = ParaElement.Attribute(TextAlignment).Value,
-                        TextType = ParaElement.Attribute(TextType).Value,
-                        Content = ParaElement.Elements().ToList()
-                    };
-                    mKMFile.Document.ParagraphLines.Add(paragraphLine);*/
-
-                    foreach (var WeightElement in ParaElement.Elements())
-                    {
-                        Run run = new Run();
-
-                        XElement StyleElement = WeightElement.Elements().First();
-                        XElement DecorationElement = StyleElement.Elements().First();
-                        string TextContent = DecorationElement.Value;
-
-                        run.FontWeight = GetFontWeight(WeightElement.Name.ToString());
-                        run.FontStyle = GetFontStyle(StyleElement.Name.ToString());
-                        TextDecorationCollection textDecoration = GetDecorations(DecorationElement.Name.ToString());
-                        if (textDecoration != TextDecorations.Baseline)
-                            run.TextDecorations = textDecoration;
-
-                        run.FontSize = GetSize(ParaElement.Attribute(TextType).Value);
-                        run.Tag = ParaElement.Attribute(TextType).Value;
-                        run.Text = TextContent;
-
-                        paragraph.TextAlignment = GetAlignment(ParaElement.Attribute(TextAlignment).Value);
-                        paragraph.Tag = ParaElement.Attribute(TextType).Value;
-                        paragraph.Inlines.Add(run);
+                        WriteListData(ParaElement, Blocks, LastParagraph);
                     }
+                    else
+                    {
+                        WriteContentData(ParaElement, ParaElement, paragraph);
 
-                    Blocks.Add(paragraph);
-                    paragraph = new Paragraph();
+                        Blocks.Add(paragraph);
+                        LastParagraph = paragraph;
+                        paragraph = new Paragraph();
+                    }
                     
                     ContainData = true;
                 }
             }
 
             return ContainData;
+        }
+
+        private void WriteListData(XElement ParaElement, BlockCollection Blocks, Paragraph LastParagraph)
+        {
+            XElement ListElement = ParaElement.Elements().First();
+            List list = new List();
+            bool FirstItem = true;
+
+            foreach (var listItemElement in ListElement.Elements())
+            {
+                Paragraph paragraph = new Paragraph();
+
+                WriteContentData(listItemElement, ParaElement, paragraph);
+
+                ListItem listItem = new ListItem(paragraph);
+                list.ListItems.Add(listItem);
+                
+                if(FirstItem == true)
+                {
+                    Blocks.InsertAfter(LastParagraph, list);
+                    FirstItem = false;
+                }
+            }
+        }
+
+        private void WriteContentData(XElement ParentElement, XElement ParaElement, Paragraph paragraph)
+        {
+            foreach (var WeightElement in ParentElement.Elements())
+            {
+                Run run = new Run();
+
+                XElement StyleElement = WeightElement.Elements().First();
+                XElement DecorationElement = StyleElement.Elements().First();
+                string TextContent = DecorationElement.Value;
+
+                run.FontWeight = GetFontWeight(WeightElement.Name.ToString());
+                run.FontStyle = GetFontStyle(StyleElement.Name.ToString());
+                TextDecorationCollection textDecoration = GetDecorations(DecorationElement.Name.ToString());
+                if (textDecoration != TextDecorations.Baseline)
+                    run.TextDecorations = textDecoration;
+
+                run.FontSize = GetSize(ParaElement.Attribute(TextType).Value);
+                run.Tag = ParaElement.Attribute(TextType).Value;
+                run.Text = TextContent;
+
+                paragraph.TextAlignment = GetAlignment(ParaElement.Attribute(TextAlignment).Value);
+                paragraph.Tag = ParaElement.Attribute(TextType).Value;
+                paragraph.Inlines.Add(run);
+            }
         }
 
         private void WriteMetadata(XmlWriter xmlWriter, MKMFile mKMFile, FileSystem file)
@@ -146,7 +176,7 @@ namespace UDSH.Model
             mKMFile.Metadata.FileVersion = file.FileVersion;
             mKMFile.Metadata.FileCreationDate = file.FileCreationDate;
 
-            xmlWriter.WriteStartElement(MetaElement);
+            xmlWriter.WriteStartElement(MetaElementLabel);
             xmlWriter.WriteElementString(FileIDAttribute, mKMFile.Metadata.FileID);
             xmlWriter.WriteElementString(FileNameAttribute, mKMFile.Metadata.FileName);
             xmlWriter.WriteElementString(FileTypeAttribute, mKMFile.Metadata.FileType);
@@ -160,7 +190,7 @@ namespace UDSH.Model
         {
             Document document = new Document();
 
-            xmlWriter.WriteStartElement(DocumentElement);
+            xmlWriter.WriteStartElement(DocumentElementLabel);
 
             foreach (var block in Blocks)
             {
@@ -185,7 +215,7 @@ namespace UDSH.Model
                         }
                     }
 
-                    xmlWriter.WriteStartElement(ParagraphElement);
+                    xmlWriter.WriteStartElement(ParagraphElementLabel);
                     xmlWriter.WriteAttributeString(TextAlignment, paragraphLine.TextAlignment);
                     xmlWriter.WriteAttributeString(TextType, paragraphLine.TextType);
 
@@ -197,7 +227,7 @@ namespace UDSH.Model
                 }
                 else if (block is List list)
                 {
-                    xmlWriter.WriteStartElement(ParagraphElement);
+                    xmlWriter.WriteStartElement(ParagraphElementLabel);
                     ParagraphLine paragraphLine = new ParagraphLine();
                     paragraphLine.TextAlignment = "Left";
                     paragraphLine.TextType = "List";
@@ -205,11 +235,11 @@ namespace UDSH.Model
                     xmlWriter.WriteAttributeString(TextAlignment, paragraphLine.TextAlignment);
                     xmlWriter.WriteAttributeString(TextType, paragraphLine.TextType);
 
-                    xmlWriter.WriteStartElement(ListElement);
+                    xmlWriter.WriteStartElement(ListElementLabel);
 
                     foreach (var item in list.ListItems)
                     {
-                        xmlWriter.WriteStartElement(ListItemElement);
+                        xmlWriter.WriteStartElement(ListItemElementLabel);
                         if (item.Blocks.FirstBlock is Paragraph listParagraph)
                         {
                             foreach (var inline in listParagraph.Inlines)

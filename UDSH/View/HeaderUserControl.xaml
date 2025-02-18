@@ -1095,10 +1095,6 @@
 
                 <!-- Separator -->
                 <Rectangle Grid.Column="0" Name="QOSeparator" Fill="#000000" Margin="0,2,0,2" RadiusX="3" RadiusY="3" RenderTransformOrigin="0.5,0.5">
-                    
-                    
-
-                    
                 </Rectangle>
 
 
