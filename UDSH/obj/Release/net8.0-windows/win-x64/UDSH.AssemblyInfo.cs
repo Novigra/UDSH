@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("Copyright © 2024")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("0.1.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f670da8d641aa7fddd78d96f2f690785baf19c72")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+968d41f6e6332a4b01cd38b889a9c5535d95cbb3")]
 [assembly: System.Reflection.AssemblyProductAttribute("UDSH")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UDSH")]
 [assembly: System.Reflection.AssemblyVersionAttribute("0.1.0.0")]

@@ -1277,5 +1277,29 @@ namespace UDSH.Model
                 }
             }
         }
+
+        public void CopyDirectoryTo(string SourceDirectory, string TargetDirectory, bool CopySubDirectory)
+        {
+            var directory = new DirectoryInfo(SourceDirectory);
+
+            DirectoryInfo[] directories = directory.GetDirectories();
+
+            Directory.CreateDirectory(TargetDirectory);
+
+            foreach (FileInfo file in directory.GetFiles())
+            {
+                string targetFilePath = Path.Combine(TargetDirectory, file.Name);
+                file.CopyTo(targetFilePath, true);
+            }
+
+            if (CopySubDirectory)
+            {
+                foreach (DirectoryInfo subDir in directories)
+                {
+                    string newDestinationDir = Path.Combine(TargetDirectory, subDir.Name);
+                    CopyDirectoryTo(subDir.FullName, newDestinationDir, true);
+                }
+            }
+        }
     }
 }

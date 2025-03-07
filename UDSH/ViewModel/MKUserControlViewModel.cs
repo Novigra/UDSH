@@ -305,8 +305,9 @@ namespace UDSH.ViewModel
 
                     if (IsNextToAMarkdown == true)
                     {
-                        Thickness HeaderThickness = new Thickness(0, 10, 0, 0);
-                        LastPickedParagraph.Margin = HeaderThickness;
+                        // Not a fan, think of a better solution
+                        /*Thickness HeaderThickness = new Thickness(0, 10, 0, 0);
+                        LastPickedParagraph.Margin = HeaderThickness;*/
 
                         IsNextToAMarkdown = false;
                     }
@@ -565,8 +566,8 @@ namespace UDSH.ViewModel
             LastPickedParagraph.FontSize = FontSize;
 
             DefaultMargin = LastPickedParagraph.Margin;
-            Thickness HeaderThickness = new Thickness(0, 0, 0, 0);
-            LastPickedParagraph.Margin = HeaderThickness;
+            /*Thickness HeaderThickness = new Thickness(0, 0, 0, 0);
+            LastPickedParagraph.Margin = HeaderThickness;*/
 
             LastPickedParagraph.Tag = DataType;
 

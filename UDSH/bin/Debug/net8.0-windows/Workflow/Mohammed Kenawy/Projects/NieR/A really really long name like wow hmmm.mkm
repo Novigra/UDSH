@@ -24,11 +24,11 @@
       </Normal>
     </ParagraphLine>
     <ParagraphLine TextAlignment="Left" TextType="Header1">
-      <Normal>
-        <Normal>
-          <Normal>Back To Back</Normal>
-        </Normal>
-      </Normal>
+      <Bold>
+        <Italic>
+          <Underline>Back To Back</Underline>
+        </Italic>
+      </Bold>
     </ParagraphLine>
     <ParagraphLine TextAlignment="Left" TextType="Normal">
       <Normal>

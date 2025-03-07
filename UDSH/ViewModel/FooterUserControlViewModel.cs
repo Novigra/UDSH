@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.IO;
 using System.Reflection;
+using System.Windows;
 using UDSH.Model;
 using UDSH.MVVM;
 using UDSH.Services;
@@ -174,10 +175,24 @@ namespace UDSH.ViewModel
             IsMouseOverButton = !IsMouseOverButton;
         }
 
-        private void SendDataToGameProject()
+        private async Task SendDataToGameProject()
         {
             IsConnectPopupOpen = false;
-            // TODO: Send Data to project [Content Folder].
+            
+            Project project = _userDataServices.ActiveProject;
+            string GameProjectDirectory = Directory.GetParent(project.GameProjectDirectory)!.FullName;
+            string ContentDirectory = Path.Combine(GameProjectDirectory, "Content");
+            if(Directory.Exists(ContentDirectory))
+            {
+                string UDSHDirectory = Path.Combine(ContentDirectory, "UDSH");
+                Directory.CreateDirectory(UDSHDirectory);
+
+                await Task.Run(() =>
+                {
+                    FileStructure fileStructure = new FileStructure();
+                    fileStructure.CopyDirectoryTo(project.ProjectDirectory, UDSHDirectory, true);
+                });
+            }
         }
     }
 }
