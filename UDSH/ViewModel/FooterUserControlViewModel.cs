@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using Microsoft.Win32;
 using System.IO;
 using System.Reflection;
 using System.Windows;

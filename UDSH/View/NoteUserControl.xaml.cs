@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
 using UDSH.ViewModel;

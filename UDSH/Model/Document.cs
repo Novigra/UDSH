@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace UDSH.Model

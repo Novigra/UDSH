@@ -1,4 +1,5 @@
-﻿namespace UDSH.Services
+﻿// Copyright (C) 2025 Mohammed Kenawy
+namespace UDSH.Services
 {
     public interface IWorkspaceServices
     {

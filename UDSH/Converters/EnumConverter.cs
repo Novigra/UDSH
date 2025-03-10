@@ -1,4 +1,5 @@
-﻿using System.Windows.Data;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Windows.Data;
 
 namespace UDSH.Converters
 {

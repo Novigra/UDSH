@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.ComponentModel;
 using System.Windows;
 using System.Runtime.CompilerServices;
 

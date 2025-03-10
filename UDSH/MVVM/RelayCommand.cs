@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Windows.Input;
 
 namespace UDSH.MVVM
 {

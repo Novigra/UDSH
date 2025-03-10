@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Text.Json.Serialization;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 

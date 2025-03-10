@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.IO;
 using UDSH.Model;
 
 namespace UDSH.Services

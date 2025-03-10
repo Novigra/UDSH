@@ -1,3 +1,4 @@
+// Copyright (C) 2025 Mohammed Kenawy
 using System.Reflection;
 using System.Windows;
 

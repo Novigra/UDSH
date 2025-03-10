@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;

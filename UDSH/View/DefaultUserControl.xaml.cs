@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using UDSH.Services;

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Windows;
 
 namespace UDSH.View.TestGround
 {

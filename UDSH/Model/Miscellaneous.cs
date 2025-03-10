@@ -1,4 +1,5 @@
-﻿namespace UDSH.Model
+﻿// Copyright (C) 2025 Mohammed Kenawy
+namespace UDSH.Model
 {
     internal class Miscellaneous
     {

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Text.RegularExpressions;
 
 namespace UDSH.Model
 {

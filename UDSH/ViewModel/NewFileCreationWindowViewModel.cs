@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;

@@ -1,4 +1,5 @@
-﻿using System.Windows.Media.Imaging;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Windows.Media.Imaging;
 
 namespace UDSH.Model
 {
