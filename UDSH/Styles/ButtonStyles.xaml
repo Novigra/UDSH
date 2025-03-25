@@ -1252,6 +1252,95 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    
+    <!-- Button Texture -->
+    <Style TargetType="Button" x:Key="ExportButtonTexture">
+        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="Export" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                        To="#393E46" Duration="0:0:0.1"/>
+                                        <ColorAnimation Storyboard.TargetName="Title" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                        To="#DBAD2F" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                        To="#FFFFFF"
+                                                        Duration="0:0:0.1"/>
+                                        <ColorAnimation Storyboard.TargetName="Title" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                        To="#000000" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="ExportDirectoryButtonTexture">
+        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                        <Grid>
+                            <Image x:Name="NormalIMG" Source="/Resource/DirectoryFolderNormal.png" Margin="7"/>
+                            <Image x:Name="HoverIMG" Source="/Resource/DirectoryFolderOpen.png" Opacity="0" Margin="7"/>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                    To="#393E46" Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="NormalIMG" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="HoverIMG" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                    To="#FFFFFF"
+                                                    Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="NormalIMG" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="HoverIMG" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!-- Testing Ground -->
     <Style TargetType="Button" x:Key="ButtonInterp">

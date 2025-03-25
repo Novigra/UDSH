@@ -1,11 +1,17 @@
 ﻿// Copyright (C) 2025 Mohammed Kenawy
 using System.Diagnostics;
+using System.IO;
 using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using UDSH.ViewModel;
+using System.Xml.Linq;
+using System.Xml;
+using UDSH.Model;
 
 namespace UDSH.View
 {
@@ -154,6 +160,133 @@ namespace UDSH.View
         {
             MouseScroll?.Invoke(sender, e.Delta);
             //Debug.WriteLine($"Delta = {e.Delta}");
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            /*MessageBox.Show("Create a picture");
+
+            Border PrintBorder = new Border();
+            *//*PrintBorder.Width = 400;
+            PrintBorder.Height = 800;*//*
+            PrintBorder.Background = new SolidColorBrush(Colors.Transparent);
+
+
+            string fontFolder = @"file:///C:/Users/Lenovo/Desktop/PrintFont/";
+            FontFamily courierPrime = new FontFamily(new Uri(fontFolder, UriKind.Absolute), "./#Bytesized");
+
+
+            RichTextBox richTextBox = new RichTextBox();
+            richTextBox.Background = new SolidColorBrush(Colors.Transparent);
+            richTextBox.BorderThickness = new Thickness(0);
+            viewModel.TempTest(viewModel.MKRichTextBox, richTextBox);
+            richTextBox.FontFamily = courierPrime;
+            richTextBox.Foreground = new SolidColorBrush(Colors.Red);
+            richTextBox.Width = viewModel.MKRichTextBox.ActualWidth;
+            richTextBox.Height = viewModel.MKRichTextBox.ActualHeight;
+
+            FlowDocument document = richTextBox.Document;
+            // Iterate through each block in the document.
+            foreach (Block block in document.Blocks)
+            {
+                if (block is Paragraph paragraph)
+                {
+                    foreach (Inline inline in paragraph.Inlines)
+                    {
+                        if (inline is Run run)
+                        {
+                            // Determine which custom font to use based on the style.
+                            if (run.FontWeight == FontWeights.Bold && run.FontStyle == FontStyles.Italic)
+                            {
+                                run.FontFamily = courierPrime;
+                            }
+                            else if (run.FontWeight == FontWeights.Bold)
+                            {
+                                run.FontFamily = courierPrime;
+                            }
+                            else if (run.FontStyle == FontStyles.Italic)
+                            {
+                                run.FontFamily = courierPrime;
+                            }
+                            else
+                            {
+                                run.FontFamily = courierPrime;
+                            }
+                        }
+                    }
+                }
+                else if (block is List list)
+                {
+                    foreach (var item in list.ListItems)
+                    {
+                        if (item.Blocks.FirstBlock is Paragraph listParagraph)
+                        {
+                            foreach (var inline in listParagraph.Inlines)
+                            {
+                                if (inline is Run run)
+                                {
+                                    if (run.FontWeight == FontWeights.Bold && run.FontStyle == FontStyles.Italic)
+                                    {
+                                        run.FontFamily = courierPrime;
+                                    }
+                                    else if (run.FontWeight == FontWeights.Bold)
+                                    {
+                                        run.FontFamily = courierPrime;
+                                    }
+                                    else if (run.FontStyle == FontStyles.Italic)
+                                    {
+                                        run.FontFamily = courierPrime;
+                                    }
+                                    else
+                                    {
+                                        run.FontFamily = courierPrime;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            PrintBorder.Child = richTextBox;
+
+            PrintBorder.Measure(new Size(richTextBox.Width, richTextBox.Height));
+            PrintBorder.Arrange(new Rect(0, 0, richTextBox.Width, richTextBox.Height));
+
+            DrawingVisual drawingVisual = new DrawingVisual();
+            using (DrawingContext context = drawingVisual.RenderOpen())
+            {
+                VisualBrush brush = new VisualBrush(PrintBorder) { Stretch = Stretch.UniformToFill };
+                Rect Canvas = new Rect();
+                Canvas.Width = PrintBorder.ActualWidth;
+                Canvas.Height = PrintBorder.ActualHeight;
+                Canvas.Location = new Point(0, 0);
+
+                context.DrawRectangle(brush, null, Canvas);
+            }
+
+            double desiredDpi = 600;
+            double scale = desiredDpi / 96.0;
+
+            // Calculate new pixel dimensions based on the scale factor.
+            int pixelWidth = (int)(PrintBorder.ActualWidth * scale);
+            int pixelHeight = (int)(PrintBorder.ActualHeight * scale);
+
+            RenderTargetBitmap renderTargetBitmap = new RenderTargetBitmap(
+                pixelWidth,
+                pixelHeight,
+                desiredDpi, desiredDpi, PixelFormats.Pbgra32);
+            renderTargetBitmap.Render(drawingVisual);
+
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+
+            string ImagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MyImage.png");
+
+            using (FileStream fileStream = new FileStream(ImagePath, FileMode.Create))
+            {
+                encoder.Save(fileStream);
+            }*/
         }
 
         /*private void RichTextBox_GotFocus(object sender, RoutedEventArgs e)

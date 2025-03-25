@@ -54,6 +54,9 @@
     <Compile Update="View\TestGround\TestWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\TextureCreationWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\WelcomeLastUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -153,6 +156,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\TestGround\TestWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\TextureCreationWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\WelcomeLastUserControl.xaml">

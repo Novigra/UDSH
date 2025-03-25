@@ -147,6 +147,8 @@ namespace UDSH.ViewModel
 
         public RelayCommand<object> SaveButton => new RelayCommand<object>(execute => SaveContent());
         public RelayCommand<object> DeleteButton => new RelayCommand<object>(execute => DeleteFile());
+
+        public RelayCommand<object> TextureButton => new RelayCommand<object>(execute => CreateTexture());
         #endregion
 
         public MKUserControlViewModel(IWorkspaceServices workspaceServices) //MKUserControl control
@@ -852,6 +854,12 @@ namespace UDSH.ViewModel
                     targetTextRange.Load(memoryStream, DataFormats.Xaml);
                 }
             });
+        }
+
+        private void CreateTexture()
+        {
+            TextureCreationWindow textureCreationWindow = new TextureCreationWindow(MKRichTextBox, file);
+            textureCreationWindow.ShowDialog();
         }
     }
 }

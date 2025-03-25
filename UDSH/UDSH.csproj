@@ -107,6 +107,7 @@
     <None Remove="Resource\PenTool.png" />
     <None Remove="Resource\Pin.png" />
     <None Remove="Resource\Placeholder.png" />
+    <None Remove="Resource\PreviewTexture.png" />
     <None Remove="Resource\ProfilePicture.png" />
     <None Remove="Resource\RenameState.png" />
     <None Remove="Resource\RightArrow.png" />
@@ -124,6 +125,8 @@
     <None Remove="Resource\Sort.png" />
     <None Remove="Resource\StartWritingIcon.png" />
     <None Remove="Resource\StoryHeader.png" />
+    <None Remove="Resource\TextureHeaderIcon.png" />
+    <None Remove="Resource\TextureImage.png" />
     <None Remove="Resource\View.png" />
     <None Remove="Resource\White\AddBN-White.png" />
     <None Remove="Resource\White\AddNote-White.png" />
@@ -227,6 +230,7 @@
     <Resource Include="Resource\palestineflag.png" />
     <Resource Include="Resource\Pin.png" />
     <Resource Include="Resource\Placeholder.png" />
+    <Resource Include="Resource\PreviewTexture.png" />
     <Resource Include="Resource\RenameState.png" />
     <Resource Include="Resource\RightArrow.png" />
     <Resource Include="Resource\RightArrowOrange.png" />
@@ -241,6 +245,8 @@
     <Resource Include="Resource\Sort.png" />
     <Resource Include="Resource\StartWritingIcon.png" />
     <Resource Include="Resource\StoryHeader.png" />
+    <Resource Include="Resource\TextureHeaderIcon.png" />
+    <Resource Include="Resource\TextureImage.png" />
     <Resource Include="Resource\View.png" />
     <Resource Include="Resource\White\AddBN-White.png" />
     <Resource Include="Resource\White\AddNote-White.png" />

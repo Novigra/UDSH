@@ -58,5 +58,19 @@
         </Normal>
       </Normal>
     </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Normal">
+      <Normal>
+        <Normal>
+          <Normal>AAAAAAAAAAAAAAAAAAAAAAAAA</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Header2">
+      <Normal>
+        <Normal>
+          <Normal>Nice Test</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
   </Document>
 </File>

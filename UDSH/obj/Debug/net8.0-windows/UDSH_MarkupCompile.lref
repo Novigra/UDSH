@@ -1,4 +1,4 @@
-﻿D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+﻿
 FD:\Projects\UDSH\UDSH\App.xaml;;
 FD:\Projects\UDSH\UDSH\MainWindow.xaml;;
 FD:\Projects\UDSH\UDSH\Styles\ListViewStyles.xaml;;
@@ -24,4 +24,5 @@ FD:\Projects\UDSH\UDSH\View\WelcomeLastUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\WelcomeNameUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\WelcomeProfilePictureUserControl.xaml;;
 FD:\Projects\UDSH\UDSH\View\WelcomeUserControl.xaml;;
+FD:\Projects\UDSH\UDSH\View\TextureCreationWindow.xaml;;
 

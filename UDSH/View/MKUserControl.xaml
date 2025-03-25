@@ -76,15 +76,18 @@
                         <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                             <i:InvokeCommandAction Command="{Binding AddNote}" PassEventArgsToCommand="True"/>
                         </i:EventTrigger>
-
                         
-
                         <i:EventTrigger EventName="Loaded">
                             <i:InvokeCommandAction Command="{Binding NoteButtonLoaded}" CommandParameter="{Binding ElementName=NoteButton}"/>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>
                 <Image Margin="8" Source="/Resource/White/AddNote-White.png"/>
+            </Grid>
+
+            <Grid>
+                <Button Margin="5" Command="{Binding TextureButton}" Click="Button_Click"/>
+                <Image Margin="8" Source="/Resource/TextureHeaderIcon.png"/>
             </Grid>
         </StackPanel>
 

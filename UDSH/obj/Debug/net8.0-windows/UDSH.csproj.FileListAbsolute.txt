@@ -79,3 +79,5 @@ D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\DeletionProcessWindow.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\DeletionProcessWindow.baml
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\PopupWindow.g.cs
 D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\PopupWindow.baml
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\TextureCreationWindow.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\TextureCreationWindow.baml
