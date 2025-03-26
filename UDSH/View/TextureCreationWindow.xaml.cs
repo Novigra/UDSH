@@ -14,7 +14,7 @@ namespace UDSH.View
             TextureCreationViewModel viewModel = new TextureCreationViewModel(CurrentRTB, File, this);
             DataContext = viewModel;
 
-            viewModel.TextTest = TextTest;
+            ForegroundPopup.MouseDown += (s, e) => e.Handled = true;
         }
     }
 }

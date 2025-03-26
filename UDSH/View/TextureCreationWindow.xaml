@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:UDSH.View"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="TextureCreationWindow" Height="650" Width="900" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="TextureCreationWindow" Height="650" Width="1030" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid Margin="0,15,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -31,7 +31,7 @@
             <Rectangle Width="6" Height="400" Margin="15,-5,0,0" Fill="{StaticResource BorderLBG}" RadiusX="2" RadiusY="2" VerticalAlignment="Top"/>
             <StackPanel Orientation="Vertical" Margin="20,0,0,0">
                 <TextBlock Style="{StaticResource DefaultText}" Text="{Binding AssociateFileName}"/>
-                <Button Command="{Binding FontFamilyButton}" Height="35" Width="300" HorizontalAlignment="Left" Margin="0,20,0,0">
+                <Button x:Name="FontFamilyButton" Command="{Binding FontFamilyButton}" Height="35" HorizontalAlignment="Left" Margin="0,20,0,0">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Background" Value="#FFFFFF"/>
@@ -40,7 +40,10 @@
                                     <ControlTemplate TargetType="{x:Type Button}">
                                         <Border x:Name="bBorder" Background="{TemplateBinding Background}" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="5">
                                             <Grid>
-                                                <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="{Binding FontFamily}" Foreground="#666666" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0">
+                                                    <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="{Binding FontFamily}" Foreground="#666666" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                    <Border Background="Transparent" Width="60"/>
+                                                </StackPanel>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
                                                     <Ellipse x:Name="Dot1" Width="5" Height="5" Fill="#666666" Margin="0,0,5,0"/>
                                                     <Ellipse x:Name="Dot2" Width="5" Height="5" Fill="#666666" Margin="0,0,5,0"/>
@@ -96,7 +99,131 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Button Height="35" Width="300" HorizontalAlignment="Left" Margin="0,20,0,0">
+                <Button x:Name="ForegroundButton" Command="{Binding ForegroundButton}" Height="35" HorizontalAlignment="Left" Margin="0,20,0,0">
+                    <Popup x:Name="ForegroundPopup" IsOpen="{Binding CanOpenForegroundPopup, UpdateSourceTrigger=PropertyChanged}" StaysOpen="False" PlacementTarget="{Binding ElementName=ForegroundButton}" AllowsTransparency="True" Placement="Relative" PopupAnimation="Fade" VerticalOffset="40">
+                        <Border Background="{StaticResource MainContentWindowBackgroundSCB}" BorderBrush="#A5A5A5" BorderThickness="3" CornerRadius="5" Width="200" Height="250">
+                            <StackPanel Orientation="Vertical" Margin="0,15,0,0">
+                                <Border x:Name="ForegroundPopupBorder" Background="Black" Width="100" Height="100" HorizontalAlignment="Center"/>
+                                <TextBlock Style="{StaticResource DefaultText}" Text="Hex" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource DefaultText}" Text="#" FontSize="30" Foreground="#A5A5A5" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                    <Border x:Name="ForegroundBorder" HorizontalAlignment="Left" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
+                                            CornerRadius="5" Height="35" Width="150" FocusVisualStyle="{x:Null}" Margin="5,0,0,0">
+                                        <!-- Textbox Details -->
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" FocusVisualStyle="{x:Null}">
+                                            <!-- Text Container -->
+                                            <Grid Margin="4,0,4,0" VerticalAlignment="Center">
+                                                <!-- Foreground Text -->
+                                                <TextBox x:Name="ForegroundTextBox" Background="{StaticResource MainBlankSCB}" FontSize="20" FontWeight="DemiBold" Width="135"
+                                                         Text="{Binding ForgroundHexColor, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="TextChanged">
+                                                            <i:InvokeCommandAction Command="{Binding ProjectNameChanged}" CommandParameter="{Binding ElementName=ForegroundTextBox}"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </TextBox>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center">
+                                    <Button Height="35" Width="100" HorizontalAlignment="Left" Margin="0,0,5,0">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background" Value="#FFFFFF"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <Border x:Name="bBorder" Background="{TemplateBinding Background}" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="5">
+                                                                <Grid>
+                                                                    <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="Confirm" Foreground="#666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Grid>
+                                                            </Border>
+
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Trigger.EnterActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                                                To="#393E46" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="bBorder" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)"
+                                                                                                To="#DBAD2F" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="Title" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                                                                To="#DBAD2F" Duration="0:0:0.2"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.EnterActions>
+
+                                                                    <Trigger.ExitActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                                                To="#FFFFFF" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="bBorder" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)"
+                                                                                                To="#A5A5A5" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="Title" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                                                                To="#666666" Duration="0:0:0.2"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.ExitActions>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Button Height="35" Width="35" HorizontalAlignment="Left" Margin="5,0,0,0">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background" Value="#FFFFFF"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <Border x:Name="bBorder" Background="{TemplateBinding Background}" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="5">
+                                                                <Grid>
+                                                                    <Image Source="/Resource/TransparentIcon.png" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Grid>
+                                                            </Border>
+
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Trigger.EnterActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                                                To="#393E46" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="bBorder" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)"
+                                                                                                To="#DBAD2F" Duration="0:0:0.2"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.EnterActions>
+
+                                                                    <Trigger.ExitActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                                                To="#FFFFFF" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="bBorder" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)"
+                                                                                                To="#A5A5A5" Duration="0:0:0.2"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.ExitActions>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Background" Value="#FFFFFF"/>
@@ -105,7 +232,12 @@
                                     <ControlTemplate TargetType="{x:Type Button}">
                                         <Border x:Name="bBorder" Background="{TemplateBinding Background}" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="5">
                                             <Grid>
-                                                <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="Pick Foreground" Foreground="#666666" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                                <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                                                    <Border Background="Black" Width="20" Height="20"/>
+                                                    <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="{Binding Foreground}" Foreground="#666666" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                    <Border Background="Transparent" Width="60"/>
+                                                </StackPanel>
+                                                
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
                                                     <Ellipse x:Name="Dot1" Width="5" Height="5" Fill="#666666" Margin="0,0,5,0"/>
                                                     <Ellipse x:Name="Dot2" Width="5" Height="5" Fill="#666666" Margin="0,0,5,0"/>
@@ -310,33 +442,104 @@
                         <RowDefinition/>
                         <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
-                    <RichTextBox Style="{StaticResource MKText}" IsHitTestVisible="False" Foreground="White" Background="Transparent" FontSize="30" Margin="5,5,5,0">
+                    <RichTextBox x:Name="PreviewRTB" Style="{StaticResource MKText}" IsHitTestVisible="False" Foreground="White" Background="Transparent" FontSize="30" Margin="5,5,5,0">
                         <FlowDocument>
                             <Paragraph>
-                                <Run x:Name="TextTest" Text="And behold, the Pharaoh replaced us with AI, and the pyramids we built no more."/>
+                                <Run Text="And behold, the Pharaoh replaced us with AI, and the pyramids we built no more."/>
                                 <Paragraph.Style>
                                     <Style TargetType="Paragraph">
                                     </Style>
                                 </Paragraph.Style>
                             </Paragraph>
                         </FlowDocument>
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Loaded">
+                                <i:InvokeCommandAction Command="{Binding PreviewRTBLoaded}" CommandParameter="{Binding ElementName=PreviewRTB}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </RichTextBox>
 
                     <Border Grid.Row="1" Background="#3E3E3E" CornerRadius="0,0,5,5">
                         <Grid>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0,0,0">
                                 <StackPanel Orientation="Horizontal">
-                                    <CheckBox Style="{StaticResource XCheckBox}" Margin="0,3,0,0"/>
+                                    <CheckBox Style="{StaticResource XCheckBox}" IsHitTestVisible="{Binding RegularCheckCollision}" IsChecked="{Binding RegularCheck, UpdateSourceTrigger=PropertyChanged}" Margin="0,3,0,0">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding RegularCheckChanged}"/>
+                                            </i:EventTrigger>
+
+                                        </i:Interaction.Triggers>
+                                    </CheckBox>
+                                    <TextBlock Style="{StaticResource DefaultText}" Text="Regular" Foreground="#FFFFFF"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                                    <CheckBox Style="{StaticResource XCheckBox}" IsHitTestVisible="{Binding BoldCheckCollision}" IsChecked="{Binding BoldCheck, UpdateSourceTrigger=PropertyChanged}" Margin="0,3,0,0">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding BoldCheckChanged}"/>
+                                            </i:EventTrigger>
+
+                                        </i:Interaction.Triggers>
+                                    </CheckBox>
+                                    <TextBlock Style="{StaticResource DefaultText}" Text="Bold" Foreground="#FFFFFF"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                                    <CheckBox Style="{StaticResource XCheckBox}" IsChecked="{Binding ItalicCheck, UpdateSourceTrigger=PropertyChanged}" Margin="0,3,0,0">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding ItalicCheckChanged}"/>
+                                            </i:EventTrigger>
+                                            <i:EventTrigger EventName="Unchecked">
+                                                <i:InvokeCommandAction Command="{Binding ItalicCheckChanged}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </CheckBox>
+                                    <TextBlock Style="{StaticResource DefaultText}" Text="Italic" Foreground="#FFFFFF"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
+                                    <CheckBox Style="{StaticResource XCheckBox}" IsChecked="{Binding UnderlineCheck, UpdateSourceTrigger=PropertyChanged}" Margin="0,3,0,0">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding UnderlineCheckChanged}"/>
+                                            </i:EventTrigger>
+                                            <i:EventTrigger EventName="Unchecked">
+                                                <i:InvokeCommandAction Command="{Binding StrikethroughCheckChanged}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </CheckBox>
                                     <TextBlock Style="{StaticResource DefaultText}" Text="Underline" Foreground="#FFFFFF"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                                    <CheckBox Style="{StaticResource XCheckBox}" Margin="0,3,0,0"/>
+                                    <CheckBox Style="{StaticResource XCheckBox}" IsChecked="{Binding StrikethroughCheck, UpdateSourceTrigger=PropertyChanged}" Margin="0,3,0,0">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding StrikethroughCheckChanged}"/>
+                                            </i:EventTrigger>
+                                            <i:EventTrigger EventName="Unchecked">
+                                                <i:InvokeCommandAction Command="{Binding UnderlineCheckChanged}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </CheckBox>
                                     <TextBlock Style="{StaticResource DefaultText}" Text="Strikethrough" Foreground="#FFFFFF"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                                    <CheckBox Style="{StaticResource XCheckBox}" Margin="0,3,0,0"/>
+                                    <CheckBox Style="{StaticResource XCheckBox}" IsChecked="{Binding FontCheck, UpdateSourceTrigger=PropertyChanged}" Margin="0,3,0,0">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding FontCheckChanged}"/>
+                                            </i:EventTrigger>
+                                            <i:EventTrigger EventName="Unchecked">
+                                                <i:InvokeCommandAction Command="{Binding FontCheckChanged}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </CheckBox>
                                     <TextBlock Style="{StaticResource DefaultText}" Text="Font" Foreground="#FFFFFF"/>
                                 </StackPanel>
 

@@ -127,6 +127,7 @@
     <None Remove="Resource\StoryHeader.png" />
     <None Remove="Resource\TextureHeaderIcon.png" />
     <None Remove="Resource\TextureImage.png" />
+    <None Remove="Resource\TransparentIcon.png" />
     <None Remove="Resource\View.png" />
     <None Remove="Resource\White\AddBN-White.png" />
     <None Remove="Resource\White\AddNote-White.png" />
@@ -171,6 +172,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -247,6 +249,7 @@
     <Resource Include="Resource\StoryHeader.png" />
     <Resource Include="Resource\TextureHeaderIcon.png" />
     <Resource Include="Resource\TextureImage.png" />
+    <Resource Include="Resource\TransparentIcon.png" />
     <Resource Include="Resource\View.png" />
     <Resource Include="Resource\White\AddBN-White.png" />
     <Resource Include="Resource\White\AddNote-White.png" />
