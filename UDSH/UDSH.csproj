@@ -127,6 +127,7 @@
     <None Remove="Resource\StoryHeader.png" />
     <None Remove="Resource\TextureHeaderIcon.png" />
     <None Remove="Resource\TextureImage.png" />
+    <None Remove="Resource\TransparentBackground.png" />
     <None Remove="Resource\TransparentIcon.png" />
     <None Remove="Resource\View.png" />
     <None Remove="Resource\White\AddBN-White.png" />
@@ -249,6 +250,7 @@
     <Resource Include="Resource\StoryHeader.png" />
     <Resource Include="Resource\TextureHeaderIcon.png" />
     <Resource Include="Resource\TextureImage.png" />
+    <Resource Include="Resource\TransparentBackground.png" />
     <Resource Include="Resource\TransparentIcon.png" />
     <Resource Include="Resource\View.png" />
     <Resource Include="Resource\White\AddBN-White.png" />

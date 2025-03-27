@@ -24,8 +24,8 @@
                 <TextBlock Style="{StaticResource DefaultText}" Text="Output Name" Margin="0,28,0,0"/>
 
                 <StackPanel Orientation="Horizontal" Margin="-5,20,0,0">
-                    <Button Style="{StaticResource ExportButtonTexture}" Width="100" Height="40"/>
-                    <Button Style="{StaticResource ExportDirectoryButtonTexture}" Width="50" Height="40" Margin="10,0,0,0"/>
+                    <Button Style="{StaticResource ExportButtonTexture}" Command="{Binding ExportButton}" Width="100" Height="40"/>
+                    <Button Style="{StaticResource ExportDirectoryButtonTexture}" Command="{Binding ExportDirectoryButton}" Width="50" Height="40" Margin="10,0,0,0"/>
                 </StackPanel>
             </StackPanel>
             <Rectangle Width="6" Height="400" Margin="15,-5,0,0" Fill="{StaticResource BorderLBG}" RadiusX="2" RadiusY="2" VerticalAlignment="Top"/>
@@ -103,7 +103,7 @@
                     <Popup x:Name="ForegroundPopup" IsOpen="{Binding CanOpenForegroundPopup, UpdateSourceTrigger=PropertyChanged}" StaysOpen="False" PlacementTarget="{Binding ElementName=ForegroundButton}" AllowsTransparency="True" Placement="Relative" PopupAnimation="Fade" VerticalOffset="40">
                         <Border Background="{StaticResource MainContentWindowBackgroundSCB}" BorderBrush="#A5A5A5" BorderThickness="3" CornerRadius="5" Width="200" Height="250">
                             <StackPanel Orientation="Vertical" Margin="0,15,0,0">
-                                <Border x:Name="ForegroundPopupBorder" Background="Black" Width="100" Height="100" HorizontalAlignment="Center"/>
+                                <Border x:Name="ForegroundPopupBorder" Background="{Binding ForegroundColor}" Width="100" Height="100" HorizontalAlignment="Center"/>
                                 <TextBlock Style="{StaticResource DefaultText}" Text="Hex" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Style="{StaticResource DefaultText}" Text="#" FontSize="30" Foreground="#A5A5A5" VerticalAlignment="Center" Margin="10,0,0,0"/>
@@ -115,10 +115,10 @@
                                             <Grid Margin="4,0,4,0" VerticalAlignment="Center">
                                                 <!-- Foreground Text -->
                                                 <TextBox x:Name="ForegroundTextBox" Background="{StaticResource MainBlankSCB}" FontSize="20" FontWeight="DemiBold" Width="135"
-                                                         Text="{Binding ForgroundHexColor, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
+                                                         Text="{Binding ForegroundHexColor, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
                                                     <i:Interaction.Triggers>
                                                         <i:EventTrigger EventName="TextChanged">
-                                                            <i:InvokeCommandAction Command="{Binding ProjectNameChanged}" CommandParameter="{Binding ElementName=ForegroundTextBox}"/>
+                                                            <i:InvokeCommandAction Command="{Binding ForegroundHexColorChanged}"/>
                                                         </i:EventTrigger>
                                                     </i:Interaction.Triggers>
                                                 </TextBox>
@@ -128,7 +128,7 @@
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center">
-                                    <Button Height="35" Width="100" HorizontalAlignment="Left" Margin="0,0,5,0">
+                                    <Button Command="{Binding ForegroundConfirmButton}" Height="35" Width="100" HorizontalAlignment="Left" Margin="0,0,5,0">
                                         <Button.Style>
                                             <Style TargetType="Button">
                                                 <Setter Property="Background" Value="#FFFFFF"/>
@@ -176,7 +176,7 @@
                                             </Style>
                                         </Button.Style>
                                     </Button>
-                                    <Button Height="35" Width="35" HorizontalAlignment="Left" Margin="5,0,0,0">
+                                    <Button Command="{Binding DefaultForegroundButton}" Height="35" Width="35" HorizontalAlignment="Left" Margin="5,0,0,0">
                                         <Button.Style>
                                             <Style TargetType="Button">
                                                 <Setter Property="Background" Value="#FFFFFF"/>
@@ -185,7 +185,7 @@
                                                         <ControlTemplate TargetType="{x:Type Button}">
                                                             <Border x:Name="bBorder" Background="{TemplateBinding Background}" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="5">
                                                                 <Grid>
-                                                                    <Image Source="/Resource/TransparentIcon.png" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    <Border Background="#000000" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                                 </Grid>
                                                             </Border>
 
@@ -233,8 +233,8 @@
                                         <Border x:Name="bBorder" Background="{TemplateBinding Background}" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="5">
                                             <Grid>
                                                 <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
-                                                    <Border Background="Black" Width="20" Height="20"/>
-                                                    <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="{Binding Foreground}" Foreground="#666666" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                    <Border Background="{Binding FinalForegroundColor}" Width="20" Height="20"/>
+                                                    <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="{Binding FinalForegroundColor}" Foreground="#666666" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
                                                     <Border Background="Transparent" Width="60"/>
                                                 </StackPanel>
                                                 
@@ -294,7 +294,7 @@
                     </Button.Style>
                 </Button>
                 <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                    <Border x:Name="ResolutionBorder" HorizontalAlignment="Left" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
+                    <Border x:Name="ResolutionBorder" HorizontalAlignment="Left" Background="{Binding DpiBorderColor}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
                             CornerRadius="5" Height="35" Width="100" FocusVisualStyle="{x:Null}">
                         <!-- Textbox Details -->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" FocusVisualStyle="{x:Null}">
@@ -319,16 +319,143 @@
                                          Text="{Binding DpiNumber, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="TextChanged">
-                                            <i:InvokeCommandAction Command="{Binding ProjectNameChanged}" CommandParameter="{Binding ElementName=UserSearchBox}"/>
+                                            <i:InvokeCommandAction Command="{Binding ResolutionChanged}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </TextBox>
                             </Grid>
                         </StackPanel>
                     </Border>
-                    <TextBlock Style="{StaticResource DefaultText}" Foreground="#666666" Text="Recommended: Below 600" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    <TextBlock Style="{StaticResource DefaultText}" Foreground="{Binding ResolutionMessageFontColor}" Text="{Binding ResolutionMessage}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
-                <Button Height="35" Width="300" HorizontalAlignment="Left" Margin="0,20,0,0">
+                <Button x:Name="BackgroundButton" Command="{Binding BackgroundButton}" Height="35" HorizontalAlignment="Left" Margin="0,20,0,0">
+                    <Popup x:Name="BackgroundPopup" IsOpen="{Binding CanOpenBackgroundPopup, UpdateSourceTrigger=PropertyChanged}" StaysOpen="False" PlacementTarget="{Binding ElementName=BackgroundButton}" AllowsTransparency="True" Placement="Relative" PopupAnimation="Fade" VerticalOffset="40">
+                        <Border Background="{StaticResource MainContentWindowBackgroundSCB}" BorderBrush="#A5A5A5" BorderThickness="3" CornerRadius="5" Width="200" Height="250">
+                            <StackPanel Orientation="Vertical" Margin="0,15,0,0">
+                                <Grid>
+                                    <Image Source="/Resource/TransparentIcon.png" Width="100" Height="100" HorizontalAlignment="Center"/>
+                                    <Border x:Name="BackgroundPopupBorder" Background="{Binding BackgroundColor}" Width="100" Height="100" HorizontalAlignment="Center"/>
+                                </Grid>
+                                <TextBlock Style="{StaticResource DefaultText}" Text="Hex" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource DefaultText}" Text="#" FontSize="30" Foreground="#A5A5A5" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                    <Border x:Name="BackgroundBorder" HorizontalAlignment="Left" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
+                                            CornerRadius="5" Height="35" Width="150" FocusVisualStyle="{x:Null}" Margin="5,0,0,0">
+                                        <!-- Textbox Details -->
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" FocusVisualStyle="{x:Null}">
+                                            <!-- Text Container -->
+                                            <Grid Margin="4,0,4,0" VerticalAlignment="Center">
+                                                <!-- Foreground Text -->
+                                                <TextBox x:Name="BackgroundTextBox" Background="{StaticResource MainBlankSCB}" FontSize="20" FontWeight="DemiBold" Width="135"
+                                                         Text="{Binding BackgroundHexColor, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
+                                                    <i:Interaction.Triggers>
+                                                        <i:EventTrigger EventName="TextChanged">
+                                                            <i:InvokeCommandAction Command="{Binding BackgroundHexColorChanged}"/>
+                                                        </i:EventTrigger>
+                                                    </i:Interaction.Triggers>
+                                                </TextBox>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center">
+                                    <Button Command="{Binding BackgroundConfirmButton}" Height="35" Width="100" HorizontalAlignment="Left" Margin="0,0,5,0">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background" Value="#FFFFFF"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <Border x:Name="bBorder" Background="{TemplateBinding Background}" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="5">
+                                                                <Grid>
+                                                                    <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="Confirm" Foreground="#666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Grid>
+                                                            </Border>
+
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Trigger.EnterActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                            To="#393E46" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="bBorder" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)"
+                                                                            To="#DBAD2F" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="Title" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                                            To="#DBAD2F" Duration="0:0:0.2"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.EnterActions>
+
+                                                                    <Trigger.ExitActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                            To="#FFFFFF" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="bBorder" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)"
+                                                                            To="#A5A5A5" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="Title" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                                            To="#666666" Duration="0:0:0.2"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.ExitActions>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Button Command="{Binding DefaultBackgroundButton}" Height="35" Width="35" HorizontalAlignment="Left" Margin="5,0,0,0">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background" Value="#FFFFFF"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <Border x:Name="bBorder" Background="{TemplateBinding Background}" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="5">
+                                                                <Grid>
+                                                                    <Image Source="/Resource/TransparentIcon.png" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Grid>
+                                                            </Border>
+
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Trigger.EnterActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                            To="#393E46" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="bBorder" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)"
+                                                                            To="#DBAD2F" Duration="0:0:0.2"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.EnterActions>
+
+                                                                    <Trigger.ExitActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                            To="#FFFFFF" Duration="0:0:0.2"/>
+                                                                                <ColorAnimation Storyboard.TargetName="bBorder" Storyboard.TargetProperty="(Control.BorderBrush).(SolidColorBrush.Color)"
+                                                                            To="#A5A5A5" Duration="0:0:0.2"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.ExitActions>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Background" Value="#FFFFFF"/>
@@ -338,8 +465,12 @@
                                         <Border x:Name="bBorder" Background="{TemplateBinding Background}" BorderBrush="#A5A5A5" BorderThickness="2" CornerRadius="5">
                                             <Grid>
                                                 <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
-                                                    <Border Background="Black" Width="20" Height="20"/>
-                                                    <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="Pick Background" Foreground="#666666" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                    <Grid>
+                                                        <Image Source="/Resource/TransparentIcon.png" Width="20" Height="20"/>
+                                                        <Border Background="{Binding FinalBackgroundColor}" Width="20" Height="20"/>
+                                                    </Grid>
+                                                    <TextBlock x:Name="Title" Style="{StaticResource DefaultText}" Text="{Binding FinalBackgroundColor}" Foreground="#666666" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                    <Border Background="Transparent" Width="60"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0">
                                                     <Ellipse x:Name="Dot1" Width="5" Height="5" Fill="#666666" Margin="0,0,5,0"/>
@@ -396,38 +527,53 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Border HorizontalAlignment="Left" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
-                        CornerRadius="5" Height="35" Width="300" FocusVisualStyle="{x:Null}" Margin="0,20,0,0">
-                    <!-- Textbox Details -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" FocusVisualStyle="{x:Null}">
-                        <!-- Text Container -->
-                        <Grid Margin="10,0,4,0" VerticalAlignment="Center">
-                            <!-- Text Highlight -->
-                            <TextBlock Text="PyramidScheme..." Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="20" FontWeight="SemiBold" Focusable="False">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding OutputName}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                    <Border HorizontalAlignment="Left" Background="{Binding OutputBorderColor}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
+                            CornerRadius="5" Height="35" Width="300" FocusVisualStyle="{x:Null}">
+                        <Grid>
+                            <Ellipse Fill="#F83030" HorizontalAlignment="Right" VerticalAlignment="Top" Width="20" Height="20" Opacity="{Binding ExportRedWarningOutput}" RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform/>
+                                        <SkewTransform/>
+                                        <RotateTransform/>
+                                        <TranslateTransform X="10" Y="-10"/>
+                                    </TransformGroup>
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                            <!-- Textbox Details -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" FocusVisualStyle="{x:Null}">
+                                <!-- Text Container -->
+                                <Grid Margin="10,0,4,0" VerticalAlignment="Center">
+                                    <!-- Text Highlight -->
+                                    <TextBlock Text="{Binding OutputNameMark}" TextTrimming="CharacterEllipsis" Width="280" HorizontalAlignment="Left" Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="20" FontWeight="SemiBold" Focusable="False">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding OutputName}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
 
-                            <!-- Out Text -->
-                            <TextBox x:Name="OutputTextBox" Background="{StaticResource MainBlankSCB}" FontSize="20" FontWeight="DemiBold" Width="280"
-                                     Text="{Binding OutputName, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="TextChanged">
-                                        <i:InvokeCommandAction Command="{Binding ProjectNameChanged}" CommandParameter="{Binding ElementName=UserSearchBox}"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </TextBox>
+                                    <!-- Out Text -->
+                                    <TextBox x:Name="OutputTextBox" Background="{StaticResource MainBlankSCB}" FontSize="20" FontWeight="DemiBold" Width="280"
+                                             Text="{Binding OutputName, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="TextChanged">
+                                                <i:InvokeCommandAction Command="{Binding OutputNameChanged}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </TextBox>
+                                </Grid>
+                            </StackPanel>
                         </Grid>
-                    </StackPanel>
-                </Border>
+                    </Border>
+                    <TextBlock Style="{StaticResource DefaultText}" Foreground="#F83030" Text="{Binding OutputWarningMessage}" Opacity="{Binding OutputWarningMessageOpacity}" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
 
@@ -442,6 +588,12 @@
                         <RowDefinition/>
                         <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
+
+                    <Grid Opacity="{Binding BackgroundGridOpacity}">
+                        <Image Source="/Resource/TransparentBackground.png" Stretch="UniformToFill"/>
+                        <Border Background="{Binding FinalBackgroundColor}"/>
+                    </Grid>
+
                     <RichTextBox x:Name="PreviewRTB" Style="{StaticResource MKText}" IsHitTestVisible="False" Foreground="White" Background="Transparent" FontSize="30" Margin="5,5,5,0">
                         <FlowDocument>
                             <Paragraph>
@@ -544,12 +696,30 @@
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                                    <CheckBox Style="{StaticResource XCheckBox}" Margin="0,3,0,0"/>
+                                    <CheckBox Style="{StaticResource XCheckBox}" IsChecked="{Binding ForegroundCheck, UpdateSourceTrigger=PropertyChanged}" Margin="0,3,0,0">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding ForegroundCheckChanged}"/>
+                                            </i:EventTrigger>
+                                            <i:EventTrigger EventName="Unchecked">
+                                                <i:InvokeCommandAction Command="{Binding ForegroundCheckChanged}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </CheckBox>
                                     <TextBlock Style="{StaticResource DefaultText}" Text="Foreground" Foreground="#FFFFFF"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
-                                    <CheckBox Style="{StaticResource XCheckBox}" Margin="0,3,0,0"/>
+                                    <CheckBox Style="{StaticResource XCheckBox}" IsChecked="{Binding BackgroundCheck, UpdateSourceTrigger=PropertyChanged}" Margin="0,3,0,0">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding BackgroundCheckChanged}"/>
+                                            </i:EventTrigger>
+                                            <i:EventTrigger EventName="Unchecked">
+                                                <i:InvokeCommandAction Command="{Binding BackgroundCheckChanged}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </CheckBox>
                                     <TextBlock Style="{StaticResource DefaultText}" Text="Background" Foreground="#FFFFFF"/>
                                 </StackPanel>
                             </StackPanel>
