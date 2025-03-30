@@ -265,6 +265,19 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="RichTextBox" x:Key="MKCText">
+        <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/CourierPrime/#Courier Prime"/>
+        <Setter Property="TextElement.FontSize" Value="20"/>
+        <Setter Property="Background" Value="{StaticResource MainBlankSCB}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Style.Triggers>
+            <Trigger Property="ScrollViewer.CanContentScroll" Value="True">
+                <Setter Property="Background" Value="Blue"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="Paragraph">
         <Setter Property="Background" Value="{StaticResource MainBlankSCB}"/>
         <Setter Property="Focusable" Value="True"/>

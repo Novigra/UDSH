@@ -85,3 +85,5 @@ D:\Projects\UDSH\UDSH\bin\Debug\net8.0-windows\Microsoft.Win32.SystemEvents.dll
 D:\Projects\UDSH\UDSH\bin\Debug\net8.0-windows\System.Drawing.Common.dll
 D:\Projects\UDSH\UDSH\bin\Debug\net8.0-windows\System.Private.Windows.Core.dll
 D:\Projects\UDSH\UDSH\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\MKCUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Debug\net8.0-windows\View\MKCUserControl.baml

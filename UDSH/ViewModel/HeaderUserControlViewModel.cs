@@ -588,6 +588,11 @@ namespace UDSH.ViewModel
                             e.fileImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKM.png"));
                             e.fileImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKMSelected.png"));
                             break;
+                        case "mkc":
+                            e.userControl = new MKCUserControl(new MKCUserControlViewModel(_headerServices.Services.GetRequiredService<IWorkspaceServices>()));
+                            e.fileImageNormal = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKC.png"));
+                            e.fileImageSelected = new BitmapImage(new Uri("pack://application:,,,/Resource/OpenFileMKCSelected.png"));
+                            break;
                         default:
                             break;
                     }

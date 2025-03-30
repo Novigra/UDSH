@@ -30,6 +30,9 @@
     <Compile Update="View\ImageEditorWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\MKCUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\MKUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -132,6 +135,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\ImageEditorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\MKCUserControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\MKUserControl.xaml">
