@@ -8,12 +8,12 @@
         xmlns:userControls="clr-namespace:UDSH.View"
         mc:Ignorable="d"
         Title="MainWindow" Height="900" Width="1600" WindowStartupLocation="CenterScreen">
-    
+
     <!-- Zero or a super small number? Keep in mind it will affect how the window controls work -->
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0.1" CornerRadius="0.1" CaptionHeight="0.1"/>
     </WindowChrome.WindowChrome>
-    
+
     <Grid x:Name="MainWindowGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="80"/>
@@ -21,7 +21,7 @@
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="HeaderUserControl" Grid.Row="0"/>
+        <Grid x:Name="HeaderUserControl" Grid.Row="0" Panel.ZIndex="1"/>
         <ContentControl x:Name="TestContent" Grid.Row="1" Panel.ZIndex="0"/>
         <Grid x:Name="FooterUserControl" Grid.Row="2" Panel.ZIndex="1"/>
 

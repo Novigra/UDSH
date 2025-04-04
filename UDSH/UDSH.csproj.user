@@ -30,6 +30,9 @@
     <Compile Update="View\ImageEditorWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\MKBUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\MKCUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -92,6 +95,9 @@
     <Page Update="Styles\ContextMenuStyles.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Styles\EllipseStyles.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Styles\ImageStyles.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -135,6 +141,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\ImageEditorWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\MKBUserControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\MKCUserControl.xaml">

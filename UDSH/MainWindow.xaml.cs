@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using UDSH.Model;
 using UDSH.Services;
 using UDSH.View;
@@ -28,6 +29,7 @@ namespace UDSH
             HeaderUserControl.Children.Add(headerUserControl);
 
             var MK = serviceProvider.GetRequiredService<IWorkspaceServices>();
+            MK.MainWindow = this;
             MKUserControl mKUserControl = new MKUserControl(new MKUserControlViewModel(MK));
 
             var userDataServices = serviceProvider.GetRequiredService<IUserDataServices>();

@@ -79,3 +79,15 @@ D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\WelcomeLastUserControl.bam
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\WelcomeNameUserControl.baml
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\WelcomeProfilePictureUserControl.baml
 D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\WelcomeUserControl.baml
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\Microsoft.Win32.SystemEvents.dll
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\System.Drawing.Common.dll
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\System.Private.Windows.Core.dll
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\Styles\EllipseStyles.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\Styles\NodeStyles.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\MKBUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\MKCUserControl.g.cs
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\TextureCreationWindow.g.cs
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\MKBUserControl.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\MKCUserControl.baml
+D:\Projects\UDSH\UDSH\obj\Release\net8.0-windows\View\TextureCreationWindow.baml

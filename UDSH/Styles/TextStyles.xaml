@@ -278,6 +278,19 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="RichTextBox" x:Key="MKBText">
+        <Setter Property="TextElement.FontFamily" Value="pack://application:,,,/Fonts/Inter/#Inter"/>
+        <Setter Property="TextElement.FontSize" Value="18"/>
+        <Setter Property="Background" Value="{StaticResource MainBlankSCB}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Style.Triggers>
+            <Trigger Property="ScrollViewer.CanContentScroll" Value="True">
+                <Setter Property="Background" Value="Blue"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="Paragraph">
         <Setter Property="Background" Value="{StaticResource MainBlankSCB}"/>
         <Setter Property="Focusable" Value="True"/>

@@ -5,4 +5,7 @@ D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\UDSH.runtimecon
 D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\UDSH.pdb
 D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\Microsoft.Extensions.DependencyInjection.dll
 D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\Microsoft.Win32.SystemEvents.dll
 D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\Microsoft.Xaml.Behaviors.dll
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\System.Drawing.Common.dll
+D:\Projects\UDSH\UDSH\bin\Release\net8.0-windows\publish\win-x64\System.Private.Windows.Core.dll

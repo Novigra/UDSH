@@ -301,9 +301,10 @@
             </Grid>
         </Expander>
 
-        <!-- Test Width -->
+        <!-- Test Width 
         <TextBlock Grid.Row="3" Panel.ZIndex="3" Text="{Binding SideContentWidth}" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-
+        -->
+        
     </Grid>
 </UserControl>
 

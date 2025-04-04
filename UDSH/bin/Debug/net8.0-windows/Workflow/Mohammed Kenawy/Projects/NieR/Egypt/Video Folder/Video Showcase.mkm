@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<File>
+  <Metadata>
+    <FileID>a75c89b7-b71c-4c73-87a1-741471846bd1</FileID>
+    <FileName>Video Showcase</FileName>
+    <FileType>mkm</FileType>
+    <FileAuthor>Mohammed Kenawy</FileAuthor>
+    <FileVersion>0.1.0</FileVersion>
+    <FileCreationDate>4/3/2025 4:02:53 AM</FileCreationDate>
+  </Metadata>
+  <Document>
+    <ParagraphLine TextAlignment="Left" TextType="Header1">
+      <Normal>
+        <Normal>
+          <Normal>This is a test</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Header2">
+      <Normal>
+        <Normal>
+          <Normal>I can do this!</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Header3">
+      <Normal>
+        <Normal>
+          <Normal>And also, this?!</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Normal">
+      <Normal>
+        <Normal>
+          <Normal>But wait...</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="List">
+      <List>
+        <ListItem>
+          <Normal>
+            <Normal>
+              <Normal>Look at this Wow</Normal>
+            </Normal>
+          </Normal>
+        </ListItem>
+        <ListItem>
+          <Normal>
+            <Normal>
+              <Normal>okay...</Normal>
+            </Normal>
+          </Normal>
+        </ListItem>
+      </List>
+    </ParagraphLine>
+  </Document>
+</File>

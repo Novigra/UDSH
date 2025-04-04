@@ -57,7 +57,7 @@ namespace UDSH
         {
             services.AddSingleton<Session>();
             services.AddSingleton<IUserDataServices, UserDataServices>();
-            services.AddTransient<IHeaderServices>(provider =>
+            services.AddSingleton<IHeaderServices>(provider =>
             {
                 var userDataServices = provider.GetRequiredService<IUserDataServices>();
                 return new HeaderServices(userDataServices, serviceProvider);

@@ -22,6 +22,7 @@
                 <ResourceDictionary Source="Styles/ListViewStyles.xaml"/>
                 <ResourceDictionary Source="Styles/TreeViewStyles.xaml"/>
                 <ResourceDictionary Source="Styles/ContextMenuStyles.xaml"/>
+                <ResourceDictionary Source="Styles/EllipseStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
          
