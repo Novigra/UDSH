@@ -20,6 +20,14 @@ namespace UDSH.ViewModel
         private bool IsRightMouseButtonPressed;
         private bool IsLeftMouseButtonPressed;
         private Point InitialMousePosition;
+        private Point InitialCanvasMousePosition;
+
+        private Border LeftCollisionBorder;
+        private Border RightCollisionBorder;
+        private Border BottomCollisionBorder;
+
+        private double CanvasDimensionsUpdate = 400;
+        private double CanvasWidthOffset = 200;
 
         public RelayCommand<Canvas> CanvasRMBDown => new RelayCommand<Canvas>(execute => StartRecordingMouseMovement());
         public RelayCommand<Canvas> CanvasRMBUp => new RelayCommand<Canvas>(execute => StopRecordingMouseMovement());
@@ -31,6 +39,12 @@ namespace UDSH.ViewModel
 
         public RelayCommand<Canvas> CanvasLoaded => new RelayCommand<Canvas>(SetCurrentCanvas);
         public RelayCommand<EllipseCanvas> EllipseCanvasLoaded => new RelayCommand<EllipseCanvas>(SetEllipseCanvas);
+
+        public RelayCommand<Border> LeftCollisionLoaded => new RelayCommand<Border>(SetLeftCollision);
+        public RelayCommand<Border> RightCollisionLoaded => new RelayCommand<Border>(SetRightCollision);
+        public RelayCommand<Border> BottomCollisionLoaded => new RelayCommand<Border>(SetBottomCollision);
+
+        public RelayCommand<object> AddDialogueNode => new RelayCommand<object>(execute => CreateDialogueNode());
 
         public MKBUserControlViewModel(IWorkspaceServices workspaceServices)
         {
@@ -45,6 +59,7 @@ namespace UDSH.ViewModel
         private void StartRecordingMouseMovement()
         {
             InitialMousePosition = Mouse.GetPosition(null);
+            InitialCanvasMousePosition = Mouse.GetPosition(MainCanvas);
             Mouse.Capture(MainCanvas);
             IsRightMouseButtonPressed = true;
         }
@@ -103,14 +118,26 @@ namespace UDSH.ViewModel
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            PrepareCanvas();
+            //PrepareCanvas();
+
+            if (MainCanvas.Width < MainWindow.Width)
+            {
+                MainCanvas.Width = MainWindow.Width;
+                MainEllipseCanvas.Width = MainWindow.Width;
+            }
+
+            if (MainCanvas.Height < MainWindow.Height)
+            {
+                MainCanvas.Height = MainWindow.Height;
+                MainEllipseCanvas.Height = MainWindow.Height;
+            }
         }
 
         private void SetCurrentCanvas(Canvas canvas)
         {
             MainCanvas = canvas;
 
-            DialogueNode dialogueNode = new DialogueNode(BNType.Dialogue);
+            /*DialogueNode dialogueNode = new DialogueNode(BNType.Dialogue);
             MainCanvas.Children.Add(dialogueNode);
             Canvas.SetLeft(dialogueNode, 200);
             Canvas.SetTop(dialogueNode, 300);
@@ -118,7 +145,7 @@ namespace UDSH.ViewModel
             DialogueNode dialogueNode2 = new DialogueNode(BNType.Dialogue);
             MainCanvas.Children.Add(dialogueNode2);
             Canvas.SetLeft(dialogueNode2, 400);
-            Canvas.SetTop(dialogueNode2, 400);
+            Canvas.SetTop(dialogueNode2, 400);*/
         }
 
         private void PrepareCanvas()
@@ -130,6 +157,11 @@ namespace UDSH.ViewModel
 
                 MainEllipseCanvas.Width = MainCanvas.Width;
                 MainEllipseCanvas.Height = MainCanvas.Height;
+
+                /*if (MainCanvas.RenderTransform is TranslateTransform translateTransform)
+                {
+                    translateTransform.X = -MainCanvas.Width / 2;
+                }*/
 
                 //MainEllipseCanvas.InvalidateVisual();
             }
@@ -152,6 +184,78 @@ namespace UDSH.ViewModel
         {
             MainEllipseCanvas = ellipseCanvas;
             PrepareCanvas();
+        }
+
+        private void CreateDialogueNode()
+        {
+            DialogueNode dialogueNode = new DialogueNode(BNType.Dialogue, new NodePosition { X = InitialCanvasMousePosition.X, Y = InitialCanvasMousePosition.Y});
+            MainCanvas.Children.Add(dialogueNode);
+
+            dialogueNode.NodePositionChanged += DialogueNode_NodePositionChanged;
+        }
+
+        private void DialogueNode_NodePositionChanged(object? sender, DroppedNodeEventArgs e)
+        {
+            double NodeWidth = e.Node.ActualWidth;
+            double NodeHeight = e.Node.ActualHeight;
+            Rect NodeRect = new Rect(e.Position.X, e.Position.Y, NodeWidth, NodeHeight);
+
+            double LeftBorderWidth = LeftCollisionBorder.ActualWidth;
+            double LeftBorderHeight = LeftCollisionBorder.ActualHeight;
+            Rect LeftBorderRect = new Rect(0, 0, LeftBorderWidth, LeftBorderHeight);
+
+            double RightBorderWidth = RightCollisionBorder.ActualWidth;
+            double RightBorderHeight = RightCollisionBorder.ActualHeight;
+            Rect RightBorderRect = new Rect(Canvas.GetLeft(RightCollisionBorder), 0, RightBorderWidth, RightBorderHeight);
+
+            double BottomBorderWidth = BottomCollisionBorder.ActualWidth;
+            double BottomBorderHeight = BottomCollisionBorder.ActualHeight;
+            Rect BottomBorderRect = new Rect(0, Canvas.GetTop(BottomCollisionBorder), BottomBorderWidth, BottomBorderHeight);
+
+            if (NodeRect.IntersectsWith(LeftBorderRect))
+            {
+                // Update Canvas X offset and check if node exceeded the right collision and if so update the width of both the Main Canvas and Ellipse Canvas
+
+                e.Node.UpdateNodeLocation(e.Position.X + CanvasWidthOffset, e.Position.Y);
+
+                if (MainCanvas.Width <= MainWindow.Width)
+                {
+                    MainCanvas.Width += CanvasDimensionsUpdate;
+                    MainEllipseCanvas.Width += CanvasDimensionsUpdate;
+                }
+
+                if (MainCanvas.RenderTransform is TranslateTransform translateTransform)
+                {
+                    translateTransform.X -= CanvasWidthOffset;
+                }
+            }
+
+            if (NodeRect.IntersectsWith(RightBorderRect))
+            {
+                MainCanvas.Width += CanvasDimensionsUpdate;
+                MainEllipseCanvas.Width += CanvasDimensionsUpdate;
+            }
+
+            if (NodeRect.IntersectsWith(BottomBorderRect))
+            {
+                MainCanvas.Height += CanvasDimensionsUpdate;
+                MainEllipseCanvas.Height += CanvasDimensionsUpdate;
+            }
+        }
+
+        private void SetLeftCollision(Border border)
+        {
+            LeftCollisionBorder = border;
+        }
+
+        private void SetRightCollision(Border border)
+        {
+            RightCollisionBorder = border;
+        }
+
+        private void SetBottomCollision(Border border)
+        {
+            BottomCollisionBorder = border;
         }
     }
 }

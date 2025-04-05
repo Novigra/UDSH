@@ -29,7 +29,7 @@ namespace UDSH.View
         {
             base.OnRender(drawingContext);
 
-            EllipseCount = 10 * (int)ActualWidth * (int)ActualHeight / (1600 * 900);
+            EllipseCount = (int)(10 * Math.Sqrt((ActualWidth * ActualHeight) / (1600.0 * 900.0)));
             double TotalWidthEllipses = EllipseCount * EllipseDiameter;
             double TotalHeightEllipses = EllipseCount * EllipseDiameter;
             double XSpace = (ActualWidth - TotalWidthEllipses) / (EllipseCount - 1);

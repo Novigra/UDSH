@@ -161,6 +161,7 @@
     <None Remove="Resource\OpenFileMKMSelected.png" />
     <None Remove="Resource\palestineflag.png" />
     <None Remove="Resource\PenTool.png" />
+    <None Remove="Resource\Person.png" />
     <None Remove="Resource\Pin.png" />
     <None Remove="Resource\Placeholder.png" />
     <None Remove="Resource\PreviewTexture.png" />
@@ -170,6 +171,7 @@
     <None Remove="Resource\RightArrowOrange.png" />
     <None Remove="Resource\SaveAllFiles.png" />
     <None Remove="Resource\SaveFile.png" />
+    <None Remove="Resource\SceneHeadingIcon.png" />
     <None Remove="Resource\Search.png" />
     <None Remove="Resource\Settings.png" />
     <None Remove="Resource\SidebarMKB.png" />
@@ -344,6 +346,7 @@
     <Resource Include="Resource\OpenFileMKM.png" />
     <Resource Include="Resource\OpenFileMKMSelected.png" />
     <Resource Include="Resource\palestineflag.png" />
+    <Resource Include="Resource\Person.png" />
     <Resource Include="Resource\Pin.png" />
     <Resource Include="Resource\Placeholder.png" />
     <Resource Include="Resource\PreviewTexture.png" />
@@ -351,6 +354,7 @@
     <Resource Include="Resource\RightArrow.png" />
     <Resource Include="Resource\RightArrowOrange.png" />
     <Resource Include="Resource\SaveAllFiles.png" />
+    <Resource Include="Resource\SceneHeadingIcon.png" />
     <Resource Include="Resource\Search.png" />
     <Resource Include="Resource\SidebarMKB.png" />
     <Resource Include="Resource\SidebarMKC.png" />

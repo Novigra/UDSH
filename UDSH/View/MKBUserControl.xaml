@@ -11,6 +11,7 @@
              d:DesignHeight="650" d:DesignWidth="1200">
     <UserControl.Resources>
         <Conv:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
+        <Conv:HeightConverter x:Key="WidthConverter"/>
     </UserControl.Resources>
     <Grid x:Name="ParentGrid">
         <Grid.RowDefinitions>
@@ -109,7 +110,7 @@
                     <GradientStop Color="#FFB5BAC2" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
-            <Canvas x:Name="MainCanvas" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1200" Height="610" RenderTransformOrigin="0.5,0.5">
+            <Canvas x:Name="MainCanvas" Background="ForestGreen" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1200" Height="610" RenderTransformOrigin="0.5,0.5">
                 <local:EllipseCanvas x:Name="ECanvas" IsHitTestVisible="False" Width="1200" Height="610">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Loaded">
@@ -168,7 +169,31 @@
                         </i:Interaction.Triggers>
                     </Border>
                 </Border>
-                
+
+                <Border x:Name="LeftCollision" Background="Red" BorderThickness="0" IsHitTestVisible="False" Width="300" Height="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualHeight}" Panel.ZIndex="1" Canvas.Left="0">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding LeftCollisionLoaded}" CommandParameter="{Binding ElementName=LeftCollision}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Border>
+
+                <Border x:Name="RightCollision" Background="Purple" BorderThickness="0" IsHitTestVisible="False" Width="300" Height="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualHeight}" Panel.ZIndex="1" Canvas.Left="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=300}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding RightCollisionLoaded}" CommandParameter="{Binding ElementName=RightCollision}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Border>
+
+                <Border x:Name="BottomCollision" Background="Orange" BorderThickness="0" IsHitTestVisible="False" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" Height="300" Panel.ZIndex="1" Canvas.Top="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualHeight, Converter={StaticResource WidthConverter}, ConverterParameter=300}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding BottomCollisionLoaded}" CommandParameter="{Binding ElementName=BottomCollision}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Border>
+
                 <Canvas.RenderTransform>
                     <TranslateTransform X="0" Y="0"/>
                 </Canvas.RenderTransform>
@@ -187,6 +212,13 @@
                         <i:InvokeCommandAction Command="{Binding CanvasLoaded}" CommandParameter="{Binding ElementName=MainCanvas}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
+
+                <Canvas.ContextMenu>
+                    <ContextMenu Style="{StaticResource ContentItemProperties}">
+                        <MenuItem Header="Add Dialogue" Command="{Binding AddDialogueNode}"/>
+                        <MenuItem Header="Add Choice" Command="{Binding RenameItem}"/>
+                    </ContextMenu>
+                </Canvas.ContextMenu>
             </Canvas>
         </Border>
 
