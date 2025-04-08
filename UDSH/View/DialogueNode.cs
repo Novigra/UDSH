@@ -6,6 +6,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Diagnostics;
+using System.Windows.Shapes;
+using System.Windows.Data;
 
 namespace UDSH.View
 {
@@ -41,6 +43,9 @@ namespace UDSH.View
         private SolidColorBrush DialogueContainerBackgroundColor;
         private SolidColorBrush ChoiceContainerBackgroundColor;
 
+        private Border ParentNodeCollisionBorder;
+        private Border ChildrenNodeCollisionBorder;
+
         private Border CollisionBorder;
         private Border ContainerBorder;
         private StackPanel ContentStackPanel;
@@ -53,6 +58,7 @@ namespace UDSH.View
 
         private Point InitialMousePosition;
         private bool LeftMousePressed = false;
+        private bool CanDrawPathLine = false;
         private bool IsHeightAnimationPlaying = false;
 
         public event EventHandler<DroppedNodeEventArgs> NodePositionChanged;
@@ -105,11 +111,14 @@ namespace UDSH.View
 
         private void Construct()
         {
+            ParentNodeCollisionBorder = CreateNodeAttachmentCollision(true);
+            ChildrenNodeCollisionBorder = CreateNodeAttachmentCollision(false);
+
             CollisionBorder = new Border
             {
-                Background = new SolidColorBrush(Colors.Red),
+                Background = new SolidColorBrush(Colors.Transparent),
                 Width = 500,
-                Height = 230,
+                Height = 300,
                 Padding = new Thickness(40)
             };
 
@@ -117,6 +126,11 @@ namespace UDSH.View
             {
                 Background = (NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor,
                 CornerRadius = new CornerRadius(5)
+            };
+
+            StackPanel NodeStackPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical
             };
 
             ContentStackPanel = new StackPanel
@@ -131,8 +145,12 @@ namespace UDSH.View
 
             // Build
             Content = CollisionBorder;
-            CollisionBorder.Child = ContainerBorder;
+            CollisionBorder.Child = NodeStackPanel;
             ContainerBorder.Child = ContentStackPanel;
+
+            NodeStackPanel.Children.Add(ParentNodeCollisionBorder);
+            NodeStackPanel.Children.Add(ContainerBorder);
+            NodeStackPanel.Children.Add(ChildrenNodeCollisionBorder);
 
             ContentStackPanel.Children.Add(TitleStackPanel);
             ContentStackPanel.Children.Add(CharacterStackPanel);
@@ -142,6 +160,102 @@ namespace UDSH.View
             ContainerBorder.MouseLeftButtonDown += DialogueNode_MouseLeftButtonDown;
             ContainerBorder.MouseLeftButtonUp += DialogueNode_MouseLeftButtonUp;
             ContainerBorder.MouseMove += DialogueNode_MouseMove;
+
+            ChildrenNodeCollisionBorder.MouseLeftButtonDown += ChildrenNodeCollisionBorder_MouseLeftButtonDown;
+            ChildrenNodeCollisionBorder.MouseLeftButtonUp += ChildrenNodeCollisionBorder_MouseLeftButtonUp;
+            ChildrenNodeCollisionBorder.MouseMove += ChildrenNodeCollisionBorder_MouseMove;
+        }
+
+        private void ChildrenNodeCollisionBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            CanDrawPathLine = false;
+            InitialMousePosition = Mouse.GetPosition(null);
+        }
+
+        private void ChildrenNodeCollisionBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Point CurrentMousePosition = Mouse.GetPosition(null);
+            if (InitialMousePosition == CurrentMousePosition)
+            {
+                CanDrawPathLine = true;
+                Mouse.Capture(this);
+            }
+        }
+
+        private void ChildrenNodeCollisionBorder_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (CanDrawPathLine == true)
+            {
+                /*
+                 * TODO: We can't use this mouse move for the border, instead we will follow these steps:
+                 *      
+                 *      - When pressing on the collision and releasing the button, if "CanDrawPathLine" is true we capture
+                 *        this node so we know which parent we are currently holding.
+                 *      
+                 *      - After capturing the parent, we invoke an event for our BN class to record the current node we are holding.
+                 *      - We then press on the parent collision of another node and if the current node that is waiting isn't nullptr,
+                 *        we create our path and connect both nodes.
+                 *        
+                 *      =================================================================================================================
+                 *      Things to keep in mind:
+                 *      
+                 *      - When capturing a parent collision, we need to handle these situations:
+                 *          * If the user released on the same node.
+                 *          * If the user released outside node collision.
+                 *          * If the user tried to connect the children collision to the parent collision of the same node.
+                 *          * If the action is dragging, not clicking.
+                 *      
+                 *      =================================================================================================================
+                 *      It would be nice if:
+                 *      
+                 *      - Ctrl + press on the connected collision to remove connections.
+                 *      - For now, we won't add arrow shape for head. If everything went smoothly then give the arrow head a try.
+                 *      
+                 */
+            }
+        }
+
+        private Border CreateNodeAttachmentCollision(bool IsParent)
+        {
+            Border border = new Border
+            {
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#66E0911A")),
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Width = 30,
+                Height = 30,
+                CornerRadius = new CornerRadius(30),
+                Margin = (IsParent == true) ? new Thickness(0, 0, 0, 10) : new Thickness(0, 10, 0, 0),
+                BorderThickness = new Thickness(2)
+            };
+
+            Rectangle rectangle = new Rectangle
+            {
+                StrokeDashArray = new DoubleCollection { 2, 2 },
+                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Transparent")),
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0911A")),
+                StrokeThickness = 2,
+                RadiusX = 30,
+                RadiusY = 30,
+            };
+
+            rectangle.SetBinding(FrameworkElement.WidthProperty, new Binding(nameof(Border.ActualWidth))
+            {
+                Source = border
+            });
+
+            rectangle.SetBinding(FrameworkElement.HeightProperty, new Binding(nameof(Border.ActualHeight))
+            {
+                Source = border
+            });
+
+            VisualBrush visualBrush = new VisualBrush(rectangle);
+            border.BorderBrush = visualBrush;
+
+            Grid grid = new Grid();
+            border.Child = grid;
+
+            return border;
         }
 
         private StackPanel CreateTitleCard()
@@ -230,7 +344,7 @@ namespace UDSH.View
             double TotalHeight = CharacterRTB.ActualHeight + DialogueRTB.ActualHeight;
             if (TotalHeight > 60)
             {
-                double NewHeight = TotalHeight + 180;
+                double NewHeight = TotalHeight + 250;
                 HeightAnimation(NewHeight);
             }
         }
@@ -245,7 +359,7 @@ namespace UDSH.View
             DoubleAnimation ControlHeightAnimation = new DoubleAnimation();
             ControlHeightAnimation.BeginTime = TimeSpan.FromSeconds(0);
             ControlHeightAnimation.To = HeightTarget;
-            ControlHeightAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+            ControlHeightAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.1));
 
             Storyboard.SetTarget(ControlHeightAnimation, CollisionBorder);
             Storyboard.SetTargetProperty(ControlHeightAnimation, new PropertyPath("Height"));

@@ -110,7 +110,7 @@
                     <GradientStop Color="#FFB5BAC2" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
-            <Canvas x:Name="MainCanvas" Background="ForestGreen" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1200" Height="610" RenderTransformOrigin="0.5,0.5">
+            <Canvas x:Name="MainCanvas" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1200" Height="610" RenderTransformOrigin="0.5,0.5">
                 <local:EllipseCanvas x:Name="ECanvas" IsHitTestVisible="False" Width="1200" Height="610">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Loaded">
@@ -124,50 +124,74 @@
                 <Border x:Name="BorderRed" BorderBrush="Red" BorderThickness="5" IsHitTestVisible="False" Width="1600" Height="700" Panel.ZIndex="1" Canvas.Left="0"/>
                 -->
 
-                <Border x:Name="BorderCollision" Width="500" Height="220" Background="Transparent" Padding="40" Canvas.Left="300">
-                    <Border Background="#E0911A" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="10,10,10,10">
-                            <StackPanel Orientation="Horizontal" IsHitTestVisible="False">
-                                <Image Source="/Resource/Speaker.png" Width="30" Height="30"/>
-                                <TextBlock Style="{StaticResource DefaultText}" Text="Dialogue" FontSize="18" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                                <Rectangle Width="2" Fill="Black" RadiusX="1" RadiusY="1" Margin="5,0,0,0"/>
-                                <TextBlock Style="{StaticResource DefaultText}" Text="Dialogue" FontSize="18" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                <Image Source="/Resource/ProfilePicture.png" Width="20" Height="20"/>
-                                <RichTextBox Style="{StaticResource MKBText}" VerticalAlignment="Center" Width="368">
-                                    <FlowDocument>
-                                        <Paragraph>
-                                            <Run FontWeight="SemiBold" Text="Mohammed Kenawy"/>
-                                        </Paragraph>
-                                    </FlowDocument>
-                                </RichTextBox>
+                <Border x:Name="BorderCollision" Width="500" Height="300" Background="Transparent" Padding="40" Canvas.Left="300">
+                    <StackPanel Orientation="Vertical">
+                        <Border Background="#66E0911A" VerticalAlignment="Center" BorderThickness="2.0" HorizontalAlignment="Center" Width="30" Height="30" CornerRadius="30" Margin="0,0,0,10">
+                            <Border.BorderBrush>
+                                <VisualBrush>
+                                    <VisualBrush.Visual>
+                                        <Rectangle StrokeDashArray="2 2" Fill="Transparent" Stroke="#E0911A" StrokeThickness="2" RadiusX="30" RadiusY="30"
+                                                   Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualWidth}"
+                                                   Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualHeight}"/>
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Border.BorderBrush>
+                        </Border>
+                        <Border Background="#E0911A" CornerRadius="5">
+                            <StackPanel Orientation="Vertical" Margin="10,10,10,10">
+                                <StackPanel Orientation="Horizontal" IsHitTestVisible="False">
+                                    <Image Source="/Resource/Speaker.png" Width="30" Height="30"/>
+                                    <TextBlock Style="{StaticResource DefaultText}" Text="Dialogue" FontSize="18" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                    <Rectangle Width="2" Fill="Black" RadiusX="1" RadiusY="1" Margin="5,0,0,0"/>
+                                    <TextBlock Style="{StaticResource DefaultText}" Text="Dialogue" FontSize="18" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <Image Source="/Resource/ProfilePicture.png" Width="20" Height="20"/>
+                                    <RichTextBox Style="{StaticResource MKBText}" VerticalAlignment="Center" Width="368">
+                                        <FlowDocument>
+                                            <Paragraph>
+                                                <Run FontWeight="SemiBold" Text="Mohammed Kenawy"/>
+                                            </Paragraph>
+                                        </FlowDocument>
+                                    </RichTextBox>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <Image Source="/Resource/Log.png" Width="20" VerticalAlignment="Top" Height="20"/>
+                                    <RichTextBox Style="{StaticResource MKBText}" VerticalAlignment="Top" Width="368">
+                                        <FlowDocument>
+                                            <Paragraph>
+                                                <Run FontWeight="SemiBold" Text="Finally, I can eat it. I’ve been waiting for this moment for a long time."/>
+                                            </Paragraph>
+                                        </FlowDocument>
+                                    </RichTextBox>
+                                </StackPanel>
                             </StackPanel>
 
-                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                <Image Source="/Resource/Log.png" Width="20" VerticalAlignment="Top" Height="20"/>
-                                <RichTextBox Style="{StaticResource MKBText}" VerticalAlignment="Top" Width="368">
-                                    <FlowDocument>
-                                        <Paragraph>
-                                            <Run FontWeight="SemiBold" Text="Finally, I can eat it. I’ve been waiting for this moment for a long time."/>
-                                        </Paragraph>
-                                    </FlowDocument>
-                                </RichTextBox>
-                            </StackPanel>
-                        </StackPanel>
-
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="MouseLeftButtonDown">
-                                <i:InvokeCommandAction Command="{Binding BorderLMBDown}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="MouseLeftButtonUp">
-                                <i:InvokeCommandAction Command="{Binding BorderLMBUp}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="MouseMove">
-                                <i:InvokeCommandAction Command="{Binding BorderMouseMove}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Border>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseLeftButtonDown">
+                                    <i:InvokeCommandAction Command="{Binding BorderLMBDown}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="MouseLeftButtonUp">
+                                    <i:InvokeCommandAction Command="{Binding BorderLMBUp}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="MouseMove">
+                                    <i:InvokeCommandAction Command="{Binding BorderMouseMove}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+                        <Border Background="#7F00FFFF" VerticalAlignment="Center" BorderThickness="2.0" HorizontalAlignment="Center" Width="30" Height="30" CornerRadius="30" Margin="0,10,0,0">
+                            <Border.BorderBrush>
+                                <VisualBrush>
+                                    <VisualBrush.Visual>
+                                        <Rectangle StrokeDashArray="2 2" Fill="Cyan" Stroke="Cyan" StrokeThickness="2" RadiusX="30" RadiusY="30"
+                                                   Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualWidth}"
+                                                   Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Border}}, Path=ActualHeight}"/>
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Border.BorderBrush>
+                        </Border>
+                    </StackPanel>
                 </Border>
 
                 <Border x:Name="LeftCollision" Background="Red" BorderThickness="0" IsHitTestVisible="False" Width="300" Height="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualHeight}" Panel.ZIndex="1" Canvas.Left="0">

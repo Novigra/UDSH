@@ -18,5 +18,25 @@
             </Border.Background>
         </Border>
 
+        <Path Fill="Blue" StrokeThickness="2">
+            <Path.Stroke>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="Red" Offset="0"/>
+                    <GradientStop Color="Blue" Offset="1"/>
+                </LinearGradientBrush>
+            </Path.Stroke>
+            <Path.Data>
+                <GeometryGroup>
+                    <LineGeometry StartPoint="10,90" EndPoint="200,50"/>
+                    <PathGeometry>
+                        <PathFigure StartPoint="200,50" IsClosed="True">
+                            <LineSegment Point="185,45"/>
+                            <LineSegment Point="190,60"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </GeometryGroup>
+            </Path.Data>
+        </Path>
+
     </Grid>
 </Window>
