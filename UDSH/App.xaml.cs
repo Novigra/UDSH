@@ -62,7 +62,7 @@ namespace UDSH
                 var userDataServices = provider.GetRequiredService<IUserDataServices>();
                 return new HeaderServices(userDataServices, serviceProvider);
             });
-            services.AddTransient<IWorkspaceServices>(provider =>
+            services.AddSingleton<IWorkspaceServices>(provider =>
             {
                 var userDataServices = provider.GetRequiredService<IUserDataServices>();
                 return new WorkspaceServices(userDataServices);
@@ -70,7 +70,7 @@ namespace UDSH
             services.AddTransient<HeaderUserControlViewModel>();
             services.AddTransient<HeaderUserControl>();
             services.AddTransient<NewUserStartupWindow>();
-            services.AddTransient<MainWindow>();
+            services.AddSingleton<MainWindow>();
         }
 
         protected override void OnExit(ExitEventArgs exit)

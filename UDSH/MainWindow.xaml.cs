@@ -28,9 +28,9 @@ namespace UDSH
             HeaderUserControl headerUserControl = new HeaderUserControl(new HeaderUserControlViewModel(header));
             HeaderUserControl.Children.Add(headerUserControl);
 
-            var MK = serviceProvider.GetRequiredService<IWorkspaceServices>();
+            /*var MK = serviceProvider.GetRequiredService<IWorkspaceServices>();
             MK.MainWindow = this;
-            MKUserControl mKUserControl = new MKUserControl(new MKUserControlViewModel(MK));
+            MKUserControl mKUserControl = new MKUserControl(new MKUserControlViewModel(MK));*/
 
             var userDataServices = serviceProvider.GetRequiredService<IUserDataServices>();
             DefaultUserControl defaultUserControl = new DefaultUserControl(userDataServices);
@@ -58,6 +58,30 @@ namespace UDSH
         private void HeaderMovement(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             DragMove();
+        }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            var WorkspaceServices = _serviceProvider.GetRequiredService<IWorkspaceServices>();
+            WorkspaceServices.OnControlButtonPressed(e);
+        }
+
+        private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            var WorkspaceServices = _serviceProvider.GetRequiredService<IWorkspaceServices>();
+            WorkspaceServices.OnControlButtonReleased(e);
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            var WorkspaceServices = _serviceProvider.GetRequiredService<IWorkspaceServices>();
+            WorkspaceServices.OnReset();
+        }
+
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+            var WorkspaceServices = _serviceProvider.GetRequiredService<IWorkspaceServices>();
+            WorkspaceServices.OnReset();
         }
     }
 }

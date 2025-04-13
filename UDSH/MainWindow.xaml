@@ -6,6 +6,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UDSH"
         xmlns:userControls="clr-namespace:UDSH.View"
+        KeyDown="Window_KeyDown"
+        KeyUp="Window_KeyUp"
+        Activated="Window_Activated"
+        Deactivated="Window_Deactivated"
         mc:Ignorable="d"
         Title="MainWindow" Height="900" Width="1600" WindowStartupLocation="CenterScreen">
 

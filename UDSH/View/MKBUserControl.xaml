@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:UDSH.View"
              xmlns:vm="clr-namespace:UDSH.ViewModel"
              xmlns:Conv="clr-namespace:UDSH.Converters"
+             Loaded="UserControl_Loaded"
              mc:Ignorable="d" 
              d:DesignHeight="650" d:DesignWidth="1200">
     <UserControl.Resources>
@@ -110,7 +111,7 @@
                     <GradientStop Color="#FFB5BAC2" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
-            <Canvas x:Name="MainCanvas" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1200" Height="610" RenderTransformOrigin="0.5,0.5">
+            <Canvas x:Name="MainCanvas" Background="Transparent" HorizontalAlignment="Left" ContextMenuOpening="MainCanvas_ContextMenuOpening" VerticalAlignment="Top" Width="1200" Height="610" RenderTransformOrigin="0.5,0.5">
                 <local:EllipseCanvas x:Name="ECanvas" IsHitTestVisible="False" Width="1200" Height="610">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Loaded">
@@ -124,7 +125,8 @@
                 <Border x:Name="BorderRed" BorderBrush="Red" BorderThickness="5" IsHitTestVisible="False" Width="1600" Height="700" Panel.ZIndex="1" Canvas.Left="0"/>
                 -->
 
-                <Border x:Name="BorderCollision" Width="500" Height="300" Background="Transparent" Padding="40" Canvas.Left="300">
+                <!-- For Test Purposes -->
+                <Border x:Name="BorderCollision" Width="500" Height="300" Background="Transparent" Padding="40" Canvas.Left="300" Opacity="0" IsHitTestVisible="false">
                     <StackPanel Orientation="Vertical">
                         <Border Background="#66E0911A" VerticalAlignment="Center" BorderThickness="2.0" HorizontalAlignment="Center" Width="30" Height="30" CornerRadius="30" Margin="0,0,0,10">
                             <Border.BorderBrush>
@@ -202,7 +204,7 @@
                     </i:Interaction.Triggers>
                 </Border>
 
-                <Border x:Name="RightCollision" Background="Purple" BorderThickness="0" IsHitTestVisible="False" Width="300" Height="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualHeight}" Panel.ZIndex="1" Canvas.Left="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=300}">
+                <Border x:Name="RightCollision" Background="Purple" BorderThickness="0" IsHitTestVisible="False" Width="1000" Height="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualHeight}" Panel.ZIndex="1" Canvas.Left="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth, Converter={StaticResource WidthConverter}, ConverterParameter=1000}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Loaded">
                             <i:InvokeCommandAction Command="{Binding RightCollisionLoaded}" CommandParameter="{Binding ElementName=RightCollision}"/>
@@ -210,7 +212,7 @@
                     </i:Interaction.Triggers>
                 </Border>
 
-                <Border x:Name="BottomCollision" Background="Orange" BorderThickness="0" IsHitTestVisible="False" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" Height="300" Panel.ZIndex="1" Canvas.Top="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualHeight, Converter={StaticResource WidthConverter}, ConverterParameter=300}">
+                <Border x:Name="BottomCollision" Background="Orange" BorderThickness="0" IsHitTestVisible="False" Width="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualWidth}" Height="1000" Panel.ZIndex="1" Canvas.Top="{Binding RelativeSource={RelativeSource AncestorType=Canvas}, Path=ActualHeight, Converter={StaticResource WidthConverter}, ConverterParameter=1000}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Loaded">
                             <i:InvokeCommandAction Command="{Binding BottomCollisionLoaded}" CommandParameter="{Binding ElementName=BottomCollision}"/>
@@ -239,8 +241,8 @@
 
                 <Canvas.ContextMenu>
                     <ContextMenu Style="{StaticResource ContentItemProperties}">
-                        <MenuItem Header="Add Dialogue" Command="{Binding AddDialogueNode}"/>
-                        <MenuItem Header="Add Choice" Command="{Binding RenameItem}"/>
+                        <MenuItem Header="Add Dialogue" Command="{Binding AddDialogueNode}" CommandParameter="Dialogue"/>
+                        <MenuItem Header="Add Choice" Command="{Binding AddDialogueNode}" CommandParameter="Choice"/>
                     </ContextMenu>
                 </Canvas.ContextMenu>
             </Canvas>
