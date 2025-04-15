@@ -179,7 +179,7 @@ namespace UDSH.View
         #endregion
         #endregion
 
-        private BNType NodeType { get; set; }
+        public BNType NodeType { get; set; }
         public NodePosition Position;
 
         private Point InitialMousePosition { get; set; }
@@ -187,6 +187,7 @@ namespace UDSH.View
         private bool CanDrawPathLine { get; set; } = false;
         private bool IsHeightAnimationPlaying { get; set; } = false;
         private bool IsRootNode { get; set; }
+        public bool IsSubRootNode { get; set; }
 
         private double LastBorderHeight { get; set; }
 
@@ -199,15 +200,17 @@ namespace UDSH.View
         public event EventHandler<DroppedNodeEventArgs> NodePositionChanged;
         public event EventHandler NodeStartedConnectionProcess;
         public event EventHandler ChildNodeRequestedConnection;
+        public event EventHandler<bool> NotifyPathConnectionColorUpdate;
         public event EventHandler<BranchNodeRemovalEventArgs> NodeRequestedConnectionRemoval;
 
-        public DialogueNode(BNType NodeType, NodePosition nodePosition, MKBUserControlViewModel viewModel, bool isRootNode = false)
+        public DialogueNode(BNType NodeType, NodePosition nodePosition, MKBUserControlViewModel viewModel, bool isRootNode = false, bool isSubRootNode = false)
         {
             this.NodeType = NodeType;
             Position = nodePosition;
             DataContext = viewModel;
             ViewModel = viewModel;
             IsRootNode = isRootNode;
+            IsSubRootNode = isSubRootNode;
 
             Construct();
 
@@ -577,6 +580,8 @@ namespace UDSH.View
                 OpacityAnimation(1, ChildrenNodeCollisionBorder);
                 ChildrenNodeCollisionBorder.IsHitTestVisible = true;
             }
+
+            NotifyPathConnectionColorUpdate.Invoke(this, true);
         }
 
         private void CollisionBorder_MouseLeave(object sender, MouseEventArgs e)
@@ -586,6 +591,8 @@ namespace UDSH.View
                 OpacityAnimation(0, ChildrenNodeCollisionBorder);
                 ChildrenNodeCollisionBorder.IsHitTestVisible = false;
             }
+
+            NotifyPathConnectionColorUpdate.Invoke(this, false);
         }
 
         public void OpacityAnimation(double Target, DependencyObject dependencyObject)
@@ -637,6 +644,9 @@ namespace UDSH.View
 
                 InitialMousePosition = CurrentMousePosition;
 
+                Point NewEndPathEdgeLocation = new Point();
+                Point NewStartPathEdgeLocation = new Point();
+
                 foreach (Path path in ParentsPath)
                 {
                     if (path.Data is GeometryGroup geometryGroup)
@@ -645,14 +655,18 @@ namespace UDSH.View
                         {
                             if (geometry is LineGeometry line)
                             {
-                                Point NewPathEdgeLocation = new Point();
+                                NewEndPathEdgeLocation.X = line.EndPoint.X - DeltaX;
+                                NewEndPathEdgeLocation.Y = line.EndPoint.Y - DeltaY;
 
-                                NewPathEdgeLocation.X = line.EndPoint.X - DeltaX;
-                                NewPathEdgeLocation.Y = line.EndPoint.Y - DeltaY;
-                                line.EndPoint = NewPathEdgeLocation;
+                                line.EndPoint = NewEndPathEdgeLocation;
                                 break;
                             }
                         }
+                    }
+
+                    if (path.Stroke is LinearGradientBrush gradient)
+                    {
+                        gradient.EndPoint = NewEndPathEdgeLocation;
                     }
                 }
 
@@ -664,14 +678,17 @@ namespace UDSH.View
                         {
                             if (geometry is LineGeometry line)
                             {
-                                Point NewPathEdgeLocation = new Point();
-
-                                NewPathEdgeLocation.X = line.StartPoint.X - DeltaX;
-                                NewPathEdgeLocation.Y = line.StartPoint.Y - DeltaY;
-                                line.StartPoint = NewPathEdgeLocation;
+                                NewStartPathEdgeLocation.X = line.StartPoint.X - DeltaX;
+                                NewStartPathEdgeLocation.Y = line.StartPoint.Y - DeltaY;
+                                line.StartPoint = NewStartPathEdgeLocation;
                                 break;
                             }
                         }
+                    }
+
+                    if (path.Stroke is LinearGradientBrush gradient)
+                    {
+                        gradient.StartPoint = NewStartPathEdgeLocation;
                     }
                 }
             }
@@ -713,6 +730,7 @@ namespace UDSH.View
             if (CanDrawPathLine == true)
             {
                 /*
+                 * (Keep in mind some of these things are done differently)
                  * TODO: We can't use this mouse move for the border, instead we will follow these steps:
                  *      
                  *      - When pressing on the collision and releasing the button, if "CanDrawPathLine" is true we capture
@@ -722,6 +740,7 @@ namespace UDSH.View
                  *      - We then press on the parent collision of another node and if the current node that is waiting isn't nullptr,
                  *        we create our path and connect both nodes.
                  *        
+                 *        [Done]
                  *      =================================================================================================================
                  *      Things to keep in mind:
                  *      
@@ -731,11 +750,12 @@ namespace UDSH.View
                  *          * If the user tried to connect the children collision to the parent collision of the same node.
                  *          * If the action is dragging, not clicking.
                  *      
+                 *      [In-Progress]
                  *      =================================================================================================================
                  *      It would be nice if:
                  *      
-                 *      - Ctrl + press on the connected collision to remove connections.
-                 *      - For now, we won't add arrow shape for head. If everything went smoothly then give the arrow head a try.
+                 *      - Ctrl + press on the connected collision to remove connections. [Done]
+                 *      - For now, we won't add arrow shape for head. If everything went smoothly then give the arrow head a try. [No Need for arrow head, the design changed!]
                  *      
                  */
             }
@@ -908,6 +928,34 @@ namespace UDSH.View
                         }
                     }
                 }
+
+                if (path.Stroke is LinearGradientBrush gradient)
+                {
+                    gradient.StartPoint = NewPathEdgeLocation;
+                }
+            }
+        }
+
+        private void UpdateParentsPathLocation(Point NewPathEdgeLocation)
+        {
+            foreach (Path path in ParentsPath)
+            {
+                if (path.Data is GeometryGroup geometryGroup)
+                {
+                    foreach (Geometry geometry in geometryGroup.Children)
+                    {
+                        if (geometry is LineGeometry line)
+                        {
+                            line.EndPoint = NewPathEdgeLocation;
+                            break;
+                        }
+                    }
+                }
+
+                if (path.Stroke is LinearGradientBrush gradient)
+                {
+                    gradient.EndPoint = NewPathEdgeLocation;
+                }
             }
         }
 
@@ -935,6 +983,9 @@ namespace UDSH.View
 
             Position.X = Canvas.GetLeft(this);
             Position.Y = Canvas.GetTop(this);
+
+            UpdateParentsPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + 55));
+            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55));
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using UDSH.Model;
 using UDSH.MVVM;
@@ -44,14 +45,15 @@ namespace UDSH.ViewModel
         private Border RightCollisionBorder;
         private Border BottomCollisionBorder;
 
-        private double CanvasDimensionsUpdate = 800;
-        private double CanvasWidthOffset = 400;
+        private double CanvasDimensionsUpdate = 1200;
+        private double CanvasWidthOffset = 600;
 
         public Path CurrentPath;
         public DialogueNode CurrentDialogueNode { get; set; }
         public DialogueNode SelectedDialogueNode { get; set; }
         public Point PathCurrentMouseLocation;
         public LineGeometry line;
+        LinearGradientBrush gradient;
         public bool IsConnecting = false;
 
         private bool MouseMoved { get; set; } = false;
@@ -77,10 +79,15 @@ namespace UDSH.ViewModel
 
         public bool CanRemoveConnectedNodesPaths { get; set; } = false;
 
-        private BranchNode Root { get; set; }
-        private ObservableCollection<BranchNodeEdge> BranchNodeEdges { get; set; } = new ObservableCollection<BranchNodeEdge>();
-
+        private List<BranchNode> Roots { get; set; } = new List<BranchNode>();
+        //private ObservableCollection<BranchNodeEdge> BranchNodeEdges { get; set; } = new ObservableCollection<BranchNodeEdge>();
         private TranslateTransform CanvasTranslateTransform { get; set; }
+
+        private SolidColorBrush DialogueContainerBackgroundSCB { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0911A"));
+        private Color DialogueContainerBackgroundColor { get; set; } = (Color)ColorConverter.ConvertFromString("#E0911A");
+        private SolidColorBrush ChoiceContainerBackgroundSCB { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C41CFF"));
+        private Color ChoiceContainerBackgroundColor { get; set; } = (Color)ColorConverter.ConvertFromString("#C41CFF");
+
 
         public RelayCommand<Canvas> CanvasRMBDown => new RelayCommand<Canvas>(execute => StartRecordingMouseMovement());
         public RelayCommand<Canvas> CanvasRMBUp => new RelayCommand<Canvas>(execute => StopRecordingMouseMovement());
@@ -189,7 +196,10 @@ namespace UDSH.ViewModel
 
             PathCurrentMouseLocation = Mouse.GetPosition(null);
             if (IsConnecting == true)
+            {
                 line.EndPoint = new Point(PathCurrentMouseLocation.X - 0 - CanvasTranslateTransform.X, PathCurrentMouseLocation.Y - 110 - CanvasTranslateTransform.Y);
+                gradient.EndPoint = new Point(PathCurrentMouseLocation.X - 0 - CanvasTranslateTransform.X, PathCurrentMouseLocation.Y - 110 - CanvasTranslateTransform.Y);
+            }
         }
 
         private void StartRecordingNodeMovement()
@@ -291,6 +301,7 @@ namespace UDSH.ViewModel
             dialogueNode.NodeStartedConnectionProcess += DialogueNode_NodeStartedConnectionProcess;
             dialogueNode.ChildNodeRequestedConnection += DialogueNode_ChildNodeRequestedConnection;
             dialogueNode.NodeRequestedConnectionRemoval += DialogueNode_NodeRequestedConnectionRemoval;
+            dialogueNode.NotifyPathConnectionColorUpdate += DialogueNode_NotifyPathConnectionColorUpdate;
 
             CheckCanvasBordersCollision(dialogueNode, InitialMousePosition);
         }
@@ -322,12 +333,18 @@ namespace UDSH.ViewModel
             {
                 // Update Canvas X offset and check if node exceeded the right collision and if so update the width of both the Main Canvas and Ellipse Canvas
 
-                dialogueNode.UpdateNodeLocation(Position.X + CanvasWidthOffset, Position.Y);
-
-                if (MainCanvas.Width <= MainWindow.Width)
+                foreach (var obj in MainCanvas.Children)
                 {
-                    MainCanvas.Width += CanvasDimensionsUpdate;
-                    MainEllipseCanvas.Width += CanvasDimensionsUpdate;
+                    if (obj is DialogueNode node)
+                    {
+                        node.UpdateNodeLocation(node.Position.X + CanvasWidthOffset, node.Position.Y);
+
+                        if (MainCanvas.Width <= MainWindow.Width)
+                        {
+                            MainCanvas.Width += CanvasDimensionsUpdate;
+                            MainEllipseCanvas.Width += CanvasDimensionsUpdate;
+                        }
+                    }
                 }
 
                 if (MainCanvas.RenderTransform is TranslateTransform translateTransform)
@@ -371,12 +388,18 @@ namespace UDSH.ViewModel
             {
                 // Update Canvas X offset and check if node exceeded the right collision and if so update the width of both the Main Canvas and Ellipse Canvas
 
-                dialogueNode.UpdateNodeLocation(Position.X + CanvasWidthOffset, Position.Y);
-
-                if (MainCanvas.Width <= MainWindow.Width)
+                foreach (var obj in MainCanvas.Children)
                 {
-                    MainCanvas.Width += CanvasDimensionsUpdate;
-                    MainEllipseCanvas.Width += CanvasDimensionsUpdate;
+                    if (obj is DialogueNode node)
+                    {
+                        node.UpdateNodeLocation(node.Position.X + CanvasWidthOffset, node.Position.Y);
+
+                        if (MainCanvas.Width <= MainWindow.Width)
+                        {
+                            MainCanvas.Width += CanvasDimensionsUpdate;
+                            MainEllipseCanvas.Width += CanvasDimensionsUpdate;
+                        }
+                    }
                 }
 
                 if (MainCanvas.RenderTransform is TranslateTransform translateTransform)
@@ -404,21 +427,25 @@ namespace UDSH.ViewModel
             {
                 CurrentPath = new Path
                 {
-                    Fill = new SolidColorBrush(Colors.Blue),
+                    Fill = (dialogueNode.NodeType == BNType.Choice) ? ChoiceContainerBackgroundSCB : DialogueContainerBackgroundSCB,
                     StrokeThickness = 5,
                     StrokeDashArray = new DoubleCollection { 2, 2 },
-                    IsHitTestVisible = false
+                    IsHitTestVisible = false,
+                    StrokeDashCap = PenLineCap.Round,
+                    StrokeStartLineCap = PenLineCap.Round,
+                    StrokeEndLineCap = PenLineCap.Round
                 };
 
-                LinearGradientBrush gradient = new LinearGradientBrush
+                gradient = new LinearGradientBrush
                 {
-                    StartPoint = new Point(0, 0),
-                    EndPoint = new Point(1, 0),
+                    MappingMode = BrushMappingMode.Absolute,
+                    StartPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55)),
+                    EndPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55)),
                     GradientStops = new GradientStopCollection
                     {
-                        new GradientStop(Colors.Red, 0),
-                        new GradientStop(Colors.Blue, 1)
-                    }
+                        new GradientStop((dialogueNode.NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor, 0),
+                        new GradientStop((dialogueNode.NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor, 1)
+                    },
                 };
                 CurrentPath.Stroke = gradient;
 
@@ -461,16 +488,34 @@ namespace UDSH.ViewModel
 
                 // Temp
                 BranchNode ParentBranchNode = GetParentBranchNode();
-                BranchNode branchNode = new BranchNode { dialogueNode = dialogueNode! };
-                branchNode.ParentNodes.Add(ParentBranchNode);
 
                 if (ParentBranchNode != null)
+                {
+                    BranchNode branchNode = new BranchNode { dialogueNode = dialogueNode! };
+                    if (dialogueNode!.IsSubRootNode == true)
+                        branchNode = RemoveSubRootBranchNode(dialogueNode!);
+
+                    branchNode.ParentNodes.Add(ParentBranchNode);
+
                     ParentBranchNode.SubBranchNodes.Add(branchNode);
+                }
+                else
+                {
+                    CurrentDialogueNode.IsSubRootNode = true;
+                    ParentBranchNode = new BranchNode { dialogueNode = CurrentDialogueNode };
+
+                    BranchNode branchNode = new BranchNode { dialogueNode = dialogueNode! };
+                    branchNode.ParentNodes.Add(ParentBranchNode);
+
+                    ParentBranchNode.SubBranchNodes.Add(branchNode);
+                    Roots.Add(ParentBranchNode);
+                }
 
                 CurrentDialogueNode.ChildrenPath.Add(CurrentPath);
                 dialogueNode!.ParentsPath.Add(CurrentPath);
 
                 line.EndPoint = new Point(dialogueNode!.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + 55);
+                gradient.EndPoint = new Point(dialogueNode!.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + 55);
                 CurrentPath.StrokeDashArray = new DoubleCollection();
 
                 foreach (var obj in MainCanvas.Children)
@@ -487,12 +532,40 @@ namespace UDSH.ViewModel
             }
         }
 
+        private BranchNode RemoveSubRootBranchNode(DialogueNode dialogueNode)
+        {
+            Stack<BranchNode> BranchNodeStack = new Stack<BranchNode>();
+
+            foreach (BranchNode branchNode in Roots)
+                BranchNodeStack.Push(branchNode);
+
+            while (BranchNodeStack.Count > 0)
+            {
+                BranchNode CurrentBranchNode = BranchNodeStack.Pop();
+
+                if (CurrentBranchNode.dialogueNode == dialogueNode)
+                {
+                    dialogueNode.IsSubRootNode = false;
+                    Roots.Remove(CurrentBranchNode);
+                    return CurrentBranchNode;
+                }
+
+                foreach (BranchNode branchNode in CurrentBranchNode.SubBranchNodes)
+                    BranchNodeStack.Push(branchNode);
+            }
+
+            return null;
+        }
+
         private void DialogueNode_NodeRequestedConnectionRemoval(object? sender, BranchNodeRemovalEventArgs e)
         {
             Stack<BranchNode> BranchNodeStack = new Stack<BranchNode>();
             BranchNode? CurrentBranchNode = null;
             DialogueNode? TargetDialogueNode = sender as DialogueNode;
-            BranchNodeStack.Push(Root); // This only works for root TODO: have a collection of roots, but only one must exist!!!
+
+            foreach(BranchNode node in Roots)
+                BranchNodeStack.Push(node);
+            
 
             while (BranchNodeStack.Count > 0)
             {
@@ -528,6 +601,9 @@ namespace UDSH.ViewModel
                         {
                             if (ChildBranchNode.dialogueNode == TargetDialogueNode)
                             {
+                                TargetDialogueNode.IsSubRootNode = true;
+                                Roots.Add(ChildBranchNode);
+
                                 ParentBranchNode.SubBranchNodes.Remove(ChildBranchNode);
                                 break;
                             }
@@ -562,9 +638,14 @@ namespace UDSH.ViewModel
                             }
                         }
 
-                        // This didn't work as we only work with root so update this!!!
                         if (SubBranchNode.dialogueNode.ParentsPath.Count == 0)
                         {
+                            if(SubBranchNode.dialogueNode.ChildrenPath.Count > 0)
+                            {
+                                SubBranchNode.dialogueNode.IsSubRootNode = true;
+                                Roots.Add(SubBranchNode);
+                            }
+
                             SubBranchNode.dialogueNode.OpacityAnimation(0, SubBranchNode.dialogueNode.ParentNodeCollisionBorder);
                             SubBranchNode.dialogueNode.ParentNodeCollisionBorder.IsHitTestVisible = false;
                         }
@@ -584,7 +665,9 @@ namespace UDSH.ViewModel
         private BranchNode GetParentBranchNode()
         {
             Stack<BranchNode> BranchNodeStack = new Stack<BranchNode>();
-            BranchNodeStack.Push(Root);
+
+            foreach (BranchNode branchNode in Roots)
+                BranchNodeStack.Push(branchNode);
 
             while (BranchNodeStack.Count > 0)
             {
@@ -621,7 +704,8 @@ namespace UDSH.ViewModel
         private void MKBUserControlViewModel_CanvasBordersLoaded()
         {
             DialogueNode dialogueNode = new DialogueNode(BNType.Dialogue, new NodePosition { X = MainCanvas.ActualWidth / 2, Y = 100 }, this, true);
-            Root = new BranchNode { dialogueNode = dialogueNode };
+            BranchNode branchNode = new BranchNode { dialogueNode =  dialogueNode };
+            Roots.Add(branchNode);
 
             MainCanvas.Children.Add(dialogueNode);
 
@@ -629,11 +713,37 @@ namespace UDSH.ViewModel
             dialogueNode.NodeStartedConnectionProcess += DialogueNode_NodeStartedConnectionProcess;
             dialogueNode.ChildNodeRequestedConnection += DialogueNode_ChildNodeRequestedConnection;
             dialogueNode.NodeRequestedConnectionRemoval += DialogueNode_NodeRequestedConnectionRemoval;
+            dialogueNode.NotifyPathConnectionColorUpdate += DialogueNode_NotifyPathConnectionColorUpdate;
 
             Point point = new Point();
             point.X = MainCanvas.ActualWidth / 2;
             point.Y = 100;
             CheckCanvasBordersCollision(dialogueNode, point);
+        }
+
+        private void DialogueNode_NotifyPathConnectionColorUpdate(object? sender, bool e)
+        {
+            DialogueNode? dialogueNode = sender as DialogueNode;
+            
+            if (IsConnecting == true)
+            {
+                if (e == true)
+                {
+                    AnimatePathColor(dialogueNode!);
+                }
+                else
+                {
+                    AnimatePathColor(CurrentDialogueNode);
+                }
+            }
+        }
+
+        private void AnimatePathColor(DialogueNode dialogueNode)
+        {
+            ColorAnimation colorAnimation = new ColorAnimation();
+            colorAnimation.To = (dialogueNode.NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor;
+            colorAnimation.Duration = TimeSpan.FromSeconds(0.3);
+            gradient.GradientStops[1].BeginAnimation(GradientStop.ColorProperty, colorAnimation);
         }
 
         public void UpdateCurrentActiveWorkspaceID()
