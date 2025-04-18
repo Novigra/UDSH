@@ -224,10 +224,16 @@
                 </Border>
 
                 <Canvas.RenderTransform>
-                    <TranslateTransform X="0" Y="0"/>
+                    <TransformGroup>
+                        <TranslateTransform X="0" Y="0"/>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </TransformGroup>
                 </Canvas.RenderTransform>
                 
                 <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding CanvasLMBDown}"/>
+                    </i:EventTrigger>
                     <i:EventTrigger EventName="MouseRightButtonDown">
                         <i:InvokeCommandAction Command="{Binding CanvasRMBDown}"/>
                     </i:EventTrigger>

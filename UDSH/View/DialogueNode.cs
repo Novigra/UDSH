@@ -175,7 +175,7 @@ namespace UDSH.View
         private double NodeOrderTextBlockFontSize { get; set; } = 20;
         private bool NodeOrderTextBlockIsHitTestVisible { get; set; } = false;
         private Thickness NodeOrderTextBlockMargin { get; set; } = new Thickness(0, 0, 10, 0);
-        private int NodeOrder { get; set; } = 0;
+        public int NodeOrder { get; set; } = 0;
         #endregion
         #endregion
 
@@ -202,6 +202,8 @@ namespace UDSH.View
         public event EventHandler ChildNodeRequestedConnection;
         public event EventHandler<bool> NotifyPathConnectionColorUpdate;
         public event EventHandler<BranchNodeRemovalEventArgs> NodeRequestedConnectionRemoval;
+        public event EventHandler NodeSelectionChanged;
+        public event EventHandler NodeRequestedOrderUpdate;
 
         public DialogueNode(BNType NodeType, NodePosition nodePosition, MKBUserControlViewModel viewModel, bool isRootNode = false, bool isSubRootNode = false)
         {
@@ -287,6 +289,8 @@ namespace UDSH.View
             ChildrenNodeCollisionBorder.Child.MouseLeftButtonDown += ChildrenNodeCollisionBorder_MouseLeftButtonDown;
             ChildrenNodeCollisionBorder.Child.MouseLeftButtonUp += ChildrenNodeCollisionBorder_MouseLeftButtonUp;
             ChildrenNodeCollisionBorder.Child.MouseMove += ChildrenNodeCollisionBorder_MouseMove;
+
+            //RenderTransformOrigin = new Point(0.5, 1.0);
         }
 
         private Border CreateNodeAttachmentCollision(bool IsParent)
@@ -333,6 +337,31 @@ namespace UDSH.View
             border.Child = grid;
 
             return border;
+        }
+
+        private VisualBrush CreateNodeAttachmentBorderBrush(Border NodeAttachmentBorder)
+        {
+            Rectangle rectangle = new Rectangle
+            {
+                StrokeDashArray = NodeCollisionBorderStrokeDashArray,
+                Fill = NodeCollisionBorderFill,
+                Stroke = (NodeType == BNType.Choice) ? NodeCollisionBorderPlayerChoiceStroke : NodeCollisionBorderDialogueStroke,
+                StrokeThickness = NodeCollisionBorderStrokeThickness,
+                RadiusX = NodeCollisionBorderRadiusX,
+                RadiusY = NodeCollisionBorderRadiusY,
+            };
+
+            rectangle.SetBinding(FrameworkElement.WidthProperty, new Binding(nameof(Border.ActualWidth))
+            {
+                Source = NodeAttachmentBorder
+            });
+
+            rectangle.SetBinding(FrameworkElement.HeightProperty, new Binding(nameof(Border.ActualHeight))
+            {
+                Source = NodeAttachmentBorder
+            });
+
+            return new VisualBrush(rectangle);
         }
 
         private Border CreateContainerBorder()
@@ -691,6 +720,11 @@ namespace UDSH.View
                         gradient.StartPoint = NewStartPathEdgeLocation;
                     }
                 }
+
+                if (NodeType == BNType.Choice)
+                {
+                    NodeRequestedOrderUpdate.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -719,7 +753,7 @@ namespace UDSH.View
         private void ChildrenNodeCollisionBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Point CurrentMousePosition = Mouse.GetPosition(null);
-            if (InitialMousePosition == CurrentMousePosition && ViewModel.CanRemoveConnectedNodesPaths == false)
+            if (InitialMousePosition == CurrentMousePosition && ViewModel.IsConnecting == false && ViewModel.CanRemoveConnectedNodesPaths == false)
             {
                 NodeStartedConnectionProcess.Invoke(this, new EventArgs());
             }
@@ -745,9 +779,9 @@ namespace UDSH.View
                  *      Things to keep in mind:
                  *      
                  *      - When capturing a parent collision, we need to handle these situations:
-                 *          * If the user released on the same node.
-                 *          * If the user released outside node collision.
-                 *          * If the user tried to connect the children collision to the parent collision of the same node.
+                 *          * If the user released on the same node. [DONE]
+                 *          * If the user released outside node collision. [DONE]
+                 *          * If the user tried to connect the children collision to the parent collision of the same node. [Done]
                  *          * If the action is dragging, not clicking.
                  *      
                  *      [In-Progress]
@@ -756,6 +790,11 @@ namespace UDSH.View
                  *      
                  *      - Ctrl + press on the connected collision to remove connections. [Done]
                  *      - For now, we won't add arrow shape for head. If everything went smoothly then give the arrow head a try. [No Need for arrow head, the design changed!]
+                 *      - Delete node.
+                 *      - Multi selection and move multiple nodes simultaneously.
+                 *      - Scaling [NIGHTMARE BUT MUST BE DONE]
+                 *      - Branch Node can't have both Dialogue and player choice in the children list. Only one of them can exist!
+                 *      - Undo/Redo
                  *      
                  */
             }
@@ -974,6 +1013,7 @@ namespace UDSH.View
 
             ViewModel.SelectedDialogueNode = this;
             UpdateContainerBorderBrush();
+            NodeSelectionChanged.Invoke(this, EventArgs.Empty);
         }
 
         public void UpdateNodeLocation(double X, double Y)
@@ -986,6 +1026,82 @@ namespace UDSH.View
 
             UpdateParentsPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + 55));
             UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55));
+        }
+
+        public void UpdateNodeConnectionBackgroundColor(ConnectionType connectionType)
+        {
+            if (connectionType == ConnectionType.Parent)
+            {
+                if (ParentsPath.Count > 0)
+                {
+                    ParentNodeCollisionBorder.Background = (NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor;
+                    ParentNodeCollisionBorder.BorderBrush = null;
+                }
+                else
+                {
+                    ParentNodeCollisionBorder.Background = (NodeType == BNType.Choice) ? NodeCollisionBorderUnconnectedPlayerChoiceBackground : NodeCollisionBorderUnconnectedDialogueBackground;
+                    ParentNodeCollisionBorder.BorderBrush = CreateNodeAttachmentBorderBrush(ParentNodeCollisionBorder);
+                }
+            }
+            else
+            {
+                if (ChildrenPath.Count > 0)
+                {
+                    ChildrenNodeCollisionBorder.Background = (NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor;
+                    ChildrenNodeCollisionBorder.BorderBrush = null;
+                }
+                else
+                {
+                    ChildrenNodeCollisionBorder.Background = (NodeType == BNType.Choice) ? NodeCollisionBorderUnconnectedPlayerChoiceBackground : NodeCollisionBorderUnconnectedDialogueBackground;
+                    ChildrenNodeCollisionBorder.BorderBrush = CreateNodeAttachmentBorderBrush(ChildrenNodeCollisionBorder);
+                }
+            }
+        }
+
+        public void UpdateNodeConnectionBackgroundColor(ConnectionType connectionType, bool IsFullyColored)
+        {
+            if (connectionType == ConnectionType.Parent)
+            {
+                if (IsFullyColored == true)
+                {
+                    ParentNodeCollisionBorder.Background = (NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor;
+                    ParentNodeCollisionBorder.BorderBrush = null;
+                }
+                else
+                {
+                    ParentNodeCollisionBorder.Background = (NodeType == BNType.Choice) ? NodeCollisionBorderUnconnectedPlayerChoiceBackground : NodeCollisionBorderUnconnectedDialogueBackground;
+                    ParentNodeCollisionBorder.BorderBrush = CreateNodeAttachmentBorderBrush(ParentNodeCollisionBorder);
+                }
+            }
+            else
+            {
+                if (IsFullyColored == true)
+                {
+                    ChildrenNodeCollisionBorder.Background = (NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor;
+                    ChildrenNodeCollisionBorder.BorderBrush = null;
+                }
+                else
+                {
+                    ChildrenNodeCollisionBorder.Background = (NodeType == BNType.Choice) ? NodeCollisionBorderUnconnectedPlayerChoiceBackground : NodeCollisionBorderUnconnectedDialogueBackground;
+                    ChildrenNodeCollisionBorder.BorderBrush = CreateNodeAttachmentBorderBrush(ChildrenNodeCollisionBorder);
+                }
+            }
+        }
+
+        public void UpdateNodeOrder(int Index)
+        {
+            NodeOrder = Index;
+            NodeOrderTextBlock.Text = NodeOrder.ToString() + ".";
+        }
+
+        public double NodeScale { get; set; } = 1;
+
+        public void UpdateNodeScale(double Scale)
+        {
+            NodeScale = Scale;
+
+            ScaleTransform scaleTransform = new ScaleTransform(NodeScale, NodeScale);
+            RenderTransform = scaleTransform;
         }
     }
 }
