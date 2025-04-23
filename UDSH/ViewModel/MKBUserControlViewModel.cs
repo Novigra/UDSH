@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using UDSH.Model;
 using UDSH.MVVM;
 using UDSH.Services;
@@ -156,6 +157,11 @@ namespace UDSH.ViewModel
                             node.UpdateNodeScale(0.5);
                         }
                     }*/
+                }
+
+                if (e.KeyEvent.Key == Key.Delete)
+                {
+                    DeleteBranchNode();
                 }
             }
         }
@@ -344,7 +350,8 @@ namespace UDSH.ViewModel
             else
                 NodeType = BNType.Choice;
 
-            DialogueNode dialogueNode = new DialogueNode(NodeType, new NodePosition { X = InitialCanvasMousePosition.X, Y = InitialCanvasMousePosition.Y}, this);
+            DialogueNode dialogueNode = new DialogueNode(NodeType, new NodePosition { X = InitialCanvasMousePosition.X, Y = InitialCanvasMousePosition.Y}, this, false, true);
+            Roots.Add(new BranchNode { dialogueNode = dialogueNode});
             MainCanvas.Children.Add(dialogueNode);
 
             dialogueNode.NodePositionChanged += DialogueNode_NodePositionChanged;
@@ -543,9 +550,26 @@ namespace UDSH.ViewModel
 
                 if (ParentBranchNode != null)
                 {
-                    BranchNode branchNode = new BranchNode { dialogueNode = dialogueNode! };
-                    if (dialogueNode!.IsSubRootNode == true)
-                        branchNode = RemoveSubRootBranchNode(dialogueNode!);
+                    if (CanConnectNodes(ParentBranchNode, dialogueNode!) == false)
+                    {
+                        MainCanvas.Children.Remove(CurrentPath);
+
+                        foreach (var obj in MainCanvas.Children)
+                        {
+                            if (obj is DialogueNode node)
+                            {
+                                if (node.ParentsPath.Count == 0)
+                                {
+                                    node.OpacityAnimation(0, node.ParentNodeCollisionBorder);
+                                    node.ParentNodeCollisionBorder.IsHitTestVisible = false;
+                                }
+                            }
+                        }
+
+                        return;
+                    }
+
+                    BranchNode branchNode = GetBranchNodeForConnection(dialogueNode!);
 
                     branchNode.ParentNodes.Add(ParentBranchNode);
 
@@ -596,7 +620,19 @@ namespace UDSH.ViewModel
             }
         }
 
-        private BranchNode RemoveSubRootBranchNode(DialogueNode dialogueNode)
+        private bool CanConnectNodes(BranchNode ParentBranchNode, DialogueNode TargetDialogueNode)
+        {
+            if (ParentBranchNode.SubBranchNodes.Count == 0)
+                return true;
+
+            BranchNode ChildBranchNode = ParentBranchNode.SubBranchNodes[0];
+            if (ChildBranchNode.dialogueNode.NodeType == TargetDialogueNode.NodeType)
+                return true;
+            else
+                return false;
+        }
+
+        private BranchNode GetBranchNodeForConnection(DialogueNode dialogueNode)
         {
             Stack<BranchNode> BranchNodeStack = new Stack<BranchNode>();
 
@@ -618,7 +654,7 @@ namespace UDSH.ViewModel
                     BranchNodeStack.Push(branchNode);
             }
 
-            return null;
+            return new BranchNode { dialogueNode = dialogueNode! };
         }
 
         private BranchNode GetChildBranchNode(DialogueNode dialogueNode)
@@ -667,33 +703,24 @@ namespace UDSH.ViewModel
             {
                 if (CurrentBranchNode != null)
                 {
-                    ObservableCollection<BranchNode> ParentBranchNodes = CurrentBranchNode.ParentNodes;
-                    foreach (BranchNode ParentBranchNode in ParentBranchNodes.ToList())
+                    foreach (BranchNode ParentBranchNode in CurrentBranchNode!.ParentNodes)
                     {
-                        foreach (Path ParentChildrenPath in ParentBranchNode.dialogueNode.ChildrenPath.ToList())
+                        ParentBranchNode.SubBranchNodes.Remove(CurrentBranchNode);
+
+                        foreach (Path ParentBranchNodeChildrenPath in ParentBranchNode.dialogueNode.ChildrenPath.ToList())
                         {
-                            foreach (Path TargetChildrenPath in TargetDialogueNode!.ParentsPath)
+                            foreach (Path CurrentBranchNodeParentsPath in CurrentBranchNode.dialogueNode.ParentsPath)
                             {
-                                if (ParentChildrenPath == TargetChildrenPath)
+                                if (CurrentBranchNodeParentsPath == ParentBranchNodeChildrenPath)
                                 {
-                                    ParentBranchNode.dialogueNode.ChildrenPath.Remove(ParentChildrenPath);
+                                    ParentBranchNode.dialogueNode.ChildrenPath.Remove(CurrentBranchNodeParentsPath);
+                                    CurrentBranchNode.dialogueNode.ParentsPath.Remove(CurrentBranchNodeParentsPath);
+
+                                    MainCanvas.Children.Remove(CurrentBranchNodeParentsPath);
                                     break;
                                 }
                             }
                         }
-
-                        foreach (BranchNode ChildBranchNode in ParentBranchNode.SubBranchNodes.ToList())
-                        {
-                            if (ChildBranchNode.dialogueNode == TargetDialogueNode)
-                            {
-                                TargetDialogueNode.IsSubRootNode = true;
-                                Roots.Add(ChildBranchNode);
-
-                                ParentBranchNode.SubBranchNodes.Remove(ChildBranchNode);
-                                break;
-                            }
-                        }
-
 
                         if (ParentBranchNode.SubBranchNodes.Count == 0)
                         {
@@ -703,53 +730,51 @@ namespace UDSH.ViewModel
                     }
                 }
 
-                TargetDialogueNode!.OpacityAnimation(0, TargetDialogueNode.ParentNodeCollisionBorder);
-                TargetDialogueNode.ParentNodeCollisionBorder.IsHitTestVisible = false;
+                CurrentBranchNode.dialogueNode.IsSubRootNode = true;
+                Roots.Add(CurrentBranchNode);
+
+                CurrentBranchNode.dialogueNode.ParentNodeCollisionBorder.IsHitTestVisible = false;
+                CurrentBranchNode.dialogueNode.OpacityAnimation(0, CurrentBranchNode.dialogueNode.ParentNodeCollisionBorder);
+                CurrentBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Parent);
             }
             else
             {
                 if (CurrentBranchNode != null)
                 {
-                    foreach (BranchNode SubBranchNode in  CurrentBranchNode.SubBranchNodes.ToList())
+                    foreach (BranchNode ChildBranchNode in CurrentBranchNode!.SubBranchNodes)
                     {
-                        foreach (Path TargetChildrenPath in CurrentBranchNode.dialogueNode.ChildrenPath.ToList())
+                        ChildBranchNode.ParentNodes.Remove(CurrentBranchNode);
+
+                        foreach (Path ChildBranchNodeChildrenPath in ChildBranchNode.dialogueNode.ParentsPath.ToList())
                         {
-                            foreach (Path ChildrenParentsPath in SubBranchNode.dialogueNode.ParentsPath)
+                            foreach (Path CurrentBranchNodeParentsPath in CurrentBranchNode.dialogueNode.ChildrenPath)
                             {
-                                if (TargetChildrenPath == ChildrenParentsPath)
+                                if (CurrentBranchNodeParentsPath == ChildBranchNodeChildrenPath)
                                 {
-                                    SubBranchNode.dialogueNode.ParentsPath.Remove(ChildrenParentsPath);
+                                    ChildBranchNode.dialogueNode.ParentsPath.Remove(CurrentBranchNodeParentsPath);
+                                    CurrentBranchNode.dialogueNode.ChildrenPath.Remove(CurrentBranchNodeParentsPath);
+
+                                    MainCanvas.Children.Remove(CurrentBranchNodeParentsPath);
                                     break;
                                 }
                             }
                         }
 
-                        if (SubBranchNode.dialogueNode.ParentsPath.Count == 0)
+                        if (ChildBranchNode.ParentNodes.Count == 0)
                         {
-                            if(SubBranchNode.dialogueNode.ChildrenPath.Count > 0)
-                            {
-                                SubBranchNode.dialogueNode.IsSubRootNode = true;
-                                Roots.Add(SubBranchNode);
-                            }
+                            ChildBranchNode.dialogueNode.IsSubRootNode = true;
+                            Roots.Add(ChildBranchNode);
 
-                            SubBranchNode.dialogueNode.OpacityAnimation(0, SubBranchNode.dialogueNode.ParentNodeCollisionBorder);
-                            SubBranchNode.dialogueNode.ParentNodeCollisionBorder.IsHitTestVisible = false;
-
-                            SubBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Parent);
+                            ChildBranchNode.dialogueNode.OpacityAnimation(0, ChildBranchNode.dialogueNode.ParentNodeCollisionBorder);
+                            ChildBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Parent);
+                            ChildBranchNode.dialogueNode.ParentNodeCollisionBorder.IsHitTestVisible = false;
                         }
-
-                        CurrentBranchNode.SubBranchNodes.Remove(SubBranchNode);
                     }
+
+                    CurrentBranchNode.dialogueNode.OpacityAnimation(0, CurrentBranchNode.dialogueNode.ChildrenNodeCollisionBorder);
+                    CurrentBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Child);
                 }
             }
-            
-
-            foreach (Path path in e.Paths)
-            {
-                MainCanvas.Children.Remove(path);
-            }
-
-            TargetDialogueNode!.UpdateNodeConnectionBackgroundColor(e.NodeConnectionType, false);
         }
 
         private BranchNode GetParentBranchNode()
@@ -875,6 +900,110 @@ namespace UDSH.ViewModel
             {
                 ParentBranchNode.SubBranchNodes[i].dialogueNode.UpdateNodeOrder(i + 1);
             }
+        }
+
+        private void DeleteBranchNode()
+        {
+            if (SelectedDialogueNode == null || SelectedDialogueNode.IsRootNode == true)
+                return;
+
+            Stack<BranchNode> BranchNodeStack = new Stack<BranchNode>();
+            BranchNode? CurrentBranchNode = null;
+
+            foreach (BranchNode branchNode in Roots)
+                BranchNodeStack.Push(branchNode);
+
+            while (BranchNodeStack.Count > 0)
+            {
+                CurrentBranchNode = BranchNodeStack.Pop();
+
+                if (CurrentBranchNode.dialogueNode == SelectedDialogueNode)
+                    break;
+
+                foreach (BranchNode branchNode in CurrentBranchNode.SubBranchNodes)
+                    BranchNodeStack.Push(branchNode);
+            }
+
+            foreach (BranchNode ParentBranchNode in CurrentBranchNode!.ParentNodes)
+            {
+                ParentBranchNode.SubBranchNodes.Remove(CurrentBranchNode);
+
+                foreach (Path ParentBranchNodeChildrenPath in ParentBranchNode.dialogueNode.ChildrenPath.ToList())
+                {
+                    foreach (Path CurrentBranchNodeParentsPath in CurrentBranchNode.dialogueNode.ParentsPath)
+                    {
+                        if (CurrentBranchNodeParentsPath == ParentBranchNodeChildrenPath)
+                        {
+                            ParentBranchNode.dialogueNode.ChildrenPath.Remove(CurrentBranchNodeParentsPath);
+                            CurrentBranchNode.dialogueNode.ParentsPath.Remove(CurrentBranchNodeParentsPath);
+
+                            MainCanvas.Children.Remove(CurrentBranchNodeParentsPath);
+                            break;
+                        }
+                    }
+                }
+
+                if (ParentBranchNode.SubBranchNodes.Count == 0)
+                {
+                    ParentBranchNode.dialogueNode.OpacityAnimation(0, ParentBranchNode.dialogueNode.ChildrenNodeCollisionBorder);
+                    ParentBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Child);
+                }
+            }
+
+            foreach (BranchNode ChildBranchNode in CurrentBranchNode!.SubBranchNodes)
+            {
+                ChildBranchNode.ParentNodes.Remove(CurrentBranchNode);
+
+                foreach (Path ChildBranchNodeChildrenPath in ChildBranchNode.dialogueNode.ParentsPath.ToList())
+                {
+                    foreach (Path CurrentBranchNodeParentsPath in CurrentBranchNode.dialogueNode.ChildrenPath)
+                    {
+                        if (CurrentBranchNodeParentsPath == ChildBranchNodeChildrenPath)
+                        {
+                            ChildBranchNode.dialogueNode.ParentsPath.Remove(CurrentBranchNodeParentsPath);
+                            CurrentBranchNode.dialogueNode.ChildrenPath.Remove(CurrentBranchNodeParentsPath);
+
+                            MainCanvas.Children.Remove(CurrentBranchNodeParentsPath);
+                            break;
+                        }
+                    }
+                }
+
+                if (ChildBranchNode.ParentNodes.Count == 0)
+                {
+                    ChildBranchNode.dialogueNode.IsSubRootNode = true;
+                    Roots.Add(ChildBranchNode);
+
+                    ChildBranchNode.dialogueNode.OpacityAnimation(0, ChildBranchNode.dialogueNode.ParentNodeCollisionBorder);
+                    ChildBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Parent);
+                    ChildBranchNode.dialogueNode.ParentNodeCollisionBorder.IsHitTestVisible = false;
+                }
+            }
+
+            if (SelectedDialogueNode.NodeType == BNType.Choice)
+            {
+                if (CurrentBranchNode != null && CurrentBranchNode.ParentNodes.Count > 0)
+                    UpdateChoiceNodesOrder(CurrentBranchNode.ParentNodes[0]);
+            }
+
+            SelectedDialogueNode = null;
+
+            MainCanvas.Children.Remove(CurrentBranchNode.dialogueNode);
+            CleanDialogueNode(CurrentBranchNode);
+        }
+
+        private void CleanDialogueNode(BranchNode TargetBranchNode)
+        {
+            TargetBranchNode.dialogueNode.NodePositionChanged -= DialogueNode_NodePositionChanged;
+            TargetBranchNode.dialogueNode.NodeStartedConnectionProcess -= DialogueNode_NodeStartedConnectionProcess;
+            TargetBranchNode.dialogueNode.ChildNodeRequestedConnection -= DialogueNode_ChildNodeRequestedConnection;
+            TargetBranchNode.dialogueNode.NodeRequestedConnectionRemoval -= DialogueNode_NodeRequestedConnectionRemoval;
+            TargetBranchNode.dialogueNode.NotifyPathConnectionColorUpdate -= DialogueNode_NotifyPathConnectionColorUpdate;
+            TargetBranchNode.dialogueNode.NodeSelectionChanged -= DialogueNode_NodeSelectionChanged;
+            TargetBranchNode.dialogueNode.NodeRequestedOrderUpdate -= DialogueNode_NodeRequestedOrderUpdate;
+
+            TargetBranchNode.dialogueNode = null;
+            TargetBranchNode = null;
         }
 
         public void UpdateCurrentActiveWorkspaceID()

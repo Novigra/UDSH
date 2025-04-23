@@ -186,7 +186,7 @@ namespace UDSH.View
         private bool LeftMousePressed { get; set; } = false;
         private bool CanDrawPathLine { get; set; } = false;
         private bool IsHeightAnimationPlaying { get; set; } = false;
-        private bool IsRootNode { get; set; }
+        public bool IsRootNode { get; set; }
         public bool IsSubRootNode { get; set; }
 
         private double LastBorderHeight { get; set; }
@@ -610,7 +610,7 @@ namespace UDSH.View
                 ChildrenNodeCollisionBorder.IsHitTestVisible = true;
             }
 
-            NotifyPathConnectionColorUpdate.Invoke(this, true);
+            NotifyPathConnectionColorUpdate?.Invoke(this, true);
         }
 
         private void CollisionBorder_MouseLeave(object sender, MouseEventArgs e)
@@ -621,7 +621,7 @@ namespace UDSH.View
                 ChildrenNodeCollisionBorder.IsHitTestVisible = false;
             }
 
-            NotifyPathConnectionColorUpdate.Invoke(this, false);
+            NotifyPathConnectionColorUpdate?.Invoke(this, false);
         }
 
         public void OpacityAnimation(double Target, DependencyObject dependencyObject)
@@ -1011,6 +1011,7 @@ namespace UDSH.View
                 ViewModel.SelectedDialogueNode.ContainerBorder.BorderBrush = null;
             }
 
+            Focus();
             ViewModel.SelectedDialogueNode = this;
             UpdateContainerBorderBrush();
             NodeSelectionChanged.Invoke(this, EventArgs.Empty);
