@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -11,6 +12,7 @@ using System.Windows.Data;
 using UDSH.ViewModel;
 using System.Reflection;
 using UDSH.Model;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace UDSH.View
 {
@@ -57,28 +59,18 @@ namespace UDSH.View
         #region Properties
         #region Collision Border Properties
         private Border CollisionBorder { get; set; }
-        private double CollisionBorderWidth { get; set; } = 600;
-        private double CollisionBorderHeight { get; set; } = 300;
-        private Thickness CollisionBorderPadding { get; set; } = new Thickness(40);
         #endregion
 
         #region Content StackPanel Property
         private StackPanel ContentStackPanel { get; set; }
-        private Thickness ContentStackPanelMargin { get; set; } = new Thickness(10);
         #endregion
 
         #region Container Border Properties
         private Border ContainerBorder { get; set; }
         private SolidColorBrush DialogueContainerBackgroundColor { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0911A"));
         private SolidColorBrush ChoiceContainerBackgroundColor { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C41CFF"));
-        private CornerRadius ContainerBorderCornerRadius { get; set; } = new CornerRadius(10);
-        private Thickness ContainerBorderThickness { get; set; } = new Thickness(5);
-        private DoubleCollection ContainerBorderBrushStrokeDashArray { get; set; } = new DoubleCollection { 4, 2 };
         private SolidColorBrush ContainerBorderBrushFill { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Transparent"));
         private SolidColorBrush ContainerBorderBrushStroke { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#393E46"));
-        private double ContainerBorderBrushStrokeThickness { get; set; } = 5;
-        private double ContainerBorderBrushRadiusX { get; set; } = 10;
-        private double ContainerBorderBrushRadiusY { get; set; } = 10;
         #endregion
 
         #region Node Collision Border Properties
@@ -88,34 +80,19 @@ namespace UDSH.View
         private SolidColorBrush NodeCollisionBorderUnconnectedPlayerChoiceBackground { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#66C41CFF"));
         private VerticalAlignment NodeCollisionBorderVerticalAlignment { get; set; } = VerticalAlignment.Center;
         private HorizontalAlignment NodeCollisionBorderHorizontalAlignment { get; set; } = HorizontalAlignment.Center;
-        private double NodeCollisionBorderWidth { get; set; } = 30;
-        private double NodeCollisionBorderHeight { get; set; } = 30;
-        private CornerRadius NodeCollisionBorderCornerRadius { get; set; } = new CornerRadius(30);
-        private Thickness NodeCollisionBorderParentMargin { get; set; } = new Thickness(0, 0, 0, 10);
-        private Thickness NodeCollisionBorderChildMargin { get; set; } = new Thickness(0, 10, 0, 0);
-        private Thickness NodeCollisionBorderThickness { get; set; } = new Thickness(2);
-        private DoubleCollection NodeCollisionBorderStrokeDashArray { get; set; } = new DoubleCollection { 2, 2 };
         private SolidColorBrush NodeCollisionBorderFill { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Transparent"));
         private SolidColorBrush NodeCollisionBorderDialogueStroke { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0911A"));
         private SolidColorBrush NodeCollisionBorderPlayerChoiceStroke { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C41CFF"));
-        private double NodeCollisionBorderStrokeThickness { get; set; } = 2;
-        private double NodeCollisionBorderRadiusX { get; set; } = 30;
-        private double NodeCollisionBorderRadiusY { get; set; } = 30;
         #endregion
 
         #region Node Title Properties
         private Orientation NodeTitleCardOrientation { get; set; } = Orientation.Horizontal;
         private bool NodeTitleCardIsHitTestVisible { get; set; } = false;
         private BitmapImage NodeTitleIcon { get; set; } = new BitmapImage(new Uri("pack://application:,,,/Resource/Speaker.png"));
-        private double NodeTitleIconWidth { get; set; } = 40;
-        private double NodeTitleIconHeight { get; set; } = 40;
         private Style NodeTitleStyle { get; set; } = (Style)Application.Current.FindResource("DefaultText");
-        private double NodeTitleDialogueTextBlockWidth { get; set; } = 430;
         private string NodeTitleDialogueTextBlockText { get; set; } = "Dialogue";
         private TextTrimming NodeTitleDialogueTextBlockTextTrimming { get; set; } = TextTrimming.CharacterEllipsis;
-        private double NodeTitleFontSize { get; set; } = 18;
         private VerticalAlignment NodeTitleVerticalAlignment { get; set; } = VerticalAlignment.Center;
-        private Thickness NodeTitleMargin { get; set; } = new Thickness(10, 0, 0, 0);
         #endregion
 
         #region Choice [Dialogue Option] Properties
@@ -123,10 +100,8 @@ namespace UDSH.View
         private RichTextBox ChoiceRTB { get; set; }
         private Paragraph ChoiceParagraph { get; set; }
         private Orientation NodeChoiceOrientation { get; set; } = Orientation.Horizontal;
-        private Thickness NodeChoiceMargin { get; set; } = new Thickness(0, 0, 0, 0);
         private Style NodeChoiceRTBStyle { get; set; } = (Style)Application.Current.FindResource("MKBText");
         private VerticalAlignment NodeChoiceRTBVerticalAlignment { get; set; } = VerticalAlignment.Top;
-        private double NodeChoiceRTBWidth { get; set; } = 450;
         private string NodeChoiceMarkText { get; set; } = "Dialogue Option...";
         #endregion
 
@@ -135,22 +110,16 @@ namespace UDSH.View
         private RichTextBox CharacterRTB { get; set; }
         private Paragraph CharacterParagraph { get; set; }
         private Orientation NodeCharacterOrientation { get; set; } = Orientation.Horizontal;
-        private Thickness NodeCharacterMargin { get; set; } = new Thickness(0, 10, 0, 0);
         private BitmapImage NodeCharacterIcon { get; set; } = new BitmapImage(new Uri("pack://application:,,,/Resource/ProfilePicture.png"));
-        private double NodeCharacterIconWidth { get; set; } = 20;
-        private double NodeCharacterIconHeight { get; set; } = 20;
         private VerticalAlignment NodeCharacterIconVerticalAlignment { get; set; } = VerticalAlignment.Top;
         private Style NodeCharacterRTBStyle { get; set; } = (Style)Application.Current.FindResource("MKBText");
         private VerticalAlignment NodeCharacterRTBVerticalAlignment { get; set; } = VerticalAlignment.Top;
-        private double NodeRTBWidth { get; set; } = 450;
         private Style NodeMarkStyle { get; set; } = (Style)Application.Current.FindResource("DefaultText");
         private string NodeCharacterMarkText { get; set; } = "Character Name...";
         private SolidColorBrush NodeMarkColor { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
         private FontStyle NodeMarkFontStyle { get; set; } = FontStyles.Italic;
-        private double NodeMarkFontSize { get; set; } = 15;
         private VerticalAlignment NodeMarkVerticalAlignment { get; set; } = VerticalAlignment.Center;
         private bool NodeMarkIsHitTestVisible { get; set; } = false;
-        private Thickness NodeMarkMargin { get; set; } = new Thickness(10, 0, 0, 0);
         #endregion
 
         #region Dialogue Properties
@@ -158,23 +127,17 @@ namespace UDSH.View
         private RichTextBox DialogueRTB { get; set; }
         private Paragraph DialogueParagraph { get; set; }
         private Orientation NodeDialogueOrientation { get; set; } = Orientation.Horizontal;
-        private Thickness NodeDialogueMargin { get; set; } = new Thickness(0, 10, 0, 0);
         private BitmapImage NodeDialogueIcon { get; set; } = new BitmapImage(new Uri("pack://application:,,,/Resource/Log.png"));
-        private double NodeDialogueIconWidth { get; set; } = 20;
-        private double NodeDialogueIconHeight { get; set; } = 20;
         private VerticalAlignment NodeDialogueIconVerticalAlignment { get; set; } = VerticalAlignment.Top;
         private Style NodeDialogueRTBStyle { get; set; } = (Style)Application.Current.FindResource("MKBText");
         private VerticalAlignment NodeDialogueRTBVerticalAlignment { get; set; } = VerticalAlignment.Top;
-        private double NodeDialogueRTBWidth { get; set; } = 450;
         private string NodeDialogueMarkText { get; set; } = "Dialogue...";
         #endregion
 
         #region Node Order Properties
         private TextBlock NodeOrderTextBlock { get; set; }
         private HorizontalAlignment NodeOrderTextBlockHorizontalAlignment { get; set; } = HorizontalAlignment.Right;
-        private double NodeOrderTextBlockFontSize { get; set; } = 20;
         private bool NodeOrderTextBlockIsHitTestVisible { get; set; } = false;
-        private Thickness NodeOrderTextBlockMargin { get; set; } = new Thickness(0, 0, 10, 0);
         public int NodeOrder { get; set; } = 0;
         #endregion
         #endregion
@@ -193,7 +156,6 @@ namespace UDSH.View
 
         private MKBUserControlViewModel ViewModel { get; set; }
 
-        //public BranchNodeEdge branchNodeEdge { get; set; }
         public List<Path> ParentsPath { get; set; } = new List<Path>();
         public List<Path> ChildrenPath { get; set; } = new List<Path>();
 
@@ -229,16 +191,16 @@ namespace UDSH.View
             ParentNodeCollisionBorder = CreateNodeAttachmentCollision(true);
             ChildrenNodeCollisionBorder = CreateNodeAttachmentCollision(false);
 
-            if (NodeType == BNType.Choice)
-                CollisionBorderHeight = 350;
-
             CollisionBorder = new Border
             {
                 Background = new SolidColorBrush(Colors.Transparent),
-                Width = CollisionBorderWidth,
-                //Height = CollisionBorderHeight,
-                Padding = CollisionBorderPadding
+                Width = ViewModel.CollisionBorderWidth,
+                Padding = ViewModel.CollisionBorderPadding
             };
+
+            CollisionBorder.SetBinding(FrameworkElement.WidthProperty, new Binding(nameof(ViewModel.CollisionBorderWidth)));
+            CollisionBorder.SetBinding(Border.PaddingProperty, new Binding(nameof(ViewModel.CollisionBorderPadding)));
+
 
             ContainerBorder = CreateContainerBorder();
 
@@ -250,8 +212,11 @@ namespace UDSH.View
             ContentStackPanel = new StackPanel
             {
                 Orientation = Orientation.Vertical,
-                Margin = ContentStackPanelMargin
+                Margin = ViewModel.ContentStackPanelMargin
             };
+
+            ContentStackPanel.SetBinding(FrameworkElement.MarginProperty, new Binding(nameof(ViewModel.ContentStackPanelMargin)));
+
 
             StackPanel TitleStackPanel = CreateTitleCard();
             StackPanel CharacterStackPanel = CreateCharacterCard();
@@ -289,8 +254,6 @@ namespace UDSH.View
             ChildrenNodeCollisionBorder.Child.MouseLeftButtonDown += ChildrenNodeCollisionBorder_MouseLeftButtonDown;
             ChildrenNodeCollisionBorder.Child.MouseLeftButtonUp += ChildrenNodeCollisionBorder_MouseLeftButtonUp;
             ChildrenNodeCollisionBorder.Child.MouseMove += ChildrenNodeCollisionBorder_MouseMove;
-
-            //RenderTransformOrigin = new Point(0.5, 1.0);
         }
 
         private Border CreateNodeAttachmentCollision(bool IsParent)
@@ -300,24 +263,39 @@ namespace UDSH.View
                 Background = (NodeType == BNType.Choice) ? NodeCollisionBorderUnconnectedPlayerChoiceBackground : NodeCollisionBorderUnconnectedDialogueBackground,
                 VerticalAlignment = NodeCollisionBorderVerticalAlignment,
                 HorizontalAlignment = NodeCollisionBorderHorizontalAlignment,
-                Width = NodeCollisionBorderWidth,
-                Height = NodeCollisionBorderHeight,
-                CornerRadius = NodeCollisionBorderCornerRadius,
-                Margin = (IsParent == true) ? NodeCollisionBorderParentMargin : NodeCollisionBorderChildMargin,
-                BorderThickness = NodeCollisionBorderThickness,
+                Width = ViewModel.NodeCollisionBorderWidth,
+                Height = ViewModel.NodeCollisionBorderHeight,
+                CornerRadius = ViewModel.NodeCollisionBorderCornerRadius,
+                Margin = (IsParent == true) ? ViewModel.NodeCollisionBorderParentMargin : ViewModel.NodeCollisionBorderChildMargin,
+                BorderThickness = ViewModel.NodeCollisionBorderThickness,
                 Opacity = 0,
                 IsHitTestVisible = false
             };
 
+            border.SetBinding(Border.WidthProperty, new Binding(nameof(ViewModel.NodeCollisionBorderWidth)));
+            border.SetBinding(Border.HeightProperty, new Binding(nameof(ViewModel.NodeCollisionBorderHeight)));
+            border.SetBinding(Border.CornerRadiusProperty, new Binding(nameof(ViewModel.NodeCollisionBorderCornerRadius)));
+            if (IsParent == true)
+                border.SetBinding(Border.MarginProperty, new Binding(nameof(ViewModel.NodeCollisionBorderParentMargin)));
+            else
+                border.SetBinding(Border.MarginProperty, new Binding(nameof(ViewModel.NodeCollisionBorderChildMargin)));
+
+            border.SetBinding(Border.BorderThicknessProperty, new Binding(nameof(ViewModel.NodeCollisionBorderThickness)));
+
             Rectangle rectangle = new Rectangle
             {
-                StrokeDashArray = NodeCollisionBorderStrokeDashArray,
+                StrokeDashArray = ViewModel.NodeCollisionBorderStrokeDashArray,
                 Fill = NodeCollisionBorderFill,
                 Stroke = (NodeType == BNType.Choice) ? NodeCollisionBorderPlayerChoiceStroke : NodeCollisionBorderDialogueStroke,
-                StrokeThickness = NodeCollisionBorderStrokeThickness,
-                RadiusX = NodeCollisionBorderRadiusX,
-                RadiusY = NodeCollisionBorderRadiusY,
+                StrokeThickness = ViewModel.NodeCollisionBorderStrokeThickness,
+                RadiusX = ViewModel.NodeCollisionBorderRadiusX,
+                RadiusY = ViewModel.NodeCollisionBorderRadiusY
             };
+
+            rectangle.SetBinding(Rectangle.StrokeDashArrayProperty, new Binding(nameof(ViewModel.NodeCollisionBorderStrokeDashArray)));
+            rectangle.SetBinding(Rectangle.StrokeThicknessProperty, new Binding(nameof(ViewModel.NodeCollisionBorderStrokeThickness)));
+            rectangle.SetBinding(Rectangle.RadiusXProperty, new Binding(nameof(ViewModel.NodeCollisionBorderRadiusX)));
+            rectangle.SetBinding(Rectangle.RadiusYProperty, new Binding(nameof(ViewModel.NodeCollisionBorderRadiusY)));
 
             rectangle.SetBinding(FrameworkElement.WidthProperty, new Binding(nameof(Border.ActualWidth))
             {
@@ -343,13 +321,18 @@ namespace UDSH.View
         {
             Rectangle rectangle = new Rectangle
             {
-                StrokeDashArray = NodeCollisionBorderStrokeDashArray,
+                StrokeDashArray = ViewModel.NodeCollisionBorderStrokeDashArray,
                 Fill = NodeCollisionBorderFill,
                 Stroke = (NodeType == BNType.Choice) ? NodeCollisionBorderPlayerChoiceStroke : NodeCollisionBorderDialogueStroke,
-                StrokeThickness = NodeCollisionBorderStrokeThickness,
-                RadiusX = NodeCollisionBorderRadiusX,
-                RadiusY = NodeCollisionBorderRadiusY,
+                StrokeThickness = ViewModel.NodeCollisionBorderStrokeThickness,
+                RadiusX = ViewModel.NodeCollisionBorderRadiusX,
+                RadiusY = ViewModel.NodeCollisionBorderRadiusY
             };
+
+            rectangle.SetBinding(Rectangle.StrokeDashArrayProperty, new Binding(nameof(ViewModel.NodeCollisionBorderStrokeDashArray)));
+            rectangle.SetBinding(Rectangle.StrokeThicknessProperty, new Binding(nameof(ViewModel.NodeCollisionBorderStrokeThickness)));
+            rectangle.SetBinding(Rectangle.RadiusXProperty, new Binding(nameof(ViewModel.NodeCollisionBorderRadiusX)));
+            rectangle.SetBinding(Rectangle.RadiusYProperty, new Binding(nameof(ViewModel.NodeCollisionBorderRadiusY)));
 
             rectangle.SetBinding(FrameworkElement.WidthProperty, new Binding(nameof(Border.ActualWidth))
             {
@@ -369,9 +352,12 @@ namespace UDSH.View
             Border border = new Border
             {
                 Background = (NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor,
-                CornerRadius = ContainerBorderCornerRadius,
-                BorderThickness = ContainerBorderThickness
+                CornerRadius = ViewModel.ContainerBorderCornerRadius,
+                BorderThickness = ViewModel.ContainerBorderThickness
             };
+
+            border.SetBinding(Border.CornerRadiusProperty, new Binding(nameof(ViewModel.ContainerBorderCornerRadius)));
+            border.SetBinding(Border.BorderThicknessProperty, new Binding(nameof(ViewModel.ContainerBorderThickness)));
 
             return border;
         }
@@ -380,13 +366,18 @@ namespace UDSH.View
         {
             Rectangle rectangle = new Rectangle
             {
-                StrokeDashArray = ContainerBorderBrushStrokeDashArray,
+                StrokeDashArray = ViewModel.ContainerBorderBrushStrokeDashArray,
                 Fill = ContainerBorderBrushFill,
                 Stroke = ContainerBorderBrushStroke,
-                StrokeThickness = ContainerBorderBrushStrokeThickness,
-                RadiusX = ContainerBorderBrushRadiusX,
-                RadiusY = ContainerBorderBrushRadiusY,
+                StrokeThickness = ViewModel.ContainerBorderBrushStrokeThickness,
+                RadiusX = ViewModel.ContainerBorderBrushRadiusX,
+                RadiusY = ViewModel.ContainerBorderBrushRadiusY,
             };
+
+            rectangle.SetBinding(Rectangle.StrokeDashArrayProperty, new Binding(nameof(ViewModel.ContainerBorderBrushStrokeDashArray)));
+            rectangle.SetBinding(Rectangle.StrokeThicknessProperty, new Binding(nameof(ViewModel.ContainerBorderBrushStrokeThickness)));
+            rectangle.SetBinding(Rectangle.RadiusXProperty, new Binding(nameof(ViewModel.ContainerBorderBrushRadiusX)));
+            rectangle.SetBinding(Rectangle.RadiusYProperty, new Binding(nameof(ViewModel.ContainerBorderBrushRadiusY)));
 
             rectangle.SetBinding(FrameworkElement.WidthProperty, new Binding(nameof(Border.ActualWidth))
             {
@@ -413,9 +404,13 @@ namespace UDSH.View
             Image TitleIcon = new Image
             {
                 Source = NodeTitleIcon,
-                Width = NodeTitleIconWidth,
-                Height = NodeTitleIconHeight
+                Width = ViewModel.NodeTitleIconWidth,
+                Height = ViewModel.NodeTitleIconHeight
             };
+
+            TitleIcon.SetBinding(Image.WidthProperty, new Binding(nameof(ViewModel.NodeTitleIconWidth)));
+            TitleIcon.SetBinding(Image.HeightProperty, new Binding(nameof(ViewModel.NodeTitleIconHeight)));
+
             TitleCard.Children.Add(TitleIcon);
 
             if (NodeType == BNType.Dialogue)
@@ -423,13 +418,18 @@ namespace UDSH.View
                 TextBlock DialogueTitle = new TextBlock
                 {
                     Style = NodeTitleStyle,
-                    Width = NodeTitleDialogueTextBlockWidth,
+                    Width = ViewModel.NodeTitleDialogueTextBlockWidth,
                     Text = NodeTitleDialogueTextBlockText,
                     TextTrimming = NodeTitleDialogueTextBlockTextTrimming,
-                    FontSize = NodeTitleFontSize,
+                    FontSize = ViewModel.NodeTitleFontSize,
                     VerticalAlignment = NodeTitleVerticalAlignment,
-                    Margin = NodeTitleMargin
+                    Margin = ViewModel.NodeTitleMargin
                 };
+
+                DialogueTitle.SetBinding(TextBlock.WidthProperty, new Binding(nameof(ViewModel.NodeTitleDialogueTextBlockWidth)));
+                DialogueTitle.SetBinding(TextBlock.FontSizeProperty, new Binding(nameof(ViewModel.NodeTitleFontSize)));
+                DialogueTitle.SetBinding(TextBlock.MarginProperty, new Binding(nameof(ViewModel.NodeTitleMargin)));
+
                 TitleCard.Children.Add(DialogueTitle);
             }
             else
@@ -440,8 +440,12 @@ namespace UDSH.View
                 {
                     Style = NodeChoiceRTBStyle,
                     VerticalAlignment = NodeChoiceRTBVerticalAlignment,
-                    Width = NodeChoiceRTBWidth
+                    Width = ViewModel.NodeChoiceRTBWidth,
+                    FontSize = ViewModel.RTBFontSize
                 };
+
+                ChoiceRTB.SetBinding(RichTextBox.FontSizeProperty, new Binding(nameof(ViewModel.RTBFontSize)));
+                ChoiceRTB.SetBinding(RichTextBox.WidthProperty, new Binding(nameof(ViewModel.NodeChoiceRTBWidth)));
 
                 // Temp Test
                 ChoiceRTB.SpellCheck.IsEnabled = true;
@@ -460,12 +464,17 @@ namespace UDSH.View
                     Text = NodeChoiceMarkText,
                     Foreground = NodeMarkColor,
                     FontStyle = NodeMarkFontStyle,
-                    FontSize = NodeMarkFontSize,
+                    FontSize = ViewModel.NodeMarkFontSize,
                     VerticalAlignment = NodeMarkVerticalAlignment,
-                    Width = NodeRTBWidth,
+                    Width = ViewModel.NodeRTBWidth,
                     IsHitTestVisible = NodeMarkIsHitTestVisible,
-                    Margin = NodeMarkMargin
+                    Margin = ViewModel.NodeMarkMargin
                 };
+
+                ChoiceMarkTextBlock.SetBinding(TextBlock.WidthProperty, new Binding(nameof(ViewModel.NodeRTBWidth)));
+                ChoiceMarkTextBlock.SetBinding(TextBlock.FontSizeProperty, new Binding(nameof(ViewModel.NodeMarkFontSize)));
+                ChoiceMarkTextBlock.SetBinding(TextBlock.MarginProperty, new Binding(nameof(ViewModel.NodeMarkMargin)));
+
                 TextRegionGrid.Children.Add(ChoiceMarkTextBlock);
 
                 TitleCard.Children.Add(TextRegionGrid);
@@ -479,16 +488,22 @@ namespace UDSH.View
             StackPanel CharacterCard = new StackPanel
             {
                 Orientation = NodeCharacterOrientation,
-                Margin = NodeCharacterMargin
+                Margin = ViewModel.NodeCharacterMargin
             };
+
+            CharacterCard.SetBinding(StackPanel.MarginProperty, new Binding(nameof(ViewModel.NodeCharacterMargin)));
 
             Image CharacterIcon = new Image
             {
                 Source = NodeCharacterIcon,
-                Width = NodeCharacterIconWidth,
-                Height = NodeCharacterIconHeight,
+                Width = ViewModel.NodeCharacterIconWidth,
+                Height = ViewModel.NodeCharacterIconHeight,
                 VerticalAlignment = NodeCharacterIconVerticalAlignment
             };
+
+            CharacterIcon.SetBinding(Image.WidthProperty, new Binding(nameof(ViewModel.NodeCharacterIconWidth)));
+            CharacterIcon.SetBinding(Image.HeightProperty, new Binding(nameof(ViewModel.NodeCharacterIconHeight)));
+
             CharacterCard.Children.Add(CharacterIcon);
 
             Grid TextRegionGrid = new Grid { VerticalAlignment = VerticalAlignment.Top };
@@ -497,8 +512,12 @@ namespace UDSH.View
             {
                 Style = NodeCharacterRTBStyle,
                 VerticalAlignment = NodeCharacterRTBVerticalAlignment,
-                Width = NodeRTBWidth
+                Width = ViewModel.NodeRTBWidth,
+                FontSize = ViewModel.RTBFontSize
             };
+
+            CharacterRTB.SetBinding(RichTextBox.FontSizeProperty, new Binding(nameof(ViewModel.RTBFontSize)));
+            CharacterRTB.SetBinding(RichTextBox.WidthProperty, new Binding(nameof(ViewModel.NodeRTBWidth)));
 
             // Temp Test
             CharacterRTB.SpellCheck.IsEnabled = true;
@@ -517,12 +536,17 @@ namespace UDSH.View
                 Text = NodeCharacterMarkText,
                 Foreground = NodeMarkColor,
                 FontStyle = NodeMarkFontStyle,
-                FontSize = NodeMarkFontSize,
+                FontSize = ViewModel.NodeMarkFontSize,
                 VerticalAlignment = NodeMarkVerticalAlignment,
-                Width = NodeRTBWidth,
+                Width = ViewModel.NodeRTBWidth,
                 IsHitTestVisible = NodeMarkIsHitTestVisible,
-                Margin = NodeMarkMargin
+                Margin = ViewModel.NodeMarkMargin
             };
+
+            CharacterMarkTextBlock.SetBinding(TextBlock.WidthProperty, new Binding(nameof(ViewModel.NodeRTBWidth)));
+            CharacterMarkTextBlock.SetBinding(TextBlock.FontSizeProperty, new Binding(nameof(ViewModel.NodeMarkFontSize)));
+            CharacterMarkTextBlock.SetBinding(TextBlock.MarginProperty, new Binding(nameof(ViewModel.NodeMarkMargin)));
+
             TextRegionGrid.Children.Add(CharacterMarkTextBlock);
 
             CharacterCard.Children.Add(TextRegionGrid);
@@ -535,24 +559,34 @@ namespace UDSH.View
             StackPanel DialogueCard = new StackPanel
             {
                 Orientation = NodeDialogueOrientation,
-                Margin = NodeDialogueMargin
+                Margin = ViewModel.NodeDialogueMargin
             };
+
+            DialogueCard.SetBinding(StackPanel.MarginProperty, new Binding(nameof(ViewModel.NodeDialogueMargin)));
 
             Image DialogueIcon = new Image
             {
                 Source = NodeDialogueIcon,
-                Width = NodeDialogueIconWidth,
-                Height = NodeDialogueIconHeight,
+                Width = ViewModel.NodeDialogueIconWidth,
+                Height = ViewModel.NodeDialogueIconHeight,
                 VerticalAlignment = NodeDialogueIconVerticalAlignment
             };
+
+            DialogueIcon.SetBinding(Image.WidthProperty, new Binding(nameof(ViewModel.NodeDialogueIconWidth)));
+            DialogueIcon.SetBinding(Image.HeightProperty, new Binding(nameof(ViewModel.NodeDialogueIconHeight)));
+
             DialogueCard.Children.Add(DialogueIcon);
 
             DialogueRTB = new RichTextBox
             {
                 Style = NodeDialogueRTBStyle,
                 VerticalAlignment = NodeDialogueRTBVerticalAlignment,
-                Width = NodeDialogueRTBWidth,
+                Width = ViewModel.NodeDialogueRTBWidth,
+                FontSize = ViewModel.RTBFontSize
             };
+
+            DialogueRTB.SetBinding(RichTextBox.FontSizeProperty, new Binding(nameof(ViewModel.RTBFontSize)));
+            DialogueRTB.SetBinding(RichTextBox.WidthProperty, new Binding(nameof(ViewModel.NodeDialogueRTBWidth)));
 
             Grid TextRegionGrid = new Grid { VerticalAlignment = VerticalAlignment.Top };
 
@@ -573,12 +607,17 @@ namespace UDSH.View
                 Text = NodeDialogueMarkText,
                 Foreground = NodeMarkColor,
                 FontStyle = NodeMarkFontStyle,
-                FontSize = NodeMarkFontSize,
+                FontSize = ViewModel.NodeMarkFontSize,
                 VerticalAlignment = NodeMarkVerticalAlignment,
-                Width = NodeRTBWidth,
+                Width = ViewModel.NodeRTBWidth,
                 IsHitTestVisible = NodeMarkIsHitTestVisible,
-                Margin = NodeMarkMargin
+                Margin = ViewModel.NodeMarkMargin
             };
+
+            DialogueMarkTextBlock.SetBinding(TextBlock.WidthProperty, new Binding(nameof(ViewModel.NodeRTBWidth)));
+            DialogueMarkTextBlock.SetBinding(TextBlock.FontSizeProperty, new Binding(nameof(ViewModel.NodeMarkFontSize)));
+            DialogueMarkTextBlock.SetBinding(TextBlock.MarginProperty, new Binding(nameof(ViewModel.NodeMarkMargin)));
+
             TextRegionGrid.Children.Add(DialogueMarkTextBlock);
 
             DialogueCard.Children.Add(TextRegionGrid);
@@ -593,10 +632,13 @@ namespace UDSH.View
                 Style = NodeMarkStyle,
                 Text = NodeOrder.ToString() + ".",
                 HorizontalAlignment = NodeOrderTextBlockHorizontalAlignment,
-                FontSize = NodeOrderTextBlockFontSize,
+                FontSize = ViewModel.NodeOrderTextBlockFontSize,
                 IsHitTestVisible = NodeOrderTextBlockIsHitTestVisible,
-                Margin = NodeOrderTextBlockMargin
+                Margin = ViewModel.NodeOrderTextBlockMargin
             };
+
+            NodeOrderTextBlock.SetBinding(TextBlock.FontSizeProperty, new Binding(nameof(ViewModel.NodeOrderTextBlockFontSize)));
+            NodeOrderTextBlock.SetBinding(TextBlock.MarginProperty, new Binding(nameof(ViewModel.NodeOrderTextBlockMargin)));
 
             return NodeOrderTextBlock;
         }
@@ -790,10 +832,10 @@ namespace UDSH.View
                  *      
                  *      - Ctrl + press on the connected collision to remove connections. [Done]
                  *      - For now, we won't add arrow shape for head. If everything went smoothly then give the arrow head a try. [No Need for arrow head, the design changed!]
-                 *      - Delete node.
+                 *      - Delete node. [DONE] [ONLY THROUGH SHORTCUT. ADD RIGHT-CLICK IMPLEMENTATION]
                  *      - Multi selection and move multiple nodes simultaneously.
-                 *      - Scaling [NIGHTMARE BUT MUST BE DONE]
-                 *      - Branch Node can't have both Dialogue and player choice in the children list. Only one of them can exist!
+                 *      - Scaling [NIGHTMARE BUT MUST BE DONE] [DONE BROOOOOO]. BUT, We scale each item instead of the canvas as it is less destructive.
+                 *      - Branch Node can't have both Dialogue and player choice in the children list. Only one of them can exist! [DONE]
                  *      - Undo/Redo
                  *      
                  */
@@ -821,7 +863,7 @@ namespace UDSH.View
             ManageMark(ChoiceParagraph, ChoiceMarkTextBlock);
 
             await Task.Delay(100);
-            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55));
+            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55 * ViewModel.Scale));
         }
 
         private void CharacterRTB_KeyDown(object sender, KeyEventArgs e)
@@ -845,7 +887,7 @@ namespace UDSH.View
             ManageMark(CharacterParagraph, CharacterMarkTextBlock);
 
             await Task.Delay(100);
-            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55));
+            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55 * ViewModel.Scale));
         }
 
         private void UpdateCharacterRTBCase()
@@ -869,7 +911,7 @@ namespace UDSH.View
             ManageMark(DialogueParagraph, DialogueMarkTextBlock);
 
             await Task.Delay(100);
-            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55));
+            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55 * ViewModel.Scale));
         }
 
         private void DialogueRTB_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -1025,8 +1067,14 @@ namespace UDSH.View
             Position.X = Canvas.GetLeft(this);
             Position.Y = Canvas.GetTop(this);
 
-            UpdateParentsPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + 55));
-            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55));
+            UpdateParentsPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + 55 * ViewModel.Scale));
+            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55 * ViewModel.Scale));
+        }
+
+        public void UpdatePathsLocation()
+        {
+            UpdateParentsPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + 55 * ViewModel.Scale));
+            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55 * ViewModel.Scale));
         }
 
         public void UpdateNodeConnectionBackgroundColor(ConnectionType connectionType)
@@ -1093,16 +1141,6 @@ namespace UDSH.View
         {
             NodeOrder = Index;
             NodeOrderTextBlock.Text = NodeOrder.ToString() + ".";
-        }
-
-        public double NodeScale { get; set; } = 1;
-
-        public void UpdateNodeScale(double Scale)
-        {
-            NodeScale = Scale;
-
-            ScaleTransform scaleTransform = new ScaleTransform(NodeScale, NodeScale);
-            RenderTransform = scaleTransform;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,23 +15,17 @@ using UDSH.View;
 
 namespace UDSH.ViewModel
 {
-    public class BranchNodeEdge
-    {
-        public DialogueNode ParentNode { get; set; }
-        public List<DialogueNode> ChildNode { get; set; } = new List<DialogueNode>();
-        public Path path { get; set; }
-    }
-
     public class BranchNode
     {
         public DialogueNode dialogueNode { get; set; }
         public ObservableCollection<BranchNode> ParentNodes { get; set; } = new ObservableCollection<BranchNode>();
-        //public Path path { get; set; }
         public ObservableCollection<BranchNode> SubBranchNodes { get; set; } = new ObservableCollection<BranchNode>();
     }
 
     public class MKBUserControlViewModel : ViewModelBase
     {
+        public event EventHandler UpdateElementsScale;
+
         private readonly string _workspaceServicesID;
         private readonly IWorkspaceServices _workspaceServices;
         private Window MainWindow;
@@ -83,15 +78,297 @@ namespace UDSH.ViewModel
         public bool CanRemoveConnectedNodesPaths { get; set; } = false;
 
         private List<BranchNode> Roots { get; set; } = new List<BranchNode>();
-        //private ObservableCollection<BranchNodeEdge> BranchNodeEdges { get; set; } = new ObservableCollection<BranchNodeEdge>();
         private TranslateTransform CanvasTranslateTransform { get; set; }
         private ScaleTransform CanvasScaleTransform { get; set; }
-        private double Scale { get; set; }
+        public double Scale { get; set; }
 
         private SolidColorBrush DialogueContainerBackgroundSCB { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0911A"));
         private Color DialogueContainerBackgroundColor { get; set; } = (Color)ColorConverter.ConvertFromString("#E0911A");
         private SolidColorBrush ChoiceContainerBackgroundSCB { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#C41CFF"));
         private Color ChoiceContainerBackgroundColor { get; set; } = (Color)ColorConverter.ConvertFromString("#C41CFF");
+
+
+        #region Dialogue Node Properties
+        private double collisionBorderWidth;
+        public double CollisionBorderWidth
+        {
+            get => collisionBorderWidth;
+            set { collisionBorderWidth = value; OnPropertyChanged(); }
+        }
+
+        private double collisionBorderHeight;
+        public double CollisionBorderHeight
+        {
+            get => collisionBorderHeight;
+            set { collisionBorderHeight = value; OnPropertyChanged(); }
+        }
+
+        private Thickness collisionBorderPadding;
+        public Thickness CollisionBorderPadding
+        {
+            get => collisionBorderPadding;
+            set { collisionBorderPadding = value; OnPropertyChanged(); }
+        }
+
+        private Thickness contentStackPanelMargin;
+        public Thickness ContentStackPanelMargin
+        {
+            get => contentStackPanelMargin;
+            set { contentStackPanelMargin = value; OnPropertyChanged(); }
+        }
+
+        private CornerRadius containerBorderCornerRadius;
+        public CornerRadius ContainerBorderCornerRadius
+        {
+            get => containerBorderCornerRadius;
+            set { containerBorderCornerRadius = value; OnPropertyChanged(); }
+        }
+
+        private Thickness containerBorderThickness;
+        public Thickness ContainerBorderThickness
+        {
+            get => containerBorderThickness;
+            set { containerBorderThickness = value; OnPropertyChanged(); }
+        }
+
+        private DoubleCollection containerBorderBrushStrokeDashArray;
+        public DoubleCollection ContainerBorderBrushStrokeDashArray
+        {
+            get => containerBorderBrushStrokeDashArray;
+            set { containerBorderBrushStrokeDashArray = value; OnPropertyChanged(); }
+        }
+
+        private double containerBorderBrushStrokeThickness;
+        public double ContainerBorderBrushStrokeThickness
+        {
+            get => containerBorderBrushStrokeThickness;
+            set { containerBorderBrushStrokeThickness = value; OnPropertyChanged(); }
+        }
+
+        private double containerBorderBrushRadiusX;
+        public double ContainerBorderBrushRadiusX
+        {
+            get => containerBorderBrushRadiusX;
+            set { containerBorderBrushRadiusX = value; OnPropertyChanged(); }
+        }
+
+        private double containerBorderBrushRadiusY;
+        public double ContainerBorderBrushRadiusY
+        {
+            get => containerBorderBrushRadiusY;
+            set { containerBorderBrushRadiusY = value; OnPropertyChanged(); }
+        }
+
+        private double nodeCollisionBorderWidth;
+        public double NodeCollisionBorderWidth
+        {
+            get => nodeCollisionBorderWidth;
+            set { nodeCollisionBorderWidth = value; OnPropertyChanged(); }
+        }
+
+        private double nodeCollisionBorderHeight;
+        public double NodeCollisionBorderHeight
+        {
+            get => nodeCollisionBorderHeight;
+            set { nodeCollisionBorderHeight = value; OnPropertyChanged(); }
+        }
+
+        private CornerRadius nodeCollisionBorderCornerRadius;
+        public CornerRadius NodeCollisionBorderCornerRadius
+        {
+            get => nodeCollisionBorderCornerRadius;
+            set { nodeCollisionBorderCornerRadius = value; OnPropertyChanged(); }
+        }
+
+        private Thickness nodeCollisionBorderParentMargin;
+        public Thickness NodeCollisionBorderParentMargin
+        {
+            get => nodeCollisionBorderParentMargin;
+            set { nodeCollisionBorderParentMargin = value; OnPropertyChanged(); }
+        }
+
+        private Thickness nodeCollisionBorderChildMargin;
+        public Thickness NodeCollisionBorderChildMargin
+        {
+            get => nodeCollisionBorderChildMargin;
+            set { nodeCollisionBorderChildMargin = value; OnPropertyChanged(); }
+        }
+
+        private Thickness nodeCollisionBorderThickness;
+        public Thickness NodeCollisionBorderThickness
+        {
+            get => nodeCollisionBorderThickness;
+            set { nodeCollisionBorderThickness = value; OnPropertyChanged(); }
+        }
+
+        private DoubleCollection nodeCollisionBorderStrokeDashArray;
+        public DoubleCollection NodeCollisionBorderStrokeDashArray
+        {
+            get => nodeCollisionBorderStrokeDashArray;
+            set { nodeCollisionBorderStrokeDashArray = value; OnPropertyChanged(); }
+        }
+
+        private double nodeCollisionBorderStrokeThickness;
+        public double NodeCollisionBorderStrokeThickness
+        {
+            get => nodeCollisionBorderStrokeThickness;
+            set { nodeCollisionBorderStrokeThickness = value; OnPropertyChanged(); }
+        }
+
+        private double nodeCollisionBorderRadiusX;
+        public double NodeCollisionBorderRadiusX
+        {
+            get => nodeCollisionBorderRadiusX;
+            set { nodeCollisionBorderRadiusX = value; OnPropertyChanged(); }
+        }
+
+        private double nodeCollisionBorderRadiusY;
+        public double NodeCollisionBorderRadiusY
+        {
+            get => nodeCollisionBorderRadiusY;
+            set { nodeCollisionBorderRadiusY = value; OnPropertyChanged(); }
+        }
+
+        private double nodeTitleIconWidth;
+        public double NodeTitleIconWidth
+        {
+            get => nodeTitleIconWidth;
+            set { nodeTitleIconWidth = value; OnPropertyChanged(); }
+        }
+
+        private double nodeTitleIconHeight;
+        public double NodeTitleIconHeight
+        {
+            get => nodeTitleIconHeight;
+            set { nodeTitleIconHeight = value; OnPropertyChanged(); }
+        }
+
+        private double nodeTitleDialogueTextBlockWidth;
+        public double NodeTitleDialogueTextBlockWidth
+        {
+            get => nodeTitleDialogueTextBlockWidth;
+            set { nodeTitleDialogueTextBlockWidth = value; OnPropertyChanged(); }
+        }
+
+        private double nodeTitleFontSize;
+        public double NodeTitleFontSize
+        {
+            get => nodeTitleFontSize;
+            set { nodeTitleFontSize = value; OnPropertyChanged(); }
+        }
+
+        private Thickness nodeTitleMargin;
+        public Thickness NodeTitleMargin
+        {
+            get => nodeTitleMargin;
+            set { nodeTitleMargin = value; OnPropertyChanged(); }
+        }
+
+        private double rTBFontSize;
+        public double RTBFontSize
+        {
+            get => rTBFontSize;
+            set { rTBFontSize = value; OnPropertyChanged(); }
+        }
+
+        private Thickness nodeChoiceMargin;
+        public Thickness NodeChoiceMargin
+        {
+            get => nodeChoiceMargin;
+            set { nodeChoiceMargin = value; OnPropertyChanged(); }
+        }
+
+        private double nodeChoiceRTBWidth;
+        public double NodeChoiceRTBWidth
+        {
+            get => nodeChoiceRTBWidth;
+            set { nodeChoiceRTBWidth = value; OnPropertyChanged(); }
+        }
+
+        private Thickness nodeCharacterMargin;
+        public Thickness NodeCharacterMargin
+        {
+            get => nodeCharacterMargin;
+            set { nodeCharacterMargin = value; OnPropertyChanged(); }
+        }
+
+        private double nodeCharacterIconWidth;
+        public double NodeCharacterIconWidth
+        {
+            get => nodeCharacterIconWidth;
+            set { nodeCharacterIconWidth = value; OnPropertyChanged(); }
+        }
+
+        private double nodeCharacterIconHeight;
+        public double NodeCharacterIconHeight
+        {
+            get => nodeCharacterIconHeight;
+            set { nodeCharacterIconHeight = value; OnPropertyChanged(); }
+        }
+
+        private double nodeRTBWidth;
+        public double NodeRTBWidth
+        {
+            get => nodeRTBWidth;
+            set { nodeRTBWidth = value; OnPropertyChanged(); }
+        }
+
+        private double nodeMarkFontSize;
+        public double NodeMarkFontSize
+        {
+            get => nodeMarkFontSize;
+            set { nodeMarkFontSize = value; OnPropertyChanged(); }
+        }
+
+        private Thickness nodeMarkMargin;
+        public Thickness NodeMarkMargin
+        {
+            get => nodeMarkMargin;
+            set { nodeMarkMargin = value; OnPropertyChanged(); }
+        }
+
+        private Thickness nodeDialogueMargin;
+        public Thickness NodeDialogueMargin
+        {
+            get => nodeDialogueMargin;
+            set { nodeDialogueMargin = value; OnPropertyChanged(); }
+        }
+
+        private double nodeDialogueIconWidth;
+        public double NodeDialogueIconWidth
+        {
+            get => nodeDialogueIconWidth;
+            set { nodeDialogueIconWidth = value; OnPropertyChanged(); }
+        }
+
+        private double nodeDialogueIconHeight;
+        public double NodeDialogueIconHeight
+        {
+            get => nodeDialogueIconHeight;
+            set { nodeDialogueIconHeight = value; OnPropertyChanged(); }
+        }
+
+        private double nodeDialogueRTBWidth;
+        public double NodeDialogueRTBWidth
+        {
+            get => nodeDialogueRTBWidth;
+            set { nodeDialogueRTBWidth = value; OnPropertyChanged(); }
+        }
+
+        private double nodeOrderTextBlockFontSize;
+        public double NodeOrderTextBlockFontSize
+        {
+            get => nodeOrderTextBlockFontSize;
+            set { nodeOrderTextBlockFontSize = value; OnPropertyChanged(); }
+        }
+
+        private Thickness nodeOrderTextBlockMargin;
+        public Thickness NodeOrderTextBlockMargin
+        {
+            get => nodeOrderTextBlockMargin;
+            set { nodeOrderTextBlockMargin = value; OnPropertyChanged(); }
+        }
+        #endregion
 
 
         public RelayCommand<Canvas> CanvasRMBDown => new RelayCommand<Canvas>(execute => StartRecordingMouseMovement());
@@ -128,6 +405,9 @@ namespace UDSH.ViewModel
             workspaceServices.ControlButtonPressed += WorkspaceServices_ControlButtonPressed;
             workspaceServices.ControlButtonReleased += WorkspaceServices_ControlButtonReleased;
             workspaceServices.Reset += WorkspaceServices_Reset;
+
+            Scale = 1.0;
+            SetDefaultValues();
         }
 
         private void WorkspaceServices_ControlButtonPressed(object? sender, Model.InputEventArgs e)
@@ -139,29 +419,65 @@ namespace UDSH.ViewModel
 
                 if (e.KeyEvent.Key == Key.Add)
                 {
-                    
+                    if (Scale < 1)
+                    {
+                        Scale += 0.1;
+                        SetDefaultValues();
+                        UpdatePathsThickness();
+                        _ = UpdatePathsLocation();
+                    }
                 }
 
                 if (e.KeyEvent.Key == Key.Subtract)
                 {
-                    // TODO: Handle object scaling
-                    // I tried zooming in and out by scaling the canvas. IT WAS A NIGHTMARE. The better approach is to scale the objects.
-                    // I faced problems with lines start and end positions when updating the node's height.
-                    // I DON'T WANT TO LOSE MY SANITY, SO I WILL DO IT LATER.
-                    // MOHAMMED PLEASE DON'T FORGET TO HANDLE THIS IT IS NOT NORMAL FOR THE USER TO KEEP SCROLLING THROUGH THESE KINDA BIG NODES!!!
-
-                    /*foreach (var obj in MainCanvas.Children)
+                    if (Scale > 0.5)
                     {
-                        if (obj is DialogueNode node)
-                        {
-                            node.UpdateNodeScale(0.5);
-                        }
-                    }*/
+                        Scale -= 0.1;
+                        SetDefaultValues();
+                        UpdatePathsThickness();
+                        _ = UpdatePathsLocation();
+                    }
                 }
 
                 if (e.KeyEvent.Key == Key.Delete)
                 {
                     DeleteBranchNode();
+                }
+            }
+        }
+
+        private void UpdatePathsThickness()
+        {
+            Stack<BranchNode> BranchNodeStack = new Stack<BranchNode>();
+            BranchNode? CurrentBranchNode = null;
+
+            foreach (BranchNode branchNode in Roots)
+                BranchNodeStack.Push(branchNode);
+
+            while (BranchNodeStack.Count > 0)
+            {
+                CurrentBranchNode = BranchNodeStack.Pop();
+                
+                foreach (Path CurrentChildPath in CurrentBranchNode.dialogueNode.ChildrenPath)
+                {
+                    CurrentChildPath.StrokeThickness = 5 * Scale;
+                }
+
+                foreach (BranchNode branchNode in CurrentBranchNode.SubBranchNodes)
+                    BranchNodeStack.Push(branchNode);
+            }
+        }
+
+        private async Task UpdatePathsLocation()
+        {
+            await Task.Delay(60);
+
+            foreach (var obj in MainCanvas.Children)
+            {
+                if (obj is DialogueNode node)
+                {
+                    node.UpdatePathsLocation();
+
                 }
             }
         }
@@ -307,7 +623,7 @@ namespace UDSH.ViewModel
             if (group!.Children[1] is ScaleTransform scaleTransform)
             {
                 CanvasScaleTransform = scaleTransform;
-                Scale = CanvasScaleTransform.ScaleX; // ScaleX == ScaleY
+                //Scale = CanvasScaleTransform.ScaleX; // ScaleX == ScaleY
             }
         }
 
@@ -487,8 +803,8 @@ namespace UDSH.ViewModel
                 CurrentPath = new Path
                 {
                     Fill = (dialogueNode.NodeType == BNType.Choice) ? ChoiceContainerBackgroundSCB : DialogueContainerBackgroundSCB,
-                    StrokeThickness = 5,
-                    StrokeDashArray = new DoubleCollection { 2, 2 },
+                    StrokeThickness = 5 * Scale,
+                    StrokeDashArray = new DoubleCollection { 2 * Scale, 2 * Scale },
                     IsHitTestVisible = false,
                     StrokeDashCap = PenLineCap.Round,
                     StrokeStartLineCap = PenLineCap.Round,
@@ -498,8 +814,8 @@ namespace UDSH.ViewModel
                 gradient = new LinearGradientBrush
                 {
                     MappingMode = BrushMappingMode.Absolute,
-                    StartPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55)),
-                    EndPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55)),
+                    StartPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55 * Scale)),
+                    EndPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55 * Scale)),
                     GradientStops = new GradientStopCollection
                     {
                         new GradientStop((dialogueNode.NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor, 0),
@@ -512,8 +828,8 @@ namespace UDSH.ViewModel
 
                 line = new LineGeometry
                 {
-                    StartPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55)),
-                    EndPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55))
+                    StartPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55 * Scale)),
+                    EndPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55 * Scale))
                 };
                 group.Children.Add(line);
                 CurrentPath.Data = group;
@@ -525,7 +841,7 @@ namespace UDSH.ViewModel
                 {
                     if (obj is DialogueNode node)
                     {
-                        if (node != dialogueNode)
+                        if (node != dialogueNode && node.IsRootNode == false)
                         {
                             node.OpacityAnimation(1, node.ParentNodeCollisionBorder);
                             node.ParentNodeCollisionBorder.IsHitTestVisible = true;
@@ -545,7 +861,6 @@ namespace UDSH.ViewModel
 
                 DialogueNode? dialogueNode = sender as DialogueNode;
 
-                // Temp
                 BranchNode ParentBranchNode = GetParentBranchNode();
 
                 if (ParentBranchNode != null)
@@ -593,7 +908,7 @@ namespace UDSH.ViewModel
                 CurrentDialogueNode.ChildrenPath.Add(CurrentPath);
                 dialogueNode!.ParentsPath.Add(CurrentPath);
 
-                line.EndPoint = new Point(dialogueNode!.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + 55);
+                line.EndPoint = new Point(dialogueNode!.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + 55 * Scale);
                 gradient.EndPoint = line.EndPoint;
                 CurrentPath.StrokeDashArray = new DoubleCollection();
 
@@ -614,7 +929,6 @@ namespace UDSH.ViewModel
 
                 if (dialogueNode.NodeType == BNType.Choice)
                 {
-                    //dialogueNode.UpdateNodeOrder(ParentBranchNode.SubBranchNodes.Count);
                     UpdateChoiceNodesOrder(ParentBranchNode);
                 }
             }
@@ -730,6 +1044,8 @@ namespace UDSH.ViewModel
                     }
                 }
 
+                CurrentBranchNode!.ParentNodes.Clear();
+
                 CurrentBranchNode.dialogueNode.IsSubRootNode = true;
                 Roots.Add(CurrentBranchNode);
 
@@ -770,6 +1086,8 @@ namespace UDSH.ViewModel
                             ChildBranchNode.dialogueNode.ParentNodeCollisionBorder.IsHitTestVisible = false;
                         }
                     }
+
+                    CurrentBranchNode.SubBranchNodes.Clear();
 
                     CurrentBranchNode.dialogueNode.OpacityAnimation(0, CurrentBranchNode.dialogueNode.ChildrenNodeCollisionBorder);
                     CurrentBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Child);
@@ -1009,6 +1327,58 @@ namespace UDSH.ViewModel
         public void UpdateCurrentActiveWorkspaceID()
         {
             _workspaceServices.SetCurrentActiveWorkspaceID(_workspaceServicesID);
+        }
+
+        private void SetDefaultValues()
+        {
+            CollisionBorderWidth = 600 * Scale;
+            CollisionBorderHeight = 300 * Scale;
+            CollisionBorderPadding = new Thickness(40 * Scale);
+
+            ContentStackPanelMargin = new Thickness(10 * Scale);
+
+            ContainerBorderCornerRadius = new CornerRadius(10 * Scale);
+            ContainerBorderThickness = new Thickness(5 * Scale);
+            ContainerBorderBrushStrokeDashArray = new DoubleCollection { 4 * Scale, 2 * Scale };
+            ContainerBorderBrushStrokeThickness = 5 * Scale;
+            ContainerBorderBrushRadiusX = 10 * Scale;
+            ContainerBorderBrushRadiusY = 10 * Scale;
+
+            NodeCollisionBorderWidth = 30 * Scale;
+            NodeCollisionBorderHeight = 30 * Scale;
+            NodeCollisionBorderCornerRadius = new CornerRadius(30 * Scale);
+            NodeCollisionBorderParentMargin = new Thickness(0, 0, 0, 10 * Scale);
+            NodeCollisionBorderChildMargin = new Thickness(0, 10 * Scale, 0, 0);
+            NodeCollisionBorderThickness = new Thickness(2 * Scale);
+            NodeCollisionBorderStrokeDashArray = new DoubleCollection { 2 * Scale, 2 * Scale };
+            NodeCollisionBorderStrokeThickness = 2 * Scale;
+            NodeCollisionBorderRadiusX = 30 * Scale;
+            NodeCollisionBorderRadiusY = 30 * Scale;
+
+            NodeTitleIconWidth = 40 * Scale;
+            NodeTitleIconHeight = 40 * Scale;
+            NodeTitleDialogueTextBlockWidth = 430 * Scale;
+            NodeTitleFontSize = 18 * Scale;
+            NodeTitleMargin = new Thickness(10 * Scale, 0, 0, 0);
+
+            RTBFontSize = 18 * Scale;
+            NodeChoiceMargin = new Thickness(0, 0, 0, 0);
+            NodeChoiceRTBWidth = 450 * Scale;
+
+            NodeCharacterMargin = new Thickness(0, 10 * Scale, 0, 0);
+            NodeCharacterIconWidth = 20 * Scale;
+            NodeCharacterIconHeight = 20 * Scale;
+            NodeRTBWidth = 450 * Scale;
+            NodeMarkFontSize = 15 * Scale;
+            NodeMarkMargin = new Thickness(10 * Scale, 0, 0, 0);
+
+            NodeDialogueMargin = new Thickness(0, 10 * Scale, 0, 0);
+            NodeDialogueIconWidth = 20 * Scale;
+            NodeDialogueIconHeight = 20 * Scale;
+            NodeDialogueRTBWidth = 450 * Scale;
+
+            NodeOrderTextBlockFontSize = 20 * Scale;
+            NodeOrderTextBlockMargin = new Thickness(0, 0, 10 * Scale, 0);
         }
     }
 }

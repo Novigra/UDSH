@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Windows.Controls;
 using UDSH.ViewModel;
 
 namespace UDSH.View
