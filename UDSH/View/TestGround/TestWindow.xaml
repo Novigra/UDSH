@@ -9,14 +9,7 @@
         Title="TestWindow" Height="450" Width="800">
     <Grid Background="#393E46">
         <ScrollViewer Style="{StaticResource OpenFilesScrollViewer}" HorizontalScrollBarVisibility="Visible" Loaded="ScrollViewer_Loaded"/>
-        <Border Width="300" Height="300" BorderThickness="0">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
-                    <GradientStop Color="#DBDBDB"/>
-                    <GradientStop Color="#00DBDBDB" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-        </Border>
+        
 
         <Path Fill="Blue" StrokeThickness="2">
             <Path.Stroke>
@@ -38,5 +31,6 @@
             </Path.Data>
         </Path>
 
+        <Border Width="300" Height="300" BorderThickness="0" Background="#9980E3EA"/>
     </Grid>
 </Window>

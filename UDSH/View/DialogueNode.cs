@@ -159,6 +159,8 @@ namespace UDSH.View
         public List<Path> ParentsPath { get; set; } = new List<Path>();
         public List<Path> ChildrenPath { get; set; } = new List<Path>();
 
+        public bool IsSelectedInMultiSelectionProcess { get; set; } = false;
+
         public event EventHandler<DroppedNodeEventArgs> NodePositionChanged;
         public event EventHandler NodeStartedConnectionProcess;
         public event EventHandler ChildNodeRequestedConnection;
@@ -166,6 +168,9 @@ namespace UDSH.View
         public event EventHandler<BranchNodeRemovalEventArgs> NodeRequestedConnectionRemoval;
         public event EventHandler NodeSelectionChanged;
         public event EventHandler NodeRequestedOrderUpdate;
+        public event EventHandler NodeRequestedSelectedNodesToMove;
+        public event EventHandler NodeRequestedSelectedNodesToStop;
+        public event EventHandler NodeRequestedSelectedNodesRemoval;
 
         public DialogueNode(BNType NodeType, NodePosition nodePosition, MKBUserControlViewModel viewModel, bool isRootNode = false, bool isSubRootNode = false)
         {
@@ -183,7 +188,9 @@ namespace UDSH.View
         }
 
         public DialogueNode()
-        {}
+        {
+            Construct();
+        }
 
         #region Node Construction
         private void Construct()
@@ -646,6 +653,8 @@ namespace UDSH.View
 
         private void CollisionBorder_MouseEnter(object sender, MouseEventArgs e)
         {
+            ViewModel.CanReceiveCanvasMouseInput = false;
+
             if (ViewModel.IsConnecting == false && ChildrenPath.Count == 0)
             {
                 OpacityAnimation(1, ChildrenNodeCollisionBorder);
@@ -657,6 +666,8 @@ namespace UDSH.View
 
         private void CollisionBorder_MouseLeave(object sender, MouseEventArgs e)
         {
+            ViewModel.CanReceiveCanvasMouseInput = true;
+
             if (ViewModel.IsConnecting == false && ChildrenPath.Count == 0)
             {
                 OpacityAnimation(0, ChildrenNodeCollisionBorder);
@@ -688,7 +699,11 @@ namespace UDSH.View
             Mouse.Capture((UIElement)sender);
             LeftMousePressed = true;
 
-            UpdateNodeSelectionStatus();
+            if (IsSelectedInMultiSelectionProcess == false)
+            {
+                UpdateNodeSelectionStatus();
+                NodeRequestedSelectedNodesRemoval.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void DialogueNode_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -696,12 +711,15 @@ namespace UDSH.View
             LeftMousePressed = false;
             Mouse.Capture(null);
 
+            if (IsSelectedInMultiSelectionProcess == true)
+                NodeRequestedSelectedNodesToStop.Invoke(this, EventArgs.Empty);
+
             NodePositionChanged.Invoke(this, new DroppedNodeEventArgs(this, Position));
         }
 
         private void DialogueNode_MouseMove(object sender, MouseEventArgs e)
         {
-            if(LeftMousePressed == true)
+            if(LeftMousePressed == true && IsSelectedInMultiSelectionProcess == false)
             {
                 Point CurrentMousePosition = Mouse.GetPosition(null);
                 double DeltaX = InitialMousePosition.X - CurrentMousePosition.X;
@@ -768,24 +786,30 @@ namespace UDSH.View
                     NodeRequestedOrderUpdate.Invoke(this, EventArgs.Empty);
                 }
             }
+            else if (LeftMousePressed == true && IsSelectedInMultiSelectionProcess == true)
+            {
+                if (IsSelectedInMultiSelectionProcess == true)
+                    NodeRequestedSelectedNodesToMove.Invoke(this, EventArgs.Empty);
+            }
         }
 
         private void ParentNodeCollisionBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ChildNodeRequestedConnection.Invoke(this, new EventArgs());
-
-            if (ParentsPath.Count > 0 && ViewModel.CanRemoveConnectedNodesPaths == true)
+            if (ParentsPath.Count > 0 && ViewModel.CanRemoveConnectedNodesPaths == true && ViewModel.IsConnecting == false)
             {
                 NodeRequestedConnectionRemoval.Invoke(this, new BranchNodeRemovalEventArgs(ParentsPath, ConnectionType.Parent));
                 ParentsPath.Clear();
             }
+
+            if (ViewModel.IsConnecting == true)
+                ChildNodeRequestedConnection.Invoke(this, new EventArgs());
         }
 
         private void ChildrenNodeCollisionBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             InitialMousePosition = Mouse.GetPosition(null);
 
-            if (ChildrenPath.Count > 0 && ViewModel.CanRemoveConnectedNodesPaths == true)
+            if (ChildrenPath.Count > 0 && ViewModel.CanRemoveConnectedNodesPaths == true && ViewModel.IsConnecting == false)
             {
                 NodeRequestedConnectionRemoval.Invoke(this, new BranchNodeRemovalEventArgs(ChildrenPath, ConnectionType.Child));
                 ChildrenPath.Clear();
@@ -833,7 +857,7 @@ namespace UDSH.View
                  *      - Ctrl + press on the connected collision to remove connections. [Done]
                  *      - For now, we won't add arrow shape for head. If everything went smoothly then give the arrow head a try. [No Need for arrow head, the design changed!]
                  *      - Delete node. [DONE] [ONLY THROUGH SHORTCUT. ADD RIGHT-CLICK IMPLEMENTATION]
-                 *      - Multi selection and move multiple nodes simultaneously.
+                 *      - Multi selection and move multiple nodes simultaneously. [DONE] [Don't forget to add the ability to delete multi-selected nodes!]
                  *      - Scaling [NIGHTMARE BUT MUST BE DONE] [DONE BROOOOOO]. BUT, We scale each item instead of the canvas as it is less destructive.
                  *      - Branch Node can't have both Dialogue and player choice in the children list. Only one of them can exist! [DONE]
                  *      - Undo/Redo
@@ -1042,7 +1066,8 @@ namespace UDSH.View
 
         private void RTB_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            UpdateNodeSelectionStatus();
+            if (IsSelectedInMultiSelectionProcess == false)
+                UpdateNodeSelectionStatus();
         }
         #endregion
 
@@ -1141,6 +1166,31 @@ namespace UDSH.View
         {
             NodeOrder = Index;
             NodeOrderTextBlock.Text = NodeOrder.ToString() + ".";
+        }
+
+        public void UpdateNodeMultiSelectionStatus(bool ShowSelectionVisual)
+        {
+            if (ShowSelectionVisual == true)
+            {
+                if (ViewModel.SelectedDialogueNode != null)
+                {
+                    ViewModel.SelectedDialogueNode.ContainerBorder.BorderBrush = null;
+                    ViewModel.SelectedDialogueNode = null;
+                    ViewModel.SelectedBranchNode = null;
+                }
+
+                UpdateContainerBorderBrush();
+            }
+            else
+            {
+                IsSelectedInMultiSelectionProcess = false;
+                ContainerBorder.BorderBrush = null;
+            }
+        }
+
+        public void ResetSelectedNodeVisual()
+        {
+            ContainerBorder.BorderBrush = null;
         }
     }
 }

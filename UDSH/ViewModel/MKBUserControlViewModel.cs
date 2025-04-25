@@ -24,7 +24,7 @@ namespace UDSH.ViewModel
 
     public class MKBUserControlViewModel : ViewModelBase
     {
-        public event EventHandler UpdateElementsScale;
+        public event EventHandler DialogueNodeAddedInMultiSelectionBox;
 
         private readonly string _workspaceServicesID;
         private readonly IWorkspaceServices _workspaceServices;
@@ -81,6 +81,7 @@ namespace UDSH.ViewModel
         private TranslateTransform CanvasTranslateTransform { get; set; }
         private ScaleTransform CanvasScaleTransform { get; set; }
         public double Scale { get; set; }
+        public bool CanReceiveCanvasMouseInput { get; set; } = true;
 
         private SolidColorBrush DialogueContainerBackgroundSCB { get; set; } = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E0911A"));
         private Color DialogueContainerBackgroundColor { get; set; } = (Color)ColorConverter.ConvertFromString("#E0911A");
@@ -371,11 +372,36 @@ namespace UDSH.ViewModel
         #endregion
 
 
+        #region Selection Border Properties
+        private SelectionBorderBox CurrentSelectionBorderBox { get; set; }
+
+        private double selectionBorderWidth = 20;
+        public double SelectionBorderWidth
+        {
+            get => selectionBorderWidth;
+            set { selectionBorderWidth = value; OnPropertyChanged(); }
+        }
+
+        private double selectionBorderHeight = 20;
+        public double SelectionBorderHeight
+        {
+            get => selectionBorderHeight;
+            set { selectionBorderHeight = value; OnPropertyChanged(); }
+        }
+
+        private bool StartMultiSelectionProcess { get; set; } = false;
+        private Point InitialLeftMouseMultiSelectionPosition { get; set; }
+        public List<BranchNode> MultiSelectedBranchNodes { get; set; } = new List<BranchNode>();
+        private bool CanMoveMultiSelectedBranchNodes { get; set; } = false;
+        #endregion
+
         public RelayCommand<Canvas> CanvasRMBDown => new RelayCommand<Canvas>(execute => StartRecordingMouseMovement());
         public RelayCommand<Canvas> CanvasRMBUp => new RelayCommand<Canvas>(execute => StopRecordingMouseMovement());
-        public RelayCommand<Canvas> CanvasMouseMove => new RelayCommand<Canvas>(execute => UpdateCanvasTransform());
+        public RelayCommand<Canvas> CanvasMouseMove => new RelayCommand<Canvas>(execute => HandleCanvasMouseMove());
 
-        public RelayCommand<Border> CanvasLMBDown => new RelayCommand<Border>(execute => HandleCanvasLeftMouseButton());
+        public RelayCommand<MouseButtonEventArgs> CanvasLMBDown => new RelayCommand<MouseButtonEventArgs>(HandleCanvasLeftMouseButtonDown);
+        public RelayCommand<MouseButtonEventArgs> CanvasLMBUp => new RelayCommand<MouseButtonEventArgs>(HandleCanvasLeftMouseButtonUp);
+
         /*public RelayCommand<Border> BorderLMBUp => new RelayCommand<Border>(execute => StopRecordingNodeMovement());
         public RelayCommand<Border> BorderMouseMove => new RelayCommand<Border>(execute => UpdateNodeLocation());*/
 
@@ -477,7 +503,6 @@ namespace UDSH.ViewModel
                 if (obj is DialogueNode node)
                 {
                     node.UpdatePathsLocation();
-
                 }
             }
         }
@@ -519,6 +544,21 @@ namespace UDSH.ViewModel
             MouseMoved = false;
         }
 
+        private void HandleCanvasMouseMove()
+        {
+            UpdateCanvasTransform();
+
+            if (StartMultiSelectionProcess == true)
+            {
+                UpdateSelectionBoxSize();
+            }
+
+            if (CanMoveMultiSelectedBranchNodes == true)
+            {
+                UpdateMultiSelectedNodes();
+            }
+        }
+
         private void UpdateCanvasTransform()
         {
             if (IsRightMouseButtonPressed == true)
@@ -552,8 +592,10 @@ namespace UDSH.ViewModel
             }
         }
 
-        private void HandleCanvasLeftMouseButton()
+        private void HandleCanvasLeftMouseButtonDown(MouseButtonEventArgs e)
         {
+            InitialLeftMouseMultiSelectionPosition = Mouse.GetPosition(MainCanvas);
+
             if (IsConnecting == true && CanRemoveConnectedNodesPaths == true)
             {
                 IsConnecting = false;
@@ -576,6 +618,138 @@ namespace UDSH.ViewModel
                     }
                 }
             }
+
+            if (e.ClickCount == 2 && CanReceiveCanvasMouseInput == true)
+            {
+                CreateSelectionBorderBox();
+
+                Debug.WriteLine($"Number Of Clicks: {e.ClickCount}");
+            }
+
+            if (CanReceiveCanvasMouseInput == true)
+                RemoveSelectedNode();
+        }
+
+        private void HandleCanvasLeftMouseButtonUp(MouseButtonEventArgs e)
+        {
+            StartMultiSelectionProcess = false;
+
+            Point CurrentMultiSelectionMousePosition = Mouse.GetPosition(MainCanvas);
+
+            if (CurrentSelectionBorderBox != null && InitialLeftMouseMultiSelectionPosition != CurrentMultiSelectionMousePosition)
+            {
+                GetDialogueNodesInSelectionBorder();
+
+                SelectionBorderWidth = 0;
+                SelectionBorderHeight = 0;
+                MainCanvas.Children.Remove(CurrentSelectionBorderBox);
+                CurrentSelectionBorderBox = null;
+            }
+            else if (CurrentSelectionBorderBox == null && InitialLeftMouseMultiSelectionPosition == CurrentMultiSelectionMousePosition && CanReceiveCanvasMouseInput == true)
+            {
+                RemoveSelectedBranchNodes();
+            }
+        }
+
+        private void CreateSelectionBorderBox()
+        {
+            CurrentSelectionBorderBox = new SelectionBorderBox(this);
+            MainCanvas.Children.Add(CurrentSelectionBorderBox);
+
+            InitialLeftMouseMultiSelectionPosition = Mouse.GetPosition(MainCanvas);
+            Canvas.SetLeft(CurrentSelectionBorderBox, InitialLeftMouseMultiSelectionPosition.X);
+            Canvas.SetTop(CurrentSelectionBorderBox, InitialLeftMouseMultiSelectionPosition.Y);
+
+            StartMultiSelectionProcess = true;
+        }
+
+        private void UpdateSelectionBoxSize()
+        {
+            Point CurrentMultiSelectionMousePosition = Mouse.GetPosition(MainCanvas);
+
+            SelectionBorderWidth = Math.Abs(CurrentMultiSelectionMousePosition.X - InitialLeftMouseMultiSelectionPosition.X);
+            SelectionBorderHeight = Math.Abs(CurrentMultiSelectionMousePosition.Y - InitialLeftMouseMultiSelectionPosition.Y);
+
+            Canvas.SetLeft(CurrentSelectionBorderBox, Math.Min(CurrentMultiSelectionMousePosition.X, InitialLeftMouseMultiSelectionPosition.X));
+            Canvas.SetTop(CurrentSelectionBorderBox, Math.Min(CurrentMultiSelectionMousePosition.Y, InitialLeftMouseMultiSelectionPosition.Y));
+        }
+
+        private void GetDialogueNodesInSelectionBorder()
+        {
+            MultiSelectedBranchNodes.Clear();
+            Stack<BranchNode> BranchNodeStack = new Stack<BranchNode>();
+
+            foreach (BranchNode branchNode in Roots)
+                BranchNodeStack.Push(branchNode);
+
+            while (BranchNodeStack.Count > 0)
+            {
+                BranchNode CurrentBranchNode = BranchNodeStack.Pop();
+
+                double NodeWidth = CurrentBranchNode.dialogueNode.ActualWidth;
+                double NodeHeight = CurrentBranchNode.dialogueNode.ActualHeight;
+                Rect NodeRect = new Rect(CurrentBranchNode.dialogueNode.Position.X, CurrentBranchNode.dialogueNode.Position.Y, NodeWidth, NodeHeight);
+
+                Rect SelectionBorderBoxRect = new Rect(Canvas.GetLeft(CurrentSelectionBorderBox), Canvas.GetTop(CurrentSelectionBorderBox), SelectionBorderWidth, SelectionBorderHeight);
+
+                if (NodeRect.IntersectsWith(SelectionBorderBoxRect))
+                {
+                    if (MultiSelectedBranchNodes.Contains(CurrentBranchNode) == false)
+                    {
+                        MultiSelectedBranchNodes.Add(CurrentBranchNode);
+                        CurrentBranchNode.dialogueNode.IsSelectedInMultiSelectionProcess = true;
+                        CurrentBranchNode.dialogueNode.UpdateNodeMultiSelectionStatus(true);
+                    }
+                }
+
+                foreach (BranchNode branchNode in CurrentBranchNode.SubBranchNodes)
+                    BranchNodeStack.Push(branchNode);
+            }
+        }
+
+        private void UpdateMultiSelectedNodes()
+        {
+            Point CurrentMousePosition = Mouse.GetPosition(MainCanvas);
+
+            double DeltaX = InitialLeftMouseMultiSelectionPosition.X - CurrentMousePosition.X;
+            double DeltaY = InitialLeftMouseMultiSelectionPosition.Y - CurrentMousePosition.Y;
+
+            foreach (BranchNode branchNode in MultiSelectedBranchNodes)
+            {
+                branchNode.dialogueNode.UpdateNodeLocation(branchNode.dialogueNode.Position.X - DeltaX, branchNode.dialogueNode.Position.Y - DeltaY);
+            }
+
+            InitialLeftMouseMultiSelectionPosition = CurrentMousePosition;
+        }
+
+        private void DialogueNode_NodeRequestedSelectedNodesToStop(object? sender, EventArgs e)
+        {
+            CanMoveMultiSelectedBranchNodes = false;
+        }
+
+        private void RemoveSelectedBranchNodes()
+        {
+            foreach(BranchNode branchNode in MultiSelectedBranchNodes)
+            {
+                branchNode.dialogueNode.UpdateNodeMultiSelectionStatus(false);
+            }
+
+            MultiSelectedBranchNodes.Clear();
+        }
+
+        private void RemoveSelectedNode()
+        {
+            if (SelectedBranchNode != null)
+            {
+                SelectedBranchNode.dialogueNode.ResetSelectedNodeVisual();
+                SelectedBranchNode = null;
+                SelectedDialogueNode = null;
+            }
+        }
+
+        private void DialogueNode_NodeRequestedSelectedNodesRemoval(object? sender, EventArgs e)
+        {
+            RemoveSelectedBranchNodes();
         }
 
         /*private void StopRecordingNodeMovement()
@@ -670,15 +844,18 @@ namespace UDSH.ViewModel
             Roots.Add(new BranchNode { dialogueNode = dialogueNode});
             MainCanvas.Children.Add(dialogueNode);
 
-            dialogueNode.NodePositionChanged += DialogueNode_NodePositionChanged;
-            dialogueNode.NodeStartedConnectionProcess += DialogueNode_NodeStartedConnectionProcess;
-            dialogueNode.ChildNodeRequestedConnection += DialogueNode_ChildNodeRequestedConnection;
-            dialogueNode.NodeRequestedConnectionRemoval += DialogueNode_NodeRequestedConnectionRemoval;
-            dialogueNode.NotifyPathConnectionColorUpdate += DialogueNode_NotifyPathConnectionColorUpdate;
-            dialogueNode.NodeSelectionChanged += DialogueNode_NodeSelectionChanged;
-            dialogueNode.NodeRequestedOrderUpdate += DialogueNode_NodeRequestedOrderUpdate;
+            SetDialogueNodeEvents(dialogueNode);
 
             CheckCanvasBordersCollision(dialogueNode, InitialMousePosition);
+        }
+
+        private void DialogueNode_NodeRequestedSelectedNodesToMove(object? sender, EventArgs e)
+        {
+            /*foreach (BranchNode branchNode in MultiSelectedBranchNodes)
+            {
+                branchNode.dialogueNode.UpdateSelectedNodeLocation();
+            }*/
+            CanMoveMultiSelectedBranchNodes = true;
         }
 
         private void DialogueNode_NodePositionChanged(object? sender, DroppedNodeEventArgs e)
@@ -1142,13 +1319,7 @@ namespace UDSH.ViewModel
 
             MainCanvas.Children.Add(dialogueNode);
 
-            dialogueNode.NodePositionChanged += DialogueNode_NodePositionChanged;
-            dialogueNode.NodeStartedConnectionProcess += DialogueNode_NodeStartedConnectionProcess;
-            dialogueNode.ChildNodeRequestedConnection += DialogueNode_ChildNodeRequestedConnection;
-            dialogueNode.NodeRequestedConnectionRemoval += DialogueNode_NodeRequestedConnectionRemoval;
-            dialogueNode.NotifyPathConnectionColorUpdate += DialogueNode_NotifyPathConnectionColorUpdate;
-            dialogueNode.NodeSelectionChanged += DialogueNode_NodeSelectionChanged;
-            dialogueNode.NodeRequestedOrderUpdate += DialogueNode_NodeRequestedOrderUpdate;
+            SetDialogueNodeEvents(dialogueNode);
 
             Point point = new Point();
             point.X = MainCanvas.ActualWidth / 2;
@@ -1319,6 +1490,9 @@ namespace UDSH.ViewModel
             TargetBranchNode.dialogueNode.NotifyPathConnectionColorUpdate -= DialogueNode_NotifyPathConnectionColorUpdate;
             TargetBranchNode.dialogueNode.NodeSelectionChanged -= DialogueNode_NodeSelectionChanged;
             TargetBranchNode.dialogueNode.NodeRequestedOrderUpdate -= DialogueNode_NodeRequestedOrderUpdate;
+            TargetBranchNode.dialogueNode.NodeRequestedSelectedNodesToMove -= DialogueNode_NodeRequestedSelectedNodesToMove;
+            TargetBranchNode.dialogueNode.NodeRequestedSelectedNodesToStop -= DialogueNode_NodeRequestedSelectedNodesToStop;
+            TargetBranchNode.dialogueNode.NodeRequestedSelectedNodesRemoval -= DialogueNode_NodeRequestedSelectedNodesRemoval;
 
             TargetBranchNode.dialogueNode = null;
             TargetBranchNode = null;
@@ -1327,6 +1501,20 @@ namespace UDSH.ViewModel
         public void UpdateCurrentActiveWorkspaceID()
         {
             _workspaceServices.SetCurrentActiveWorkspaceID(_workspaceServicesID);
+        }
+
+        private void SetDialogueNodeEvents(DialogueNode dialogueNode)
+        {
+            dialogueNode.NodePositionChanged += DialogueNode_NodePositionChanged;
+            dialogueNode.NodeStartedConnectionProcess += DialogueNode_NodeStartedConnectionProcess;
+            dialogueNode.ChildNodeRequestedConnection += DialogueNode_ChildNodeRequestedConnection;
+            dialogueNode.NodeRequestedConnectionRemoval += DialogueNode_NodeRequestedConnectionRemoval;
+            dialogueNode.NotifyPathConnectionColorUpdate += DialogueNode_NotifyPathConnectionColorUpdate;
+            dialogueNode.NodeSelectionChanged += DialogueNode_NodeSelectionChanged;
+            dialogueNode.NodeRequestedOrderUpdate += DialogueNode_NodeRequestedOrderUpdate;
+            dialogueNode.NodeRequestedSelectedNodesToMove += DialogueNode_NodeRequestedSelectedNodesToMove;
+            dialogueNode.NodeRequestedSelectedNodesToStop += DialogueNode_NodeRequestedSelectedNodesToStop;
+            dialogueNode.NodeRequestedSelectedNodesRemoval += DialogueNode_NodeRequestedSelectedNodesRemoval;
         }
 
         private void SetDefaultValues()
