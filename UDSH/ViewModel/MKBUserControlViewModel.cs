@@ -29,7 +29,7 @@ namespace UDSH.ViewModel
         private readonly string _workspaceServicesID;
         private readonly IWorkspaceServices _workspaceServices;
         private Window MainWindow;
-        private Canvas MainCanvas;
+        public Canvas MainCanvas { get; set; }
         private Style CanvasEllipseStyle;
         private EllipseCanvas MainEllipseCanvas;
         private bool IsRightMouseButtonPressed;
@@ -369,6 +369,34 @@ namespace UDSH.ViewModel
             get => nodeOrderTextBlockMargin;
             set { nodeOrderTextBlockMargin = value; OnPropertyChanged(); }
         }
+
+        private Thickness rootCollisionBorderPadding;
+        public Thickness RootCollisionBorderPadding
+        {
+            get => rootCollisionBorderPadding;
+            set { rootCollisionBorderPadding = value; OnPropertyChanged(); }
+        }
+
+        private double rootContainerBorderHeight;
+        public double RootContainerBorderHeight
+        {
+            get => rootContainerBorderHeight;
+            set { rootContainerBorderHeight = value; OnPropertyChanged(); }
+        }
+
+        private double rootContainerImageWidth;
+        public double RootContainerImageWidth
+        {
+            get => rootContainerImageWidth;
+            set { rootContainerImageWidth = value; OnPropertyChanged(); }
+        }
+
+        private double rootContainerImageHeight;
+        public double RootContainerImageHeight
+        {
+            get => rootContainerImageHeight;
+            set { rootContainerImageHeight = value; OnPropertyChanged(); }
+        }
         #endregion
 
 
@@ -395,6 +423,58 @@ namespace UDSH.ViewModel
         private bool CanMoveMultiSelectedBranchNodes { get; set; } = false;
         #endregion
 
+        private int selectedResizeIndex;
+        public int SelectedResizeIndex
+        {
+            get => selectedResizeIndex;
+            set { selectedResizeIndex = value; OnPropertyChanged(); }
+        }
+
+        private string selectedResizeText;
+        public string SelectedResizeText
+        {
+            get => selectedResizeText;
+            set { selectedResizeText = value; OnPropertyChanged(); }
+        }
+
+        private bool mkcConnectionProcessStarted = false;
+        public bool MkcConnectionProcessStarted
+        {
+            get => mkcConnectionProcessStarted;
+            set { mkcConnectionProcessStarted = value; OnPropertyChanged(); }
+        }
+
+        private string searchText = string.Empty;
+        public string SearchText
+        {
+            get => searchText;
+            set { searchText = value; OnPropertyChanged(); }
+        }
+
+        private bool canResizeConnectionWindow = false;
+        public bool CanResizeConnectionWindow
+        {
+            get => canResizeConnectionWindow;
+            set { canResizeConnectionWindow = value; OnPropertyChanged(); }
+        }
+
+        private double resizeConnectionWindowHeight = 400;
+        public double ResizeConnectionWindowHeight
+        {
+            get => resizeConnectionWindowHeight;
+            set { resizeConnectionWindowHeight = value; OnPropertyChanged(); }
+        }
+
+        private bool isMouseInsideResizeControl = false;
+        public bool IsMouseInsideResizeControl
+        {
+            get => isMouseInsideResizeControl;
+            set { isMouseInsideResizeControl = value; OnPropertyChanged(); }
+        }
+
+
+        private Point InitialResizeConnectionMousePosition;
+
         public RelayCommand<Canvas> CanvasRMBDown => new RelayCommand<Canvas>(execute => StartRecordingMouseMovement());
         public RelayCommand<Canvas> CanvasRMBUp => new RelayCommand<Canvas>(execute => StopRecordingMouseMovement());
         public RelayCommand<Canvas> CanvasMouseMove => new RelayCommand<Canvas>(execute => HandleCanvasMouseMove());
@@ -413,6 +493,13 @@ namespace UDSH.ViewModel
         public RelayCommand<Border> BottomCollisionLoaded => new RelayCommand<Border>(SetBottomCollision);
 
         public RelayCommand<string> AddDialogueNode => new RelayCommand<string>(CreateDialogueNode);
+        public RelayCommand<object> ResizeSelectionChanged => new RelayCommand<object>(execute => UpdateElementsSize());
+
+        public RelayCommand<MouseButtonEventArgs> StartResizingConnectionHeight => new RelayCommand<MouseButtonEventArgs>(HandleResizeControlLeftMouseButtonDown);
+        public RelayCommand<MouseButtonEventArgs> StopResizingConnectionHeight => new RelayCommand<MouseButtonEventArgs>(HandleResizeControlLeftMouseButtonUp);
+        public RelayCommand<MouseEventArgs> ResizingConnectionMouseMove => new RelayCommand<MouseEventArgs>(HandleResizeControlMouseMove);
+        public RelayCommand<object> MouseEnteredResizeControl => new RelayCommand<object>(execute => UpdateResizeControlStatus());
+        public RelayCommand<object> MouseLeavedResizeControl => new RelayCommand<object>(execute => UpdateResizeControlStatus());
 
         public MKBUserControlViewModel(IWorkspaceServices workspaceServices)
         {
@@ -420,6 +507,7 @@ namespace UDSH.ViewModel
 
             _workspaceServicesID = Guid.NewGuid().ToString();
             _workspaceServices.SetCurrentActiveWorkspaceID(_workspaceServicesID);
+            _workspaceServices.StartMKCConnectionButtonClicked += _workspaceServices_StartMKCConnectionButtonClicked;
 
             MainWindow = workspaceServices.MainWindow;
             MainWindow.SizeChanged += MainWindow_SizeChanged;
@@ -434,6 +522,9 @@ namespace UDSH.ViewModel
 
             Scale = 1.0;
             SetDefaultValues();
+
+            SelectedResizeIndex = 0;
+            SelectedResizeText = "100%";
         }
 
         private void WorkspaceServices_ControlButtonPressed(object? sender, Model.InputEventArgs e)
@@ -448,6 +539,7 @@ namespace UDSH.ViewModel
                     if (Scale < 1)
                     {
                         Scale += 0.1;
+                        UpdateResizeBoxData();
                         SetDefaultValues();
                         UpdatePathsThickness();
                         _ = UpdatePathsLocation();
@@ -456,9 +548,10 @@ namespace UDSH.ViewModel
 
                 if (e.KeyEvent.Key == Key.Subtract)
                 {
-                    if (Scale > 0.5)
+                    if (Math.Round(Scale, 1) > 0.5)
                     {
                         Scale -= 0.1;
+                        UpdateResizeBoxData();
                         SetDefaultValues();
                         UpdatePathsThickness();
                         _ = UpdatePathsLocation();
@@ -468,6 +561,7 @@ namespace UDSH.ViewModel
                 if (e.KeyEvent.Key == Key.Delete)
                 {
                     DeleteBranchNode();
+                    DeleteMultiSelectedNodes();
                 }
             }
         }
@@ -605,7 +699,7 @@ namespace UDSH.ViewModel
                 {
                     if (obj is DialogueNode node)
                     {
-                        if (node.ParentsPath.Count == 0)
+                        if (node.ParentsPath.Count == 0 && node.IsRootNode == false)
                         {
                             node.OpacityAnimation(0, node.ParentNodeCollisionBorder);
                             node.ParentNodeCollisionBorder.IsHitTestVisible = false;
@@ -977,6 +1071,10 @@ namespace UDSH.ViewModel
         {
             if (sender is DialogueNode dialogueNode)
             {
+                double YOffset = 55;
+                if (dialogueNode.IsRootNode == true)
+                    YOffset = 15;
+
                 CurrentPath = new Path
                 {
                     Fill = (dialogueNode.NodeType == BNType.Choice) ? ChoiceContainerBackgroundSCB : DialogueContainerBackgroundSCB,
@@ -991,8 +1089,8 @@ namespace UDSH.ViewModel
                 gradient = new LinearGradientBrush
                 {
                     MappingMode = BrushMappingMode.Absolute,
-                    StartPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55 * Scale)),
-                    EndPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55 * Scale)),
+                    StartPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - YOffset * Scale)),
+                    EndPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - YOffset * Scale)),
                     GradientStops = new GradientStopCollection
                     {
                         new GradientStop((dialogueNode.NodeType == BNType.Choice) ? ChoiceContainerBackgroundColor : DialogueContainerBackgroundColor, 0),
@@ -1005,8 +1103,8 @@ namespace UDSH.ViewModel
 
                 line = new LineGeometry
                 {
-                    StartPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55 * Scale)),
-                    EndPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - 55 * Scale))
+                    StartPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - YOffset * Scale)),
+                    EndPoint = new Point(dialogueNode.Position.X + (dialogueNode.ActualWidth / 2), dialogueNode.Position.Y + (dialogueNode.ActualHeight - YOffset * Scale))
                 };
                 group.Children.Add(line);
                 CurrentPath.Data = group;
@@ -1050,7 +1148,7 @@ namespace UDSH.ViewModel
                         {
                             if (obj is DialogueNode node)
                             {
-                                if (node.ParentsPath.Count == 0)
+                                if (node.ParentsPath.Count == 0 && node.IsRootNode == false)
                                 {
                                     node.OpacityAnimation(0, node.ParentNodeCollisionBorder);
                                     node.ParentNodeCollisionBorder.IsHitTestVisible = false;
@@ -1093,7 +1191,7 @@ namespace UDSH.ViewModel
                 {
                     if (obj is DialogueNode node)
                     {
-                        if (node.ParentsPath.Count == 0)
+                        if (node.ParentsPath.Count == 0 && node.IsRootNode == false)
                         {
                             node.OpacityAnimation(0, node.ParentNodeCollisionBorder);
                             node.ParentNodeCollisionBorder.IsHitTestVisible = false;
@@ -1475,10 +1573,94 @@ namespace UDSH.ViewModel
                     UpdateChoiceNodesOrder(CurrentBranchNode.ParentNodes[0]);
             }
 
+            Roots.Remove(CurrentBranchNode);
             SelectedDialogueNode = null;
 
             MainCanvas.Children.Remove(CurrentBranchNode.dialogueNode);
             CleanDialogueNode(CurrentBranchNode);
+        }
+
+        // Combine Single and Multi-Select Deletion the algo is similar!!!
+        private void DeleteMultiSelectedNodes()
+        {
+            if (MultiSelectedBranchNodes.Count == 0)
+                return;
+
+            foreach (BranchNode CurrentBranchNode in MultiSelectedBranchNodes)
+            {
+                CurrentBranchNode.dialogueNode.UpdateNodeMultiSelectionStatus(false);
+
+                if (CurrentBranchNode.dialogueNode.IsRootNode == true)
+                    continue;
+
+                foreach (BranchNode ParentBranchNode in CurrentBranchNode!.ParentNodes)
+                {
+                    ParentBranchNode.SubBranchNodes.Remove(CurrentBranchNode);
+
+                    foreach (Path ParentBranchNodeChildrenPath in ParentBranchNode.dialogueNode.ChildrenPath.ToList())
+                    {
+                        foreach (Path CurrentBranchNodeParentsPath in CurrentBranchNode.dialogueNode.ParentsPath)
+                        {
+                            if (CurrentBranchNodeParentsPath == ParentBranchNodeChildrenPath)
+                            {
+                                ParentBranchNode.dialogueNode.ChildrenPath.Remove(CurrentBranchNodeParentsPath);
+                                CurrentBranchNode.dialogueNode.ParentsPath.Remove(CurrentBranchNodeParentsPath);
+
+                                MainCanvas.Children.Remove(CurrentBranchNodeParentsPath);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (ParentBranchNode.SubBranchNodes.Count == 0)
+                    {
+                        ParentBranchNode.dialogueNode.OpacityAnimation(0, ParentBranchNode.dialogueNode.ChildrenNodeCollisionBorder);
+                        ParentBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Child);
+                    }
+                }
+
+                foreach (BranchNode ChildBranchNode in CurrentBranchNode!.SubBranchNodes)
+                {
+                    ChildBranchNode.ParentNodes.Remove(CurrentBranchNode);
+
+                    foreach (Path ChildBranchNodeChildrenPath in ChildBranchNode.dialogueNode.ParentsPath.ToList())
+                    {
+                        foreach (Path CurrentBranchNodeParentsPath in CurrentBranchNode.dialogueNode.ChildrenPath)
+                        {
+                            if (CurrentBranchNodeParentsPath == ChildBranchNodeChildrenPath)
+                            {
+                                ChildBranchNode.dialogueNode.ParentsPath.Remove(CurrentBranchNodeParentsPath);
+                                CurrentBranchNode.dialogueNode.ChildrenPath.Remove(CurrentBranchNodeParentsPath);
+
+                                MainCanvas.Children.Remove(CurrentBranchNodeParentsPath);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (ChildBranchNode.ParentNodes.Count == 0)
+                    {
+                        ChildBranchNode.dialogueNode.IsSubRootNode = true;
+                        Roots.Add(ChildBranchNode);
+
+                        ChildBranchNode.dialogueNode.OpacityAnimation(0, ChildBranchNode.dialogueNode.ParentNodeCollisionBorder);
+                        ChildBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Parent);
+                        ChildBranchNode.dialogueNode.ParentNodeCollisionBorder.IsHitTestVisible = false;
+                    }
+                }
+
+                if (CurrentBranchNode.dialogueNode.NodeType == BNType.Choice)
+                {
+                    if (CurrentBranchNode != null && CurrentBranchNode.ParentNodes.Count > 0)
+                        UpdateChoiceNodesOrder(CurrentBranchNode.ParentNodes[0]);
+                }
+
+                Roots.Remove(CurrentBranchNode);
+                MainCanvas.Children.Remove(CurrentBranchNode.dialogueNode);
+                CleanDialogueNode(CurrentBranchNode);
+            }
+
+            MultiSelectedBranchNodes.Clear();
         }
 
         private void CleanDialogueNode(BranchNode TargetBranchNode)
@@ -1522,9 +1704,11 @@ namespace UDSH.ViewModel
             CollisionBorderWidth = 600 * Scale;
             CollisionBorderHeight = 300 * Scale;
             CollisionBorderPadding = new Thickness(40 * Scale);
+            RootCollisionBorderPadding = new Thickness(260 * Scale, 0, 260 * Scale, 0);
 
             ContentStackPanelMargin = new Thickness(10 * Scale);
 
+            RootContainerBorderHeight = 80 * Scale;
             ContainerBorderCornerRadius = new CornerRadius(10 * Scale);
             ContainerBorderThickness = new Thickness(5 * Scale);
             ContainerBorderBrushStrokeDashArray = new DoubleCollection { 4 * Scale, 2 * Scale };
@@ -1567,6 +1751,121 @@ namespace UDSH.ViewModel
 
             NodeOrderTextBlockFontSize = 20 * Scale;
             NodeOrderTextBlockMargin = new Thickness(0, 0, 10 * Scale, 0);
+
+            RootContainerImageWidth = 40 * Scale;
+            RootContainerImageHeight = 40 * Scale;
+        }
+
+        private void UpdateElementsSize()
+        {
+            switch (SelectedResizeIndex)
+            {
+                case 0:
+                    SelectedResizeText = "100%";
+                    Scale = 1.0;
+                    SetDefaultValues();
+                    UpdatePathsThickness();
+                    _ = UpdatePathsLocation();
+                    break;
+                case 1:
+                    SelectedResizeText = "90%";
+                    Scale = 0.9;
+                    SetDefaultValues();
+                    UpdatePathsThickness();
+                    _ = UpdatePathsLocation();
+                    break;
+                case 2:
+                    SelectedResizeText = "80%";
+                    Scale = 0.8;
+                    SetDefaultValues();
+                    UpdatePathsThickness();
+                    _ = UpdatePathsLocation();
+                    break;
+                case 3:
+                    SelectedResizeText = "70%";
+                    Scale = 0.7;
+                    SetDefaultValues();
+                    UpdatePathsThickness();
+                    _ = UpdatePathsLocation();
+                    break;
+                case 4:
+                    SelectedResizeText = "60%";
+                    Scale = 0.6;
+                    SetDefaultValues();
+                    UpdatePathsThickness();
+                    _ = UpdatePathsLocation();
+                    break;
+                case 5:
+                    SelectedResizeText = "50%";
+                    Scale = 0.5;
+                    SetDefaultValues();
+                    UpdatePathsThickness();
+                    _ = UpdatePathsLocation();
+                    break;
+            }
+        }
+
+        private void UpdateResizeBoxData()
+        {
+            SelectedResizeText = ((int)(Scale * 100)).ToString() + "%";
+
+            switch (Math.Round(Scale, 1))
+            {
+                case 1:
+                    SelectedResizeIndex = 0;
+                    break;
+                case 0.9:
+                    SelectedResizeIndex = 1;
+                    break;
+                case 0.8:
+                    SelectedResizeIndex = 2;
+                    break;
+                case 0.7:
+                    SelectedResizeIndex = 3;
+                    break;
+                case 0.6:
+                    SelectedResizeIndex = 4;
+                    break;
+                case 0.5:
+                    SelectedResizeIndex = 5;
+                    break;
+            }
+        }
+
+        private void _workspaceServices_StartMKCConnectionButtonClicked(object? sender, EventArgs e)
+        {
+            MkcConnectionProcessStarted = true;
+        }
+
+        private void HandleResizeControlLeftMouseButtonDown(MouseButtonEventArgs e)
+        {
+            CanResizeConnectionWindow = true;
+            InitialResizeConnectionMousePosition = Mouse.GetPosition((IInputElement)e.Source);
+            Mouse.Capture((IInputElement)e.Source);
+        }
+
+        private void HandleResizeControlLeftMouseButtonUp(MouseButtonEventArgs e)
+        {
+            CanResizeConnectionWindow = false;
+            Mouse.Capture(null);
+        }
+
+        private void HandleResizeControlMouseMove(MouseEventArgs e)
+        {
+            if (CanResizeConnectionWindow == true)
+            {
+                Point CurrentMousePosition = Mouse.GetPosition((IInputElement)e.Source);
+                double DeltaY = InitialResizeConnectionMousePosition.Y - CurrentMousePosition.Y;
+                double NewHeight = ResizeConnectionWindowHeight + DeltaY;
+                
+                if (NewHeight < MainWindow.Height - 300 && NewHeight > 200)
+                    ResizeConnectionWindowHeight = NewHeight;
+            }
+        }
+
+        private void UpdateResizeControlStatus()
+        {
+            IsMouseInsideResizeControl = !IsMouseInsideResizeControl;
         }
     }
 }

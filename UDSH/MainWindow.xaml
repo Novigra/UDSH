@@ -4,6 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:UDSH"
         xmlns:userControls="clr-namespace:UDSH.View"
         KeyDown="Window_KeyDown"
@@ -32,5 +33,152 @@
         <Grid x:Name="SideGrid" Grid.Row="1" HorizontalAlignment="Left" Margin="0,40,0,0">
         </Grid>
 
+        <Grid x:Name="BNButtonSpaceGrid" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Opacity="1" IsHitTestVisible="False" Panel.ZIndex="2">
+            <StackPanel Orientation="Vertical">
+                <Border Margin="0,0,0,10" Width="400" Height="{Binding ResizeConnectionWindowHeight}" CornerRadius="10" Background="Green">
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Button HorizontalAlignment="Right" Width="50" Height="30" Background="Red" Margin="0,10,10,0"/>
+                            <Border HorizontalAlignment="Center" CornerRadius="5" Width="50" Height="30" Background="#CBCBCB" Margin="0,10,0,0">
+                                <Grid>
+                                    <Image Source="/Resource/ResizeHeightControl.png" Margin="3">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                                                <Setter Property="IsHitTestVisible" Value="False"/>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMouseInsideResizeControl}" Value="True">
+                                                        <DataTrigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.EnterActions>
+                                                        <DataTrigger.ExitActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.ExitActions>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                    <Image Source="/Resource/ResizeHeightControlOrange.png" Margin="3" Opacity="0">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                                                <Setter Property="IsHitTestVisible" Value="False"/>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMouseInsideResizeControl}" Value="True">
+                                                        <DataTrigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.EnterActions>
+                                                        <DataTrigger.ExitActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.ExitActions>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </Grid>
+
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseInsideResizeControl}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                            To="#393E46" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                                            To="#CBCBCB" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                                        <i:InvokeCommandAction Command="{Binding StartResizingConnectionHeight}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+                                    
+                                    <i:EventTrigger EventName="MouseMove">
+                                        <i:InvokeCommandAction Command="{Binding ResizingConnectionMouseMove}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+
+                                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                                        <i:InvokeCommandAction Command="{Binding StopResizingConnectionHeight}" PassEventArgsToCommand="True"/>
+                                    </i:EventTrigger>
+
+                                    <i:EventTrigger EventName="MouseEnter">
+                                        <i:InvokeCommandAction Command="{Binding MouseEnteredResizeControl}"/>
+                                    </i:EventTrigger>
+
+                                    <i:EventTrigger EventName="MouseLeave">
+                                        <i:InvokeCommandAction Command="{Binding MouseLeavedResizeControl}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Border>
+                        </Grid>
+
+                        <ListView Height="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=ActualHeight, Converter={StaticResource WidthConverter}, ConverterParameter=120}" Margin="10,10,10,0"/>
+
+                        <Border HorizontalAlignment="Stretch" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
+                                CornerRadius="4" Margin="6,6,6,0" Height="40" FocusVisualStyle="{x:Null}">
+                            <!-- Searchbar Details -->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" FocusVisualStyle="{x:Null}">
+                                <!-- Text Container -->
+                                <Grid Margin="4,0,0,0" VerticalAlignment="Center">
+                                    <!-- Search Highlight -->
+                                    <TextBlock Text="Search..." Foreground="{StaticResource SearchTextHeaderSCB}" Panel.ZIndex="0" FontSize="18" FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SearchText}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <!-- Search Text -->
+                                    <TextBox x:Name="UserSearchBox" Background="{StaticResource MainBlankSCB}" FontSize="18" FontWeight="SemiBold" Width="370"
+                                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
+                                    </TextBox>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+                <Button Style="{StaticResource BNConnectToMKC}" Click="MKCConnectButton_Click" HorizontalAlignment="Left"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

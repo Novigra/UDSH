@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;

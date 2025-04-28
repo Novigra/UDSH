@@ -14,15 +14,18 @@ namespace UDSH
 {
     public partial class MainWindow : Window
     {
-        private IServiceProvider _serviceProvider;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IWorkspaceServices _workspaceServices;
         public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
             _serviceProvider = serviceProvider;
-
+            
             var session = serviceProvider.GetRequiredService<Session>();
             session.mainWindow = this;
+
+            _workspaceServices = _serviceProvider.GetRequiredService<IWorkspaceServices>();
 
             var header = serviceProvider.GetRequiredService<IHeaderServices>();
             HeaderUserControl headerUserControl = new HeaderUserControl(new HeaderUserControlViewModel(header));
@@ -50,9 +53,29 @@ namespace UDSH
         private void Header_FileStructureSelectionChanged(object? sender, FileSystem e)
         {
             if (e != null)
+            {
                 TestContent.Content = e.userControl;
+
+                if (e.userControl is MKBUserControl control)
+                {
+                    BNButtonSpaceGrid.IsHitTestVisible = true;
+                    BNButtonSpaceGrid.Opacity = 1;
+
+                    DataContext = control.DataContext;
+                }
+                else
+                {
+                    BNButtonSpaceGrid.IsHitTestVisible = false;
+                    BNButtonSpaceGrid.Opacity = 0;
+                }
+            }
             else
+            {
                 TestContent.Content = new DefaultUserControl(_serviceProvider.GetRequiredService<IUserDataServices>());
+
+                BNButtonSpaceGrid.IsHitTestVisible = false;
+                BNButtonSpaceGrid.Opacity = 0;
+            }
         }
 
         private void HeaderMovement(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -62,26 +85,27 @@ namespace UDSH
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            var WorkspaceServices = _serviceProvider.GetRequiredService<IWorkspaceServices>();
-            WorkspaceServices.OnControlButtonPressed(e);
+            _workspaceServices.OnControlButtonPressed(e);
         }
 
         private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            var WorkspaceServices = _serviceProvider.GetRequiredService<IWorkspaceServices>();
-            WorkspaceServices.OnControlButtonReleased(e);
+            _workspaceServices.OnControlButtonReleased(e);
         }
 
         private void Window_Activated(object sender, EventArgs e)
         {
-            var WorkspaceServices = _serviceProvider.GetRequiredService<IWorkspaceServices>();
-            WorkspaceServices.OnReset();
+            _workspaceServices.OnReset();
         }
 
         private void Window_Deactivated(object sender, EventArgs e)
         {
-            var WorkspaceServices = _serviceProvider.GetRequiredService<IWorkspaceServices>();
-            WorkspaceServices.OnReset();
+            _workspaceServices.OnReset();
+        }
+
+        private void MKCConnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            _workspaceServices.OnStartMKCConnectionButtonClicked();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace UDSH.Services
         event EventHandler<InputEventArgs> ControlButtonPressed;
         event EventHandler<InputEventArgs> ControlButtonReleased;
         event EventHandler Reset;
+        event EventHandler StartMKCConnectionButtonClicked;
         IUserDataServices UserDataServices { get; }
         Window MainWindow { get; set; }
         string CurrentActiveWorkspaceID { get; }
@@ -17,5 +18,6 @@ namespace UDSH.Services
         void OnControlButtonPressed(System.Windows.Input.KeyEventArgs keyEventArgs);
         void OnControlButtonReleased(System.Windows.Input.KeyEventArgs keyEventArgs);
         void OnReset();
+        void OnStartMKCConnectionButtonClicked();
     }
 }

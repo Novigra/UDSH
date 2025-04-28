@@ -1342,6 +1342,103 @@
         </Setter>
     </Style>
 
+    <Style TargetType="Button" x:Key="BNConnectToMKC">
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="ConnectBorder" Background="#FFFFFF" Height="50" Width="50" CornerRadius="10">
+                        <Grid>
+                            <StackPanel x:Name="RequestConnectStackPanel" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" RenderTransformOrigin="0.5,0.5" Opacity="1">
+                                <TextBlock x:Name="ConnectLabel" Style="{StaticResource DefaultText}" Foreground="#393E46" Text="Connect To MKC File" Opacity="0"/>
+                                <Image Source="/Resource/MKCLink.png" Width="20" Height="20" Margin="10,0,0,0"/>
+
+                                <StackPanel.RenderTransform>
+                                    <TransformGroup>
+                                        <TranslateTransform x:Name="StackTranslate" X="-5" Y="0"/>
+                                    </TransformGroup>
+                                </StackPanel.RenderTransform>
+                            </StackPanel>
+
+                            <StackPanel x:Name="ConnectionProcessStackPanel" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0">
+                                <TextBlock x:Name="ConnectionProcessLabel" Style="{StaticResource DefaultText}" Foreground="#393E46" Text="Connecting"/>
+                                <Ellipse x:Name="Dot1" Fill="#393E46" Width="5" Height="5" Margin="5,0,0,0" Opacity="0">
+                                    <Ellipse.RenderTransform>
+                                        <TransformGroup>
+                                            <TranslateTransform X="0" Y="5"/>
+                                        </TransformGroup>
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                                <Ellipse x:Name="Dot2" Fill="#393E46" Width="5" Height="5" Margin="5,0,0,0" Opacity="0">
+                                    <Ellipse.RenderTransform>
+                                        <TransformGroup>
+                                            <TranslateTransform X="0" Y="5"/>
+                                        </TransformGroup>
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                                <Ellipse x:Name="Dot3" Fill="#393E46" Width="5" Height="5" Margin="5,0,0,0" Opacity="0">
+                                    <Ellipse.RenderTransform>
+                                        <TransformGroup>
+                                            <TranslateTransform X="0" Y="5"/>
+                                        </TransformGroup>
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
+                                <Condition Binding="{Binding MkcConnectionProcessStarted}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectLabel" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="StackTranslate" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Width" To="240" Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectLabel" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="StackTranslate" Storyboard.TargetProperty="X" To="-5" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Width" To="50" Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+
+                        <DataTrigger Binding="{Binding MkcConnectionProcessStarted}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectLabel" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="StackTranslate" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Width" To="240" Duration="0:0:0.5"/>
+
+                                        <DoubleAnimation Storyboard.TargetName="RequestConnectStackPanel" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Width" To="400" Duration="0:0:0.8"/>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectionProcessStackPanel" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="Dot1" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.8" Duration="0:0:0.5" AutoReverse="True" RepeatBehavior="Forever"/>
+                                        <DoubleAnimation Storyboard.TargetName="Dot2" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:1.0" Duration="0:0:0.5" AutoReverse="True" RepeatBehavior="Forever"/>
+                                        <DoubleAnimation Storyboard.TargetName="Dot3" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:1.2" Duration="0:0:0.5" AutoReverse="True" RepeatBehavior="Forever"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Testing Ground -->
     <Style TargetType="Button" x:Key="ButtonInterp">
         <Setter Property="Background" Value="{StaticResource MainUnselectedButtonSCB}"/>

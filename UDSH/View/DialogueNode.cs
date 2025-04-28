@@ -181,7 +181,14 @@ namespace UDSH.View
             IsRootNode = isRootNode;
             IsSubRootNode = isSubRootNode;
 
-            Construct();
+            if (IsRootNode == true)
+            {
+                ConstructRoot();
+            }
+            else
+            {
+                Construct();
+            }
 
             Canvas.SetLeft(this, Position.X);
             Canvas.SetTop(this, Position.Y);
@@ -193,6 +200,71 @@ namespace UDSH.View
         }
 
         #region Node Construction
+        private void ConstructRoot()
+        {
+            ChildrenNodeCollisionBorder = CreateNodeAttachmentCollision(false);
+
+            CollisionBorder = new Border
+            {
+                Background = new SolidColorBrush(Colors.Transparent),
+                Width = ViewModel.CollisionBorderWidth,
+                Padding = ViewModel.RootCollisionBorderPadding
+            };
+
+            CollisionBorder.SetBinding(FrameworkElement.WidthProperty, new Binding(nameof(ViewModel.CollisionBorderWidth)));
+            CollisionBorder.SetBinding(Border.PaddingProperty, new Binding(nameof(ViewModel.RootCollisionBorderPadding)));
+
+            ContainerBorder = new Border
+            {
+                Background = DialogueContainerBackgroundColor,
+                Height = ViewModel.RootContainerBorderHeight,
+                CornerRadius = ViewModel.ContainerBorderCornerRadius,
+                BorderThickness = ViewModel.ContainerBorderThickness
+            };
+
+            ContainerBorder.SetBinding(Border.HeightProperty, new Binding(nameof(ViewModel.RootContainerBorderHeight)));
+            ContainerBorder.SetBinding(Border.CornerRadiusProperty, new Binding(nameof(ViewModel.ContainerBorderCornerRadius)));
+            ContainerBorder.SetBinding(Border.BorderThicknessProperty, new Binding(nameof(ViewModel.ContainerBorderThickness)));
+
+
+            Image ContainerImage = new Image
+            {
+                Source = new BitmapImage(new Uri("pack://application:,,,/Resource/HorusEyeBlack.png")),
+                Width = ViewModel.RootContainerImageWidth,
+                Height = ViewModel.RootContainerImageHeight,
+                IsHitTestVisible = false
+            };
+
+            ContainerImage.SetBinding(Image.WidthProperty, new Binding(nameof(ViewModel.RootContainerImageWidth)));
+            ContainerImage.SetBinding(Image.HeightProperty, new Binding(nameof(ViewModel.RootContainerImageHeight)));
+
+            StackPanel NodeStackPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical
+            };
+
+
+            // Build
+            Content = CollisionBorder;
+            FocusVisualStyle = null;
+            CollisionBorder.Child = NodeStackPanel;
+            ContainerBorder.Child = ContainerImage;
+
+            NodeStackPanel.Children.Add(ContainerBorder);
+            NodeStackPanel.Children.Add(ChildrenNodeCollisionBorder);
+
+            CollisionBorder.MouseEnter += CollisionBorder_MouseEnter;
+            CollisionBorder.MouseLeave += CollisionBorder_MouseLeave;
+
+            ContainerBorder.MouseLeftButtonDown += DialogueNode_MouseLeftButtonDown;
+            ContainerBorder.MouseLeftButtonUp += DialogueNode_MouseLeftButtonUp;
+            ContainerBorder.MouseMove += DialogueNode_MouseMove;
+
+            ChildrenNodeCollisionBorder.Child.MouseLeftButtonDown += ChildrenNodeCollisionBorder_MouseLeftButtonDown;
+            ChildrenNodeCollisionBorder.Child.MouseLeftButtonUp += ChildrenNodeCollisionBorder_MouseLeftButtonUp;
+            ChildrenNodeCollisionBorder.Child.MouseMove += ChildrenNodeCollisionBorder_MouseMove;
+        }
+
         private void Construct()
         {
             ParentNodeCollisionBorder = CreateNodeAttachmentCollision(true);
@@ -231,6 +303,7 @@ namespace UDSH.View
 
             // Build
             Content = CollisionBorder;
+            FocusVisualStyle = null;
             CollisionBorder.Child = NodeStackPanel;
             ContainerBorder.Child = ContentStackPanel;
 
@@ -725,61 +798,24 @@ namespace UDSH.View
                 double DeltaX = InitialMousePosition.X - CurrentMousePosition.X;
                 double DeltaY = InitialMousePosition.Y - CurrentMousePosition.Y;
 
-                Canvas.SetLeft(this, Canvas.GetLeft(this) - DeltaX);
-                Canvas.SetTop(this, Canvas.GetTop(this) - DeltaY);
+                double NewLocationX = Canvas.GetLeft(this) - DeltaX;
+                double NewLocationY = Canvas.GetTop(this) - DeltaY;
 
-                Position.X = Canvas.GetLeft(this);
-                Position.Y = Canvas.GetTop(this);
+                if (NewLocationX > 0 && NewLocationX < ViewModel.MainCanvas.Width)
+                {
+                    Canvas.SetLeft(this, NewLocationX);
+                    Position.X = NewLocationX;
+                }
+
+                if (NewLocationY > 0 && NewLocationY < ViewModel.MainCanvas.Height)
+                {
+                    Canvas.SetTop(this, NewLocationY);
+                    Position.Y = NewLocationY;
+                }
 
                 InitialMousePosition = CurrentMousePosition;
 
-                Point NewEndPathEdgeLocation = new Point();
-                Point NewStartPathEdgeLocation = new Point();
-
-                foreach (Path path in ParentsPath)
-                {
-                    if (path.Data is GeometryGroup geometryGroup)
-                    {
-                        foreach (Geometry geometry in geometryGroup.Children)
-                        {
-                            if (geometry is LineGeometry line)
-                            {
-                                NewEndPathEdgeLocation.X = line.EndPoint.X - DeltaX;
-                                NewEndPathEdgeLocation.Y = line.EndPoint.Y - DeltaY;
-
-                                line.EndPoint = NewEndPathEdgeLocation;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (path.Stroke is LinearGradientBrush gradient)
-                    {
-                        gradient.EndPoint = NewEndPathEdgeLocation;
-                    }
-                }
-
-                foreach (Path path in ChildrenPath)
-                {
-                    if (path.Data is GeometryGroup geometryGroup)
-                    {
-                        foreach (Geometry geometry in geometryGroup.Children)
-                        {
-                            if (geometry is LineGeometry line)
-                            {
-                                NewStartPathEdgeLocation.X = line.StartPoint.X - DeltaX;
-                                NewStartPathEdgeLocation.Y = line.StartPoint.Y - DeltaY;
-                                line.StartPoint = NewStartPathEdgeLocation;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (path.Stroke is LinearGradientBrush gradient)
-                    {
-                        gradient.StartPoint = NewStartPathEdgeLocation;
-                    }
-                }
+                UpdatePathsLocation();
 
                 if (NodeType == BNType.Choice)
                 {
@@ -857,8 +893,8 @@ namespace UDSH.View
                  *      - Ctrl + press on the connected collision to remove connections. [Done]
                  *      - For now, we won't add arrow shape for head. If everything went smoothly then give the arrow head a try. [No Need for arrow head, the design changed!]
                  *      - Delete node. [DONE] [ONLY THROUGH SHORTCUT. ADD RIGHT-CLICK IMPLEMENTATION]
-                 *      - Multi selection and move multiple nodes simultaneously. [DONE] [Don't forget to add the ability to delete multi-selected nodes!]
-                 *      - Scaling [NIGHTMARE BUT MUST BE DONE] [DONE BROOOOOO]. BUT, We scale each item instead of the canvas as it is less destructive.
+                 *      - Multi selection and move multiple nodes simultaneously. [DONE] [Don't forget to add the ability to delete multi-selected nodes!] [Also DONE]
+                 *      - Scaling [NIGHTMARE BUT MUST BE DONE] [DONE BROOOOOO]. BUT, We scale each item instead of the canvas as it is less destructive. [DONE]
                  *      - Branch Node can't have both Dialogue and player choice in the children list. Only one of them can exist! [DONE]
                  *      - Undo/Redo
                  *      
@@ -1092,14 +1128,22 @@ namespace UDSH.View
             Position.X = Canvas.GetLeft(this);
             Position.Y = Canvas.GetTop(this);
 
+            double YOffset = 55;
+            if (IsRootNode == true)
+                YOffset = 15;
+
             UpdateParentsPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + 55 * ViewModel.Scale));
-            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55 * ViewModel.Scale));
+            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - YOffset * ViewModel.Scale));
         }
 
         public void UpdatePathsLocation()
         {
+            double YOffset = 55;
+            if (IsRootNode == true)
+                YOffset = 15;
+
             UpdateParentsPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + 55 * ViewModel.Scale));
-            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - 55 * ViewModel.Scale));
+            UpdateChildrenPathLocation(new Point(Position.X + (this.ActualWidth / 2), Position.Y + this.ActualHeight - YOffset * ViewModel.Scale));
         }
 
         public void UpdateNodeConnectionBackgroundColor(ConnectionType connectionType)

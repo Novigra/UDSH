@@ -102,6 +102,7 @@
     <None Remove="Resource\ConnectHighlight.png" />
     <None Remove="Resource\ContentState.png" />
     <None Remove="Resource\CurrentFiles.png" />
+    <None Remove="Resource\DarkBlueArrow.png" />
     <None Remove="Resource\Data\NewFileHighlightedTitle.json" />
     <None Remove="Resource\DeleteFile.png" />
     <None Remove="Resource\DirectoryFolderHighlight.png" />
@@ -143,6 +144,7 @@
     <None Remove="Resource\Max.png" />
     <None Remove="Resource\Medium.png" />
     <None Remove="Resource\Minimize.png" />
+    <None Remove="Resource\MKCLink.png" />
     <None Remove="Resource\MKC_Large.png" />
     <None Remove="Resource\MKM_Large.png" />
     <None Remove="Resource\More Details.png" />
@@ -167,6 +169,9 @@
     <None Remove="Resource\PreviewTexture.png" />
     <None Remove="Resource\ProfilePicture.png" />
     <None Remove="Resource\RenameState.png" />
+    <None Remove="Resource\Resize.png" />
+    <None Remove="Resource\ResizeHeightControl.png" />
+    <None Remove="Resource\ResizeHeightControlOrange.png" />
     <None Remove="Resource\RightArrow.png" />
     <None Remove="Resource\RightArrowOrange.png" />
     <None Remove="Resource\SaveAllFiles.png" />
@@ -267,6 +272,7 @@
     <Resource Include="Resource\Connect.png" />
     <Resource Include="Resource\ConnectHighlight.png" />
     <Resource Include="Resource\ContentState.png" />
+    <Resource Include="Resource\DarkBlueArrow.png" />
     <Resource Include="Resource\DirectoryFolderHighlight.png" />
   </ItemGroup>
 
@@ -332,6 +338,7 @@
     <Resource Include="Resource\LogoLarge.png" />
     <Resource Include="Resource\Man.png" />
     <Resource Include="Resource\Medium.png" />
+    <Resource Include="Resource\MKCLink.png" />
     <Resource Include="Resource\MKC_Large.png" />
     <Resource Include="Resource\MKM_Large.png" />
     <Resource Include="Resource\More Details.png" />
@@ -351,6 +358,9 @@
     <Resource Include="Resource\Placeholder.png" />
     <Resource Include="Resource\PreviewTexture.png" />
     <Resource Include="Resource\RenameState.png" />
+    <Resource Include="Resource\Resize.png" />
+    <Resource Include="Resource\ResizeHeightControl.png" />
+    <Resource Include="Resource\ResizeHeightControlOrange.png" />
     <Resource Include="Resource\RightArrow.png" />
     <Resource Include="Resource\RightArrowOrange.png" />
     <Resource Include="Resource\SaveAllFiles.png" />

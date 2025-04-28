@@ -230,7 +230,7 @@
                         <ScaleTransform ScaleX="1" ScaleY="1"/>
                     </TransformGroup>
                 </Canvas.RenderTransform>
-                
+
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonDown">
                         <i:InvokeCommandAction Command="{Binding CanvasLMBDown}" PassEventArgsToCommand="True"/>
@@ -261,14 +261,39 @@
             </Canvas>
         </Border>
 
-        <Grid x:Name="SideContentGrid" Grid.Row="1" HorizontalAlignment="Left" Panel.ZIndex="1">
+        <ComboBox Style="{StaticResource BNResizeComboBox}" Grid.Row="1" SelectedIndex="{Binding SelectedResizeIndex}" Width="100" Height="50" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Panel.ZIndex="1" FocusVisualStyle="{x:Null}">
+            <ComboBoxItem>
+                <TextBlock Style="{StaticResource DefaultText}" Text="100%" FontSize="16" Margin="0,0,0,0"/>
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <TextBlock Style="{StaticResource DefaultText}" Text="90%" FontSize="16" Margin="0,0,0,0"/>
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <TextBlock Style="{StaticResource DefaultText}" Text="80%" FontSize="16" Margin="0,0,0,0"/>
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <TextBlock Style="{StaticResource DefaultText}" Text="70%" FontSize="16" Margin="0,0,0,0"/>
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <TextBlock Style="{StaticResource DefaultText}" Text="60%" FontSize="16" Margin="0,0,0,0"/>
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <TextBlock Style="{StaticResource DefaultText}" Text="50%" FontSize="16" Margin="0,0,0,0"/>
+            </ComboBoxItem>
+
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Loaded">
-                    <i:InvokeCommandAction Command="{Binding SideContentGridLoaded}" CommandParameter="{Binding ElementName=SideContentGrid}"/>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding ResizeSelectionChanged}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-        </Grid>
+        </ComboBox>
 
+        <!--
+        <Grid Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Panel.ZIndex="2">
+            <Button Style="{StaticResource BNConnectToMKC}"/>
+        </Grid>
+        -->
+        
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="Loaded">
                 <i:InvokeCommandAction Command="{Binding ParentGridLoaded}" CommandParameter="{Binding ElementName=ParentGrid}"/>
