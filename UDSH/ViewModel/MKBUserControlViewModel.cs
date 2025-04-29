@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using UDSH.Model;
@@ -458,7 +459,7 @@ namespace UDSH.ViewModel
             set { canResizeConnectionWindow = value; OnPropertyChanged(); }
         }
 
-        private double resizeConnectionWindowHeight = 400;
+        private double resizeConnectionWindowHeight = 0;
         public double ResizeConnectionWindowHeight
         {
             get => resizeConnectionWindowHeight;
@@ -472,8 +473,31 @@ namespace UDSH.ViewModel
             set { isMouseInsideResizeControl = value; OnPropertyChanged(); }
         }
 
+        private bool isConnectedToMKCFile = false;
+        public bool IsConnectedToMKCFile
+        {
+            get => isConnectedToMKCFile;
+            set { isConnectedToMKCFile = value; OnPropertyChanged(); }
+        }
 
         private Point InitialResizeConnectionMousePosition;
+
+        private Project CurrentProject { get; set; }
+        private FileSystem AssociatedFile { get; set; }
+
+        private ObservableCollection<FileSystem> mKCFiles = new ObservableCollection<FileSystem>();
+        public ObservableCollection<FileSystem> MKCFiles
+        {
+            get => mKCFiles;
+            set { mKCFiles = value; OnPropertyChanged(); }
+        }
+
+        private FileSystem selectedMKCFile;
+        public FileSystem SelectedMKCFile
+        {
+            get => selectedMKCFile;
+            set { selectedMKCFile = value; OnPropertyChanged(); }
+        }
 
         public RelayCommand<Canvas> CanvasRMBDown => new RelayCommand<Canvas>(execute => StartRecordingMouseMovement());
         public RelayCommand<Canvas> CanvasRMBUp => new RelayCommand<Canvas>(execute => StopRecordingMouseMovement());
@@ -500,6 +524,9 @@ namespace UDSH.ViewModel
         public RelayCommand<MouseEventArgs> ResizingConnectionMouseMove => new RelayCommand<MouseEventArgs>(HandleResizeControlMouseMove);
         public RelayCommand<object> MouseEnteredResizeControl => new RelayCommand<object>(execute => UpdateResizeControlStatus());
         public RelayCommand<object> MouseLeavedResizeControl => new RelayCommand<object>(execute => UpdateResizeControlStatus());
+        public RelayCommand<object> CloseConnection => new RelayCommand<object>(execute => StopConnectionProcess());
+        public RelayCommand<object> SearchTextChange => new RelayCommand<object>(execute => UpdateSearchList());
+        public RelayCommand<MouseButtonEventArgs> ConnectBNToMKC => new RelayCommand<MouseButtonEventArgs>(HandleBNToMKCConnection);
 
         public MKBUserControlViewModel(IWorkspaceServices workspaceServices)
         {
@@ -519,12 +546,15 @@ namespace UDSH.ViewModel
             workspaceServices.ControlButtonPressed += WorkspaceServices_ControlButtonPressed;
             workspaceServices.ControlButtonReleased += WorkspaceServices_ControlButtonReleased;
             workspaceServices.Reset += WorkspaceServices_Reset;
+            workspaceServices.MKCSearchInitAnimFinished += WorkspaceServices_MKCSearchInitAnimFinished;
 
             Scale = 1.0;
             SetDefaultValues();
 
             SelectedResizeIndex = 0;
             SelectedResizeText = "100%";
+
+            LoadMKCFiles();
         }
 
         private void WorkspaceServices_ControlButtonPressed(object? sender, Model.InputEventArgs e)
@@ -1866,6 +1896,91 @@ namespace UDSH.ViewModel
         private void UpdateResizeControlStatus()
         {
             IsMouseInsideResizeControl = !IsMouseInsideResizeControl;
+        }
+
+        private void StopConnectionProcess()
+        {
+            MkcConnectionProcessStarted = false;
+        }
+
+        private void LoadMKCFiles()
+        {
+            CurrentProject = _workspaceServices.UserDataServices.ActiveProject;
+            foreach(var file in CurrentProject.Files)
+            {
+                MKCFiles.Add(file);
+            }
+
+            AssociatedFile = _workspaceServices.UserDataServices.CurrentSelectedFile;
+            if (AssociatedFile.ConnectedMKCFile != null)
+            {
+                IsConnectedToMKCFile = true;
+            }
+            else
+            {
+                IsConnectedToMKCFile = false;
+            }
+        }
+
+        private void UpdateSearchList()
+        {
+            List<FileSystem> files = new List<FileSystem>(MKCFiles);
+            files = files.OrderBy(file => IsMatch(file, SearchText) ? 0 : 1).ThenBy(file => SearchCalculations(file)).ToList();
+
+            MKCFiles.Clear();
+            foreach (FileSystem file in files)
+            {
+                MKCFiles.Add(file);
+            }
+        }
+
+        private bool IsMatch(FileSystem file, string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return true;
+
+            return file.FileName.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private int SearchCalculations(FileSystem file)
+        {
+            int SearchLength = SearchText.Length;
+            int NodesLength = file.FileName.Length;
+            var Matrix = new int[SearchLength + 1, NodesLength + 1];
+
+            if (NodesLength == 0)
+                return SearchLength;
+            else if (SearchLength == 0)
+                return NodesLength;
+
+            for (int i = 0; i <= SearchLength; ++i)
+                Matrix[i, 0] = i;
+            for (int j = 0; j <= NodesLength; ++j)
+                Matrix[0, j] = j;
+
+            for (int i = 1; i <= SearchLength; ++i)
+            {
+                for (int j = 1; j <= NodesLength; ++j)
+                {
+                    int cost = (string.Compare(SearchText[i - 1].ToString(), file.FileName[j - 1].ToString(), StringComparison.OrdinalIgnoreCase) == 0) ? 0 : 1;
+                    Matrix[i, j] = Math.Min(Math.Min(Matrix[i - 1, j] + 1, Matrix[i, j - 1] + 1), Matrix[i - 1, j - 1] + cost);
+                }
+            }
+
+            return Matrix[SearchLength, NodesLength];
+        }
+
+        private void HandleBNToMKCConnection(MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource is Border border && border.Name.Equals("BorderItem"))
+            {
+                Debug.WriteLine($"Item Name:{SelectedMKCFile}");
+            }
+        }
+
+        private void WorkspaceServices_MKCSearchInitAnimFinished(object? sender, double Height)
+        {
+            ResizeConnectionWindowHeight = Height;
         }
     }
 }

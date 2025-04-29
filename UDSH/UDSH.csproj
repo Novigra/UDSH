@@ -144,6 +144,7 @@
     <None Remove="Resource\Max.png" />
     <None Remove="Resource\Medium.png" />
     <None Remove="Resource\Minimize.png" />
+    <None Remove="Resource\MKCBN.png" />
     <None Remove="Resource\MKCLink.png" />
     <None Remove="Resource\MKC_Large.png" />
     <None Remove="Resource\MKM_Large.png" />
@@ -207,6 +208,7 @@
     <None Remove="Resource\White\SaveFile-White.png" />
     <None Remove="Resource\White\Strikethrough.png" />
     <None Remove="Resource\White\Underline.png" />
+    <None Remove="Resource\XWhite.png" />
     <None Remove="Resource\ZToA.png" />
   </ItemGroup>
 
@@ -338,6 +340,7 @@
     <Resource Include="Resource\LogoLarge.png" />
     <Resource Include="Resource\Man.png" />
     <Resource Include="Resource\Medium.png" />
+    <Resource Include="Resource\MKCBN.png" />
     <Resource Include="Resource\MKCLink.png" />
     <Resource Include="Resource\MKC_Large.png" />
     <Resource Include="Resource\MKM_Large.png" />
@@ -415,6 +418,7 @@
     <Resource Include="Resource\White\SaveFile-White.png" />
     <Resource Include="Resource\White\Strikethrough.png" />
     <Resource Include="Resource\White\Underline.png" />
+    <Resource Include="Resource\XWhite.png" />
     <Resource Include="Resource\ZToA.png" />
   </ItemGroup>
 

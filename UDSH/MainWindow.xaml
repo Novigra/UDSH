@@ -14,6 +14,15 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="900" Width="1600" WindowStartupLocation="CenterScreen">
 
+    <Window.Resources>
+        <Storyboard x:Key="MKCSearchOpenStoryboard" FillBehavior="Stop" Completed="MKCSearchOpenStoryboard_Completed">
+            <DoubleAnimation Storyboard.TargetProperty="Height" From="0" To="400" BeginTime="0:0:0.8" Duration="0:0:0.5"/>
+        </Storyboard>
+        <Storyboard x:Key="MKCSearchCloseStoryboard" FillBehavior="Stop" Completed="MKCSearchCloseStoryboard_Completed">
+            <DoubleAnimation Storyboard.TargetProperty="Height" To="0" Duration="0:0:0.5"/>
+        </Storyboard>
+    </Window.Resources>
+
     <!-- Zero or a super small number? Keep in mind it will affect how the window controls work -->
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0.1" CornerRadius="0.1" CaptionHeight="0.1"/>
@@ -33,12 +42,12 @@
         <Grid x:Name="SideGrid" Grid.Row="1" HorizontalAlignment="Left" Margin="0,40,0,0">
         </Grid>
 
-        <Grid x:Name="BNButtonSpaceGrid" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Opacity="1" IsHitTestVisible="False" Panel.ZIndex="2">
+        <Grid x:Name="BNButtonSpaceGrid" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Opacity="0" IsHitTestVisible="False" Panel.ZIndex="2">
             <StackPanel Orientation="Vertical">
-                <Border Margin="0,0,0,10" Width="400" Height="{Binding ResizeConnectionWindowHeight}" CornerRadius="10" Background="Green">
+                <Border x:Name="ConnectionSearchBorder" Margin="0,0,0,10" Width="400" Height="{Binding ResizeConnectionWindowHeight}" CornerRadius="10" Background="#FFFFFF">
                     <StackPanel Orientation="Vertical">
                         <Grid>
-                            <Button HorizontalAlignment="Right" Width="50" Height="30" Background="Red" Margin="0,10,10,0"/>
+                            <Button Style="{StaticResource ResizeClose}" Command="{Binding CloseConnection}" HorizontalAlignment="Right" Width="50" Height="30" Margin="0,10,10,0"/>
                             <Border HorizontalAlignment="Center" CornerRadius="5" Width="50" Height="30" Background="#CBCBCB" Margin="0,10,0,0">
                                 <Grid>
                                     <Image Source="/Resource/ResizeHeightControl.png" Margin="3">
@@ -146,7 +155,16 @@
                             </Border>
                         </Grid>
 
-                        <ListView Height="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=ActualHeight, Converter={StaticResource WidthConverter}, ConverterParameter=120}" Margin="10,10,10,0"/>
+                        <ListView Style="{StaticResource BNConnectionListView}" ItemContainerStyle="{StaticResource BNConnectionListViewItem}" 
+                                  ItemsSource="{Binding MKCFiles}" SelectedItem="{Binding SelectedMKCFile}" 
+                                  Height="{Binding RelativeSource={RelativeSource AncestorType=StackPanel}, Path=ActualHeight, Converter={StaticResource WidthConverter}, ConverterParameter=120}" 
+                                  Margin="10,10,10,0">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDoubleClick">
+                                    <i:InvokeCommandAction Command="{Binding ConnectBNToMKC}" PassEventArgsToCommand="True"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ListView>
 
                         <Border HorizontalAlignment="Stretch" Background="{StaticResource SearchBarSCB}" BorderThickness="2" BorderBrush="{StaticResource SearchBarBorderSCB}" 
                                 CornerRadius="4" Margin="6,6,6,0" Height="40" FocusVisualStyle="{x:Null}">
@@ -171,11 +189,34 @@
                                     <!-- Search Text -->
                                     <TextBox x:Name="UserSearchBox" Background="{StaticResource MainBlankSCB}" FontSize="18" FontWeight="SemiBold" Width="370"
                                              Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Panel.ZIndex="1" BorderThickness="0" FocusVisualStyle="{x:Null}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="TextChanged">
+                                                <i:InvokeCommandAction Command="{Binding SearchTextChange}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
                                     </TextBox>
                                 </Grid>
                             </StackPanel>
                         </Border>
                     </StackPanel>
+
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding MkcConnectionProcessStarted}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard Storyboard="{StaticResource MKCSearchOpenStoryboard}"/>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                                
+                                <DataTrigger Binding="{Binding MkcConnectionProcessStarted}" Value="False">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard Storyboard="{StaticResource MKCSearchCloseStoryboard}"/>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                 </Border>
                 <Button Style="{StaticResource BNConnectToMKC}" Click="MKCConnectButton_Click" HorizontalAlignment="Left"/>
             </StackPanel>

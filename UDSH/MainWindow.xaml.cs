@@ -107,5 +107,15 @@ namespace UDSH
         {
             _workspaceServices.OnStartMKCConnectionButtonClicked();
         }
+
+        private void MKCSearchOpenStoryboard_Completed(object sender, EventArgs e)
+        {
+            _workspaceServices.OnMKCSearchInitAnimFinished(400);
+        }
+
+        private void MKCSearchCloseStoryboard_Completed(object sender, EventArgs e)
+        {
+            _workspaceServices.OnMKCSearchInitAnimFinished(0);
+        }
     }
 }
