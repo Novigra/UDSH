@@ -807,7 +807,7 @@
                     <Border x:Name="BorderItem" Height="40" BorderThickness="0" Margin="0,0,0,0"  Background="{TemplateBinding Background}" CornerRadius="5">
                         <StackPanel Orientation="Horizontal" Margin="5">
                             <Image Source="/Resource/MKCBN.png" Width="33" Height="33" Margin="0,-3,0,3"/>
-                            <TextBlock Style="{StaticResource DefaultText}" Text="{Binding FileName}" Foreground="#393E46" Margin="5,0,0,0"/>
+                            <TextBlock Style="{StaticResource DefaultText}" Text="{Binding FileName}" Foreground="#393E46" Margin="5,0,0,0" IsHitTestVisible="False"/>
                         </StackPanel>
 
                         <VisualStateManager.VisualStateGroups>

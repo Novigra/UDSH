@@ -1385,10 +1385,48 @@
                                     </Ellipse.RenderTransform>
                                 </Ellipse>
                             </StackPanel>
+
+                            <StackPanel x:Name="ConnectedStackPanel" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" RenderTransformOrigin="0.5,0.5" Opacity="0">
+                                <StackPanel x:Name="ConnectedLabel" Orientation="Horizontal" Opacity="0">
+                                    <TextBlock Style="{StaticResource DefaultText}" Foreground="#DBAD2F" Text="Connected To:"/>
+                                    <TextBlock Style="{StaticResource DefaultText}" Foreground="#DBAD2F" Text="MyHouse" Margin="5,0,0,0"/>
+                                </StackPanel>
+                                <Image Source="/Resource/MKCLinked.png" Width="20" Height="20" Margin="10,0,0,0"/>
+
+                                <StackPanel.RenderTransform>
+                                    <TransformGroup>
+                                        <TranslateTransform x:Name="ConnectedStackTranslate" X="-5" Y="0"/>
+                                    </TransformGroup>
+                                </StackPanel.RenderTransform>
+                            </StackPanel>
                         </Grid>
                     </Border>
 
                     <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding ShowConnectMKCButton}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="rm2"/>
+                                <RemoveStoryboard BeginStoryboardName="rm3"/>
+                                <BeginStoryboard x:Name="rm1">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding ShowConnectedMKCButton}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="rm1"/>
+                                <RemoveStoryboard BeginStoryboardName="rm3"/>
+                                <BeginStoryboard x:Name="rm2">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
@@ -1397,6 +1435,8 @@
 
                             <MultiDataTrigger.EnterActions>
                                 <RemoveStoryboard BeginStoryboardName="CloseSearchStoryboard"/>
+                                <RemoveStoryboard BeginStoryboardName="rm3"/>
+                                <RemoveStoryboard BeginStoryboardName="rm4"/>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="ConnectLabel" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
@@ -1453,6 +1493,189 @@
                                 </BeginStoryboard>
                             </MultiDataTrigger.ExitActions>
                         </MultiDataTrigger>
+
+                        <DataTrigger Binding="{Binding IsConnectedToMKCFile}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="rm1"/>
+                                <RemoveStoryboard BeginStoryboardName="rm2"/>
+                                <BeginStoryboard x:Name="rm3">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectLabel" Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="StackTranslate" Storyboard.TargetProperty="X" To="-5" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
+
+                                        <DoubleAnimation Storyboard.TargetName="RequestConnectStackPanel" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:1.3" Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Width" To="50" BeginTime="0:0:0.5" Duration="0:0:0.8"/>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectionProcessStackPanel" Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="Dot1" Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="Dot2" Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="Dot3" Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:1.3" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding ResetMKCConnectionButtons}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard x:Name="rm4">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="BNConnectedToMKC">
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="ConnectBorder" Background="#393E46" Height="50" Width="{TemplateBinding Width}" CornerRadius="10" Opacity="0">
+                        <Grid>
+                            <StackPanel x:Name="ConnectedStackPanel" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" RenderTransformOrigin="0.5,0.5">
+                                <StackPanel x:Name="ConnectedLabel" Orientation="Horizontal" Opacity="0">
+                                    <TextBlock x:Name="ConnectToLabel" Style="{StaticResource DefaultText}" Foreground="#DBAD2F" Text="Connected To:"/>
+                                    <TextBlock x:Name="ConnectedFileNameLabel" Style="{StaticResource DefaultText}" Foreground="#DBAD2F" Text="{Binding ConnectedMKCFileName}" Margin="5,0,0,0"/>
+                                </StackPanel>
+
+                                <Grid Width="20" Height="20" Margin="10,0,0,0">
+                                    <Image x:Name="MKCLinked" Source="/Resource/MKCLinked.png"/>
+                                    <Image x:Name="BreakMKCLink" Source="/Resource/MKCBreakLink.png" Opacity="0">
+                                        <Image.RenderTransform>
+                                            <TransformGroup>
+                                                <TranslateTransform X="-2" Y="-4"/>
+                                                <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                                            </TransformGroup>
+                                        </Image.RenderTransform>
+                                    </Image>
+                                </Grid>
+
+                                <StackPanel.RenderTransform>
+                                    <TransformGroup>
+                                        <TranslateTransform x:Name="StackTranslate" X="-5" Y="0"/>
+                                    </TransformGroup>
+                                </StackPanel.RenderTransform>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding ShowConnectedMKCButton}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="rm2"/>
+                                <RemoveStoryboard BeginStoryboardName="rm3"/>
+                                <BeginStoryboard x:Name="rm1">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding ShowConnectMKCButton}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="rm1"/>
+                                <RemoveStoryboard BeginStoryboardName="rm3"/>
+                                <BeginStoryboard x:Name="rm2">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding IsConnectedToMKCFile}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="rm1"/>
+                                <RemoveStoryboard BeginStoryboardName="rm2"/>
+                                <RemoveStoryboard BeginStoryboardName="rm4"/>
+                                <BeginStoryboard x:Name="rm3">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:1.4" Duration="0:0:0.1"/>
+                                        <DoubleAnimation Storyboard.TargetName="StackTranslate" Storyboard.TargetProperty="X" To="-5" BeginTime="0:0:1.4" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                        
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsConnectedToMKCButtonActive}" Value="True"/>
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectedLabel" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.5" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="StackTranslate" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.5"/>
+                                        
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectedLabel" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.5"/>
+                                        <DoubleAnimation Storyboard.TargetName="StackTranslate" Storyboard.TargetProperty="X" To="-5" Duration="0:0:0.5"/>
+                                        
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding CanRemoveConnectedMKCFile}" Value="True"/>
+                                <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
+                                <Condition Binding="{Binding IsConnectedToMKCButtonActive}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
+                                <RemoveStoryboard BeginStoryboardName="rm4"/>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                        To="#F83030" Duration="0:0:0.3"/>
+                                        <ColorAnimation Storyboard.TargetName="ConnectToLabel" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                        To="#FFFFFF" Duration="0:0:0.3"/>
+                                        <ColorAnimation Storyboard.TargetName="ConnectedFileNameLabel" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                        To="#FFFFFF" Duration="0:0:0.3"/>
+                                        <DoubleAnimation Storyboard.TargetName="MKCLinked" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+                                        <DoubleAnimation Storyboard.TargetName="BreakMKCLink" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)"
+                                                        To="#393E46" Duration="0:0:0.3"/>
+                                        <ColorAnimation Storyboard.TargetName="ConnectToLabel" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                        To="#DBAD2F" Duration="0:0:0.3"/>
+                                        <ColorAnimation Storyboard.TargetName="ConnectedFileNameLabel" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)"
+                                                        To="#DBAD2F" Duration="0:0:0.3"/>
+                                        <DoubleAnimation Storyboard.TargetName="MKCLinked" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.3"/>
+                                        <DoubleAnimation Storyboard.TargetName="BreakMKCLink" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+
+                        <DataTrigger Binding="{Binding ResetMKCConnectionButtons}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard x:Name="rm4">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ConnectBorder" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

@@ -105,5 +105,40 @@
         </Italic>
       </Bold>
     </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Normal">
+      <Normal>
+        <Normal>
+          <Normal>na</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Normal">
+      <Normal>
+        <Normal>
+          <Normal>ni</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Normal">
+      <Normal>
+        <Normal>
+          <Normal>nu</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Normal">
+      <Normal>
+        <Normal>
+          <Normal>ne</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
+    <ParagraphLine TextAlignment="Left" TextType="Normal">
+      <Normal>
+        <Normal>
+          <Normal>no</Normal>
+        </Normal>
+      </Normal>
+    </ParagraphLine>
   </Document>
 </File>

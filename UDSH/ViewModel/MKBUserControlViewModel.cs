@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2025 Mohammed Kenawy
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -480,6 +481,48 @@ namespace UDSH.ViewModel
             set { isConnectedToMKCFile = value; OnPropertyChanged(); }
         }
 
+        private bool isConnectToMKCButtonActive;
+        public bool IsConnectToMKCButtonActive
+        {
+            get => isConnectToMKCButtonActive;
+            set { isConnectToMKCButtonActive = value; OnPropertyChanged(); }
+        }
+
+        private bool isConnectedToMKCButtonActive;
+        public bool IsConnectedToMKCButtonActive
+        {
+            get => isConnectedToMKCButtonActive;
+            set { isConnectedToMKCButtonActive = value; OnPropertyChanged(); }
+        }
+
+        private bool showConnectMKCButton = false;
+        public bool ShowConnectMKCButton
+        {
+            get => showConnectMKCButton;
+            set { showConnectMKCButton = value; OnPropertyChanged(); }
+        }
+
+        private bool showConnectedMKCButton = false;
+        public bool ShowConnectedMKCButton
+        {
+            get => showConnectedMKCButton;
+            set { showConnectedMKCButton = value; OnPropertyChanged(); }
+        }
+
+        private bool canRemoveConnectedMKCFile = false;
+        public bool CanRemoveConnectedMKCFile
+        {
+            get => canRemoveConnectedMKCFile;
+            set { canRemoveConnectedMKCFile = value; OnPropertyChanged(); }
+        }
+
+        private bool resetMKCConnectionButtons = false;
+        public bool ResetMKCConnectionButtons
+        {
+            get => resetMKCConnectionButtons;
+            set { resetMKCConnectionButtons = value; OnPropertyChanged(); }
+        }
+
         private Point InitialResizeConnectionMousePosition;
 
         private Project CurrentProject { get; set; }
@@ -497,6 +540,13 @@ namespace UDSH.ViewModel
         {
             get => selectedMKCFile;
             set { selectedMKCFile = value; OnPropertyChanged(); }
+        }
+
+        private string connectedMKCFileName;
+        public string ConnectedMKCFileName
+        {
+            get => connectedMKCFileName;
+            set { connectedMKCFileName = value; OnPropertyChanged(); }
         }
 
         public RelayCommand<Canvas> CanvasRMBDown => new RelayCommand<Canvas>(execute => StartRecordingMouseMovement());
@@ -526,7 +576,12 @@ namespace UDSH.ViewModel
         public RelayCommand<object> MouseLeavedResizeControl => new RelayCommand<object>(execute => UpdateResizeControlStatus());
         public RelayCommand<object> CloseConnection => new RelayCommand<object>(execute => StopConnectionProcess());
         public RelayCommand<object> SearchTextChange => new RelayCommand<object>(execute => UpdateSearchList());
-        public RelayCommand<MouseButtonEventArgs> ConnectBNToMKC => new RelayCommand<MouseButtonEventArgs>(HandleBNToMKCConnection);
+        public RelayCommand<object> ConnectMKCButtonClicked => new RelayCommand<object>(execute => HandleConnectMKCButtonClicked());
+        public RelayCommand<MouseButtonEventArgs> ConnectBNToMKC => new RelayCommand<MouseButtonEventArgs>(HandleBNToMKCConnection, canExecute => !IsConnectedToMKCFile);
+        public RelayCommand<Button> ConnectedMKCButtonMouseEnter => new RelayCommand<Button>(UpdateMKCButtonState);
+        public RelayCommand<Button> ConnectedMKCButtonMouseLeave => new RelayCommand<Button>(ResetMKCButtonState);
+        public RelayCommand<object> ConnectedMKCButtonClicked => new RelayCommand<object>(execute => HandleConnectedMKCButton());
+        public RelayCommand<object> UserControlLoaded => new RelayCommand<object>(execute => UpdateDetailsOnUserControlLoaded());
 
         public MKBUserControlViewModel(IWorkspaceServices workspaceServices)
         {
@@ -534,7 +589,6 @@ namespace UDSH.ViewModel
 
             _workspaceServicesID = Guid.NewGuid().ToString();
             _workspaceServices.SetCurrentActiveWorkspaceID(_workspaceServicesID);
-            _workspaceServices.StartMKCConnectionButtonClicked += _workspaceServices_StartMKCConnectionButtonClicked;
 
             MainWindow = workspaceServices.MainWindow;
             MainWindow.SizeChanged += MainWindow_SizeChanged;
@@ -562,7 +616,10 @@ namespace UDSH.ViewModel
             if (e.CurrentActiveWorkspaceID == _workspaceServicesID)
             {
                 if (e.KeyEvent.Key == Key.LeftCtrl)
+                {
                     CanRemoveConnectedNodesPaths = true;
+                    CanRemoveConnectedMKCFile = true;
+                }
 
                 if (e.KeyEvent.Key == Key.Add)
                 {
@@ -636,13 +693,17 @@ namespace UDSH.ViewModel
             if (e.CurrentActiveWorkspaceID == _workspaceServicesID)
             {
                 if (e.KeyEvent.Key == Key.LeftCtrl)
+                {
                     CanRemoveConnectedNodesPaths = false;
+                    CanRemoveConnectedMKCFile = false;
+                }
             }
         }
 
         private void WorkspaceServices_Reset(object? sender, EventArgs e)
         {
             CanRemoveConnectedNodesPaths = false;
+            CanRemoveConnectedMKCFile = false;
         }
 
         private void StartRecordingMouseMovement()
@@ -1862,9 +1923,10 @@ namespace UDSH.ViewModel
             }
         }
 
-        private void _workspaceServices_StartMKCConnectionButtonClicked(object? sender, EventArgs e)
+        private void HandleConnectMKCButtonClicked()
         {
-            MkcConnectionProcessStarted = true;
+            if (IsConnectedToMKCFile == false)
+                MkcConnectionProcessStarted = true;
         }
 
         private void HandleResizeControlLeftMouseButtonDown(MouseButtonEventArgs e)
@@ -1876,6 +1938,9 @@ namespace UDSH.ViewModel
 
         private void HandleResizeControlLeftMouseButtonUp(MouseButtonEventArgs e)
         {
+            if (_workspaceServices.CurrentActiveWorkspaceID != _workspaceServicesID)
+                return;
+
             CanResizeConnectionWindow = false;
             Mouse.Capture(null);
         }
@@ -1912,13 +1977,24 @@ namespace UDSH.ViewModel
             }
 
             AssociatedFile = _workspaceServices.UserDataServices.CurrentSelectedFile;
+            if (AssociatedFile == null)
+                return;
+
             if (AssociatedFile.ConnectedMKCFile != null)
             {
                 IsConnectedToMKCFile = true;
+                IsConnectedToMKCButtonActive = true;
+                IsConnectToMKCButtonActive = false;
+
+                ConnectedMKCFileName = AssociatedFile.ConnectedMKCFile.FileName;
             }
             else
             {
                 IsConnectedToMKCFile = false;
+                IsConnectedToMKCButtonActive = false;
+                IsConnectToMKCButtonActive = true;
+
+                ConnectedMKCFileName = string.Empty;
             }
         }
 
@@ -1975,12 +2051,99 @@ namespace UDSH.ViewModel
             if (e.OriginalSource is Border border && border.Name.Equals("BorderItem"))
             {
                 Debug.WriteLine($"Item Name:{SelectedMKCFile}");
+
+                MkcConnectionProcessStarted = false;
+                AssociatedFile.ConnectedMKCFile = SelectedMKCFile;
+                IsConnectedToMKCFile = true;
+
+                IsConnectedToMKCButtonActive = true;
+                IsConnectToMKCButtonActive = false;
+                ConnectedMKCFileName = AssociatedFile.ConnectedMKCFile.FileName;
+                // Save data to the json file
             }
         }
 
         private void WorkspaceServices_MKCSearchInitAnimFinished(object? sender, double Height)
         {
+            if (_workspaceServices.CurrentActiveWorkspaceID != _workspaceServicesID)
+                return;
+
             ResizeConnectionWindowHeight = Height;
+        }
+
+        private void UpdateMKCButtonState(Button button)
+        {
+            double ConnectToLength = 185;
+            double TotalWidth = GetTextBlockWidth(ConnectedMKCFileName, "Segoe UI", 20) + ConnectToLength;
+            PlayAnimation(TotalWidth, button);
+        }
+
+        private void ResetMKCButtonState(Button button)
+        {
+            PlayAnimation(50, button);
+        }
+
+        private void PlayAnimation(double target, DependencyObject dependencyObject)
+        {
+            Storyboard storyboard = new Storyboard();
+
+            DoubleAnimation ControlWidthAnimation = new DoubleAnimation();
+            ControlWidthAnimation.BeginTime = TimeSpan.FromSeconds(0);
+            ControlWidthAnimation.To = target;
+            ControlWidthAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+
+            Storyboard.SetTarget(ControlWidthAnimation, dependencyObject);
+            Storyboard.SetTargetProperty(ControlWidthAnimation, new PropertyPath("Width"));
+            storyboard.Children.Add(ControlWidthAnimation);
+
+            storyboard.Begin();
+        }
+
+        private double GetTextBlockWidth(string BoundText, string FontFamily, double FontSize)
+        {
+            FormattedText formattedText = new FormattedText(BoundText, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                new Typeface(new FontFamily(FontFamily), FontStyles.Normal, FontWeights.DemiBold, FontStretches.Normal),
+                FontSize, Brushes.Black, new NumberSubstitution(), 1);
+
+            return formattedText.Width;
+        }
+
+        private void HandleConnectedMKCButton()
+        {
+            if (CanRemoveConnectedMKCFile == true)
+            {
+                AssociatedFile.ConnectedMKCFile = null;
+
+                IsConnectedToMKCFile = false;
+                IsConnectedToMKCButtonActive = false;
+                IsConnectToMKCButtonActive = true;
+
+                ResetMKCConnectionButtons = true;
+                ResetMKCConnectionButtons = false;
+
+                ConnectedMKCFileName = string.Empty;
+                // Save data to the json file
+            }
+            else
+            {
+                _workspaceServices.UserDataServices.AddFileToHeader(SelectedMKCFile);
+            }
+        }
+
+        private void UpdateDetailsOnUserControlLoaded()
+        {
+            _workspaceServices.SetCurrentActiveWorkspaceID(_workspaceServicesID);
+
+            if (IsConnectedToMKCFile == true)
+            {
+                ShowConnectMKCButton = false;
+                ShowConnectedMKCButton = true;
+            }
+            else
+            {
+                ShowConnectMKCButton = true;
+                ShowConnectedMKCButton = false;
+            }
         }
     }
 }

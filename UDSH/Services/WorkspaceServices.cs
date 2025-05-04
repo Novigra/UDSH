@@ -9,7 +9,6 @@ namespace UDSH.Services
         public event EventHandler<InputEventArgs> ControlButtonPressed;
         public event EventHandler<InputEventArgs> ControlButtonReleased;
         public event EventHandler Reset;
-        public event EventHandler StartMKCConnectionButtonClicked;
         public event EventHandler<double> MKCSearchInitAnimFinished;
 
         public IUserDataServices UserDataServices { get; }
@@ -40,11 +39,6 @@ namespace UDSH.Services
         public void OnReset()
         {
             Reset?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void OnStartMKCConnectionButtonClicked()
-        {
-            StartMKCConnectionButtonClicked?.Invoke(this, EventArgs.Empty);
         }
 
         public void OnMKCSearchInitAnimFinished(double Height)

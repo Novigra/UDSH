@@ -42,11 +42,14 @@
         <Grid x:Name="SideGrid" Grid.Row="1" HorizontalAlignment="Left" Margin="0,40,0,0">
         </Grid>
 
+        <!-- Not a huge fan of this implementation, but this is the cleanest way if we want the side grid to be part of the main window.
+             There's always a better solution. find one when you can.-->
         <Grid x:Name="BNButtonSpaceGrid" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Opacity="0" IsHitTestVisible="False" Panel.ZIndex="2">
             <StackPanel Orientation="Vertical">
                 <Border x:Name="ConnectionSearchBorder" Margin="0,0,0,10" Width="400" Height="{Binding ResizeConnectionWindowHeight}" CornerRadius="10" Background="#FFFFFF">
                     <StackPanel Orientation="Vertical">
                         <Grid>
+                            <!-- Don't forget to bind mouse enter/leave -->
                             <Button Style="{StaticResource ResizeClose}" Command="{Binding CloseConnection}" HorizontalAlignment="Right" Width="50" Height="30" Margin="0,10,10,0"/>
                             <Border HorizontalAlignment="Center" CornerRadius="5" Width="50" Height="30" Background="#CBCBCB" Margin="0,10,0,0">
                                 <Grid>
@@ -218,7 +221,19 @@
                         </Style>
                     </Border.Style>
                 </Border>
-                <Button Style="{StaticResource BNConnectToMKC}" Click="MKCConnectButton_Click" HorizontalAlignment="Left"/>
+                <Grid>
+                    <Button Style="{StaticResource BNConnectToMKC}" Command="{Binding ConnectMKCButtonClicked}" IsEnabled="{Binding IsConnectToMKCButtonActive}" IsHitTestVisible="{Binding IsConnectToMKCButtonActive}" HorizontalAlignment="Left"/>
+                    <Button x:Name="ConnectedMKCButton" Command="{Binding ConnectedMKCButtonClicked}" Width="50" Style="{StaticResource BNConnectedToMKC}" IsEnabled="{Binding IsConnectedToMKCButtonActive}" IsHitTestVisible="{Binding IsConnectedToMKCButtonActive}" HorizontalAlignment="Left">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseEnter">
+                                <i:InvokeCommandAction Command="{Binding ConnectedMKCButtonMouseEnter}" CommandParameter="{Binding ElementName=ConnectedMKCButton}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeave">
+                                <i:InvokeCommandAction Command="{Binding ConnectedMKCButtonMouseLeave}" CommandParameter="{Binding ElementName=ConnectedMKCButton}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                </Grid>
             </StackPanel>
         </Grid>
     </Grid>

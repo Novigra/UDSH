@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using UDSH.Model;
 using UDSH.Services;
 using UDSH.View;
@@ -101,11 +102,6 @@ namespace UDSH
         private void Window_Deactivated(object sender, EventArgs e)
         {
             _workspaceServices.OnReset();
-        }
-
-        private void MKCConnectButton_Click(object sender, RoutedEventArgs e)
-        {
-            _workspaceServices.OnStartMKCConnectionButtonClicked();
         }
 
         private void MKCSearchOpenStoryboard_Completed(object sender, EventArgs e)

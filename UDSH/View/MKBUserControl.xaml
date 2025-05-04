@@ -308,4 +308,10 @@
             </i:EventTrigger>
         </i:Interaction.Triggers>
     </Grid>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding UserControlLoaded}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 </UserControl>

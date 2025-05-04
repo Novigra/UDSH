@@ -145,7 +145,9 @@
     <None Remove="Resource\Medium.png" />
     <None Remove="Resource\Minimize.png" />
     <None Remove="Resource\MKCBN.png" />
+    <None Remove="Resource\MKCBreakLink.png" />
     <None Remove="Resource\MKCLink.png" />
+    <None Remove="Resource\MKCLinked.png" />
     <None Remove="Resource\MKC_Large.png" />
     <None Remove="Resource\MKM_Large.png" />
     <None Remove="Resource\More Details.png" />
@@ -210,6 +212,11 @@
     <None Remove="Resource\White\Underline.png" />
     <None Remove="Resource\XWhite.png" />
     <None Remove="Resource\ZToA.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\MKCBreakLink.png" />
+    <Resource Include="Resource\MKCLinked.png" />
   </ItemGroup>
 
   <ItemGroup>

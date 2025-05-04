@@ -78,6 +78,7 @@ namespace UDSH.Services
 
             if (CurrentFile != null)
             {
+                CurrentSelectedFile = CurrentFile;
                 AddNewFile?.Invoke(this, CurrentFile);
                 AddNewFileToContent?.Invoke(this, CurrentFile);
             }
