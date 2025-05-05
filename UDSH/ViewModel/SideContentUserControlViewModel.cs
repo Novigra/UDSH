@@ -40,7 +40,7 @@ namespace UDSH.ViewModel
     public class SideContentUserControlViewModel : ViewModelBase
     {
         #region Side Content Properties
-        private readonly IUserDataServices _userDataServices;
+        private readonly IWorkspaceServices _workspaceServices;
         
         private Node root;
         public Node Root
@@ -173,25 +173,25 @@ namespace UDSH.ViewModel
         public RelayCommand<object> TreeViewMouseDoubleClick => new RelayCommand<object>(execute => OpenFile());
         #endregion
 
-        public SideContentUserControlViewModel(IUserDataServices userDataServices)
+        public SideContentUserControlViewModel(IWorkspaceServices workspaceServices)
         {
-            _userDataServices = userDataServices;
-            _userDataServices.AddNewFileToContent += _userDataServices_AddNewFileToContent;
+            _workspaceServices = workspaceServices;
+            _workspaceServices.UserDataServices.AddNewFileToContent += _userDataServices_AddNewFileToContent;
             
             CanChooseFromSearch = false;
             RootSearch = new ObservableCollection<Node>();
             BuildStructure();
 
-            _userDataServices.FileDetailsUpdated += _userDataServices_FileDetailsUpdated;
-            _userDataServices.ItemDeletedSideContent += _userDataServices_ItemDeleted;
-            _userDataServices.DataDragActionUpdate += _userDataServices_DataDragActionUpdate;
-            _userDataServices.FileQuickDelete += _userDataServices_FileQuickDelete;
+            _workspaceServices.UserDataServices.FileDetailsUpdated += _userDataServices_FileDetailsUpdated;
+            _workspaceServices.UserDataServices.ItemDeletedSideContent += _userDataServices_ItemDeleted;
+            _workspaceServices.UserDataServices.DataDragActionUpdate += _userDataServices_DataDragActionUpdate;
+            _workspaceServices.UserDataServices.FileQuickDelete += _userDataServices_FileQuickDelete;
         }
 
         private void _userDataServices_FileQuickDelete(object? sender, FileSystem e)
         {
             FileStructure fileStructure = new FileStructure();
-            fileStructure.DeleteFileFromTree(e, _userDataServices.ActiveProject, Root);
+            fileStructure.DeleteFileFromTree(e, _workspaceServices.UserDataServices.ActiveProject, Root);
             fileStructure.DeleteFileFromSearchTree(e, RootSearch);
         }
 
@@ -208,7 +208,7 @@ namespace UDSH.ViewModel
                 while (e.EditFiles.Count > 0)
                 {
                     FileSystem file = e.EditFiles.Dequeue();
-                    fileStructure.AddNewFile(_userDataServices.ActiveProject, Root, file);
+                    fileStructure.AddNewFile(_workspaceServices.UserDataServices.ActiveProject, Root, file);
                     fileStructure.UpdateSearchTreeAfterDragAction(RootSearch, file);
                 }
             }));
@@ -226,7 +226,7 @@ namespace UDSH.ViewModel
             await Task.Run(() =>
             {
                 FileStructure fileStructure = new FileStructure();
-                fileStructure.UpdateTreeItemName(Root, _userDataServices.ActiveProject, e.FileStructure, e.OldDirectory, e.CurrentLevel);
+                fileStructure.UpdateTreeItemName(Root, _workspaceServices.UserDataServices.ActiveProject, e.FileStructure, e.OldDirectory, e.CurrentLevel);
             });
 
             await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
@@ -240,13 +240,13 @@ namespace UDSH.ViewModel
         private void _userDataServices_AddNewFileToContent(object? sender, FileSystem e)
         {
             FileStructure fileStructure = new FileStructure();
-            Node AddedNode = fileStructure.AddNewFile(_userDataServices.ActiveProject, Root, e);
+            Node AddedNode = fileStructure.AddNewFile(_workspaceServices.UserDataServices.ActiveProject, Root, e);
             RootSearch.Add(AddedNode);
         }
 
         private async void BuildStructure()
         {
-            Project project = _userDataServices.ActiveProject;
+            Project project = _workspaceServices.UserDataServices.ActiveProject;
 
             if (project != null)
             {
@@ -394,6 +394,8 @@ namespace UDSH.ViewModel
             Storyboard.SetTargetProperty(WidthAnimation, new PropertyPath(Grid.WidthProperty));
             Storyboard.Children.Add(WidthAnimation);
             Storyboard.Begin();
+
+            _workspaceServices.OnSidebarStatusChanged(CanExpandSideContent);
         }
 
         /// <summary>
@@ -435,7 +437,12 @@ namespace UDSH.ViewModel
             Storyboard.SetTarget(WidthAnimation, grid);
             Storyboard.SetTargetProperty(WidthAnimation, new PropertyPath(Grid.WidthProperty));
             Storyboard.Children.Add(WidthAnimation);
-            Storyboard.Completed += (sender, args) => { CanExpandSideContent = false; CanSearchBoxTextBeFocusable = false; };
+            Storyboard.Completed += (sender, args) =>
+            {
+                CanExpandSideContent = false; 
+                CanSearchBoxTextBeFocusable = false;
+                _workspaceServices.OnSidebarStatusChanged(CanExpandSideContent);
+            };
             Storyboard.Begin();
         }
 
@@ -529,7 +536,7 @@ namespace UDSH.ViewModel
         {
             if (SelectedNode != null && SelectedNode.NodeType == DataType.File)
             {
-                _userDataServices.AddFileToHeader(SelectedNode.NodeFile);
+                _workspaceServices.UserDataServices.AddFileToHeader(SelectedNode.NodeFile);
             }
         }
 

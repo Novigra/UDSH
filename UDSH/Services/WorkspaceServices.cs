@@ -10,6 +10,7 @@ namespace UDSH.Services
         public event EventHandler<InputEventArgs> ControlButtonReleased;
         public event EventHandler Reset;
         public event EventHandler<double> MKCSearchInitAnimFinished;
+        public event EventHandler<bool> SidebarStatusChanged;
 
         public IUserDataServices UserDataServices { get; }
         public Window MainWindow { get; set; }
@@ -44,6 +45,11 @@ namespace UDSH.Services
         public void OnMKCSearchInitAnimFinished(double Height)
         {
             MKCSearchInitAnimFinished?.Invoke(this, Height);
+        }
+
+        public void OnSidebarStatusChanged(bool IsOpen)
+        {
+            SidebarStatusChanged?.Invoke(this, IsOpen);
         }
     }
 }

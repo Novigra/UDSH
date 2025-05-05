@@ -17,6 +17,8 @@ namespace UDSH
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IWorkspaceServices _workspaceServices;
+        private bool SidebarStatus { get; set; } = false;
+        private bool IsMKBFile { get; set; } = false;
         public MainWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
@@ -27,6 +29,7 @@ namespace UDSH
             session.mainWindow = this;
 
             _workspaceServices = _serviceProvider.GetRequiredService<IWorkspaceServices>();
+            _workspaceServices.SidebarStatusChanged += _workspaceServices_SidebarStatusChanged;
 
             var header = serviceProvider.GetRequiredService<IHeaderServices>();
             HeaderUserControl headerUserControl = new HeaderUserControl(new HeaderUserControlViewModel(header));
@@ -47,8 +50,28 @@ namespace UDSH
 
             header.FileStructureSelectionChanged += Header_FileStructureSelectionChanged;
 
-            SideContentUserControl sideContentUserControl = new SideContentUserControl(new SideContentUserControlViewModel(userDataServices));
+            SideContentUserControl sideContentUserControl = new SideContentUserControl(new SideContentUserControlViewModel(_workspaceServices));
             SideGrid.Children.Add(sideContentUserControl);
+        }
+
+        private void _workspaceServices_SidebarStatusChanged(object? sender, bool e)
+        {
+            if (e == true)
+            {
+                SidebarStatus = e;
+                BNButtonSpaceGrid.IsHitTestVisible = false;
+                BNButtonSpaceGrid.Opacity = 0;
+            }
+            else
+            {
+                SidebarStatus = e;
+
+                if (IsMKBFile == true)
+                {
+                    BNButtonSpaceGrid.IsHitTestVisible = true;
+                    BNButtonSpaceGrid.Opacity = 1;
+                }
+            }
         }
 
         private void Header_FileStructureSelectionChanged(object? sender, FileSystem e)
@@ -59,13 +82,20 @@ namespace UDSH
 
                 if (e.userControl is MKBUserControl control)
                 {
-                    BNButtonSpaceGrid.IsHitTestVisible = true;
-                    BNButtonSpaceGrid.Opacity = 1;
+                    IsMKBFile = true;
+
+                    if (SidebarStatus == false)
+                    {
+                        BNButtonSpaceGrid.IsHitTestVisible = true;
+                        BNButtonSpaceGrid.Opacity = 1;
+                    }
 
                     DataContext = control.DataContext;
                 }
                 else
                 {
+                    IsMKBFile = false;
+
                     BNButtonSpaceGrid.IsHitTestVisible = false;
                     BNButtonSpaceGrid.Opacity = 0;
                 }
@@ -73,6 +103,7 @@ namespace UDSH
             else
             {
                 TestContent.Content = new DefaultUserControl(_serviceProvider.GetRequiredService<IUserDataServices>());
+                IsMKBFile = false;
 
                 BNButtonSpaceGrid.IsHitTestVisible = false;
                 BNButtonSpaceGrid.Opacity = 0;

@@ -1436,7 +1436,6 @@
                             <MultiDataTrigger.EnterActions>
                                 <RemoveStoryboard BeginStoryboardName="CloseSearchStoryboard"/>
                                 <RemoveStoryboard BeginStoryboardName="rm3"/>
-                                <RemoveStoryboard BeginStoryboardName="rm4"/>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="ConnectLabel" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.5" Duration="0:0:0.5"/>

@@ -1771,6 +1771,54 @@ namespace UDSH.ViewModel
             TargetBranchNode = null;
         }
 
+        private void RemoveRootConnections()
+        {
+            BranchNode? CurrentBranchNode = null;
+
+            foreach (BranchNode branchNode in Roots)
+            {
+                if (branchNode.dialogueNode.IsRootNode == true)
+                {
+                    CurrentBranchNode = branchNode;
+                    break;
+                }
+            }
+
+            foreach (BranchNode ChildBranchNode in CurrentBranchNode!.SubBranchNodes)
+            {
+                ChildBranchNode.ParentNodes.Remove(CurrentBranchNode);
+
+                foreach (Path ChildBranchNodeChildrenPath in ChildBranchNode.dialogueNode.ParentsPath.ToList())
+                {
+                    foreach (Path CurrentBranchNodeParentsPath in CurrentBranchNode.dialogueNode.ChildrenPath)
+                    {
+                        if (CurrentBranchNodeParentsPath == ChildBranchNodeChildrenPath)
+                        {
+                            ChildBranchNode.dialogueNode.ParentsPath.Remove(CurrentBranchNodeParentsPath);
+                            CurrentBranchNode.dialogueNode.ChildrenPath.Remove(CurrentBranchNodeParentsPath);
+
+                            MainCanvas.Children.Remove(CurrentBranchNodeParentsPath);
+                            break;
+                        }
+                    }
+                }
+
+                if (ChildBranchNode.ParentNodes.Count == 0)
+                {
+                    ChildBranchNode.dialogueNode.IsSubRootNode = true;
+                    Roots.Add(ChildBranchNode);
+
+                    ChildBranchNode.dialogueNode.OpacityAnimation(0, ChildBranchNode.dialogueNode.ParentNodeCollisionBorder);
+                    ChildBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Parent);
+                    ChildBranchNode.dialogueNode.ParentNodeCollisionBorder.IsHitTestVisible = false;
+                }
+            }
+
+            CurrentBranchNode.SubBranchNodes.Clear();
+            CurrentBranchNode.dialogueNode.OpacityAnimation(0, CurrentBranchNode.dialogueNode.ChildrenNodeCollisionBorder);
+            CurrentBranchNode.dialogueNode.UpdateNodeConnectionBackgroundColor(ConnectionType.Child);
+        }
+
         public void UpdateCurrentActiveWorkspaceID()
         {
             _workspaceServices.SetCurrentActiveWorkspaceID(_workspaceServicesID);
@@ -1973,7 +2021,8 @@ namespace UDSH.ViewModel
             CurrentProject = _workspaceServices.UserDataServices.ActiveProject;
             foreach(var file in CurrentProject.Files)
             {
-                MKCFiles.Add(file);
+                if (file.FileType.Equals("mkc"))
+                    MKCFiles.Add(file);
             }
 
             AssociatedFile = _workspaceServices.UserDataServices.CurrentSelectedFile;
@@ -1986,6 +2035,7 @@ namespace UDSH.ViewModel
                 IsConnectedToMKCButtonActive = true;
                 IsConnectToMKCButtonActive = false;
 
+                SelectedMKCFile = AssociatedFile.ConnectedMKCFile;
                 ConnectedMKCFileName = AssociatedFile.ConnectedMKCFile.FileName;
             }
             else
@@ -2059,7 +2109,9 @@ namespace UDSH.ViewModel
                 IsConnectedToMKCButtonActive = true;
                 IsConnectToMKCButtonActive = false;
                 ConnectedMKCFileName = AssociatedFile.ConnectedMKCFile.FileName;
-                // Save data to the json file
+
+                RemoveRootConnections();
+                _workspaceServices.UserDataServices.SaveUserDataAsync();
             }
         }
 
@@ -2122,7 +2174,7 @@ namespace UDSH.ViewModel
                 ResetMKCConnectionButtons = false;
 
                 ConnectedMKCFileName = string.Empty;
-                // Save data to the json file
+                _workspaceServices.UserDataServices.SaveUserDataAsync();
             }
             else
             {
