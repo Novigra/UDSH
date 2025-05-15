@@ -1,4 +1,5 @@
-﻿using UDSH.View;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using UDSH.View;
 
 namespace UDSH.Model
 {

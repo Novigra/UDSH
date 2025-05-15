@@ -115,7 +115,9 @@
                 <Rectangle Panel.ZIndex="0" Fill="{StaticResource MainPaperCSFSCB}"/>
 
                 <ScrollViewer x:Name="RTB_ScrollViewer" Style="{StaticResource PageScrollViewer}" VerticalScrollBarVisibility="Visible" Panel.ZIndex="2" Margin="0,30,3,40">
-                    <RichTextBox x:Name="MKContentLayout" IsDocumentEnabled="True" Style="{StaticResource MKCText}" PreviewKeyDown="MKContentLayout_PreviewKeyDown" SpellCheck.IsEnabled="True" Margin="144,66,93,0" AcceptsReturn="True" AcceptsTab="True">
+                    <RichTextBox x:Name="MKContentLayout" IsDocumentEnabled="True" Style="{StaticResource MKCText}" 
+                                 PreviewKeyDown="MKContentLayout_PreviewKeyDown" PreviewDragOver="MKContentLayout_PreviewDragOver" PreviewDrop="MKContentLayout_PreviewDrop"
+                                 SpellCheck.IsEnabled="True" Margin="144,66,93,0" AcceptsReturn="True" AcceptsTab="True">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Loaded">
                                 <i:InvokeCommandAction Command="{Binding RichTextLoaded}" CommandParameter="{Binding ElementName=MKContentLayout}"/>
@@ -153,9 +155,19 @@
                         <i:EventTrigger EventName="ScrollChanged">
                             <i:InvokeCommandAction Command="{Binding ScrollChanged}" CommandParameter="{Binding ElementName=RTB_ScrollViewer}"/>
                         </i:EventTrigger>
+                        <i:EventTrigger EventName="PreviewMouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding RichLMBUp}"/>
+                        </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </ScrollViewer>
 
+                <Canvas x:Name="PaperCanvas" Panel.ZIndex="3">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding CanvasLoaded}" CommandParameter="{Binding ElementName=PaperCanvas}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Canvas>
 
                 <Grid.RenderTransform>
                     <TranslateTransform X="0" Y="20"/>
@@ -231,4 +243,10 @@
             </i:EventTrigger>
         </i:Interaction.Triggers>
     </Grid>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding UserControlLoaded}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 </UserControl>

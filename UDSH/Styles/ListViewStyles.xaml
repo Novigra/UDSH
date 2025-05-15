@@ -835,6 +835,95 @@
         </Setter>
     </Style>
 
+    <!-- MKC - Connection List -->
+    <Style TargetType="ListView" x:Key="MKCConnectionListView">
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+        <Setter Property="VirtualizingPanel.ScrollUnit" Value="Pixel"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListView">
+                    <Border Background="#232830" BorderThickness="0" SnapsToDevicePixels="True">
+                        <MVVM:CustomScrollViewer x:Name="OpenScroll"
+                                             HorizontalScrollBarVisibility="Auto" 
+                                             VerticalScrollBarVisibility="Auto"
+                                             PanningMode="HorizontalOnly"
+                                             Padding="{TemplateBinding Padding}" 
+                                             BorderThickness="0" Style="{StaticResource BottomRightScrollViewerWhite}" Margin="5">
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="5"/>
+                        </MVVM:CustomScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ListViewItem" x:Key="MKCConnectionListViewItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Background="Transparent" BorderThickness="0" Padding="0">
+                    <Border Background="#D9D9D9" BorderBrush="#4D4D4D" BorderThickness="3" CornerRadius="5">
+                        <TextBlock Style="{StaticResource DefaultText}" Text="{Binding FileDirectory}" FontSize="15" Margin="2"/>
+                    </Border>
+                </ToolTip>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border x:Name="BorderItem" Height="40" BorderThickness="0" Margin="0,0,0,0"  Background="{TemplateBinding Background}" CornerRadius="5">
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <Grid Width="33" Height="33" Margin="0,-3,0,3">
+                                <Image x:Name="ImageNormal" Source="/Resource/OpenFileMKBSelected.png"/>
+                                <Image x:Name="ImageSelected" Source="/Resource/OpenFileMKB.png"/>
+                            </Grid>
+                            <TextBlock x:Name="ItemTitle" Style="{StaticResource DefaultText}" Text="{Binding FileName}" Foreground="#FFFFFF" Margin="5,0,0,0" IsHitTestVisible="False"/>
+                        </StackPanel>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="BorderItem" Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="Transparent" Duration="0:0:0.2"/>
+                                        <ColorAnimation Storyboard.TargetName="ItemTitle" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)" To="#FFFFFF" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="ImageNormal" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="ImageSelected" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="BorderItem" Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="#C8C8C8" Duration="0:0:0.2"/>
+                                        <ColorAnimation Storyboard.TargetName="ItemTitle" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)" To="#000000" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Selected">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="BorderItem" Storyboard.TargetProperty="(Control.Background).(SolidColorBrush.Color)" To="#A7A7A7" Duration="0:0:0.2"/>
+                                        <ColorAnimation Storyboard.TargetName="ItemTitle" Storyboard.TargetProperty="(Control.Foreground).(SolidColorBrush.Color)" To="#000000" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="ImageNormal" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                        <DoubleAnimation Storyboard.TargetName="ImageSelected" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- CSF - Content Layout -->
     <Style TargetType="ListView" x:Key="CSFContentLayout">
         <Setter Property="Background" Value="{StaticResource MainBlankSCB}"/>

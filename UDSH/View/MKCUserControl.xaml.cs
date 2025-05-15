@@ -55,6 +55,11 @@ namespace UDSH.View
                 viewModel.NavigateListItem(e.Key);
                 e.Handled = false;
             }
+            else if (e.Key == Key.Left || e.Key == Key.Right)
+            {
+                _ = viewModel.LRCharacterNavigation();
+                e.Handled = false;
+            }
             else
             {
                 viewModel.ChangeSaveStatus();
@@ -64,6 +69,16 @@ namespace UDSH.View
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
 
+        }
+
+        private void MKContentLayout_PreviewDragOver(object sender, System.Windows.DragEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void MKContentLayout_PreviewDrop(object sender, System.Windows.DragEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

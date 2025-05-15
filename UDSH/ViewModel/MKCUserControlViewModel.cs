@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace UDSH.ViewModel
 {
@@ -26,9 +27,15 @@ namespace UDSH.ViewModel
         Character,
         Dialogue
     }
+
+    public enum UIContainer
+    {
+        ConnectedMKBButton
+    }
     public class MKCUserControlViewModel : ViewModelBase
     {
         private readonly IWorkspaceServices _workspaceServices;
+        private readonly string _workspaceServicesID;
 
         private Point InitialMousePosition;
         private Point CurrentMousePosition;
@@ -75,6 +82,8 @@ namespace UDSH.ViewModel
             set { isInsideScrollBarHitCollision = value; OnPropertyChanged(); }
         }
 
+        private bool IsShortcutSource { get; set; } = false;
+
         private RichTextBox mKRichTextBox;
         public RichTextBox MKRichTextBox
         {
@@ -116,6 +125,28 @@ namespace UDSH.ViewModel
             set { selectedScriptElement = value; OnPropertyChanged(); }
         }
 
+        private Project CurrentProject { get; set; }
+        private FileSystem AssociatedFile { get; set; }
+
+        private ObservableCollection<FileSystem> mKBFiles = new ObservableCollection<FileSystem>();
+        public ObservableCollection<FileSystem> MKBFiles
+        {
+            get => mKBFiles;
+            set { mKBFiles = value; OnPropertyChanged(); }
+        }
+
+        private FileSystem selectedMKBFile;
+        public FileSystem SelectedMKBFile
+        {
+            get => selectedMKBFile;
+            set { selectedMKBFile = value; OnPropertyChanged(); }
+        }
+
+        private Canvas PaperCanvas { get; set; }
+        private CharacterLinkButton CurrentCharacterLinkButton { get; set; }
+        private MKBSelectionBox CurrentMKBSelectionBox { get; set; }
+        private Paragraph CurrentDialogueParagraph { get; set; }
+
         private bool ToggleBlockDeletion;
 
         public RelayCommand<RichTextBox> RichTextLoaded => new RelayCommand<RichTextBox>(OnRichTextBoxLoaded);
@@ -150,11 +181,17 @@ namespace UDSH.ViewModel
         public RelayCommand<object> DeleteButton => new RelayCommand<object>(execute => DeleteFile());
 
         public RelayCommand<RichTextBox> ParagraphTextChanged => new RelayCommand<RichTextBox>(execute => CheckTextStatus());
-        public RelayCommand<RichTextBox> ActiveElementSelectionChanged => new RelayCommand<RichTextBox>(execute => UpdateLastPickedParagraphActiveElement());
+        public RelayCommand<RichTextBox> ActiveElementSelectionChanged => new RelayCommand<RichTextBox>(execute => UpdateLastPickedParagraphActiveElement(), canExecute => !IsShortcutSource);
+        public RelayCommand<object> RichLMBUp => new RelayCommand<object>(execute => HandleLeftMouseButtonUp());
+        public RelayCommand<object> UserControlLoaded => new RelayCommand<object>(execute => UpdateDetailsOnUserControlLoaded());
+        public RelayCommand<Canvas> CanvasLoaded => new RelayCommand<Canvas>(LoadPaperCanvas);
 
         public MKCUserControlViewModel(IWorkspaceServices workspaceServices)
         {
             _workspaceServices = workspaceServices;
+
+            _workspaceServicesID = Guid.NewGuid().ToString();
+            _workspaceServices.SetCurrentActiveWorkspaceID(_workspaceServicesID);
 
             IsNextToAMarkdown = false;
             ReachedListBoundary = false;
@@ -267,7 +304,7 @@ namespace UDSH.ViewModel
             {
                 if (CurrentBlock == LastPickedParagraph)
                 {
-                    PerserveTextAndStyle(paragraph);
+                    PerserveTextAndStyle(paragraph, LastScriptElement);
 
                     Blocks.InsertAfter(CurrentBlock, paragraph);
                     MKRichTextBox.CaretPosition = paragraph.ContentStart;
@@ -289,8 +326,11 @@ namespace UDSH.ViewModel
             }
         }
 
-        private void PerserveTextAndStyle(Paragraph PreserveParagraph)
+        private void PerserveTextAndStyle(Paragraph PreserveParagraph, ScriptElement scriptElement)
         {
+            if (scriptElement == ScriptElement.Character)
+                return;
+
             if (MKRichTextBox.CaretPosition != LastPickedParagraph.ContentEnd)
             {
                 TextRange textRange = new TextRange(MKRichTextBox.CaretPosition, LastPickedParagraph.ContentEnd);
@@ -375,6 +415,11 @@ namespace UDSH.ViewModel
                     if (Para1 != Para2)
                         Para1.Focusable = true;
                 }
+
+                /*if (SelectedScriptElement == ScriptElement.Character)
+                    GetCurrentCharacterLinkButton();
+                else
+                    CurrentCharacterLinkButton = null;*/
             }
         }
         #endregion
@@ -395,6 +440,11 @@ namespace UDSH.ViewModel
                 string ParaText = textRange.Text;
 
                 UpdateToggleBlockDeletionState();
+
+                /*if (SelectedScriptElement == ScriptElement.Character)
+                    GetCurrentCharacterLinkButton();
+                else
+                    CurrentCharacterLinkButton = null;*/
             }
         }
 
@@ -412,7 +462,14 @@ namespace UDSH.ViewModel
             TextRange textRange = new TextRange(LastPickedParagraph.ContentStart, LastPickedParagraph.ContentEnd);
             string ParaText = textRange.Text;
 
+            UpdateCharacterCaretPosition();
             UpdateToggleBlockDeletionState();
+            UpdateAllPaperCanvasButtonsLocation();
+
+            /*if (SelectedScriptElement == ScriptElement.Character)
+                GetCurrentCharacterLinkButton();
+            else
+                CurrentCharacterLinkButton = null;*/
 
             Debug.WriteLine($"Current Paragraph: {ParaText}");
         }
@@ -437,6 +494,8 @@ namespace UDSH.ViewModel
 
                     TextRange textRange = new TextRange(paragraph.ContentStart, paragraph.ContentEnd);
                     Debug.WriteLine($"MK Paragraph: {textRange.Text}");
+
+                    UpdateCharacterCaretPosition();
                 }
             }
         }
@@ -452,8 +511,10 @@ namespace UDSH.ViewModel
             {
                 Debug.WriteLine($"Play #S Markdown...");
                 textRange.Text = "";
+                IsShortcutSource = true;
                 SelectedScriptElement = ScriptElement.SceneHeading;
                 UpdateLastPickedParagraphActiveElement();
+                IsShortcutSource = false;
 
                 return true;
             }
@@ -461,8 +522,10 @@ namespace UDSH.ViewModel
             {
                 Debug.WriteLine($"Play #A Markdown...");
                 textRange.Text = "";
+                IsShortcutSource = true;
                 SelectedScriptElement = ScriptElement.Action;
                 UpdateLastPickedParagraphActiveElement();
+                IsShortcutSource = false;
 
                 return true;
             }
@@ -470,8 +533,10 @@ namespace UDSH.ViewModel
             {
                 Debug.WriteLine($"Play #C Markdown...");
                 textRange.Text = "";
+                IsShortcutSource = true;
                 SelectedScriptElement = ScriptElement.Character;
                 UpdateLastPickedParagraphActiveElement();
+                IsShortcutSource = false;
 
                 return true;
             }
@@ -479,8 +544,10 @@ namespace UDSH.ViewModel
             {
                 Debug.WriteLine($"Play #D Markdown...");
                 textRange.Text = "";
+                IsShortcutSource = true;
                 SelectedScriptElement = ScriptElement.Dialogue;
                 UpdateLastPickedParagraphActiveElement();
+                IsShortcutSource = false;
 
                 return true;
             }
@@ -497,10 +564,33 @@ namespace UDSH.ViewModel
         {
             if (CanDeleteAllText == true && MKRichTextBox.Selection.Text != "")
             {
-                MKRichTextBox.Document.Blocks.Clear();
-                InitiateFirstParagraph();
+                /*MKRichTextBox.Document.Blocks.Clear();
+                InitiateFirstParagraph();*/
+                Paragraph paragraph = new Paragraph();
+                paragraph = LastPickedParagraph.PreviousBlock as Paragraph;
+
+                if (paragraph == null)
+                    return false;
+
+                if (SelectedScriptElement == ScriptElement.Character)
+                    DeleteButtonLink();
+
+                MKRichTextBox.Document.Blocks.Remove(LastPickedParagraph);
+                LastPickedParagraph = paragraph;
+                SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
+
+                if (SelectedScriptElement == ScriptElement.Character)
+                {
+                    Inline CharacterNameInline = LastPickedParagraph.Inlines.ElementAt(LastPickedParagraph.Inlines.Count - 2);
+                    MKRichTextBox.CaretPosition = CharacterNameInline.ContentEnd;
+                }
+                else
+                {
+                    MKRichTextBox.CaretPosition = LastPickedParagraph.ContentEnd;
+                }
+
                 CanDeleteAllText = false;
-                return false;
+                return true;
             }
 
             CanDeleteAllText = false;
@@ -508,8 +598,18 @@ namespace UDSH.ViewModel
             LastPickedParagraph = MKRichTextBox.CaretPosition.Paragraph;
             TextRange textRange = new TextRange(LastPickedParagraph.ContentStart, LastPickedParagraph.ContentEnd);
 
-            await LastPickedParagraphAfterParagraphUpdate();
-            return false;
+            TextPointer CaretOffset = MKRichTextBox.CaretPosition.GetInsertionPosition(LogicalDirection.Forward);
+            TextPointer LastPickedParagraphStartOffset = LastPickedParagraph.ContentStart.GetInsertionPosition(LogicalDirection.Forward);
+
+            if (!string.IsNullOrWhiteSpace(textRange.Text) && CaretOffset.CompareTo(LastPickedParagraphStartOffset) == 0)
+            {
+                return true;
+            }
+            else
+            {
+                await LastPickedParagraphAfterParagraphUpdate();
+                return false;
+            }
         }
 
         private async Task LastPickedParagraphAfterParagraphUpdate()
@@ -520,16 +620,36 @@ namespace UDSH.ViewModel
             SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
             TextRange textRange = new TextRange(LastPickedParagraph.ContentStart, LastPickedParagraph.ContentEnd);
             Debug.WriteLine($"Current Paragraph: {textRange.Text}");
-            if (textRange.Text.Equals("") && MKRichTextBox.Document.Blocks.Count > 1)
+
+            if (SelectedScriptElement == ScriptElement.Character && string.IsNullOrWhiteSpace(textRange.Text) && MKRichTextBox.Document.Blocks.Count == 1)
             {
                 if (ToggleBlockDeletion == true)
                 {
+                    MKRichTextBox.Document.Blocks.Remove(LastPickedParagraph);
+                    LastPickedParagraph = new Paragraph();
+                    LastPickedParagraph.Tag = ScriptElement.SceneHeading;
+                    SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
+
+                    MKRichTextBox.Document.Blocks.Add(LastPickedParagraph);
+                    MKRichTextBox.CaretPosition = LastPickedParagraph.ContentStart;
+                }
+
+                ToggleBlockDeletion = true;
+            }
+            else if (string.IsNullOrWhiteSpace(textRange.Text) && MKRichTextBox.Document.Blocks.Count > 1)
+            {
+                if (ToggleBlockDeletion == true)
+                {
+                    if (SelectedScriptElement == ScriptElement.Character)
+                        DeleteButtonLink();
+
                     Block PreviousBlock = LastPickedParagraph.PreviousBlock;
                     if (PreviousBlock != null)
                     {
                         MKRichTextBox.Document.Blocks.Remove(LastPickedParagraph);
                         LastPickedParagraph = PreviousBlock as Paragraph;
                         SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
+                        UpdateCharacterCaretPosition();
                     }
                 }
 
@@ -543,9 +663,24 @@ namespace UDSH.ViewModel
 
         private void DeleteAllText()
         {
-            MKRichTextBox.SelectAll();
+            MKRichTextBox.Selection.Select(LastPickedParagraph.ContentStart, LastPickedParagraph.ContentEnd);
             CanDeleteAllText = true;
             Debug.WriteLine("Delete All Text");
+        }
+
+        private void DeleteButtonLink()
+        {
+            GetCurrentCharacterLinkButton();
+
+            if (CurrentCharacterLinkButton == null)
+                return;
+
+            PaperCanvas.Children.Remove(CurrentCharacterLinkButton);
+
+            CurrentCharacterLinkButton.Click -= CharacterLinkButton_Click;
+            CurrentCharacterLinkButton.MouseEnter -= CharacterLinkButton_MouseEnter;
+
+            CurrentCharacterLinkButton = null;
         }
         #endregion
 
@@ -567,6 +702,8 @@ namespace UDSH.ViewModel
                 {
                     FirstStartAnimPlayed = false;
                 }
+
+                UpdateAllPaperCanvasButtonsLocation();
             }
         }
 
@@ -777,6 +914,37 @@ namespace UDSH.ViewModel
                 TextPointer CurrentCaretPosition = MKRichTextBox.Document.ContentStart.GetPositionAtOffset(Offset);
                 MKRichTextBox.CaretPosition = CurrentCaretPosition;
             }
+
+            UpdateAllPaperCanvasButtonsLocation();
+        }
+
+        private void UpdateAllPaperCanvasButtonsLocation()
+        {
+            foreach (var button in PaperCanvas.Children)
+            {
+                if (button is CharacterLinkButton characterLinkButton)
+                    UpdateButtonLinkLocation(characterLinkButton);
+            }
+        }
+
+        public async Task LRCharacterNavigation()
+        {
+            await Task.Delay(50);
+            UpdateCharacterCaretPosition();
+        }
+
+        public void UpdateCharacterCaretPosition()
+        {
+            if (SelectedScriptElement != ScriptElement.Character)
+                return;
+
+            int CaretOffset = MKRichTextBox.Document.ContentStart.GetOffsetToPosition(MKRichTextBox.CaretPosition);
+
+            Inline CharacterNameInline = LastPickedParagraph.Inlines.ElementAt(LastPickedParagraph.Inlines.Count - 2);
+            int CharacterNameLastCharOffset = MKRichTextBox.Document.ContentStart.GetOffsetToPosition(CharacterNameInline.ContentEnd);
+
+            if (CaretOffset > CharacterNameLastCharOffset)
+                MKRichTextBox.CaretPosition = MKRichTextBox.Document.ContentStart.GetPositionAtOffset(CharacterNameLastCharOffset);
         }
 
         private void UpdateLastPickedParagraphActiveElement()
@@ -795,6 +963,7 @@ namespace UDSH.ViewModel
 
                 case ScriptElement.Character:
                     LastPickedParagraph.Margin = CharacterMargins;
+                    CreateCharacterLinkButton();
                     break;
 
                 case ScriptElement.Dialogue:
@@ -812,6 +981,306 @@ namespace UDSH.ViewModel
                 ToggleBlockDeletion = true;
             else
                 ToggleBlockDeletion = false;
+        }
+
+        private void CreateCharacterLinkButton()
+        {
+            if (LastPickedParagraph.Inlines.LastInline is InlineUIContainer)
+                return;
+
+            /*CharacterLinkButton characterLinkButton = new CharacterLinkButton
+            {
+                Style = (Style)Application.Current.FindResource("BNCharacterConnectionButton"),
+                Margin = new Thickness(10,0,0,0),
+                CharacterParagraph = LastPickedParagraph
+            };
+
+            characterLinkButton.Click += CharacterLinkButton_Click;
+            characterLinkButton.MouseEnter += CharacterLinkButton_MouseEnter;*/
+
+            Border border = new Border
+            {
+                Width = 1,
+                Height = 1,
+                IsHitTestVisible = false,
+                Background = new SolidColorBrush(Colors.Transparent)
+            };
+
+            InlineUIContainer inlineUIContainer = new InlineUIContainer(border);
+            inlineUIContainer.BaselineAlignment = BaselineAlignment.Center;
+
+            LastPickedParagraph.Inlines.Add(inlineUIContainer);
+
+            CharacterLinkButton characterLinkButton = new CharacterLinkButton
+            {
+                Margin = new Thickness(10, 0, 0, 0),
+                CharacterParagraph = LastPickedParagraph,
+                Placeholder = inlineUIContainer
+            };
+
+            characterLinkButton.Click += CharacterLinkButton_Click;
+            characterLinkButton.MouseEnter += CharacterLinkButton_MouseEnter;
+
+            PaperCanvas.Children.Add(characterLinkButton);
+            UpdateButtonLinkLocation(characterLinkButton);
+
+            CurrentCharacterLinkButton = characterLinkButton;
+        }
+
+        private void CharacterLinkButton_MouseEnter(object sender, MouseEventArgs e)
+        {
+            
+        }
+
+        private void CharacterLinkButton_Click(object sender, RoutedEventArgs e)
+        {
+            CharacterLinkButton characterLinkButton = (CharacterLinkButton)sender;
+            Block block = characterLinkButton.CharacterParagraph.NextBlock;
+            if (block != null && (ScriptElement)block.Tag == ScriptElement.Dialogue)
+            {
+                CurrentDialogueParagraph = block as Paragraph;
+
+                Paragraph paragraph = new Paragraph();
+                paragraph.TextAlignment = TextAlignment.Center;
+                paragraph.Tag = UIContainer.ConnectedMKBButton;
+
+                //// IMPORTANT: ANIMATION IS FROZEN. WE CAN'T USE INLINE UI CONTAINERS. WHHHHYYYYY!!!!
+                //MKBSelectionBox mKBSelectionBox = new MKBSelectionBox(this);
+
+                Border border = new Border
+                {
+                    Width = 1,
+                    Height = 50,
+                    IsHitTestVisible = false,
+                    Background = new SolidColorBrush(Colors.Transparent)
+                };
+
+                InlineUIContainer inlineUIContainer = new InlineUIContainer(border);
+                inlineUIContainer.BaselineAlignment = BaselineAlignment.Center;
+
+                paragraph.Inlines.Add(inlineUIContainer);
+                MKRichTextBox.Document.Blocks.InsertAfter(block, paragraph);
+
+                MKBSelectionBox mKBSelectionBox = new MKBSelectionBox(this, inlineUIContainer, paragraph);
+                mKBSelectionBox.MKBSelectionBoxRequestedRemoval += MKBSelectionBox_MKBSelectionBoxRequestedRemoval;
+                PaperCanvas.Children.Add(mKBSelectionBox);
+                CurrentMKBSelectionBox = mKBSelectionBox;
+                UpdateButtonLinkLocation(mKBSelectionBox);
+            }
+            else
+            {
+                Paragraph paragraph = new Paragraph();
+                paragraph.Tag = ScriptElement.Dialogue;
+                paragraph.Margin = DialogueMargins;
+
+                Run run = new Run("Dialogue");
+                paragraph.Inlines.Add(run);
+
+                MKRichTextBox.Document.Blocks.InsertAfter(characterLinkButton.CharacterParagraph, paragraph);
+                MKRichTextBox.CaretPosition = paragraph.ContentEnd;
+
+                CurrentDialogueParagraph = paragraph;
+
+                Paragraph MKBParagraph = new Paragraph();
+                MKBParagraph.TextAlignment = TextAlignment.Center;
+                MKBParagraph.Tag = UIContainer.ConnectedMKBButton;
+
+                Border border = new Border
+                {
+                    Width = 1,
+                    Height = 50,
+                    IsHitTestVisible = false,
+                    Background = new SolidColorBrush(Colors.Transparent)
+                };
+
+                InlineUIContainer inlineUIContainer = new InlineUIContainer(border);
+                inlineUIContainer.BaselineAlignment = BaselineAlignment.Center;
+
+                MKBParagraph.Inlines.Add(inlineUIContainer);
+                MKRichTextBox.Document.Blocks.InsertAfter(paragraph, MKBParagraph);
+
+                MKBSelectionBox mKBSelectionBox = new MKBSelectionBox(this, inlineUIContainer, MKBParagraph);
+                mKBSelectionBox.MKBSelectionBoxRequestedRemoval += MKBSelectionBox_MKBSelectionBoxRequestedRemoval;
+                PaperCanvas.Children.Add(mKBSelectionBox);
+                CurrentMKBSelectionBox = mKBSelectionBox;
+                UpdateButtonLinkLocation(mKBSelectionBox);
+            }
+        }
+
+        private void MKBSelectionBox_MKBSelectionBoxRequestedRemoval(object? sender, bool e)
+        {
+            if (e == true)
+            {
+                if(AssociatedFile.ConnectedMKMFiles == null)
+                    AssociatedFile.ConnectedMKMFiles = new List<FileSystem>();
+
+                AssociatedFile.ConnectedMKMFiles.Add(SelectedMKBFile);
+                DialogueLinkButton dialogueLinkButton = CreateDialogueLinkButton();
+                CurrentCharacterLinkButton.AssociatedDialogueButton = dialogueLinkButton;
+                CurrentCharacterLinkButton.UpdateButtonVisuals(e);
+            }
+            else
+            {
+                MKRichTextBox.Document.Blocks.Remove(CurrentMKBSelectionBox.ParagraphHolder);
+            }
+
+            PaperCanvas.Children.Remove(CurrentMKBSelectionBox);
+            CurrentMKBSelectionBox.MKBSelectionBoxRequestedRemoval -= MKBSelectionBox_MKBSelectionBoxRequestedRemoval;
+            CurrentMKBSelectionBox = null;
+        }
+
+        private DialogueLinkButton CreateDialogueLinkButton()
+        {
+            DialogueLinkButton dialogueLinkButton = new DialogueLinkButton
+            {
+                CharacterParagraph = CurrentCharacterLinkButton.CharacterParagraph,
+                DialogueParagraph = CurrentDialogueParagraph,
+                ParagraphHolder = CurrentMKBSelectionBox.ParagraphHolder,
+                Placeholder = CurrentMKBSelectionBox.Placeholder,
+                AssociatedMKBFile = SelectedMKBFile
+            };
+
+            PaperCanvas.Children.Add(dialogueLinkButton);
+            UpdateButtonLinkLocation(dialogueLinkButton);
+
+            return dialogueLinkButton;
+        }
+
+        private void HandleLeftMouseButtonUp()
+        {
+            if (MKRichTextBox.Selection.IsEmpty == true)
+                return;
+
+            TextPointer Start = MKRichTextBox.Selection.Start;
+            TextPointer End = MKRichTextBox.Selection.End;
+
+            Paragraph ParagraphStart = Start.Paragraph;
+            Paragraph ParagraphEnd = End.Paragraph;
+            ScriptElement ParagraphEndScriptElement = (ScriptElement)ParagraphEnd.Tag;
+
+            bool StartRecording = false;
+            bool ChangedStart = false;
+
+            foreach (var CurrentBlock in MKRichTextBox.Document.Blocks)
+            {
+                if (CurrentBlock == ParagraphEnd)
+                    break;
+
+                if (CurrentBlock == ParagraphStart)
+                {
+                    StartRecording = true;
+                }
+
+                if (StartRecording == true)
+                {
+                    if ((ScriptElement)CurrentBlock.Tag != ParagraphEndScriptElement)
+                    {
+                        ParagraphStart = CurrentBlock.NextBlock as Paragraph;
+                        ChangedStart = true;
+                    }
+                }
+            }
+
+            MKRichTextBox.Selection.Select((ChangedStart == true) ? ParagraphStart.ContentStart : Start, End);
+        }
+
+        private void UpdateButtonLinkLocation(CharacterLinkButton characterLinkButton)
+        {
+            TextPointer PlaceholderPosition = characterLinkButton.Placeholder.ContentStart;
+            Rect CharacterRect = PlaceholderPosition.GetCharacterRect(LogicalDirection.Forward);
+
+            Point relativeToRichTextBox = MKRichTextBox.TransformToAncestor(GridTarget).Transform(new Point(CharacterRect.X, CharacterRect.Y));
+
+            if (Double.IsInfinity(relativeToRichTextBox.X))
+                return;
+
+            Canvas.SetLeft(characterLinkButton, relativeToRichTextBox.X);
+            Canvas.SetTop(characterLinkButton, relativeToRichTextBox.Y - 2);
+        }
+
+        private void UpdateButtonLinkLocation(DialogueLinkButton dialogueLinkButton)
+        {
+            TextPointer PlaceholderPosition = dialogueLinkButton.Placeholder.ContentStart;
+            Rect CharacterRect = PlaceholderPosition.GetCharacterRect(LogicalDirection.Forward);
+
+            Point relativeToRichTextBox = MKRichTextBox.TransformToAncestor(GridTarget).Transform(new Point(CharacterRect.X, CharacterRect.Y));
+
+            if (Double.IsInfinity(relativeToRichTextBox.X))
+                return;
+
+            double Base = 180.0 / 290.61333333333334;
+            double OffsetX = dialogueLinkButton.TotalWidth * Base;
+
+            /*
+             * TODO:
+             * - Have static width instead of a dynamic one.
+             * - Finish Dialogue Link Button design.
+             * - Modify animations.
+             * - Update Dialogue Link Buttons when:
+             *      * Scrolling.
+             *      * Text input.
+             * - Change Caret if entered the Dialogue Link Button's Paragraph.
+             * - Add transition to the associated mkb file.
+             * - Add order index to know which paragraph came first.
+             * - Add a list for BN to add the nodes.
+             * - the Delete key removes the placeholders. override the button.
+             */
+
+            Canvas.SetLeft(dialogueLinkButton, relativeToRichTextBox.X - OffsetX - 160);
+            Canvas.SetTop(dialogueLinkButton, relativeToRichTextBox.Y - 2);
+        }
+
+        private void UpdateButtonLinkLocation(MKBSelectionBox mKBSelectionBox)
+        {
+            TextPointer PlaceholderPosition = mKBSelectionBox.Placeholder.ContentStart;
+            Rect CharacterRect = PlaceholderPosition.GetCharacterRect(LogicalDirection.Forward);
+
+            Point relativeToRichTextBox = MKRichTextBox.TransformToAncestor(GridTarget).Transform(new Point(CharacterRect.X, CharacterRect.Y));
+
+            if (Double.IsInfinity(relativeToRichTextBox.X))
+                return;
+
+            Canvas.SetLeft(mKBSelectionBox, relativeToRichTextBox.X - 330);
+            Canvas.SetTop(mKBSelectionBox, relativeToRichTextBox.Y - 2);
+        }
+
+        private void GetCurrentCharacterLinkButton()
+        {
+            foreach(var button in PaperCanvas.Children)
+            {
+                if (button is CharacterLinkButton characterLinkButton)
+                {
+                    if (characterLinkButton.CharacterParagraph == LastPickedParagraph)
+                        CurrentCharacterLinkButton = characterLinkButton;
+                }
+            }
+        }
+
+        private void UpdateDetailsOnUserControlLoaded()
+        {
+            _workspaceServices.SetCurrentActiveWorkspaceID(_workspaceServicesID);
+            LoadMKBFiles();
+        }
+
+        private void LoadMKBFiles()
+        {
+            // this approach isn't bad, but if we want to increase performance,
+            // we can add an event so when a new file gets created, it gets added if it is of a type mkb.
+            MKBFiles.Clear();
+
+            CurrentProject = _workspaceServices.UserDataServices.ActiveProject;
+            foreach (var file in CurrentProject.Files)
+            {
+                //if (file.FileType.Equals("mkb"))
+                    MKBFiles.Add(file);
+            }
+
+            AssociatedFile = _workspaceServices.UserDataServices.CurrentSelectedFile;
+        }
+
+        private void LoadPaperCanvas(Canvas canvas)
+        {
+            PaperCanvas = canvas;
         }
     }
 }

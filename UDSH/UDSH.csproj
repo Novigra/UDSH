@@ -99,6 +99,7 @@
     <None Remove="Resource\CloseNoteIcon.png" />
     <None Remove="Resource\CloseSelected.png" />
     <None Remove="Resource\Connect.png" />
+    <None Remove="Resource\ConnectedMKBLink.png" />
     <None Remove="Resource\ConnectHighlight.png" />
     <None Remove="Resource\ContentState.png" />
     <None Remove="Resource\CurrentFiles.png" />
@@ -133,6 +134,7 @@
     <None Remove="Resource\HorusEyeBlack.png" />
     <None Remove="Resource\HorusEyeDarkGrey.png" />
     <None Remove="Resource\HorusEyeOrange.png" />
+    <None Remove="Resource\JumpToFile.png" />
     <None Remove="Resource\LeftArrow.png" />
     <None Remove="Resource\LeftArrowGray.png" />
     <None Remove="Resource\LeftArrowOrange.png" />
@@ -196,6 +198,7 @@
     <None Remove="Resource\TextureImage.png" />
     <None Remove="Resource\TransparentBackground.png" />
     <None Remove="Resource\TransparentIcon.png" />
+    <None Remove="Resource\UnconnectedMKBLink.png" />
     <None Remove="Resource\View.png" />
     <None Remove="Resource\White\AddBN-White.png" />
     <None Remove="Resource\White\AddNote-White.png" />
@@ -215,6 +218,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resource\ConnectedMKBLink.png" />
+    <Resource Include="Resource\JumpToFile.png" />
     <Resource Include="Resource\MKCBreakLink.png" />
     <Resource Include="Resource\MKCLinked.png" />
   </ItemGroup>
@@ -390,6 +395,7 @@
     <Resource Include="Resource\TextureImage.png" />
     <Resource Include="Resource\TransparentBackground.png" />
     <Resource Include="Resource\TransparentIcon.png" />
+    <Resource Include="Resource\UnconnectedMKBLink.png" />
     <Resource Include="Resource\View.png" />
     <Resource Include="Resource\White\AddBN-White.png" />
     <Resource Include="Resource\White\AddNote-White.png" />
