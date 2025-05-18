@@ -50,14 +50,9 @@ namespace UDSH.View
 
                 viewModel.ChangeSaveStatus();
             }
-            else if (e.Key == Key.Up || e.Key == Key.Down)
+            else if (e.Key == Key.Up || e.Key == Key.Down || e.Key == Key.Left || e.Key == Key.Right)
             {
-                viewModel.NavigateListItem(e.Key);
-                e.Handled = false;
-            }
-            else if (e.Key == Key.Left || e.Key == Key.Right)
-            {
-                _ = viewModel.LRCharacterNavigation();
+                viewModel.NavigateParagraphs(e.Key);
                 e.Handled = false;
             }
             else

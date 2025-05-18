@@ -124,6 +124,7 @@
     <None Remove="Resource\FolderSidebar.png" />
     <None Remove="Resource\FolderSwitchContent.png" />
     <None Remove="Resource\Folder_Large.png" />
+    <None Remove="Resource\GoTo.png" />
     <None Remove="Resource\HandHandle.png" />
     <None Remove="Resource\HandHandleHighlight.png" />
     <None Remove="Resource\HighlightFolder_Large.png" />
@@ -219,6 +220,7 @@
 
   <ItemGroup>
     <Resource Include="Resource\ConnectedMKBLink.png" />
+    <Resource Include="Resource\GoTo.png" />
     <Resource Include="Resource\JumpToFile.png" />
     <Resource Include="Resource\MKCBreakLink.png" />
     <Resource Include="Resource\MKCLinked.png" />

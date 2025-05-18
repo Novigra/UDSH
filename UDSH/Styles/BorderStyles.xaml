@@ -58,4 +58,16 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="Border" x:Key="ParagraphCoverBorder">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFF7F7F7" Offset="0.674"/>
+                    <GradientStop Color="#3AF7F7F7" Offset="0.905"/>
+                    <GradientStop Color="Transparent" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

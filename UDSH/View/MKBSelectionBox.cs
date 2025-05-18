@@ -17,6 +17,9 @@ namespace UDSH.View
         public Paragraph ParagraphHolder { get; set; }
         public InlineUIContainer Placeholder { get; set; }
         private Border ContentBorder { get; set; }
+        private StackPanel ElementsStackPanel { get; set; }
+        private Button CloseButton { get; set; }
+        private ListView MKBListView { get; set; }
 
         public MKBSelectionBox(MKCUserControlViewModel viewModel, InlineUIContainer inlineUIContainer, Paragraph paragraphHolder)
         {
@@ -30,11 +33,11 @@ namespace UDSH.View
         private void Construct()
         {
             ContentBorder = CreateBackgroundBorder();
-            StackPanel stackPanel = CreateContentStackPanelStructure();
+            ElementsStackPanel = CreateContentStackPanelStructure();
 
             // Build
             Content = ContentBorder;
-            ContentBorder.Child = stackPanel;
+            ContentBorder.Child = ElementsStackPanel;
 
             HeightAnimation(400, 0, 0.5, ContentBorder);
         }
@@ -71,7 +74,7 @@ namespace UDSH.View
                 Margin = new Thickness(0,10,0,0)
             };
 
-            Button button = new Button
+            CloseButton = new Button
             {
                 Style = (Style)Application.Current.FindResource("ResizeClose"),
                 HorizontalAlignment = HorizontalAlignment.Right,
@@ -80,14 +83,14 @@ namespace UDSH.View
                 Margin = new Thickness(0,10,10,0)
             };
 
-            button.Click += CloseButton_Click;
+            CloseButton.Click += CloseButton_Click;
 
             TitleGrid.Children.Add(textBlock);
-            TitleGrid.Children.Add(button);
+            TitleGrid.Children.Add(CloseButton);
             structure.Children.Add(TitleGrid);
 
             // ListView
-            ListView listView = new ListView
+            MKBListView = new ListView
             {
                 Style = (Style)Application.Current.FindResource("MKCConnectionListView"),
                 ItemContainerStyle = (Style)Application.Current.FindResource("MKCConnectionListViewItem"),
@@ -105,13 +108,13 @@ namespace UDSH.View
                 ConverterParameter = 70
             };
 
-            listView.SetBinding(ListView.ItemsSourceProperty, new Binding(nameof(ViewModel.MKBFiles)));
-            listView.SetBinding(ListView.SelectedItemProperty, new Binding(nameof(ViewModel.SelectedMKBFile)));
-            listView.SetBinding(ListView.HeightProperty, HeightBinding);
+            MKBListView.SetBinding(ListView.ItemsSourceProperty, new Binding(nameof(ViewModel.MKBFiles)));
+            MKBListView.SetBinding(ListView.SelectedItemProperty, new Binding(nameof(ViewModel.SelectedMKBFile)));
+            MKBListView.SetBinding(ListView.HeightProperty, HeightBinding);
 
-            listView.MouseDoubleClick += ListView_MouseDoubleClick;
+            MKBListView.MouseDoubleClick += ListView_MouseDoubleClick;
 
-            structure.Children.Add(listView);
+            structure.Children.Add(MKBListView);
 
             return structure;
         }
@@ -119,12 +122,18 @@ namespace UDSH.View
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             // Request to delete the line
-            MKBSelectionBoxRequestedRemoval.Invoke(this, false);
+            //MKBSelectionBoxRequestedRemoval.Invoke(this, false);
+            CloseButton.IsEnabled = false;
+            MKBListView.IsEnabled = false;
+            CloseAnimation(false);
         }
 
         private void ListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            MKBSelectionBoxRequestedRemoval.Invoke(this, true);
+            //MKBSelectionBoxRequestedRemoval.Invoke(this, true);
+            CloseButton.IsEnabled = false;
+            MKBListView.IsEnabled = false;
+            CloseAnimation(true);
         }
 
         private void HeightAnimation(double HeightTarget, double BeginTime, double Duration, DependencyObject dependencyObject)
@@ -140,6 +149,53 @@ namespace UDSH.View
             Storyboard.SetTarget(ControlHeightAnimation, dependencyObject);
             Storyboard.SetTargetProperty(ControlHeightAnimation, new PropertyPath("Height"));
             storyboard.Children.Add(ControlHeightAnimation);
+
+            storyboard.Begin();
+        }
+
+        private void CloseAnimation(bool Selection)
+        {
+            Storyboard storyboard = new Storyboard();
+
+            // Border
+            DoubleAnimation ControlHeightAnimation = new DoubleAnimation();
+            ControlHeightAnimation.BeginTime = TimeSpan.FromSeconds(0);
+            ControlHeightAnimation.To = 50;
+            ControlHeightAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.5));
+            ControlHeightAnimation.EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut };
+
+            Storyboard.SetTarget(ControlHeightAnimation, ContentBorder);
+            Storyboard.SetTargetProperty(ControlHeightAnimation, new PropertyPath("Height"));
+            storyboard.Children.Add(ControlHeightAnimation);
+
+            // StackPanel
+            DoubleAnimation ControlOpacityAnimation = new DoubleAnimation();
+            ControlOpacityAnimation.BeginTime = TimeSpan.FromSeconds(0);
+            ControlOpacityAnimation.To = 0;
+            ControlOpacityAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.3));
+
+            Storyboard.SetTarget(ControlOpacityAnimation, ElementsStackPanel);
+            Storyboard.SetTargetProperty(ControlOpacityAnimation, new PropertyPath("Opacity"));
+            storyboard.Children.Add(ControlOpacityAnimation);
+
+
+            // Border
+            DoubleAnimation BorderOpacityAnimation = new DoubleAnimation();
+            BorderOpacityAnimation.BeginTime = TimeSpan.FromSeconds(0.6);
+            BorderOpacityAnimation.To = 0;
+            BorderOpacityAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.3));
+
+            Storyboard.SetTarget(BorderOpacityAnimation, ContentBorder);
+            Storyboard.SetTargetProperty(BorderOpacityAnimation, new PropertyPath("Opacity"));
+            storyboard.Children.Add(BorderOpacityAnimation);
+
+            storyboard.Completed += (s, e) =>
+            {
+                if (Selection == true)
+                    MKBSelectionBoxRequestedRemoval.Invoke(this, Selection);
+                else
+                    MKBSelectionBoxRequestedRemoval.Invoke(this, Selection);
+            };
 
             storyboard.Begin();
         }

@@ -31,6 +31,14 @@
             </Path.Data>
         </Path>
 
-        <Border Width="300" Height="300" BorderThickness="0" Background="#9980E3EA"/>
+        <Border Width="300" Height="300" BorderThickness="0">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFF7F7F7" Offset="0.674"/>
+                    <GradientStop Color="Transparent" Offset="1"/>
+                    <GradientStop Color="#3AF7F7F7" Offset="0.905"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
     </Grid>
 </Window>
