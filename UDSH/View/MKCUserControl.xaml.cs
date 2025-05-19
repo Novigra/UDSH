@@ -17,7 +17,7 @@ namespace UDSH.View
             this.viewModel = viewModel;
         }
 
-        private async void MKContentLayout_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void MKContentLayout_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Space)
             {
@@ -37,7 +37,7 @@ namespace UDSH.View
             }
             else if (e.Key == Key.Back)
             {
-                bool BackResult = await viewModel.SetLastPickedParagraphAfterParagraphUpdate();
+                bool BackResult = viewModel.SetLastPickedParagraphAfterParagraphUpdate();
 
                 if (BackResult)
                 {
@@ -57,6 +57,7 @@ namespace UDSH.View
             }
             else
             {
+                viewModel.UpdateLastCaretPosition();
                 viewModel.ChangeSaveStatus();
             }
         }

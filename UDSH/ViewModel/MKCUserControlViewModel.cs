@@ -152,7 +152,8 @@ namespace UDSH.ViewModel
         private MKBSelectionBox CurrentMKBSelectionBox { get; set; }
         private Paragraph CurrentDialogueParagraph { get; set; }
         private ParagraphCoverBorder CurrentParagraphCoverBorder { get; set; }
-        private bool ToggleBlockDeletion;
+        private bool SelectParagraphSource { get; set; } = false;
+        private TextPointer LastCaretPosition { get; set; }
 
         public RelayCommand<RichTextBox> RichTextLoaded => new RelayCommand<RichTextBox>(OnRichTextBoxLoaded);
 
@@ -209,7 +210,6 @@ namespace UDSH.ViewModel
             IsMouseLeftButtonPressed = false;
             CanCreateANewNote = true;
             FirstLaunch = true;
-            ToggleBlockDeletion = false;
 
             SceneHeadingMargins = new Thickness(0, 30, 0, 0);
             ActionMargins = new Thickness(0, 12, 0, 0);
@@ -441,22 +441,44 @@ namespace UDSH.ViewModel
         #endregion
 
         #region Paragraph Selection And Navigation Logic
-        private void GetParagraph(Paragraph paragraph)
+        private async void GetParagraph(Paragraph paragraph)
         {
             if (paragraph != null)
             {
+                if (paragraph.Tag is UIContainer uIContainer && uIContainer == UIContainer.ConnectedMKBButton)
+                {
+                    await UpdateCaretPositionToLastPosition();
+                    return;
+                }
+
                 if (LastPickedParagraph != null)
                     LastPickedParagraph.Focusable = true;
 
-                paragraph.Focusable = false;
                 LastPickedParagraph = paragraph;
+                SelectParagraphSource = true;
                 SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
+                LastPickedParagraph.Focusable = false;
+                _ = UpdateLastCaretPositionAsync();
 
-                TextRange textRange = new TextRange(paragraph.ContentStart, paragraph.ContentEnd);
-                string ParaText = textRange.Text;
-
-                UpdateToggleBlockDeletionState();
+                UpdateCharacterCaretPosition();
             }
+        }
+
+        public void UpdateLastCaretPosition()
+        {
+            LastCaretPosition = MKRichTextBox.CaretPosition;
+        }
+
+        private async Task UpdateLastCaretPositionAsync()
+        {
+            await Task.Delay(50);
+            LastCaretPosition = MKRichTextBox.CaretPosition;
+        }
+
+        private async Task UpdateCaretPositionToLastPosition()
+        {
+            await Task.Delay(50);
+            MKRichTextBox.CaretPosition = LastCaretPosition;
         }
 
         public async void NavigateParagraphs(Key key)
@@ -480,6 +502,7 @@ namespace UDSH.ViewModel
                         SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
 
                         MKRichTextBox.CaretPosition = LastPickedParagraph.ContentEnd;
+                        UpdateLastCaretPosition();
                     }
                     else
                     {
@@ -501,6 +524,7 @@ namespace UDSH.ViewModel
                         SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
 
                         MKRichTextBox.CaretPosition = LastPickedParagraph.ContentStart;
+                        UpdateLastCaretPosition();
                     }
                     else
                     {
@@ -512,13 +536,14 @@ namespace UDSH.ViewModel
             }
 
             UpdateCharacterCaretPosition();
-            UpdateToggleBlockDeletionState();
+            UpdateLastCaretPosition();
             UpdateAllPaperCanvasButtonsLocation();
         }
 
+        // Delete this function later!!!
         private void UpdateLastPickedParagraph()
         {
-            if (MKRichTextBox != null)
+            /*if (MKRichTextBox != null)
             {
                 TextPointer caretPosition = MKRichTextBox.CaretPosition;
                 Paragraph paragraph = caretPosition.Paragraph;
@@ -527,19 +552,22 @@ namespace UDSH.ViewModel
                 {
                     paragraph.Focus();
 
+                    if (paragraph.Tag is UIContainer uIContainer && uIContainer == UIContainer.ConnectedMKBButton)
+                    {
+                        return;
+                    }
+
                     if (LastPickedParagraph != null)
                         LastPickedParagraph.Focusable = true;
 
                     LastPickedParagraph = paragraph;
+                    SelectParagraphSource = true;
                     SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
                     LastPickedParagraph.Focusable = false;
 
-                    TextRange textRange = new TextRange(paragraph.ContentStart, paragraph.ContentEnd);
-                    Debug.WriteLine($"MK Paragraph: {textRange.Text}");
-
                     UpdateCharacterCaretPosition();
                 }
-            }
+            }*/
         }
         #endregion
 
@@ -602,15 +630,24 @@ namespace UDSH.ViewModel
         #endregion
 
         #region Deletion Logic
-        public async Task<bool> SetLastPickedParagraphAfterParagraphUpdate()
+        public bool SetLastPickedParagraphAfterParagraphUpdate()
         {
             if (CanDeleteAllText == true && MKRichTextBox.Selection.Text != "")
             {
-                Paragraph paragraph = new Paragraph();
+                /*Paragraph paragraph = new Paragraph();
                 paragraph = LastPickedParagraph.PreviousBlock as Paragraph;
 
                 if (paragraph == null)
                     return false;
+
+                if (LastPickedParagraph.NextBlock.Tag is UIContainer uIContainer && uIContainer == UIContainer.ConnectedMKBButton)
+                {
+                    return true;
+                }
+                else if (LastPickedParagraph.NextBlock.NextBlock.Tag is UIContainer uIContainer2 && uIContainer2 == UIContainer.ConnectedMKBButton)
+                {
+                    return true;
+                }
 
                 if (SelectedScriptElement == ScriptElement.Character)
                     DeleteButtonLink();
@@ -627,7 +664,10 @@ namespace UDSH.ViewModel
                 else
                 {
                     MKRichTextBox.CaretPosition = LastPickedParagraph.ContentEnd;
-                }
+                }*/
+
+                MKRichTextBox.Selection.Text = "";
+                UpdateLastCaretPosition();
 
                 CanDeleteAllText = false;
                 return true;
@@ -664,23 +704,12 @@ namespace UDSH.ViewModel
                     }
                 }
 
-                await LastPickedParagraphAfterParagraphUpdate();
-                return false;
+                return LastPickedParagraphAfterParagraphUpdate();
             }
         }
 
-        private async Task LastPickedParagraphAfterParagraphUpdate()
+        private bool LastPickedParagraphAfterParagraphUpdate()
         {
-            //await Task.Delay(50);
-
-            /*
-             * Important notes:
-             * 
-             *  - Delays are annoying. Just add a check when reaching empty string to delete the paragraph.
-             *  - Don't forget to add Character/Dialogue Connection Check in the delete all section.
-             *  - remove async
-             */
-
             LastPickedParagraph = MKRichTextBox.CaretPosition.Paragraph;
             SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
             TextRange textRange = new TextRange(LastPickedParagraph.ContentStart, LastPickedParagraph.ContentEnd);
@@ -688,47 +717,58 @@ namespace UDSH.ViewModel
 
             if (SelectedScriptElement == ScriptElement.Character && string.IsNullOrWhiteSpace(textRange.Text) && MKRichTextBox.Document.Blocks.Count == 1)
             {
-                if (ToggleBlockDeletion == true)
-                {
-                    MKRichTextBox.Document.Blocks.Remove(LastPickedParagraph);
-                    LastPickedParagraph = new Paragraph();
-                    LastPickedParagraph.Tag = ScriptElement.SceneHeading;
-                    SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
+                MKRichTextBox.Document.Blocks.Remove(LastPickedParagraph);
+                LastPickedParagraph = new Paragraph();
+                LastPickedParagraph.Tag = ScriptElement.SceneHeading;
+                SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
 
-                    MKRichTextBox.Document.Blocks.Add(LastPickedParagraph);
-                    MKRichTextBox.CaretPosition = LastPickedParagraph.ContentStart;
-                }
+                MKRichTextBox.Document.Blocks.Add(LastPickedParagraph);
+                MKRichTextBox.CaretPosition = LastPickedParagraph.ContentStart;
+                UpdateLastCaretPosition();
 
-                ToggleBlockDeletion = true;
+                return true;
             }
             else if (string.IsNullOrWhiteSpace(textRange.Text) && MKRichTextBox.Document.Blocks.Count > 1)
             {
-                if (ToggleBlockDeletion == true)
-                {
-                    if (SelectedScriptElement == ScriptElement.Character)
-                        DeleteButtonLink();
+                if (SelectedScriptElement == ScriptElement.Character)
+                    DeleteButtonLink();
 
-                    Block PreviousBlock = LastPickedParagraph.PreviousBlock;
-                    if (PreviousBlock != null)
-                    {
-                        MKRichTextBox.Document.Blocks.Remove(LastPickedParagraph);
+                Block PreviousBlock = LastPickedParagraph.PreviousBlock;
+                if (PreviousBlock != null)
+                {
+                    MKRichTextBox.Document.Blocks.Remove(LastPickedParagraph);
+
+                    if (PreviousBlock.Tag is UIContainer uIContainer && uIContainer == UIContainer.ConnectedMKBButton)
+                        LastPickedParagraph = PreviousBlock.PreviousBlock as Paragraph;
+                    else
                         LastPickedParagraph = PreviousBlock as Paragraph;
-                        SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
-                        UpdateCharacterCaretPosition();
-                    }
+
+                    MKRichTextBox.CaretPosition = LastPickedParagraph.ContentEnd;
+                    SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
+                    UpdateCharacterCaretPosition();
+                    UpdateLastCaretPosition();
                 }
 
-                ToggleBlockDeletion = true;
+                return true;
             }
             else
             {
-                ToggleBlockDeletion = false;
+                return false;
             }
         }
 
         private void DeleteAllText()
         {
-            MKRichTextBox.Selection.Select(LastPickedParagraph.ContentStart, LastPickedParagraph.ContentEnd);
+            if (SelectedScriptElement == ScriptElement.Character)
+            {
+                Inline CharacterNameInline = LastPickedParagraph.Inlines.ElementAt(LastPickedParagraph.Inlines.Count - 2);
+                MKRichTextBox.Selection.Select(LastPickedParagraph.ContentStart, CharacterNameInline.ContentEnd);
+            }
+            else
+            {
+                MKRichTextBox.Selection.Select(LastPickedParagraph.ContentStart, LastPickedParagraph.ContentEnd);
+            }
+
             CanDeleteAllText = true;
             Debug.WriteLine("Delete All Text");
         }
@@ -1010,6 +1050,12 @@ namespace UDSH.ViewModel
 
         private void UpdateLastPickedParagraphActiveElement()
         {
+            if (SelectParagraphSource == true)
+            {
+                SelectParagraphSource = false;
+                return;
+            }
+
             LastPickedParagraph.Tag = SelectedScriptElement;
 
             switch (SelectedScriptElement)
@@ -1033,15 +1079,6 @@ namespace UDSH.ViewModel
             }
 
             CheckTextStatus();
-        }
-
-        private void UpdateToggleBlockDeletionState()
-        {
-            TextRange textRange = new TextRange(LastPickedParagraph.ContentStart, LastPickedParagraph.ContentEnd);
-            if (textRange.Text.Equals(""))
-                ToggleBlockDeletion = true;
-            else
-                ToggleBlockDeletion = false;
         }
 
         private void CreateCharacterLinkButton()
@@ -1090,6 +1127,7 @@ namespace UDSH.ViewModel
         private void CharacterLinkButton_Click(object sender, RoutedEventArgs e)
         {
             CharacterLinkButton characterLinkButton = (CharacterLinkButton)sender;
+            CurrentCharacterLinkButton = characterLinkButton;
             Block block = characterLinkButton.CharacterParagraph.NextBlock;
             if (block != null && (ScriptElement)block.Tag == ScriptElement.Dialogue)
             {
@@ -1253,6 +1291,8 @@ namespace UDSH.ViewModel
             CurrentMKBSelectionBox = null;
 
             MKRichTextBox.IsHitTestVisible = true;
+            MKRichTextBox.CaretPosition = CurrentDialogueParagraph.ContentEnd;
+            UpdateLastCaretPosition();
         }
 
         private DialogueLinkButton CreateDialogueLinkButton()
@@ -1290,7 +1330,26 @@ namespace UDSH.ViewModel
 
             Paragraph ParagraphStart = Start.Paragraph;
             Paragraph ParagraphEnd = End.Paragraph;
+
+            if (ParagraphStart.Tag is UIContainer)
+            {
+                ParagraphStart = ParagraphStart.NextBlock as Paragraph;
+                Start = ParagraphStart.ContentStart;
+            }
+
+            if (ParagraphEnd.Tag is UIContainer)
+            {
+                ParagraphEnd = ParagraphEnd.PreviousBlock as Paragraph;
+                End = ParagraphEnd.ContentEnd;
+            }
+
             ScriptElement ParagraphEndScriptElement = (ScriptElement)ParagraphEnd.Tag;
+
+            if (ParagraphEndScriptElement == ScriptElement.Character)
+            {
+                Inline CharacterNameInline = ParagraphEnd.Inlines.ElementAt(ParagraphEnd.Inlines.Count - 2);
+                End = CharacterNameInline.ContentEnd;
+            }
 
             bool StartRecording = false;
             bool ChangedStart = false;
