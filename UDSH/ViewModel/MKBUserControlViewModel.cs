@@ -601,6 +601,7 @@ namespace UDSH.ViewModel
             workspaceServices.ControlButtonReleased += WorkspaceServices_ControlButtonReleased;
             workspaceServices.Reset += WorkspaceServices_Reset;
             workspaceServices.MKCSearchInitAnimFinished += WorkspaceServices_MKCSearchInitAnimFinished;
+            workspaceServices.MKBFileConnectionUpdated += WorkspaceServices_MKBFileConnectionUpdated;
 
             Scale = 1.0;
             SetDefaultValues();
@@ -609,6 +610,19 @@ namespace UDSH.ViewModel
             SelectedResizeText = "100%";
 
             LoadMKCFiles();
+        }
+
+        private void WorkspaceServices_MKBFileConnectionUpdated(object? sender, MKBFileConnectionUpdateEventArgs e)
+        {
+            if (e.MKBFile == AssociatedFile)
+            {
+                AssociatedFile.ConnectedMKCFile = e.MKCFile;
+                IsConnectedToMKCFile = true;
+
+                IsConnectedToMKCButtonActive = true;
+                IsConnectToMKCButtonActive = false;
+                ConnectedMKCFileName = AssociatedFile.ConnectedMKCFile.FileName;
+            }
         }
 
         private void WorkspaceServices_ControlButtonPressed(object? sender, Model.InputEventArgs e)

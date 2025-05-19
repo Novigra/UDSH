@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+
+using System.Windows.Controls;
 using System.Windows.Documents;
 
 namespace UDSH.View

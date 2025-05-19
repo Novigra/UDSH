@@ -11,6 +11,7 @@ namespace UDSH.Services
         event EventHandler Reset;
         event EventHandler<double> MKCSearchInitAnimFinished;
         event EventHandler<bool> SidebarStatusChanged;
+        event EventHandler<MKBFileConnectionUpdateEventArgs> MKBFileConnectionUpdated;
 
         IUserDataServices UserDataServices { get; }
         Window MainWindow { get; set; }
@@ -22,5 +23,6 @@ namespace UDSH.Services
         void OnReset();
         void OnMKCSearchInitAnimFinished(double Height);
         void OnSidebarStatusChanged(bool IsOpen);
+        void OnMKBFileConnectionUpdated(FileSystem MKBFile, FileSystem MKCFile);
     }
 }

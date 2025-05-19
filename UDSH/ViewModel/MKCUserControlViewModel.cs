@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿// Copyright (C) 2025 Mohammed Kenawy
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows;
 using UDSH.MVVM;
@@ -39,6 +40,7 @@ namespace UDSH.ViewModel
 
     public class MKCUserControlViewModel : ViewModelBase
     {
+        public event EventHandler ResetCharacterLinkButtonStatus;
         private readonly IWorkspaceServices _workspaceServices;
         private readonly string _workspaceServicesID;
 
@@ -154,6 +156,7 @@ namespace UDSH.ViewModel
         private ParagraphCoverBorder CurrentParagraphCoverBorder { get; set; }
         private bool SelectParagraphSource { get; set; } = false;
         private TextPointer LastCaretPosition { get; set; }
+        public bool CanUnlinkMKBButton { get; set; } = false;
 
         public RelayCommand<RichTextBox> RichTextLoaded => new RelayCommand<RichTextBox>(OnRichTextBoxLoaded);
 
@@ -217,6 +220,33 @@ namespace UDSH.ViewModel
             DialogueMargins = new Thickness(96, 6, 0, 0);
 
             ScriptElements = new ObservableCollection<ScriptElement>(Enum.GetValues(typeof(ScriptElement)).Cast<ScriptElement>());
+
+            workspaceServices.ControlButtonPressed += WorkspaceServices_ControlButtonPressed;
+            workspaceServices.ControlButtonReleased += WorkspaceServices_ControlButtonReleased;
+        }
+
+        private void WorkspaceServices_ControlButtonPressed(object? sender, Model.InputEventArgs e)
+        {
+            if (e.CurrentActiveWorkspaceID == _workspaceServicesID)
+            {
+                if (e.KeyEvent.Key == Key.LeftCtrl)
+                {
+                    CanUnlinkMKBButton = true;
+                    ResetCharacterLinkButtonStatus.Invoke(this, new EventArgs());
+                }
+            }
+        }
+
+        private void WorkspaceServices_ControlButtonReleased(object? sender, Model.InputEventArgs e)
+        {
+            if (e.CurrentActiveWorkspaceID == _workspaceServicesID)
+            {
+                if (e.KeyEvent.Key == Key.LeftCtrl)
+                {
+                    CanUnlinkMKBButton = false;
+                    ResetCharacterLinkButtonStatus.Invoke(this, new EventArgs());
+                }
+            }
         }
 
         #region Rich Text Box Initiation And Starting The First Paragraph
@@ -1109,12 +1139,15 @@ namespace UDSH.ViewModel
 
             LastPickedParagraph.Inlines.Add(inlineUIContainer);
 
-            CharacterLinkButton characterLinkButton = new CharacterLinkButton
+            /*CharacterLinkButton characterLinkButton = new CharacterLinkButton
             {
                 Margin = new Thickness(10, 0, 0, 0),
                 CharacterParagraph = LastPickedParagraph,
                 Placeholder = inlineUIContainer
-            };
+            };*/
+
+            CharacterLinkButton characterLinkButton = new CharacterLinkButton(this, LastPickedParagraph, inlineUIContainer);
+            characterLinkButton.Margin = new Thickness(10, 0, 0, 0);
 
             characterLinkButton.Click += CharacterLinkButton_Click;
 
@@ -1128,6 +1161,38 @@ namespace UDSH.ViewModel
         {
             CharacterLinkButton characterLinkButton = (CharacterLinkButton)sender;
             CurrentCharacterLinkButton = characterLinkButton;
+            
+            if (CurrentCharacterLinkButton.AssociatedDialogueButton == null)
+            {
+                StartMKBConnectionProcess(CurrentCharacterLinkButton);
+            }
+            else if (CanUnlinkMKBButton == true)
+            {
+                UnlinkMKBConnection();
+            }
+            else
+            {
+                CurrentCharacterLinkButton.AssociatedDialogueButton.ButtonFocusAnimation(true);
+            }
+        }
+
+        private void UnlinkMKBConnection()
+        {
+            // Don't forget to delete the node in MKB file and update the user data json file
+            DialogueLinkButton dialogueLinkButton = CurrentCharacterLinkButton.AssociatedDialogueButton;
+            AssociatedFile.ConnectedMKMFiles.Remove(dialogueLinkButton.AssociatedMKBFile);
+
+            MKRichTextBox.Document.Blocks.Remove(dialogueLinkButton.ParagraphHolder);
+            PaperCanvas.Children.Remove(dialogueLinkButton);
+
+            dialogueLinkButton.ButtonCreated -= DialogueLinkButton_ButtonCreated;
+            dialogueLinkButton.ButtonRequstedToOpenMKBFile -= DialogueLinkButton_ButtonRequstedToOpenMKBFile;
+            CurrentCharacterLinkButton.AssociatedDialogueButton = null;
+            CurrentCharacterLinkButton.UpdateButtonVisuals(false);
+        }
+
+        private void StartMKBConnectionProcess(CharacterLinkButton characterLinkButton)
+        {
             Block block = characterLinkButton.CharacterParagraph.NextBlock;
             if (block != null && (ScriptElement)block.Tag == ScriptElement.Dialogue)
             {
@@ -1277,6 +1342,8 @@ namespace UDSH.ViewModel
                 DialogueLinkButton dialogueLinkButton = CreateDialogueLinkButton();
                 CurrentCharacterLinkButton.AssociatedDialogueButton = dialogueLinkButton;
                 CurrentCharacterLinkButton.UpdateButtonVisuals(e);
+
+                _workspaceServices.OnMKBFileConnectionUpdated(SelectedMKBFile, AssociatedFile);
             }
             else
             {
@@ -1297,19 +1364,13 @@ namespace UDSH.ViewModel
 
         private DialogueLinkButton CreateDialogueLinkButton()
         {
-            DialogueLinkButton dialogueLinkButton = new DialogueLinkButton
-            {
-                CharacterParagraph = CurrentCharacterLinkButton.CharacterParagraph,
-                DialogueParagraph = CurrentDialogueParagraph,
-                ParagraphHolder = CurrentMKBSelectionBox.ParagraphHolder,
-                Placeholder = CurrentMKBSelectionBox.Placeholder,
-                AssociatedMKBFile = SelectedMKBFile
-            };
+            DialogueLinkButton dialogueLinkButton = new DialogueLinkButton(this, CurrentCharacterLinkButton.CharacterParagraph, CurrentDialogueParagraph,
+                CurrentMKBSelectionBox.ParagraphHolder, CurrentMKBSelectionBox.Placeholder, SelectedMKBFile);
 
             PaperCanvas.Children.Add(dialogueLinkButton);
-            //UpdateButtonLinkLocation(dialogueLinkButton);
 
             dialogueLinkButton.ButtonCreated += DialogueLinkButton_ButtonCreated;
+            dialogueLinkButton.ButtonRequstedToOpenMKBFile += DialogueLinkButton_ButtonRequstedToOpenMKBFile;
 
             return dialogueLinkButton;
         }
@@ -1318,6 +1379,12 @@ namespace UDSH.ViewModel
         {
             if (sender is DialogueLinkButton dialogueLinkButton)
                 UpdateButtonLinkLocation(dialogueLinkButton);
+        }
+
+        private void DialogueLinkButton_ButtonRequstedToOpenMKBFile(object? sender, FileSystem e)
+        {
+            if (e != null)
+                _workspaceServices.UserDataServices.AddFileToHeader(e);
         }
 
         private void HandleLeftMouseButtonUp()
@@ -1485,15 +1552,24 @@ namespace UDSH.ViewModel
              * TODO:
              * - Have static width instead of a dynamic one. [DONE] - Dynamic actually looks better.
              * - Finish Dialogue Link Button design. [DONE]
-             * - Modify animations.
+             * - Modify animations. [DONE]
              * - Update Dialogue Link Buttons when:
-             *      * Scrolling.
-             *      * Text input.
-             * - Change Caret if entered the Dialogue Link Button's Paragraph.
-             * - Add transition to the associated mkb file.
-             * - Add order index to know which paragraph came first.
+             *      * Scrolling. [DONE]
+             *      * Text input. [DONE]
+             * - Change Caret if entered the Dialogue Link Button's Paragraph. [DONE]
+             * - Add transition to the associated mkb file. [DONE]
+             * # Add order index to know which paragraph came first.
              * - Add a list for BN to add the nodes.
-             * - the Delete key removes the placeholders. override the button.
-             * - [Important] moving up and down using arrow keys, you must change the focus state
-             * - [Important] Disable RTB, and Connection buttons when connecting
+             * - the Delete key removes the placeholders. override the button. [DONE]
+             * - [Important] moving up and down using arrow keys, you must change the focus state [DONE]
+             * - [Important] Disable RTB, and Connection buttons when connecting [DONE]
+             * 
+             * - Update User Data when adding or removing MKB Connection
+             * - In MKB ViewModel Check if the file is already connected to MKC
+             * - MKB Selection Box should only show:
+             *      * MKB Files
+             *      * MKB Files that aren't Connected to a different MKC File
+             * - MKB File should have a list of Connected Dialogues.
+             * # There should be indexing so we can decide who's first and whether or not to spawn splitter.
+             * - We may need to revisit Dialogue Node Structure.
              */

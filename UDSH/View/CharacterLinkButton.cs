@@ -1,4 +1,5 @@
 ﻿// Copyright (C) 2025 Mohammed Kenawy
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -6,21 +7,42 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
+using UDSH.ViewModel;
 
 namespace UDSH.View
 {
     public class CharacterLinkButton : Button
     {
+        private MKCUserControlViewModel ViewModel { get; set; }
         public Paragraph CharacterParagraph { get; set; }
-        public Button AssociatedDialogueButton { get; set; }
+        public DialogueLinkButton AssociatedDialogueButton { get; set; }
         public InlineUIContainer Placeholder { get; set; }
 
         private Border ButtonBorder { get; set; }
         private Border ConnectedButtonBorder { get; set; }
+        private Image ConnectedLinkImage { get; set; }
+        private Image DisconnectLinkImage { get; set; }
 
-        public CharacterLinkButton()
+        public CharacterLinkButton(MKCUserControlViewModel viewModel, Paragraph characterParagraph, InlineUIContainer placeholder)
         {
+            ViewModel = viewModel;
+            CharacterParagraph = characterParagraph;
+            Placeholder = placeholder;
+
             Construct();
+            
+            ViewModel.ResetCharacterLinkButtonStatus += ViewModel_ResetCharacterLinkButtonStatus;
+        }
+
+        private void ViewModel_ResetCharacterLinkButtonStatus(object? sender, EventArgs e)
+        {
+            if (IsMouseOver && AssociatedDialogueButton != null)
+            {
+                if (ViewModel.CanUnlinkMKBButton == true)
+                    UnlinkAnimation(0, 1, "#F83030");
+                else
+                    UnlinkAnimation(1, 0, "#E0911A");
+            }
         }
 
         private void Construct()
@@ -40,6 +62,8 @@ namespace UDSH.View
 
             ButtonBorder = GetTemplateChild("ButtonBorder") as Border;
             ConnectedButtonBorder = GetTemplateChild("ConnectedButtonBorder") as Border;
+            ConnectedLinkImage = GetTemplateChild("ConnectedLinkImage") as Image;
+            DisconnectLinkImage = GetTemplateChild("DisconnectLinkImage") as Image;
         }
 
         private void CharacterLinkButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -88,6 +112,7 @@ namespace UDSH.View
             {
                 ButtonBackgroundSwitchAnimation(ButtonBorder, 1);
                 ButtonBackgroundSwitchAnimation(ConnectedButtonBorder, 0);
+                UnlinkAnimation(1, 0, "#E0911A");
             }
         }
 
@@ -119,6 +144,29 @@ namespace UDSH.View
                 storyboard.Children.Add(colorToOriginal);
             }
 
+            if (ViewModel.CanUnlinkMKBButton == true)
+            {
+                DoubleAnimation CImageOpacityAnimation = new DoubleAnimation
+                {
+                    To = 1,
+                    Duration = TimeSpan.FromSeconds(0.1),
+                };
+
+                Storyboard.SetTarget(CImageOpacityAnimation, ConnectedLinkImage);
+                Storyboard.SetTargetProperty(CImageOpacityAnimation, new PropertyPath("Opacity"));
+                storyboard.Children.Add(CImageOpacityAnimation);
+
+                DoubleAnimation DisImageOpacityAnimation = new DoubleAnimation
+                {
+                    To = 0,
+                    Duration = TimeSpan.FromSeconds(0.1),
+                };
+
+                Storyboard.SetTarget(DisImageOpacityAnimation, DisconnectLinkImage);
+                Storyboard.SetTargetProperty(DisImageOpacityAnimation, new PropertyPath("Opacity"));
+                storyboard.Children.Add(DisImageOpacityAnimation);
+            }
+
             storyboard.Begin();
         }
 
@@ -134,6 +182,43 @@ namespace UDSH.View
             Storyboard.SetTarget(OpacityAnimation, dependencyObject);
             Storyboard.SetTargetProperty(OpacityAnimation, new PropertyPath("Opacity"));
             storyboard.Children.Add(OpacityAnimation);
+
+            storyboard.Begin();
+        }
+
+        private void UnlinkAnimation(double ConnectLinkTo, double DisConnectLinkTo, string ColorHexCode)
+        {
+            Storyboard storyboard = new Storyboard();
+
+            DoubleAnimation CImageOpacityAnimation = new DoubleAnimation
+            {
+                To = ConnectLinkTo,
+                Duration = TimeSpan.FromSeconds(0.3),
+            };
+
+            Storyboard.SetTarget(CImageOpacityAnimation, ConnectedLinkImage);
+            Storyboard.SetTargetProperty(CImageOpacityAnimation, new PropertyPath("Opacity"));
+            storyboard.Children.Add(CImageOpacityAnimation);
+
+            DoubleAnimation DisImageOpacityAnimation = new DoubleAnimation
+            {
+                To = DisConnectLinkTo,
+                Duration = TimeSpan.FromSeconds(0.3),
+            };
+
+            Storyboard.SetTarget(DisImageOpacityAnimation, DisconnectLinkImage);
+            Storyboard.SetTargetProperty(DisImageOpacityAnimation, new PropertyPath("Opacity"));
+            storyboard.Children.Add(DisImageOpacityAnimation);
+
+            ColorAnimation colorAnimation = new ColorAnimation
+            {
+                To = (Color)ColorConverter.ConvertFromString(ColorHexCode),
+                Duration = TimeSpan.FromSeconds(0.2),
+            };
+
+            Storyboard.SetTarget(colorAnimation, ConnectedButtonBorder);
+            Storyboard.SetTargetProperty(colorAnimation, new PropertyPath("(Control.Background).(SolidColorBrush.Color)"));
+            storyboard.Children.Add(colorAnimation);
 
             storyboard.Begin();
         }
