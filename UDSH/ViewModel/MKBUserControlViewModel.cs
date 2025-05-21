@@ -542,6 +542,8 @@ namespace UDSH.ViewModel
             set { selectedMKCFile = value; OnPropertyChanged(); }
         }
 
+        private FileSystem ConnectedMKCFile { get; set; }
+
         private string connectedMKCFileName;
         public string ConnectedMKCFileName
         {
@@ -602,6 +604,7 @@ namespace UDSH.ViewModel
             workspaceServices.Reset += WorkspaceServices_Reset;
             workspaceServices.MKCSearchInitAnimFinished += WorkspaceServices_MKCSearchInitAnimFinished;
             workspaceServices.MKBFileConnectionUpdated += WorkspaceServices_MKBFileConnectionUpdated;
+            workspaceServices.MKRequestedConnectionRemoval += WorkspaceServices_MKRequestedConnectionRemoval;
 
             Scale = 1.0;
             SetDefaultValues();
@@ -612,16 +615,27 @@ namespace UDSH.ViewModel
             LoadMKCFiles();
         }
 
+        private void WorkspaceServices_MKRequestedConnectionRemoval(object? sender, string ID)
+        {
+            if (AssociatedFile.FileID == ID)
+            {
+                RemoveMKCConnection();
+            }
+        }
+
         private void WorkspaceServices_MKBFileConnectionUpdated(object? sender, MKBFileConnectionUpdateEventArgs e)
         {
-            if (e.MKBFile == AssociatedFile)
+            if (e.MKBFile == AssociatedFile && string.IsNullOrEmpty(AssociatedFile.ConnectedMKCFileID))
             {
-                AssociatedFile.ConnectedMKCFile = e.MKCFile;
+                AssociatedFile.ConnectedMKCFileID = e.MKCFile.FileID;
+                ConnectedMKCFile = e.MKCFile;
                 IsConnectedToMKCFile = true;
 
                 IsConnectedToMKCButtonActive = true;
                 IsConnectToMKCButtonActive = false;
-                ConnectedMKCFileName = AssociatedFile.ConnectedMKCFile.FileName;
+                ConnectedMKCFileName = ConnectedMKCFile.FileName;
+
+                _workspaceServices.UserDataServices.SaveUserDataAsync();
             }
         }
 
@@ -2043,14 +2057,14 @@ namespace UDSH.ViewModel
             if (AssociatedFile == null)
                 return;
 
-            if (AssociatedFile.ConnectedMKCFile != null)
+            if (!string.IsNullOrEmpty(AssociatedFile.ConnectedMKCFileID))
             {
                 IsConnectedToMKCFile = true;
                 IsConnectedToMKCButtonActive = true;
                 IsConnectToMKCButtonActive = false;
 
-                SelectedMKCFile = AssociatedFile.ConnectedMKCFile;
-                ConnectedMKCFileName = AssociatedFile.ConnectedMKCFile.FileName;
+                ConnectedMKCFile = GetFile(CurrentProject, AssociatedFile.ConnectedMKCFileID);
+                ConnectedMKCFileName = ConnectedMKCFile.FileName;
             }
             else
             {
@@ -2117,16 +2131,30 @@ namespace UDSH.ViewModel
                 Debug.WriteLine($"Item Name:{SelectedMKCFile}");
 
                 MkcConnectionProcessStarted = false;
-                AssociatedFile.ConnectedMKCFile = SelectedMKCFile;
+                AssociatedFile.ConnectedMKCFileID = SelectedMKCFile.FileID;
+                ConnectedMKCFile = GetFile(CurrentProject, AssociatedFile.ConnectedMKCFileID);
                 IsConnectedToMKCFile = true;
 
                 IsConnectedToMKCButtonActive = true;
                 IsConnectToMKCButtonActive = false;
-                ConnectedMKCFileName = AssociatedFile.ConnectedMKCFile.FileName;
+                ConnectedMKCFileName = ConnectedMKCFile.FileName;
 
                 RemoveRootConnections();
-                _workspaceServices.UserDataServices.SaveUserDataAsync();
+
+                _workspaceServices.OnMKCFileConnectionUpdated(AssociatedFile, ConnectedMKCFile);
+                //_workspaceServices.UserDataServices.SaveUserDataAsync();
             }
+        }
+
+        private FileSystem GetFile(Project project, string FileID)
+        {
+            foreach (var file in project.Files)
+            {
+                if (FileID.Equals(file.FileID))
+                    return file;
+            }
+
+            return null;
         }
 
         private void WorkspaceServices_MKCSearchInitAnimFinished(object? sender, double Height)
@@ -2178,22 +2206,31 @@ namespace UDSH.ViewModel
         {
             if (CanRemoveConnectedMKCFile == true)
             {
-                AssociatedFile.ConnectedMKCFile = null;
-
-                IsConnectedToMKCFile = false;
-                IsConnectedToMKCButtonActive = false;
-                IsConnectToMKCButtonActive = true;
-
-                ResetMKCConnectionButtons = true;
-                ResetMKCConnectionButtons = false;
-
-                ConnectedMKCFileName = string.Empty;
-                _workspaceServices.UserDataServices.SaveUserDataAsync();
+                RemoveMKCConnection();
             }
             else
             {
-                _workspaceServices.UserDataServices.AddFileToHeader(SelectedMKCFile);
+                _workspaceServices.UserDataServices.AddFileToHeader(ConnectedMKCFile);
             }
+        }
+
+        private void RemoveMKCConnection()
+        {
+            _workspaceServices.OnMKBRequestedConnectionRemoval(AssociatedFile, ConnectedMKCFile);
+            //AssociatedFile.ConnectedMKCFileID = string.Empty;
+            //ConnectedMKCFile = null;
+
+            IsConnectedToMKCFile = false;
+            IsConnectedToMKCButtonActive = false;
+            IsConnectToMKCButtonActive = true;
+
+            ResetMKCConnectionButtons = true;
+            ResetMKCConnectionButtons = false;
+
+            ConnectedMKCFileName = string.Empty;
+
+
+            //_workspaceServices.UserDataServices.SaveUserDataAsync();
         }
 
         private void UpdateDetailsOnUserControlLoaded()

@@ -12,6 +12,9 @@ namespace UDSH.Services
         event EventHandler<double> MKCSearchInitAnimFinished;
         event EventHandler<bool> SidebarStatusChanged;
         event EventHandler<MKBFileConnectionUpdateEventArgs> MKBFileConnectionUpdated;
+        event EventHandler<MKBFileConnectionUpdateEventArgs> MKCFileConnectionUpdated;
+        event EventHandler<string> MKRequestedConnectionRemoval;
+        event EventHandler<MKBFileConnectionUpdateEventArgs> MKBRequestedConnectionRemoval;
 
         IUserDataServices UserDataServices { get; }
         Window MainWindow { get; set; }
@@ -24,5 +27,8 @@ namespace UDSH.Services
         void OnMKCSearchInitAnimFinished(double Height);
         void OnSidebarStatusChanged(bool IsOpen);
         void OnMKBFileConnectionUpdated(FileSystem MKBFile, FileSystem MKCFile);
+        void OnMKCFileConnectionUpdated(FileSystem MKBFile, FileSystem MKCFile);
+        void OnMKRequestedConnectionRemoval(string MKFileID);
+        void OnMKBRequestedConnectionRemoval(FileSystem MKBFile, FileSystem MKCFile);
     }
 }

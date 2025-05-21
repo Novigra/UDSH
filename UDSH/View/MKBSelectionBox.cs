@@ -133,9 +133,13 @@ namespace UDSH.View
         private void ListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             //MKBSelectionBoxRequestedRemoval.Invoke(this, true);
-            CloseButton.IsEnabled = false;
-            MKBListView.IsEnabled = false;
-            CloseAnimation(true);
+
+            if (e.OriginalSource is Border border && border.Name.Equals("BorderItem"))
+            {
+                CloseButton.IsEnabled = false;
+                MKBListView.IsEnabled = false;
+                CloseAnimation(true);
+            }
         }
 
         private void HeightAnimation(double HeightTarget, double BeginTime, double Duration, DependencyObject dependencyObject)

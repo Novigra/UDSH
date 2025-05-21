@@ -15,8 +15,8 @@ namespace UDSH.Model
         public string FileDirectory { get; set; }
         public string FileSize { get; set; }
         public bool IsLastOpenedFile { get; set; }
-        public FileSystem ConnectedMKCFile { get; set; }
-        public List<FileSystem> ConnectedMKMFiles { get; set; }
+        public string ConnectedMKCFileID { get; set; }
+        public List<string> ConnectedMKMFilesID { get; set; }
         public DateTime FileCreationDate { get; set; }
         public DateTime FileLastModificationDate { get; set; }
 

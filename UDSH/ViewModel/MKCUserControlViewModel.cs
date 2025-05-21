@@ -199,6 +199,9 @@ namespace UDSH.ViewModel
         {
             _workspaceServices = workspaceServices;
 
+            CurrentProject = _workspaceServices.UserDataServices.ActiveProject;
+            AssociatedFile = _workspaceServices.UserDataServices.CurrentSelectedFile;
+
             _workspaceServicesID = Guid.NewGuid().ToString();
             _workspaceServices.SetCurrentActiveWorkspaceID(_workspaceServicesID);
 
@@ -223,6 +226,33 @@ namespace UDSH.ViewModel
 
             workspaceServices.ControlButtonPressed += WorkspaceServices_ControlButtonPressed;
             workspaceServices.ControlButtonReleased += WorkspaceServices_ControlButtonReleased;
+            workspaceServices.MKCFileConnectionUpdated += WorkspaceServices_MKCFileConnectionUpdated;
+            workspaceServices.MKBRequestedConnectionRemoval += WorkspaceServices_MKBRequestedConnectionRemoval;
+        }
+
+        private void WorkspaceServices_MKCFileConnectionUpdated(object? sender, MKBFileConnectionUpdateEventArgs e)
+        {
+            if (e.MKCFile.FileID == AssociatedFile.FileID)
+            {
+                if (!AssociatedFile.ConnectedMKMFilesID.Contains(e.MKBFile.FileID))
+                {
+                    AssociatedFile.ConnectedMKMFilesID.Add(e.MKBFile.FileID);
+                }
+            }
+        }
+
+        private void WorkspaceServices_MKBRequestedConnectionRemoval(object? sender, MKBFileConnectionUpdateEventArgs e)
+        {
+            if (e.MKCFile.FileID == AssociatedFile.FileID)
+            {
+                foreach (var button in PaperCanvas.Children.OfType<DialogueLinkButton>().ToList())
+                {
+                    if (e.MKBFile.FileID == button.AssociatedMKBFile.FileID)
+                    {
+                        UnlinkMKBConnection(button, true);
+                    }
+                }
+            }
         }
 
         private void WorkspaceServices_ControlButtonPressed(object? sender, Model.InputEventArgs e)
@@ -232,7 +262,7 @@ namespace UDSH.ViewModel
                 if (e.KeyEvent.Key == Key.LeftCtrl)
                 {
                     CanUnlinkMKBButton = true;
-                    ResetCharacterLinkButtonStatus.Invoke(this, new EventArgs());
+                    ResetCharacterLinkButtonStatus?.Invoke(this, new EventArgs());
                 }
             }
         }
@@ -244,7 +274,7 @@ namespace UDSH.ViewModel
                 if (e.KeyEvent.Key == Key.LeftCtrl)
                 {
                     CanUnlinkMKBButton = false;
-                    ResetCharacterLinkButtonStatus.Invoke(this, new EventArgs());
+                    ResetCharacterLinkButtonStatus?.Invoke(this, new EventArgs());
                 }
             }
         }
@@ -546,9 +576,17 @@ namespace UDSH.ViewModel
             {
                 if (LastPickedParagraph.NextBlock != null)
                 {
-                    if (MKRichTextBox.CaretPosition.Paragraph.Tag is UIContainer uIContainer && uIContainer == UIContainer.ConnectedMKBButton
-                        && LastPickedParagraph.NextBlock.NextBlock != null)
+                    if (MKRichTextBox.CaretPosition.Paragraph.Tag is UIContainer uIContainer && uIContainer == UIContainer.ConnectedMKBButton)
                     {
+                        if (LastPickedParagraph.NextBlock.NextBlock == null)
+                        {
+                            MKRichTextBox.CaretPosition = LastPickedParagraph.ContentEnd;
+                            UpdateLastCaretPosition();
+                            UpdateAllPaperCanvasButtonsLocation();
+
+                            return;
+                        }
+
                         LastPickedParagraph = LastPickedParagraph.NextBlock.NextBlock as Paragraph;
                         LastPickedParagraph.Focusable = false;
                         SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
@@ -664,38 +702,6 @@ namespace UDSH.ViewModel
         {
             if (CanDeleteAllText == true && MKRichTextBox.Selection.Text != "")
             {
-                /*Paragraph paragraph = new Paragraph();
-                paragraph = LastPickedParagraph.PreviousBlock as Paragraph;
-
-                if (paragraph == null)
-                    return false;
-
-                if (LastPickedParagraph.NextBlock.Tag is UIContainer uIContainer && uIContainer == UIContainer.ConnectedMKBButton)
-                {
-                    return true;
-                }
-                else if (LastPickedParagraph.NextBlock.NextBlock.Tag is UIContainer uIContainer2 && uIContainer2 == UIContainer.ConnectedMKBButton)
-                {
-                    return true;
-                }
-
-                if (SelectedScriptElement == ScriptElement.Character)
-                    DeleteButtonLink();
-
-                MKRichTextBox.Document.Blocks.Remove(LastPickedParagraph);
-                LastPickedParagraph = paragraph;
-                SelectedScriptElement = (ScriptElement)LastPickedParagraph.Tag;
-
-                if (SelectedScriptElement == ScriptElement.Character)
-                {
-                    Inline CharacterNameInline = LastPickedParagraph.Inlines.ElementAt(LastPickedParagraph.Inlines.Count - 2);
-                    MKRichTextBox.CaretPosition = CharacterNameInline.ContentEnd;
-                }
-                else
-                {
-                    MKRichTextBox.CaretPosition = LastPickedParagraph.ContentEnd;
-                }*/
-
                 MKRichTextBox.Selection.Text = "";
                 UpdateLastCaretPosition();
 
@@ -1116,16 +1122,6 @@ namespace UDSH.ViewModel
             if (LastPickedParagraph.Inlines.LastInline is InlineUIContainer)
                 return;
 
-            /*CharacterLinkButton characterLinkButton = new CharacterLinkButton
-            {
-                Style = (Style)Application.Current.FindResource("BNCharacterConnectionButton"),
-                Margin = new Thickness(10,0,0,0),
-                CharacterParagraph = LastPickedParagraph
-            };
-
-            characterLinkButton.Click += CharacterLinkButton_Click;
-            characterLinkButton.MouseEnter += CharacterLinkButton_MouseEnter;*/
-
             Border border = new Border
             {
                 Width = 1,
@@ -1138,13 +1134,6 @@ namespace UDSH.ViewModel
             inlineUIContainer.BaselineAlignment = BaselineAlignment.Center;
 
             LastPickedParagraph.Inlines.Add(inlineUIContainer);
-
-            /*CharacterLinkButton characterLinkButton = new CharacterLinkButton
-            {
-                Margin = new Thickness(10, 0, 0, 0),
-                CharacterParagraph = LastPickedParagraph,
-                Placeholder = inlineUIContainer
-            };*/
 
             CharacterLinkButton characterLinkButton = new CharacterLinkButton(this, LastPickedParagraph, inlineUIContainer);
             characterLinkButton.Margin = new Thickness(10, 0, 0, 0);
@@ -1168,7 +1157,7 @@ namespace UDSH.ViewModel
             }
             else if (CanUnlinkMKBButton == true)
             {
-                UnlinkMKBConnection();
+                UnlinkMKBConnection(CurrentCharacterLinkButton.AssociatedDialogueButton);
             }
             else
             {
@@ -1176,14 +1165,16 @@ namespace UDSH.ViewModel
             }
         }
 
-        private void UnlinkMKBConnection()
+        private void UnlinkMKBConnection(DialogueLinkButton dialogueLinkButton, bool IsMKBSource = false)
         {
             // Don't forget to delete the node in MKB file and update the user data json file
-            DialogueLinkButton dialogueLinkButton = CurrentCharacterLinkButton.AssociatedDialogueButton;
-            AssociatedFile.ConnectedMKMFiles.Remove(dialogueLinkButton.AssociatedMKBFile);
+            AssociatedFile.ConnectedMKMFilesID.Remove(dialogueLinkButton.AssociatedMKBFile.FileID);
 
             MKRichTextBox.Document.Blocks.Remove(dialogueLinkButton.ParagraphHolder);
             PaperCanvas.Children.Remove(dialogueLinkButton);
+
+            if (IsMKBSource == false)
+                _workspaceServices.OnMKRequestedConnectionRemoval(dialogueLinkButton.AssociatedMKBFile.FileID);
 
             dialogueLinkButton.ButtonCreated -= DialogueLinkButton_ButtonCreated;
             dialogueLinkButton.ButtonRequstedToOpenMKBFile -= DialogueLinkButton_ButtonRequstedToOpenMKBFile;
@@ -1335,10 +1326,10 @@ namespace UDSH.ViewModel
         {
             if (e == true)
             {
-                if(AssociatedFile.ConnectedMKMFiles == null)
-                    AssociatedFile.ConnectedMKMFiles = new List<FileSystem>();
+                if(AssociatedFile.ConnectedMKMFilesID == null)
+                    AssociatedFile.ConnectedMKMFilesID = new List<string>();
 
-                AssociatedFile.ConnectedMKMFiles.Add(SelectedMKBFile);
+                AssociatedFile.ConnectedMKMFilesID.Add(SelectedMKBFile.FileID);
                 DialogueLinkButton dialogueLinkButton = CreateDialogueLinkButton();
                 CurrentCharacterLinkButton.AssociatedDialogueButton = dialogueLinkButton;
                 CurrentCharacterLinkButton.UpdateButtonVisuals(e);
@@ -1531,14 +1522,16 @@ namespace UDSH.ViewModel
             // we can add an event so when a new file gets created, it gets added if it is of a type mkb.
             MKBFiles.Clear();
 
-            CurrentProject = _workspaceServices.UserDataServices.ActiveProject;
             foreach (var file in CurrentProject.Files)
             {
-                //if (file.FileType.Equals("mkb"))
-                    MKBFiles.Add(file);
-            }
+                if (file.FileType.Equals("mkb"))
+                {
+                    if (!string.IsNullOrEmpty(file.ConnectedMKCFileID) && file.ConnectedMKCFileID != AssociatedFile.FileID)
+                        continue;
 
-            AssociatedFile = _workspaceServices.UserDataServices.CurrentSelectedFile;
+                    MKBFiles.Add(file);
+                }
+            }
         }
 
         private void LoadPaperCanvas(Canvas canvas)
